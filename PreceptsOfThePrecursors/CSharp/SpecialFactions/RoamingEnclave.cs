@@ -5,6 +5,33 @@ using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
+    public static class EnclaveSettings
+    {
+        public static int GetInt( Faction faction, Integers setting )
+        {
+            bool useCustom = AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( faction.SpecialFactionData.InternalName.Substring( 14 ) + Booleans.EnclaveSettingsEnabled.ToString() );
+            if ( useCustom )
+                return AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( faction.SpecialFactionData.InternalName.Substring( 14 ) + setting.ToString() );
+            else
+                return AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( setting.ToString() );
+        }
+        public static bool GetIsEnabled( Faction faction )
+        {
+            return AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( faction.SpecialFactionData.InternalName.Substring( 14 ) + Booleans.EnclaveEnabled );
+        }
+        public enum Booleans
+        {
+            EnclaveEnabled,
+            EnclaveSettingsEnabled
+        }
+        public enum Integers
+        {
+            EnclaveMaxHopsFromHiveToAttack,
+            EnclaveMaxHopsFromHiveToDefend,
+            MakeEveryXFireteamDefensive,
+            RetreatAtXHull
+        }
+    }
     public enum Unit
     {
         YounglingWorm,
@@ -46,7 +73,7 @@ namespace PreceptsOfThePrecursors
         public List<Planet> EnclavePlanets = new List<Planet>();
         public List<Planet> HivePlanets = new List<Planet>();
 
-        public static bool IsEnabled;
+        public static bool EnclavesGloballyEnabled;
         public static int Intensity;
 
         public EnclaveFactionData FactionData;
@@ -66,38 +93,53 @@ namespace PreceptsOfThePrecursors
         }
         public BaseRoamingEnclave()
         {
-            IsEnabled = false;
+            EnclavesGloballyEnabled = false;
             Intensity = 0;
         }
 
         public override bool GetShouldAttackNormallyExcludedTarget( Faction faction, GameEntity_Squad Target )
         {
-            return !(this is RoamingEnclavePlayerTeam);
+            return !(this is RoamingEnclavePlayerTeam) && Target.TypeData.IsCommandStation;
         }
         public override void UpdatePowerLevel( Faction faction )
         {
+            faction.OverallPowerLevel = FInt.Zero;
             faction.OverallPowerLevel = FInt.FromParts( 0, 150 ) * Hives.Count;
         }
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            if ( !IsEnabled )
+            if ( !EnclavesGloballyEnabled )
                 return;
 
             if ( FactionData == null )
                 FactionData = faction.GetEnclaveFactionData();
 
+            HandleYounglingDegeneration(faction);
+
+            HandleEnclaveRegeneration();
+
             HandleUnitSpawningForEnclaves( Context );
 
             HandleUnitSpawningForHives( Context );
+        }
 
-            if ( Enclaves.Count == 0 && Hives.Count == 0 && (World_AIW2.Instance.GameSecond % 3600 == 0 || World_AIW2.Instance.GameSecond == 11) )
-                BulkSpawn( faction, World_AIW2.Instance.CurrentGalaxy, Context );
+        private void HandleYounglingDegeneration(Faction faction)
+        {
+            faction.DoForEntities( YOUNGLING_TAG, youngling =>
+            {
+                youngling.TakeHullRepair( -5 );
 
-            if ( World_AIW2.Instance.GameSecond % 900 == 0 )
-                HandleEnclaveSpawning( faction, Context );
+                return DelReturn.Continue;
+            } );
+        }
 
-            if ( World_AIW2.Instance.GameSecond % 900 == 0 )
-                HandleHiveExpansion( faction, Context );
+        private void HandleEnclaveRegeneration( )
+        {
+            for ( int x = 0; x < Enclaves.Count; x++ )
+            {
+                if ( Enclaves[x].RepairDelaySeconds <= 0 )
+                    Enclaves[x].TakeHullRepair( Enclaves[x].GetMaxHullPoints() / 100 );
+            }
         }
 
         private void HandleUnitSpawningForEnclaves( ArcenSimContext Context )
@@ -144,16 +186,26 @@ namespace PreceptsOfThePrecursors
             }
         }
 
-        protected abstract void BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context );
+        public abstract Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context );
 
-        protected abstract void HandleEnclaveSpawning( Faction faction, ArcenSimContext Context );
+        public abstract void HandleEnclaveSpawning( Faction faction, ArcenSimContext Context );
 
-        protected abstract void HandleHiveExpansion( Faction faction, ArcenSimContext Context );
+        public abstract void HandleHiveExpansion( Faction faction, ArcenSimContext Context );
+
+        private int AttackHops;
+        private int DefenseHops;
+        private int FireteamsPerDefense;
+        private int RetreatPercentage;
 
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
-            if ( !IsEnabled )
+            if ( !EnclavesGloballyEnabled )
                 return;
+
+            AttackHops = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.EnclaveMaxHopsFromHiveToAttack );
+            DefenseHops = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.EnclaveMaxHopsFromHiveToDefend );
+            FireteamsPerDefense = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.MakeEveryXFireteamDefensive );
+            RetreatPercentage = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.RetreatAtXHull );
 
             FactionData.TeamsAimedAtPlanet.Clear();
 
@@ -202,38 +254,57 @@ namespace PreceptsOfThePrecursors
                 }
                 if ( enclave.CurrentMarkLevel < 7 && enclave.GetSecondsSinceCreation() > enclave.CurrentMarkLevel * 1800 )
                     markUpCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
-                if ( enclave.FireteamId < 0 )
+
+                int alliedStrength = enclave.PlanetFaction.DataByStance[FactionStance.Self].TotalStrength + enclave.PlanetFaction.DataByStance[FactionStance.Friendly].TotalStrength;
+                int hostileStrength = enclave.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength;
+
+                if ( RetreatPercentage > 0 && enclave.GetCurrentHullPoints() < (enclave.GetMaxHullPoints() / 100) * RetreatPercentage )
                 {
-                    if ( enclave.Planet.GetHopsTo( GetNearestHivePlanet( faction, enclave.Planet, Context ) ) == 0 )
-                    {
-                        Fireteam team = new Fireteam();
-                        team.MyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 0, 075 );
-                        team.EnemyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 1, 025 );
-                        team.id = FireteamUtility.GetNextFireteamId( FactionData.Teams );
-                        team.DefenseMode = team.id % 5 == 0;
-                        team.StrengthToBringOnline = 0;
-                        team.AddUnit( enclave );
-                        FactionData.Teams.AddIfNotAlreadyIn( team );
-                    }
-                    else
-                    {
-                        if ( enclave.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 100 ||
-                            enclave.PlanetFaction.DataByStance[FactionStance.Self].TotalStrength + enclave.PlanetFaction.DataByStance[FactionStance.Friendly].TotalStrength < enclave.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength )
-                            enclave.QueueWormholeCommand( GetNearestHivePlanet( faction, enclave.Planet, Context, true ) );
-                    }
+                    if ( enclave.Planet.GetHopsTo( GetNearestHivePlanet( faction, enclave.Planet, Context ) ) > 0 )
+                        enclave.QueueWormholeCommand( GetNearestHivePlanet( faction, enclave.Planet, Context, true ) );
+                    enclave.FireteamId = -1;
                 }
                 else
                 {
-                    Fireteam team = this.GetFireteamById( faction, enclave.FireteamId );
-                    if ( team != null )
+                    if ( enclave.FireteamId < 0 )
                     {
-                        team.AddUnit( enclave );
+                        if ( enclave.Planet.GetHopsTo( GetNearestHivePlanet( faction, enclave.Planet, Context ) ) == 0 )
+                        {
+                            if ( enclave.GetCurrentHullPoints() >= (enclave.GetMaxHullPoints() / 100) * 90 )
+                            {
+
+                                Fireteam team = new Fireteam();
+                                team.MyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 0, 075 );
+                                team.EnemyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 1, 025 );
+                                team.id = FireteamUtility.GetNextFireteamId( FactionData.Teams );
+                                if ( FireteamsPerDefense > 0 )
+                                    team.DefenseMode = team.id % FireteamsPerDefense == 0;
+                                else
+                                    team.DefenseMode = false;
+                                team.StrengthToBringOnline = 0;
+                                team.AddUnit( enclave );
+                                FactionData.Teams.AddIfNotAlreadyIn( team );
+                            }
+                        }
+                        else
+                        {
+                            if ( hostileStrength < 500 || alliedStrength < hostileStrength )
+                                enclave.QueueWormholeCommand( GetNearestHivePlanet( faction, enclave.Planet, Context, true ) );
+                        }
                     }
                     else
-                        enclave.FireteamId = -1; //something happened to the fireteam, so lets find a new one next LRP stage
+                    {
+                        Fireteam team = this.GetFireteamById( faction, enclave.FireteamId );
+                        if ( team != null )
+                        {
+                            team.AddUnit( enclave );
+                        }
+                        else
+                            enclave.FireteamId = -1; //something happened to the fireteam, so lets find a new one next LRP stage
+                    }
                 }
 
-                if ( enclave.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength > 500 )
+                if ( hostileStrength > 500 )
                     enclaveUnloadCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
 
                 return DelReturn.Continue;
@@ -334,15 +405,31 @@ namespace PreceptsOfThePrecursors
                 ownershipCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
                 ownershipCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
 
-                Fireteam team = this.GetFireteamById( faction, enclave.FireteamId );
-                if ( team != null )
-                    team.AddUnit( youngling );
-                if ( youngling.Planet == enclave.Planet && youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500 )
+                if ( youngling.Planet != enclave.Planet )
                 {
-                    loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
-                    loadYounglingsCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
+                    if ( youngling.LongRangePlanningData.FinalDestinationPlanetIndex == -1 )
+                        youngling.QueueWormholeCommand( enclave.Planet, Context );
                 }
-
+                else
+                {
+                    if ( youngling.GetCurrentHullPoints() < 300 )
+                    {
+                        youngling.FireteamId = -1;
+                        loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
+                        loadYounglingsCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
+                    }
+                    else
+                    {
+                        Fireteam team = this.GetFireteamById( faction, enclave.FireteamId );
+                        if ( team != null )
+                            team.AddUnit( youngling );
+                        if ( youngling.Planet == enclave.Planet && youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500 )
+                        {
+                            loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
+                            loadYounglingsCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
+                        }
+                    }
+                }
                 return DelReturn.Continue;
             } );
 
@@ -351,11 +438,6 @@ namespace PreceptsOfThePrecursors
             Context.QueueCommandForSendingAtEndOfContext( ownershipCommand );
             if ( loadYounglingsCommand.RelatedIntegers.Count > 0 )
                 Context.QueueCommandForSendingAtEndOfContext( loadYounglingsCommand );
-        }
-
-        private void AttemptToAddYoungling( GameEntity_Squad enclave, Fireteam team, GameEntity_Squad youngling, ArcenLongTermIntermittentPlanningContext Context )
-        {
-
         }
 
         #region Fireteams
@@ -378,14 +460,14 @@ namespace PreceptsOfThePrecursors
 
         public override void GetFireteamPreferredAndFallbackTargets_OnBackgroundNonSimThread_Subclass( Faction faction, bool DefenseMode, Planet CurrentPlanetForFireteam, ArcenLongTermIntermittentPlanningContext Context, ref List<FireteamTarget> PreferredTargets, ref List<FireteamTarget> FallbackTargets, object TeamObj )
         {
-            List<Planet> planetsInRange = new List<Planet>();
             PreferredTargets.Clear();
             FallbackTargets.Clear();
 
             List<Planet> hivesInDanger = new List<Planet>();
             List<Planet> alliedAssaults = new List<Planet>();
             List<Planet> hivesThreatened = new List<Planet>();
-            List<GameEntity_Squad> importantTargets = new List<GameEntity_Squad>();
+            List<Planet> fallbackAttackPlanets = new List<Planet>();
+            List<Planet> fallbackDefensePlanets = new List<Planet>();
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
@@ -394,119 +476,67 @@ namespace PreceptsOfThePrecursors
                 int hostileStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength;
                 int friendlyStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Friendly].TotalStrength;
 
-                if ( this is RoamingEnclavePlayerTeam && faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode && friendlyStrength > alliedAssaultFriendlyThreshold
+                if ( this is RoamingEnclavePlayerTeam && friendlyStrength > alliedAssaultFriendlyThreshold
                   && hostileStrength > friendlyStrength * alliedAssaultHostileThresholdMult )
                 {
                     alliedAssaults.Add( planet );
-                    if ( this is RoamingEnclavePlayerTeam && faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
-                        ArcenDebugging.SingleLineQuickDebug( planet.Name + " is considered an Allied Assault." );
                 }
                 else if ( hops == 0 )
                 {
                     if ( hostileStrength > hivesInDangerThreshold )
                     {
                         hivesInDanger.Add( planet );
-                        if ( this is RoamingEnclavePlayerTeam && faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
-                            ArcenDebugging.SingleLineQuickDebug( planet.Name + " is considered a hive in danger." );
                     }
                 }
-                else if ( hops == 1 )
+                else if ( hops <= DefenseHops )
                 {
                     if ( hostileStrength > hivesThreatenedThreshold )
                     {
                         hivesThreatened.Add( planet );
-                        if ( this is RoamingEnclavePlayerTeam && faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
-                            ArcenDebugging.SingleLineQuickDebug( planet.Name + " is considered a hive threatened." );
                     }
                 }
-                else if ( hops < 5 )
-                    planetsInRange.Add( planet );
+
+                if ( hostileStrength > 500 )
+                {
+                    if ( hops <= AttackHops )
+                        fallbackAttackPlanets.Add( planet );
+                    else if ( hops <= DefenseHops )
+                        fallbackDefensePlanets.Add( planet );
+                }
 
                 return DelReturn.Continue;
             } );
-
-            World_AIW2.Instance.DoForFactions( otherFaction =>
-            {
-                if ( !faction.GetIsHostileTowards( otherFaction ) )
-                    return DelReturn.Continue;
-
-                otherFaction.DoForEntities( EntityRollupType.GrantsMinorFactionPlanetControl, controller =>
-                {
-                    if ( planetsInRange.Contains( controller.Planet ) )
-                        if ( Fireteam.GetDangerOfPath( faction, Context, GetFireteamLurkPlanet_OnBackgroundNonSimThread_Subclass( faction, controller.Planet, 0, CurrentPlanetForFireteam, Context ), controller.Planet, false, out short _ ) < maxStrengthToBreakThrough )
-                        {
-                            importantTargets.Add( controller );
-                        }
-                    return DelReturn.Continue;
-                } );
-
-                otherFaction.DoForEntities( SpecialEntityType.GuardPost, guardPost =>
-                {
-                    if ( planetsInRange.Contains( guardPost.Planet ) )
-                        if ( Fireteam.GetDangerOfPath( faction, Context, GetFireteamLurkPlanet_OnBackgroundNonSimThread_Subclass( faction, guardPost.Planet, 0, CurrentPlanetForFireteam, Context ), guardPost.Planet, false, out short _ ) < maxStrengthToBreakThrough )
-                        {
-                            importantTargets.Add( guardPost );
-                        }
-                    return DelReturn.Continue;
-                } );
-
-                otherFaction.DoForEntities( EntityRollupType.KingUnitsOnly, king =>
-                {
-                    if ( planetsInRange.Contains( king.Planet ) )
-                        if ( Fireteam.GetDangerOfPath( faction, Context, GetFireteamLurkPlanet_OnBackgroundNonSimThread_Subclass( faction, king.Planet, 0, CurrentPlanetForFireteam, Context ), king.Planet, false, out short _ ) < maxStrengthToBreakThrough )
-                        {
-                            importantTargets.Add( king );
-                        }
-                    return DelReturn.Continue;
-                } );
-
-                if ( !(this is RoamingEnclavePlayerTeam) )
-                    otherFaction.DoForEntities( EntityRollupType.CommandStation, command =>
-                    {
-                        if ( planetsInRange.Contains( command.Planet ) )
-                            if ( Fireteam.GetDangerOfPath( faction, Context, GetFireteamLurkPlanet_OnBackgroundNonSimThread_Subclass( faction, command.Planet, 0, CurrentPlanetForFireteam, Context ), command.Planet, false, out short _ ) < maxStrengthToBreakThrough )
-                            {
-                                importantTargets.Add( command );
-                            }
-                        return DelReturn.Continue;
-                    } );
-
-                return DelReturn.Continue;
-            } );
-
-            if ( hivesInDanger.Count > 0 )
-                for ( int x = 0; x < hivesInDanger.Count; x++ )
-                    PreferredTargets.Add( new FireteamTarget( hivesInDanger[x] ) );
-            if ( hivesThreatened.Count > 0 )
-                for ( int x = 0; x < hivesThreatened.Count; x++ )
-                    PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
 
             if ( DefenseMode )
-                for ( int x = 0; x < HivePlanets.Count; x++ )
-                    FallbackTargets.Add( new FireteamTarget( HivePlanets[x] ) );
+            {
+                if ( hivesInDanger.Count > 0 )
+                    for ( int x = 0; x < hivesInDanger.Count; x++ )
+                        PreferredTargets.Add( new FireteamTarget( hivesInDanger[x] ) );
+                else if ( hivesThreatened.Count > 0 )
+                    for ( int x = 0; x < hivesThreatened.Count; x++ )
+                        PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
+                if ( fallbackDefensePlanets.Count > 0 )
+                    for ( int x = 0; x < fallbackDefensePlanets.Count; x++ )
+                        FallbackTargets.Add( new FireteamTarget( fallbackDefensePlanets[x] ) );
+                else
+                    for ( int x = 0; x < HivePlanets.Count; x++ )
+                        FallbackTargets.Add( new FireteamTarget( HivePlanets[x] ) );
+            }
             else
             {
-                if ( alliedAssaults.Count > 0 )
+                if ( hivesInDanger.Count > 0 )
+                    for ( int x = 0; x < hivesInDanger.Count; x++ )
+                        PreferredTargets.Add( new FireteamTarget( hivesInDanger[x] ) );
+                else if ( hivesThreatened.Count > 0 )
+                    for ( int x = 0; x < hivesThreatened.Count; x++ )
+                        PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
+                else if ( alliedAssaults.Count > 0 )
                     for ( int x = 0; x < alliedAssaults.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( alliedAssaults[x] ) );
 
-                if ( importantTargets.Count > 0 )
-                    for ( int x = 0; x < importantTargets.Count; x++ )
-                        FallbackTargets.Add( new FireteamTarget( importantTargets[x] ) );
-
-                if ( this is RoamingEnclavePlayerTeam && faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
-                {
-                    for ( int x = 0; x < PreferredTargets.Count; x++ )
-                    {
-                        Planet planet = PreferredTargets[x].targetSquad != null ? PreferredTargets[x].targetSquad.Planet : PreferredTargets[x].planet;
-                        ArcenDebugging.SingleLineQuickDebug( planet.Name + " is a preferred target" );
-                    }
-                    for ( int x = 0; x < FallbackTargets.Count; x++ )
-                    {
-                        Planet planet = FallbackTargets[x].targetSquad != null ? FallbackTargets[x].targetSquad.Planet : FallbackTargets[x].planet;
-                        ArcenDebugging.SingleLineQuickDebug( planet.Name + " is a fallback target" );
-                    }
-                }
+                if ( fallbackAttackPlanets.Count > 0 )
+                    for ( int x = 0; x < fallbackAttackPlanets.Count; x++ )
+                        FallbackTargets.Add( new FireteamTarget( fallbackAttackPlanets[x] ) );
             }
         }
 
@@ -521,10 +551,72 @@ namespace PreceptsOfThePrecursors
         }
         #endregion
     }
+
+    // Enabler subfaction.
+    public class RoamingEnclaveEnabler : BaseSpecialFaction
+    {
+        protected override string TracingName => "RoamingEnclave";
+        protected override bool EverNeedsToRunLongRangePlanning => false;
+
+        public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
+        {
+            BaseRoamingEnclave.EnclavesGloballyEnabled = true;
+            BaseRoamingEnclave.Intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
+
+            base.DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( faction, Context );
+        }
+
+        public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
+        {
+            EnclaveWorldData worldData = World.Instance.GetEnclaveWorldData();
+            bool isInflux = false;
+            if ( worldData.SecondsUntilNextInflux == 0 )
+            {
+                isInflux = true;
+                World_AIW2.Instance.QueueChatMessageOrCommand( "A new influx of Neinzul have arrived in our galaxy.", ChatType.LogToCentralChat, Context );
+                worldData.SecondsUntilNextInflux = 900;
+            }
+
+            World_AIW2.Instance.DoForFactions( otherFaction =>
+            {
+                if ( otherFaction.Implementation is BaseRoamingEnclave && EnclaveSettings.GetIsEnabled( otherFaction ) )
+                {
+                    BaseRoamingEnclave REFaction = otherFaction.Implementation as BaseRoamingEnclave;
+                    if ( REFaction.FactionData == null )
+                        REFaction.FactionData = otherFaction.GetEnclaveFactionData();
+                    if ( REFaction.FactionData.SecondsUntilNextRespawn > 0 )
+                        REFaction.FactionData.SecondsUntilNextRespawn--;
+                    if ( REFaction.Hives.Count == 0 && REFaction.Enclaves.Count == 0 )
+                    {
+                        if ( REFaction.FactionData.SecondsUntilNextRespawn == -1 )
+                            REFaction.FactionData.SecondsUntilNextRespawn = 1800;
+                        if ( REFaction.FactionData.SecondsUntilNextRespawn == 0 )
+                        {
+                            Planet spawnPlanet = REFaction.BulkSpawn( otherFaction, World_AIW2.Instance.CurrentGalaxy, Context );
+                            REFaction.FactionData.SecondsUntilNextRespawn = -1;
+                            if ( spawnPlanet != null && spawnPlanet.IntelLevel > PlanetIntelLevel.Unexplored )
+                            {
+                                World_AIW2.Instance.QueueChatMessageOrCommand( $"The {otherFaction.StartFactionColourForLog()}{otherFaction.GetDisplayName()}</color> has arrived on {spawnPlanet.Name}.", ChatType.LogToCentralChat, Context );
+                            }
+                        }
+                    }
+                    else if ( isInflux )
+                    {
+                        REFaction.HandleEnclaveSpawning( otherFaction, Context );
+                        REFaction.HandleHiveExpansion( otherFaction, Context );
+                    }
+                }
+                return DelReturn.Continue;
+            } );
+        }
+
+
+    }
+
     // Acts as a base for all npc subfactions.
     public abstract class RoamingEnclaveNPC : BaseRoamingEnclave
     {
-        protected override void HandleEnclaveSpawning( Faction faction, ArcenSimContext Context )
+        public override void HandleEnclaveSpawning( Faction faction, ArcenSimContext Context )
         {
             if ( HivePlanets.Count == 0 )
                 return;
@@ -556,7 +648,7 @@ namespace PreceptsOfThePrecursors
             }
         }
 
-        protected override void HandleHiveExpansion( Faction faction, ArcenSimContext Context )
+        public override void HandleHiveExpansion( Faction faction, ArcenSimContext Context )
         {
             if ( HivePlanets.Count == 0 )
                 return;
@@ -605,44 +697,20 @@ namespace PreceptsOfThePrecursors
         }
     }
 
-    // Acts as the hostile to all faction, and as the overall enabler. All subfactions will be disabled if this one is not enabled from the lobby.
-    public class RoamingEnclaveEnabler : RoamingEnclaveNPC
+    public class RoamingEnclaveHostileTeam : RoamingEnclaveNPC
     {
-        public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
-        {
-            IsEnabled = true;
-            Intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
-
-            base.DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( faction, Context );
-        }
-
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             enemyThisFactionToAll( faction );
 
-            if ( World_AIW2.Instance.GameSecond == 11 || World_AIW2.Instance.GameSecond % 900 == 0 )
-                World_AIW2.Instance.QueueChatMessageOrCommand( "A new influx of Neinzul have arrived in our galaxy.", ChatType.LogToCentralChat, Context );
+            FInt pseudoAIP = CalculateFactionOwnership( faction );
 
-            World_AIW2.Instance.DoForPlanets( false, planet =>
-            {
-                if ( planet.UnderInfluenceOfFactionIndex == faction.FactionIndex )
-                    planet.UnderInfluenceOfFactionIndex = -1;
-
-                return DelReturn.Continue;
-            } );
-
-            faction.DoForEntities( HIVE_TAG, hive =>
-            {
-                if ( hive.Planet.UnderInfluenceOfFactionIndex == -1 )
-                    hive.Planet.UnderInfluenceOfFactionIndex = faction.FactionIndex;
-
-                return DelReturn.Continue;
-            } );
+            HandleAIResponse( pseudoAIP, faction, Context );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
 
-        protected override void BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
             int toSpawn = 1;
@@ -665,17 +733,77 @@ namespace PreceptsOfThePrecursors
             } );
 
             if ( potentialPlanets.Count == 0 )
-                return;
+                return null;
 
             Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
-
-            if ( World_AIW2.Instance.GameSecond > 11 )
-                World_AIW2.Instance.QueueChatMessageOrCommand( $"A group of hostile {faction.StartFactionColourForLog()}Neinzul Enclaves</color> have entered the galaxy on {spawnPlanet.Name}.", ChatType.LogToCentralChat, Context );
 
             for ( int x = 0; x < toSpawn; x++ )
             {
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
+            }
+
+            return spawnPlanet;
+        }
+
+        private FInt CalculateFactionOwnership( Faction faction )
+        {
+            World_AIW2.Instance.DoForPlanets( false, planet =>
+            {
+                if ( planet.UnderInfluenceOfFactionIndex == faction.FactionIndex )
+                    planet.UnderInfluenceOfFactionIndex = -1;
+
+                return DelReturn.Continue;
+            } );
+
+            FInt pseudoAIP = FInt.Zero + Hives.Count * 5;
+
+            for ( int x = 0; x < HivePlanets.Count; x++ )
+            {
+                Planet planet = HivePlanets[x];
+                if ( planet.UnderInfluenceOfFactionIndex == -1 )
+                    planet.UnderInfluenceOfFactionIndex = faction.FactionIndex;
+
+                pseudoAIP += 20;
+            }
+
+            return pseudoAIP;
+        }
+
+        private void HandleAIResponse( FInt pseudoAIP, Faction faction, ArcenSimContext Context )
+        {
+            Faction aiFaction = null;
+
+            World_AIW2.Instance.DoForFactions( otherFaction =>
+            {
+                if ( otherFaction.Type != FactionType.AI )
+                    return DelReturn.Continue;
+
+                if ( aiFaction == null )
+                    aiFaction = otherFaction;
+                else if ( otherFaction.GetSentinelsExternal().AIDifficulty.Difficulty > aiFaction.GetSentinelsExternal().AIDifficulty.Difficulty )
+                    aiFaction = otherFaction;
+
+                return DelReturn.Continue;
+            } );
+
+            FInt pseudoIncreaseFromAI = pseudoAIP / 20;
+            pseudoIncreaseFromAI *= ExternalConstants.Instance.Balance_AIPurchaseCostPerCap_AI_Income;
+            pseudoIncreaseFromAI *= aiFaction.GetSentinelsExternal().AIDifficulty.AIPurchaseCostIncomeMultiplier;
+            pseudoIncreaseFromAI /= ExternalConstants.Instance.Balance_PlanetsWorthOfAIPTimesSecondsRequiredToAccumulateOneCap;
+            pseudoIncreaseFromAI *= aiFaction.GetSentinelsExternal().AIType.MultiplierForBudget_Wave;
+
+            AntiMinorFactionWaveData waveData = faction.GetAntiMinorFactionWaveDataExt();
+            waveData.currentWaveBudget += pseudoIncreaseFromAI;
+            if ( World_AIW2.Instance.GameSecond < 10 )
+                waveData.timeForNextWave = 600;
+            if ( waveData.timeForNextWave > 0 )
+                waveData.timeForNextWave--;
+            else
+            {
+                AntiMinorFactionWaveData.QueueWave( faction, Context, waveData.currentWaveBudget.GetNearestIntPreferringHigher(), true );
+                waveData.timeForNextWave = 600;
+                waveData.currentWaveBudget = FInt.Zero;
             }
         }
     }
@@ -689,7 +817,7 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        protected override void BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
             int toSpawn = 1;
@@ -720,7 +848,7 @@ namespace PreceptsOfThePrecursors
             } );
 
             if ( potentialPlanets.Count == 0 )
-                return;
+                return null;
 
             Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
 
@@ -729,6 +857,8 @@ namespace PreceptsOfThePrecursors
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
+
+            return spawnPlanet;
         }
     }
 
@@ -741,7 +871,7 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        protected override void BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
             int toSpawn = 1;
@@ -772,7 +902,7 @@ namespace PreceptsOfThePrecursors
             } );
 
             if ( potentialPlanets.Count == 0 )
-                return;
+                return null;
 
             Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
 
@@ -781,6 +911,8 @@ namespace PreceptsOfThePrecursors
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
+
+            return spawnPlanet;
         }
     }
 
@@ -793,7 +925,7 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        protected override void BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
             int toSpawn = 1;
@@ -824,7 +956,7 @@ namespace PreceptsOfThePrecursors
             } );
 
             if ( potentialPlanets.Count == 0 )
-                return;
+                return null;
 
             Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
 
@@ -833,6 +965,8 @@ namespace PreceptsOfThePrecursors
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
+
+            return spawnPlanet;
         }
     }
 
@@ -845,7 +979,7 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        protected override void BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
             int toSpawn = 1;
@@ -886,7 +1020,7 @@ namespace PreceptsOfThePrecursors
                 } );
 
             if ( potentialPlanets.Count == 0 )
-                return;
+                return null;
 
             Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
 
@@ -895,6 +1029,8 @@ namespace PreceptsOfThePrecursors
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
+
+            return spawnPlanet;
         }
     }
 
@@ -906,7 +1042,7 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        protected override void BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
             int toSpawn = 1;
@@ -922,11 +1058,16 @@ namespace PreceptsOfThePrecursors
             // Spawn in a single hive to start with.
             Planet spawnPlanet = BadgerFactionUtilityMethods.findAIKing();
 
+            if ( spawnPlanet == null )
+                return null;
+
             for ( int x = 0; x < toSpawn; x++ )
             {
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
+
+            return spawnPlanet;
         }
     }
 
@@ -934,7 +1075,10 @@ namespace PreceptsOfThePrecursors
     {
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            if ( !IsEnabled )
+            if ( !EnclavesGloballyEnabled )
+                return;
+
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
                 return;
 
             allyThisFactionToHumans( faction );
@@ -977,7 +1121,7 @@ namespace PreceptsOfThePrecursors
             } );
         }
 
-        protected override void BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of enclaves based on intensity and a singular hive.
             int toSpawn = 1;
@@ -991,15 +1135,18 @@ namespace PreceptsOfThePrecursors
                 toSpawn++;
 
             Planet spawnPlanet = BadgerFactionUtilityMethods.findHumanKing();
+            if ( spawnPlanet == null )
+                return null;
             for ( int x = 0; x < toSpawn; x++ )
             {
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
                 if ( x < 3 )
                     spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
             }
+            return spawnPlanet;
         }
 
-        protected override void HandleEnclaveSpawning( Faction faction, ArcenSimContext Context )
+        public override void HandleEnclaveSpawning( Faction faction, ArcenSimContext Context )
         {
             int toSpawn = 1;
             if ( Intensity >= 3 )
@@ -1038,7 +1185,7 @@ namespace PreceptsOfThePrecursors
             }
         }
 
-        protected override void HandleHiveExpansion( Faction faction, ArcenSimContext Context )
+        public override void HandleHiveExpansion( Faction faction, ArcenSimContext Context )
         {
             // The player gets a free Hive on every planet if they don't already have one.
             // They otherwise receive only a single new hive every 15 minutes, unless manually built.
@@ -1077,7 +1224,10 @@ namespace PreceptsOfThePrecursors
 
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
-            if ( !IsEnabled )
+            if ( !EnclavesGloballyEnabled )
+                return;
+
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
                 return;
 
             AddAndClaimHivesFromPlayers( faction, Context );

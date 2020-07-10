@@ -8,7 +8,6 @@
     type_name="PreceptsOfThePrecursors.RoamingEnclaveEnabler"
     team_center_color="Purple" team_border_color="Gold"
     type="SpecialFaction"
-    can_be_targeted_by_annoyed_non_human_units="true"
     must_be_at_most_one="true"
     description="A grand migration, the Neinzul are returning to the galaxy. Lead by individually weak Roaming Enclaves, these Neinzul desire to continue their legacy, and will stake their claim to the galaxy with various Hives.
     
@@ -16,62 +15,37 @@ Should you deem the cost worthy, you'll find yourself housing a new species with
 
 Be wary, for you are not the Enclaves' only potential ally.
 
-&lt;color=#f25e1c&gt;MEDIUM IMPACT:&lt;/color&gt; This faction seeks to make this galaxy its home, and will attempt to integrate into other factions over the course of the game, providing small strikeforces throughout.">
+&lt;color=#f25e1c&gt;MEDIUM IMPACT:&lt;/color&gt; This faction seeks to make this galaxy its home, and will attempt to integrate into other factions over the course of the game. They will defend territory that they claim, but are generally weaker than major factions.">
     <custom_field name="Intensity" display_name="Strength" description="Just how effective is this faction?"
       sort_group="200" setting_type="IntSlider" default="5" min="1" max="10" />
-    <custom_field name="DebugMode" display_name="Debug" description="Enables debug mode, cutting leveling and building costs by 90%. Development only"
-              sort_group="250" setting_type="CustomDropdownArbitraryOptions" arbitrary_options="Enabled,Disabled" default_option="Disabled" />
   </faction>
   <!-- Subfactions -->
-  <faction name="RoamingEnclaveRed"
-           display_name="Ruby Enclave"
+  <faction name="RoamingEnclavePearl"
+           display_name="Pearl Enclave"
            dll_name="PreceptsOfThePrecursors"
-           type_name="PreceptsOfThePrecursors.RoamingEnclaveRedTeam"
-           team_center_color="Red" team_border_color="Gold"
+           type_name="PreceptsOfThePrecursors.RoamingEnclavePlayerTeam"
+           team_center_color="Gold" team_border_color="Gold"
            type="SpecialFaction"
            should_not_be_shown="true"
            player_discoverable="true"
            auto_add_one_of_faction_if_missing_on_save_load="true"
-           description="A subfaction of the Enclaves, part of the Red team."
+           description="A subfaction of the Enclaves, part of the Player team."
   >
   </faction>
-  <faction name="RoamingEnclaveBlue"
-           display_name="Saphire Enclave"
-           dll_name="PreceptsOfThePrecursors"
-           type_name="PreceptsOfThePrecursors.RoamingEnclaveBlueTeam"
-           team_center_color="Blue" team_border_color="Gold"
-           type="SpecialFaction"
-           should_not_be_shown="true"
-           player_discoverable="true"
-           auto_add_one_of_faction_if_missing_on_save_load="true"
-           description="A subfaction of the Enclaves, part of the Blue team."
+  <faction name="RoamingEnclaveCrystal"
+         display_name="Crystal Enclave"
+         dll_name="PreceptsOfThePrecursors"
+         type_name="PreceptsOfThePrecursors.RoamingEnclaveHostileTeam"
+         team_center_color="Purple" team_border_color="Gold"
+         type="SpecialFaction"
+         should_not_be_shown="true"
+         player_discoverable="true"
+         auto_add_one_of_faction_if_missing_on_save_load="true"
+         can_be_targeted_by_annoyed_non_human_units="true"
+         description="A subfaction of the Enclaves, that is Hostile to All."
   >
   </faction>
-  <faction name="RoamingEnclaveGreen"
-           display_name="Emerald Enclave"
-           dll_name="PreceptsOfThePrecursors"
-           type_name="PreceptsOfThePrecursors.RoamingEnclaveGreenTeam"
-           team_center_color="Green" team_border_color="Gold"
-           type="SpecialFaction"
-           should_not_be_shown="true"
-           player_discoverable="true"
-           auto_add_one_of_faction_if_missing_on_save_load="true"
-           description="A subfaction of the Enclaves, part of the Green team."
-  >
-  </faction>
-  <faction name="RoamingEnclaveDark"
-           display_name="Onyx Enclave"
-           dll_name="PreceptsOfThePrecursors"
-           type_name="PreceptsOfThePrecursors.RoamingEnclaveDarkTeam"
-           team_center_color="Black" team_border_color="Gold"
-           type="SpecialFaction"
-           should_not_be_shown="true"
-           player_discoverable="true"
-           auto_add_one_of_faction_if_missing_on_save_load="true"
-           description="A subfaction of the Enclaves, part of the Dark Alliance team."
-  >
-  </faction>
-  <faction name="RoamingEnclaveAI"
+  <faction name="RoamingEnclaveDiamond"
            display_name="Diamond Enclave"
            dll_name="PreceptsOfThePrecursors"
            type_name="PreceptsOfThePrecursors.RoamingEnclaveAITeam"
@@ -83,16 +57,52 @@ Be wary, for you are not the Enclaves' only potential ally.
            description="A subfaction of the Enclaves, part of the AI team."
   >
   </faction>
-  <faction name="RoamingEnclavePlayer"
-           display_name="Pearl Enclave"
+  <faction name="RoamingEnclaveRuby"
+           display_name="Ruby Enclave"
            dll_name="PreceptsOfThePrecursors"
-           type_name="PreceptsOfThePrecursors.RoamingEnclavePlayerTeam"
-           team_center_color="Gold" team_border_color="Gold"
+           type_name="PreceptsOfThePrecursors.RoamingEnclaveRedTeam"
+           team_center_color="Red" team_border_color="Gold"
            type="SpecialFaction"
            should_not_be_shown="true"
            player_discoverable="true"
            auto_add_one_of_faction_if_missing_on_save_load="true"
-           description="A subfaction of the Enclaves, part of the Player team."
+           description="A subfaction of the Enclaves, part of the Red team."
+  >
+  </faction>
+  <faction name="RoamingEnclaveSaphire"
+           display_name="Saphire Enclave"
+           dll_name="PreceptsOfThePrecursors"
+           type_name="PreceptsOfThePrecursors.RoamingEnclaveBlueTeam"
+           team_center_color="Blue" team_border_color="Gold"
+           type="SpecialFaction"
+           should_not_be_shown="true"
+           player_discoverable="true"
+           auto_add_one_of_faction_if_missing_on_save_load="true"
+           description="A subfaction of the Enclaves, part of the Blue team."
+  >
+  </faction>
+  <faction name="RoamingEnclaveEmerald"
+           display_name="Emerald Enclave"
+           dll_name="PreceptsOfThePrecursors"
+           type_name="PreceptsOfThePrecursors.RoamingEnclaveGreenTeam"
+           team_center_color="Green" team_border_color="Gold"
+           type="SpecialFaction"
+           should_not_be_shown="true"
+           player_discoverable="true"
+           auto_add_one_of_faction_if_missing_on_save_load="true"
+           description="A subfaction of the Enclaves, part of the Green team."
+  >
+  </faction>
+  <faction name="RoamingEnclaveOnyx"
+           display_name="Onyx Enclave"
+           dll_name="PreceptsOfThePrecursors"
+           type_name="PreceptsOfThePrecursors.RoamingEnclaveDarkTeam"
+           team_center_color="Black" team_border_color="Gold"
+           type="SpecialFaction"
+           should_not_be_shown="true"
+           player_discoverable="true"
+           auto_add_one_of_faction_if_missing_on_save_load="true"
+           description="A subfaction of the Enclaves, part of the Dark Alliance team."
   >
   </faction>
 </root>

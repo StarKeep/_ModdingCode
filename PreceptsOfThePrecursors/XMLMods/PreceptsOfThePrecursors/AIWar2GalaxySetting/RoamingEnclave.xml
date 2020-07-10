@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- Default global settings, fallsback to these if personal settings are disabled. -->
+  <galaxy_setting category="Enclaves" name="EnclaveMaxHopsFromHiveToAttack" display_name="Global Max Hops from Hives to Attack" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
+    description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="EnclaveMaxHopsFromHiveToDefend" display_name="Global Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
+    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="MakeEveryXFireteamDefensive" display_name="Global Make Every X Fireteam Defensive" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
+    description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
+  />
+  <galaxy_setting category="Enclaves" name="RetreatAtXHull" display_name="Global Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
+    description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <!-- Pearl Enclave -->
+  <galaxy_setting category="Enclaves" name="PearlEnclaveEnabled" display_name="Pearl Enclave Enabled" type="BoolToggle" default="true"
+    description="Enables the Pearl Enclave, which is allied to the player. This cannot be disabled after the game starts."
+  />
+  <galaxy_setting category="Enclaves" name="PearlEnclaveSettingsEnabled" display_name="Pearl Enclave Custom Settings" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enable custom settings for the Pearl Enclave. If disabled, will default to the global settings at the top of this menu."
+  />
+  <galaxy_setting category="Enclaves" name="PearlEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="2" min="0" max="10" changeable_during_gameplay="true"
+    description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="PearlEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
+    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="PearlMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="5" min="0" max="10" changeable_during_gameplay="true"
+    description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
+  />
+  <galaxy_setting category="Enclaves" name="PearlRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="50" min="0" max="75" changeable_during_gameplay="true"
+    description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <!-- Crystal Enclave -->
+  <galaxy_setting category="Enclaves" name="CrystalEnclaveEnabled" display_name="Crystal Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enables the Crystal Enclave, which is hostile to all. Disabling this after the game starts will only stop new Enclaves and Hives from spawning."
+  />
+  <galaxy_setting category="Enclaves" name="CrystalEnclaveSettingsEnabled" display_name="Crystal Enclave Custom Settings" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enable custom settings for the Crystal Enclave. If disabled, will default to the global settings at the top of this menu."
+  />
+  <galaxy_setting category="Enclaves" name="CrystalEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="2" min="0" max="10" changeable_during_gameplay="true"
+    description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="CrystalEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="0" min="0" max="1" changeable_during_gameplay="true"
+    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="CrystalMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="2" min="0" max="10" changeable_during_gameplay="true"
+    description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
+  />
+  <galaxy_setting category="Enclaves" name="CrystalRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="75" min="0" max="75" changeable_during_gameplay="true"
+    description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <!-- Diamond Enclave -->
+  <galaxy_setting category="Enclaves" name="DiamondEnclaveEnabled" display_name="Diamond Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enables the Diamond Enclave, which is allied to the AI. Disabling this after the game starts will only stop new Enclaves and Hives from spawning."
+  />
+  <galaxy_setting category="Enclaves" name="DiamondEnclaveSettingsEnabled" display_name="Diamond Enclave Custom Settings" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enable custom settings for the Diamond Enclave. If disabled, will default to the global settings at the top of this menu."
+  />
+  <galaxy_setting category="Enclaves" name="DiamondEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="2" min="0" max="10" changeable_during_gameplay="true"
+    description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="DiamondEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="0" min="0" max="1" changeable_during_gameplay="true"
+    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="DiamondMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="0" min="0" max="10" changeable_during_gameplay="true"
+    description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
+  />
+  <galaxy_setting category="Enclaves" name="DiamondRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="25" min="0" max="75" changeable_during_gameplay="true"
+    description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <!-- Ruby Enclave -->
+  <galaxy_setting category="Enclaves" name="RubyEnclaveEnabled" display_name="Ruby Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enables the Ruby Enclave, which is allied to the Red team. Disabling this after the game starts will only stop new Enclaves and Hives from spawning."
+  />
+  <galaxy_setting category="Enclaves" name="RubyEnclaveSettingsEnabled" display_name="Ruby Enclave Custom Settings" type="BoolToggle" default="false" changeable_during_gameplay="true"
+    description="Enable custom settings for the Ruby Enclave. If disabled, will default to the global settings at the top of this menu."
+  />
+  <galaxy_setting category="Enclaves" name="RubyEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
+    description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="RubyEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
+    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="RubyMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
+    description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
+  />
+  <galaxy_setting category="Enclaves" name="RubyRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
+    description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <!-- Saphire Enclave -->
+  <galaxy_setting category="Enclaves" name="SaphireEnclaveEnabled" display_name="Saphire Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enables the Saphire Enclave, which is allied to the Blue team. Disabling this after the game starts will only stop new Enclaves and Hives from spawning."
+  />
+  <galaxy_setting category="Enclaves" name="SaphireEnclaveSettingsEnabled" display_name="Saphire Enclave Custom Settings" type="BoolToggle" default="false" changeable_during_gameplay="true"
+    description="Enable custom settings for the Saphire Enclave. If disabled, will default to the global settings at the top of this menu."
+  />
+  <galaxy_setting category="Enclaves" name="SaphireEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
+    description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="SaphireEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
+    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="SaphireMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
+    description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
+  />
+  <galaxy_setting category="Enclaves" name="SaphireRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
+    description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <!-- Emerald Enclave -->
+  <galaxy_setting category="Enclaves" name="EmeraldEnclaveEnabled" display_name="Emerald Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enables the Emerald Enclave, which is allied to the Green team. Disabling this after the game starts will only stop new Enclaves and Hives from spawning."
+  />
+  <galaxy_setting category="Enclaves" name="EmeraldEnclaveSettingsEnabled" display_name="Emerald Enclave Custom Settings" type="BoolToggle" default="false" changeable_during_gameplay="true"
+    description="Enable custom settings for the Emerald Enclave. If disabled, will default to the global settings at the top of this menu."
+  />
+  <galaxy_setting category="Enclaves" name="EmeraldEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
+    description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="EmeraldEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
+    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="EmeraldMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
+    description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
+  />
+  <galaxy_setting category="Enclaves" name="EmeraldRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
+    description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <!-- Onyx Enclave -Dark Alliance- -->
+  <galaxy_setting category="Enclaves" name="OnyxEnclaveEnabled" display_name="Onyx Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enables the Onyx Enclave, which is allied to the REDACTED. Disabling this after the game starts will only stop new Enclaves and Hives from spawning."
+  />
+  <galaxy_setting category="Enclaves" name="OnyxEnclaveSettingsEnabled" display_name="Onyx Enclave Custom Settings" type="BoolToggle" default="true" changeable_during_gameplay="true"
+    description="Enable custom settings for the Onyx Enclave. If disabled, will default to the global settings at the top of this menu."
+  />
+  <galaxy_setting category="Enclaves" name="OnyxEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="6" min="0" max="10" changeable_during_gameplay="true"
+    description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="OnyxEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="0" min="0" max="1" changeable_during_gameplay="true"
+    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
+  />
+  <galaxy_setting category="Enclaves" name="OnyxMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="0" min="0" max="10" changeable_during_gameplay="true"
+    description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
+  />
+  <galaxy_setting category="Enclaves" name="OnyxRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
+    description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+</root>

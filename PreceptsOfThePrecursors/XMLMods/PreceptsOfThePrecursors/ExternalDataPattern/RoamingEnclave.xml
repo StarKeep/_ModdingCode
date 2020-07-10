@@ -5,5 +5,6 @@
       type_name is what you've called the storage class in your externaldata cs file.
 -->
   <item name="EnclaveFactionData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.EnclaveFactionExternalData" />
+  <item name="EnclaveWorldData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.EnclaveWorldExternalData" />
   <item name="StoredYounglingsData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.StoredYounglingsExternalData" />
 </root>

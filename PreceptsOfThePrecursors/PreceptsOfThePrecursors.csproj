@@ -87,6 +87,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\GoonSquad.xml" />

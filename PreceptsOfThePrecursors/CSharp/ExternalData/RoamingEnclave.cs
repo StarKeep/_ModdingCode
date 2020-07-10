@@ -9,19 +9,23 @@ namespace PreceptsOfThePrecursors
     {
         public ArcenLessLinkedList<Fireteam> Teams;
         public ArcenSparseLookup<Planet, FireteamRegiment> TeamsAimedAtPlanet;
+        public int SecondsUntilNextRespawn;
 
         public EnclaveFactionData()
         {
             Teams = new ArcenLessLinkedList<Fireteam>();
             TeamsAimedAtPlanet = new ArcenSparseLookup<Planet, FireteamRegiment>();
+            SecondsUntilNextRespawn = 11;
         }
         public void SerializeTo( ArcenSerializationBuffer buffer )
         {
             FireteamUtility.SerializeFireteams( buffer, Teams );
+            buffer.AddInt32( ReadStyle.PosExceptNeg1, SecondsUntilNextRespawn );
         }
         public EnclaveFactionData( ArcenDeserializationBuffer buffer ) : this()
         {
             FireteamUtility.DeserializeFireteams( buffer, Teams, "Roaming Enclave" );
+            SecondsUntilNextRespawn = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
         }
     }
     public class EnclaveFactionExternalData : IArcenExternalDataPatternImplementation
@@ -77,6 +81,79 @@ namespace PreceptsOfThePrecursors
         public static void SetEnclaveFactionData( this Faction ParentObject, EnclaveFactionData data )
         {
             ParentObject.ExternalData.GetCollectionByPatternIndex( EnclaveFactionExternalData.PatternIndex ).Data[0] = data;
+        }
+    }
+
+    public class EnclaveWorldData
+    {
+        public int SecondsUntilNextInflux;
+
+        public EnclaveWorldData()
+        {
+            SecondsUntilNextInflux = 900;
+        }
+        public void SerializeTo( ArcenSerializationBuffer buffer )
+        {
+            buffer.AddInt32( ReadStyle.NonNeg, SecondsUntilNextInflux );
+        }
+        public EnclaveWorldData( ArcenDeserializationBuffer buffer ) : this()
+        {
+            SecondsUntilNextInflux = buffer.ReadInt32( ReadStyle.NonNeg );
+        }
+    }
+    public class EnclaveWorldExternalData : IArcenExternalDataPatternImplementation
+    {
+        // Make sure you use the same class name that you use for whatever data you want saved here.
+        private EnclaveWorldData Data;
+
+        public static int PatternIndex;
+
+        // So this is essentially what type of thing we're going to 'attach' our class to.
+        public static string RelatedParentTypeName = "World";
+
+        public void ReceivePatternIndex( int Index )
+        {
+            PatternIndex = Index;
+        }
+        public int GetNumberOfItems()
+        {
+            return 1;
+        }
+        public bool GetShouldInitializeOn( string ParentTypeName )
+        {
+            // Figure out which object type has this sort of ExternalData (in this case, Faction)
+            return ArcenStrings.Equals( ParentTypeName, RelatedParentTypeName );
+        }
+
+        public void InitializeData( object ParentObject, object[] Target )
+        {
+            this.Data = new EnclaveWorldData();
+            Target[0] = this.Data;
+        }
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
+        {
+            //For saving to disk, translate this object into the buffer
+            EnclaveWorldData data = (EnclaveWorldData)Source[0];
+            data.SerializeTo( Buffer );
+        }
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
+        {
+            //reverses SerializeData; gets the date out of the buffer and populates the variables
+            Target[0] = new EnclaveWorldData( Buffer );
+        }
+    }
+    public static class EnclaveWorldExternalDataExtensions
+    {
+        // This loads the data assigned to whatever ParentObject you pass. So, say, you could assign the same class to different ships, and each would be able to get back the values assigned to it.
+        // In our specific case here, we're going to be assigning a dictionary to every faction.
+        public static EnclaveWorldData GetEnclaveWorldData( this World ParentObject )
+        {
+            return (EnclaveWorldData)ParentObject.ExternalData.GetCollectionByPatternIndex( EnclaveWorldExternalData.PatternIndex ).Data[0];
+        }
+        // This meanwhile saves the data, assigning it to whatever ParentObject you pass.
+        public static void SetEnclaveWorldData( this World ParentObject, EnclaveWorldData data )
+        {
+            ParentObject.ExternalData.GetCollectionByPatternIndex( EnclaveWorldExternalData.PatternIndex ).Data[0] = data;
         }
     }
 
@@ -158,13 +235,16 @@ namespace PreceptsOfThePrecursors
     public class StoredYounglingsData
     {
         public ArcenSparseLookup<Unit, YounglingCollection> StoredYounglings;
-        public int TotalStrength { get
+        public int TotalStrength
+        {
+            get
             {
                 int value = 0;
                 for ( int x = 0; x < StoredYounglings.GetPairCount(); x++ )
                     value += StoredYounglings.GetPairByIndex( x ).Value.Strength;
                 return value;
-            } }
+            }
+        }
 
         public bool AddYoungling( GameEntity_Squad youngling )
         {
@@ -188,16 +268,20 @@ namespace PreceptsOfThePrecursors
                 for ( int i = 0; i < collection.UnitsByMark.GetPairCount(); i++ )
                 {
                     byte markLevel = collection.UnitsByMark.GetPairByIndex( i ).Key;
-                    while ( collection.UnitsByMark[markLevel] > 0 )
+                    int toSpawnInTotal = collection.UnitsByMark[markLevel];
+                    int StackingCutoff = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "StackingCutoffNPCs" );
+                    while( toSpawnInTotal > 0 )
                     {
+                        short toSpawn = (short)Math.Min( toSpawnInTotal, StackingCutoff );
                         GameEntity_Squad youngling = GameEntity_Squad.CreateNew( enclave.PlanetFaction, unitData, markLevel, enclave.PlanetFaction.FleetUsedAtPlanet, 1, enclave.WorldLocation, Context );
+                        youngling.AddOrSetExtraStackedSquadsInThis( (short)(toSpawn - 1), true );
                         youngling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, enclave.PlanetFaction.Faction.FactionIndex );
                         youngling.MinorFactionStackingID = enclave.PrimaryKeyID;
-                        collection.UnitsByMark[markLevel]--;
+                        toSpawnInTotal -= toSpawn;
                     }
                 }
             }
-            
+            StoredYounglings = new ArcenSparseLookup<Unit, YounglingCollection>();
         }
 
         public StoredYounglingsData()
