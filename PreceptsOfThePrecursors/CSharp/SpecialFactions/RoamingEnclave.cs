@@ -220,6 +220,7 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
+            SetupHives( faction, Context );
             SetupEnclaves( faction, Context );
             SetupYounglings( faction, Context );
 
@@ -230,8 +231,6 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
             FireteamUtility.CleanUpDisbandedFireteams( FactionData.Teams );
-
-            SetupHives( faction, Context );
 
             ArcenCharacterBuffer buffer = this.tracingBuffer_longTerm;
             FireteamUtility.UpdateFireteams( faction, Context, FactionData.Teams, FactionData.TeamsAimedAtPlanet, buffer, FInt.One );
@@ -265,19 +264,18 @@ namespace PreceptsOfThePrecursors
 
                 if ( RetreatPercentage > 0 && enclave.GetCurrentHullPoints() < (enclave.GetMaxHullPoints() / 100) * RetreatPercentage )
                 {
-                    if ( enclave.Planet.GetHopsTo( GetNearestHivePlanet( faction, enclave.Planet, Context ) ) > 0 )
-                        enclave.QueueWormholeCommand( GetNearestHivePlanet( faction, enclave.Planet, Context, true ) );
+                    if ( enclave.Planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) ) > 0 )
+                        enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context, true ) );
                     enclave.FireteamId = -1;
                 }
                 else
                 {
                     if ( enclave.FireteamId < 0 )
                     {
-                        if ( enclave.Planet.GetHopsTo( GetNearestHivePlanet( faction, enclave.Planet, Context ) ) == 0 )
+                        if ( enclave.Planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) ) == 0 )
                         {
                             if ( enclave.GetCurrentHullPoints() >= (enclave.GetMaxHullPoints() / 100) * 90 )
                             {
-
                                 Fireteam team = new Fireteam();
                                 team.MyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 0, 075 );
                                 team.EnemyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 1, 025 );
@@ -294,7 +292,7 @@ namespace PreceptsOfThePrecursors
                         else
                         {
                             if ( hostileStrength < 500 || alliedStrength < hostileStrength )
-                                enclave.QueueWormholeCommand( GetNearestHivePlanet( faction, enclave.Planet, Context, true ) );
+                                enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context, true ) );
                         }
                     }
                     else
@@ -303,6 +301,18 @@ namespace PreceptsOfThePrecursors
                         if ( team != null )
                         {
                             team.AddUnit( enclave );
+                            switch ( team.status )
+                            {
+                                case FireteamStatus.Assembling:
+                                case FireteamStatus.Staging:
+                                case FireteamStatus.ReadyToAttack:
+                                    if ( (hostileStrength < 500 || alliedStrength < hostileStrength * 2) && enclave.LongRangePlanningData.FinalDestinationPlanetIndex == -1
+                                    && enclave.Planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context )) > 0 )
+                                        enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context, true ) );
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                         else
                             enclave.FireteamId = -1; //something happened to the fireteam, so lets find a new one next LRP stage
@@ -323,7 +333,7 @@ namespace PreceptsOfThePrecursors
                 Context.QueueCommandForSendingAtEndOfContext( enclaveUnloadCommand );
         }
 
-        private Planet GetNearestHivePlanet( Faction faction, Planet planet, ArcenLongTermIntermittentPlanningContext Context, bool careAboutDanger = false )
+        private Planet GetNearestHivePlanetBackgroundThreadOnly( Faction faction, Planet planet, ArcenLongTermIntermittentPlanningContext Context, bool careAboutDanger = false )
         {
             Planet bestPlanet = null;
             int lowestDanger = 99999;
@@ -414,6 +424,7 @@ namespace PreceptsOfThePrecursors
                 {
                     if ( youngling.LongRangePlanningData.FinalDestinationPlanetIndex == -1 )
                         youngling.QueueWormholeCommand( enclave.Planet, Context );
+                    youngling.FireteamId = -1;
                 }
                 else
                 {
@@ -476,7 +487,7 @@ namespace PreceptsOfThePrecursors
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                int hops = planet.GetHopsTo( GetNearestHivePlanet( faction, planet, Context ) );
+                int hops = planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, planet, Context ) );
 
                 int hostileStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength;
                 int friendlyStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Friendly].TotalStrength;
@@ -547,12 +558,12 @@ namespace PreceptsOfThePrecursors
 
         public override Planet GetFireteamLurkPlanet_OnBackgroundNonSimThread_Subclass( Faction faction, Planet TargetPlanet, int TeamStrength, Planet CurrentPlanetForFireteam, ArcenLongTermIntermittentPlanningContext Context )
         {
-            return GetNearestHivePlanet( faction, TargetPlanet, Context, true );
+            return GetNearestHivePlanetBackgroundThreadOnly( faction, TargetPlanet, Context, true );
         }
 
         public override GameEntity_Squad GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( Faction faction, Planet CurrentPlanetForFireteam, ArcenLongTermIntermittentPlanningContext Context )
         {
-            return GetNearestHivePlanet( faction, CurrentPlanetForFireteam, Context, true ).GetPlanetFactionForFaction( faction ).Entities.GetFirstMatching( HIVE_TAG, false, true );
+            return GetNearestHivePlanetBackgroundThreadOnly( faction, CurrentPlanetForFireteam, Context, true ).GetPlanetFactionForFaction( faction ).Entities.GetFirstMatching( HIVE_TAG, false, true );
         }
         #endregion
     }
@@ -581,6 +592,8 @@ namespace PreceptsOfThePrecursors
                 World_AIW2.Instance.QueueChatMessageOrCommand( "A new influx of Neinzul have arrived in our galaxy.", ChatType.LogToCentralChat, Context );
                 worldData.SecondsUntilNextInflux = 900;
             }
+            else
+                worldData.SecondsUntilNextInflux--;
 
             World_AIW2.Instance.DoForFactions( otherFaction =>
             {
