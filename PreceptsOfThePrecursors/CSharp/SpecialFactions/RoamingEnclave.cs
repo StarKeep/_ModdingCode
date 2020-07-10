@@ -104,7 +104,12 @@ namespace PreceptsOfThePrecursors
         public override void UpdatePowerLevel( Faction faction )
         {
             faction.OverallPowerLevel = FInt.Zero;
-            faction.OverallPowerLevel = FInt.FromParts( 0, 150 ) * Hives.Count;
+            if ( Hives.Count > 50 )
+                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
+            else if ( Hives.Count > 10 )
+                faction.OverallPowerLevel = FInt.FromParts( 1, 000 ) + (FInt.FromParts( 0, 025 ) * (Hives.Count - 10));
+            else
+                faction.OverallPowerLevel = FInt.FromParts( 0, 010 ) * Hives.Count;
         }
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
