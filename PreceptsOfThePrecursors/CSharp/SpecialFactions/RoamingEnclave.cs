@@ -277,8 +277,8 @@ namespace PreceptsOfThePrecursors
                             if ( enclave.GetCurrentHullPoints() >= (enclave.GetMaxHullPoints() / 100) * 90 )
                             {
                                 Fireteam team = new Fireteam();
-                                team.MyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 0, 075 );
-                                team.EnemyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 1, 025 );
+                                team.MyStrengthMultiplierForStrengthCalculation = FInt.One;
+                                team.EnemyStrengthMultiplierForStrengthCalculation = FInt.One;
                                 team.id = FireteamUtility.GetNextFireteamId( FactionData.Teams );
                                 if ( FireteamsPerDefense > 0 )
                                     team.DefenseMode = team.id % FireteamsPerDefense == 0;
@@ -319,7 +319,7 @@ namespace PreceptsOfThePrecursors
                     }
                 }
 
-                if ( enclave.LongRangePlanningData.FinalDestinationPlanetIndex == -1 && hostileStrength > 0 )
+                if ( hostileStrength > 0 )
                     enclaveUnloadCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
 
                 return DelReturn.Continue;
@@ -420,25 +420,32 @@ namespace PreceptsOfThePrecursors
                 ownershipCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
                 ownershipCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
 
+                Fireteam team = this.GetFireteamById( faction, enclave.FireteamId );
+
                 if ( youngling.Planet != enclave.Planet )
                 {
                     if ( youngling.LongRangePlanningData.FinalDestinationPlanetIndex == -1 )
                         youngling.QueueWormholeCommand( enclave.Planet, Context );
                     youngling.FireteamId = -1;
+                    if ( team != null )
+                        team.TeamStrength += youngling.GetStrengthPerSquad() * (1 + youngling.ExtraStackedSquadsInThis);
                 }
                 else
                 {
-                    if ( youngling.GetCurrentHullPoints() < 300 || enclave.LongRangePlanningData.FinalDestinationPlanetIndex != -1 || youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength <= 50 )
+                    if ( youngling.GetCurrentHullPoints() < 300 || youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength <= 50 )
                     {
                         youngling.FireteamId = -1;
                         loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
                         loadYounglingsCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
+                        if ( team != null )
+                            team.TeamStrength += youngling.GetStrengthPerSquad() * (1 + youngling.ExtraStackedSquadsInThis);
                     }
                     else
                     {
-                        Fireteam team = this.GetFireteamById( faction, enclave.FireteamId );
                         if ( team != null )
                             team.AddUnit( youngling );
+                        else
+                            youngling.FireteamId = -1;
                     }
                 }
                 return DelReturn.Continue;
