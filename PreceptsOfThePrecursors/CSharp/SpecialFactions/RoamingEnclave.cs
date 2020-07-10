@@ -119,7 +119,7 @@ namespace PreceptsOfThePrecursors
             if ( FactionData == null )
                 FactionData = faction.GetEnclaveFactionData();
 
-            HandleYounglingDegeneration(faction);
+            HandleYounglingDegeneration( faction );
 
             HandleEnclaveRegeneration();
 
@@ -128,17 +128,17 @@ namespace PreceptsOfThePrecursors
             HandleUnitSpawningForHives( Context );
         }
 
-        private void HandleYounglingDegeneration(Faction faction)
+        private void HandleYounglingDegeneration( Faction faction )
         {
             faction.DoForEntities( YOUNGLING_TAG, youngling =>
             {
-                youngling.TakeHullRepair( -5 );
+                youngling.TakeHullRepair( -10 );
 
                 return DelReturn.Continue;
             } );
         }
 
-        private void HandleEnclaveRegeneration( )
+        private void HandleEnclaveRegeneration()
         {
             for ( int x = 0; x < Enclaves.Count; x++ )
             {
@@ -307,7 +307,7 @@ namespace PreceptsOfThePrecursors
                                 case FireteamStatus.Staging:
                                 case FireteamStatus.ReadyToAttack:
                                     if ( (hostileStrength < 500 || alliedStrength < hostileStrength * 2) && enclave.LongRangePlanningData.FinalDestinationPlanetIndex == -1
-                                    && enclave.Planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context )) > 0 )
+                                    && enclave.Planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) ) > 0 )
                                         enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context, true ) );
                                     break;
                                 default:
@@ -319,7 +319,7 @@ namespace PreceptsOfThePrecursors
                     }
                 }
 
-                if ( hostileStrength > 500 )
+                if ( enclave.LongRangePlanningData.FinalDestinationPlanetIndex == -1 && hostileStrength > 0 )
                     enclaveUnloadCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
 
                 return DelReturn.Continue;
@@ -428,7 +428,7 @@ namespace PreceptsOfThePrecursors
                 }
                 else
                 {
-                    if ( youngling.GetCurrentHullPoints() < 300 )
+                    if ( youngling.GetCurrentHullPoints() < 300 || enclave.LongRangePlanningData.FinalDestinationPlanetIndex != -1 || youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength <= 50 )
                     {
                         youngling.FireteamId = -1;
                         loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
@@ -439,11 +439,6 @@ namespace PreceptsOfThePrecursors
                         Fireteam team = this.GetFireteamById( faction, enclave.FireteamId );
                         if ( team != null )
                             team.AddUnit( youngling );
-                        if ( youngling.Planet == enclave.Planet && youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500 )
-                        {
-                            loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
-                            loadYounglingsCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
-                        }
                     }
                 }
                 return DelReturn.Continue;
@@ -602,12 +597,12 @@ namespace PreceptsOfThePrecursors
                     BaseRoamingEnclave REFaction = otherFaction.Implementation as BaseRoamingEnclave;
                     if ( REFaction.FactionData == null )
                         REFaction.FactionData = otherFaction.GetEnclaveFactionData();
-                    if ( REFaction.FactionData.SecondsUntilNextRespawn > 0 )
-                        REFaction.FactionData.SecondsUntilNextRespawn--;
                     if ( REFaction.Hives.Count == 0 && REFaction.Enclaves.Count == 0 )
                     {
                         if ( REFaction.FactionData.SecondsUntilNextRespawn == -1 )
                             REFaction.FactionData.SecondsUntilNextRespawn = 1800;
+                        if ( REFaction.FactionData.SecondsUntilNextRespawn > 0 )
+                            REFaction.FactionData.SecondsUntilNextRespawn--;
                         if ( REFaction.FactionData.SecondsUntilNextRespawn == 0 )
                         {
                             Planet spawnPlanet = REFaction.BulkSpawn( otherFaction, World_AIW2.Instance.CurrentGalaxy, Context );
@@ -617,8 +612,12 @@ namespace PreceptsOfThePrecursors
                                 World_AIW2.Instance.QueueChatMessageOrCommand( $"The {otherFaction.StartFactionColourForLog()}{otherFaction.GetDisplayName()}</color> has arrived on {spawnPlanet.Name}.", ChatType.LogToCentralChat, Context );
                             }
                         }
+                        return DelReturn.Continue;
                     }
-                    else if ( isInflux )
+                    else
+                        REFaction.FactionData.SecondsUntilNextRespawn = -1;
+
+                    if ( isInflux )
                     {
                         REFaction.HandleEnclaveSpawning( otherFaction, Context );
                         REFaction.HandleHiveExpansion( otherFaction, Context );
