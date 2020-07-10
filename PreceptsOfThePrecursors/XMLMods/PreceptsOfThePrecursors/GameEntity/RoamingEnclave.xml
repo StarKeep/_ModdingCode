@@ -540,7 +540,7 @@
   <entity name="NeinzulHiveBase"
 			visuals="Assets/_FinalGameMeshes/Macrophage/Telium/MacrophageTelium.prefab" gimbal_name="Telium"
 			icon_name="Official/Telium" gimbal_icon_size_multiplier="1.2"
-			category="Ship"
+			category="Ship" grants_minor_faction_planet_control="true"
 			size_scale="4"
 			visuals_scale_multiplier="1.5"
 			y_offset_of_icon="30"
@@ -631,6 +631,8 @@
       priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
 			pushes_enemy_shields="true"
 			should_never_be_captured_by_another_faction="true"
+      description_appender_dll="PreceptsOfThePrecursors"
+			description_appender_type="PreceptsOfThePrecursors.EnclaveYounglingsStorageDescriptionAppender"
 			>
     <system name="FrenzyPheromones" display_name="Frenzy Pheromones"
 				category="Weapon" firing_timing="OnlyInRange"

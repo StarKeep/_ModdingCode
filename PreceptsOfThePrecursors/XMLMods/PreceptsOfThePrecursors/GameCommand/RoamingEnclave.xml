@@ -9,4 +9,6 @@
   <command name="SetOrClearEnclaveOwnership" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.SetOrClearEnclaveOwnership" />
   <command name="AddHivesToBuildList" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.AddHivesToBuildList" />
   <command name="ClaimHivesFromHumanAllies" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.ClaimHivesFromHumanAllies" />
+  <command name="LoadYounglingsIntoEnclaves" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.LoadYounglingsIntoEnclaves" />
+  <command name="UnloadYounglingsFromEnclaves" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.UnloadYounglingsFromEnclaves" />
 </root>

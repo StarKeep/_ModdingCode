@@ -11,7 +11,7 @@ namespace PreceptsOfThePrecursors
         YounglingPuffin,
         YounglingSnake,
         YounglingEel,
-        YounglingCheeta,
+        YounglingCheetaht,
         YounglingBadger,
         YounglingLion,
         YounglingApe,
@@ -49,6 +49,8 @@ namespace PreceptsOfThePrecursors
         public static bool IsEnabled;
         public static int Intensity;
 
+        public EnclaveFactionData FactionData;
+
         public enum Commands
         {
             MarkUpUnits,
@@ -58,7 +60,9 @@ namespace PreceptsOfThePrecursors
             PopulateHivePlanetsList,
             SetOrClearEnclaveOwnership,
             AddHivesToBuildList,
-            ClaimHivesFromHumanAllies
+            ClaimHivesFromHumanAllies,
+            LoadYounglingsIntoEnclaves,
+            UnloadYounglingsFromEnclaves
         }
         public BaseRoamingEnclave()
         {
@@ -78,6 +82,9 @@ namespace PreceptsOfThePrecursors
         {
             if ( !IsEnabled )
                 return;
+
+            if ( FactionData == null )
+                FactionData = faction.GetEnclaveFactionData();
 
             HandleUnitSpawningForEnclaves( Context );
 
@@ -148,12 +155,9 @@ namespace PreceptsOfThePrecursors
             if ( !IsEnabled )
                 return;
 
-            if ( this.Teams == null )
-                this.Teams = new ArcenLessLinkedList<Fireteam>();
-            if ( this.TeamsAimedAtPlanet == null )
-                this.TeamsAimedAtPlanet = new ArcenSparseLookup<Planet, FireteamRegiment>();
+            FactionData.TeamsAimedAtPlanet.Clear();
 
-            Fireteam.DoFor( this.Teams, delegate ( Fireteam team )
+            Fireteam.DoFor( FactionData.Teams, delegate ( Fireteam team )
             {
                 team.Reset();
                 return DelReturn.Continue;
@@ -162,19 +166,19 @@ namespace PreceptsOfThePrecursors
             SetupEnclaves( faction, Context );
             SetupYounglings( faction, Context );
 
-            Fireteam.DoFor( this.Teams, delegate ( Fireteam team )
+            Fireteam.DoFor( FactionData.Teams, delegate ( Fireteam team )
             {
                 if ( team.ships.Count == 0 )
                     team.Disband( Context );
                 return DelReturn.Continue;
             } );
-            FireteamUtility.CleanUpDisbandedFireteams( Teams );
+            FireteamUtility.CleanUpDisbandedFireteams( FactionData.Teams );
 
             SetupHives( faction, Context );
 
             ArcenCharacterBuffer buffer = this.tracingBuffer_longTerm;
-            FireteamUtility.UpdateFireteams( faction, Context, Teams, TeamsAimedAtPlanet, buffer, FInt.One );
-            FireteamUtility.UpdateRegiments( faction, Context, Teams, TeamsAimedAtPlanet, buffer, 1, true );
+            FireteamUtility.UpdateFireteams( faction, Context, FactionData.Teams, FactionData.TeamsAimedAtPlanet, buffer, FInt.One );
+            FireteamUtility.UpdateRegiments( faction, Context, FactionData.Teams, FactionData.TeamsAimedAtPlanet, buffer, 1, true );
 
             faction.ExecuteMovementCommands( Context );
             faction.ExecuteWormholeCommands( Context );
@@ -185,6 +189,7 @@ namespace PreceptsOfThePrecursors
             GameCommand markUpCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.MarkUpUnits.ToString() ), GameCommandSource.AnythingElse, faction );
             GameCommand enclavePopulateCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.PopulateEnclavesList.ToString() ), GameCommandSource.AnythingElse, faction );
             GameCommand enclavePlanetsPopulateCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.PopulateEnclavePlanetList.ToString() ), GameCommandSource.AnythingElse, faction );
+            GameCommand enclaveUnloadCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.UnloadYounglingsFromEnclaves.ToString() ), GameCommandSource.AnythingElse, faction );
 
             faction.DoForEntities( ENCLAVE_TAG, enclave =>
             {
@@ -192,7 +197,8 @@ namespace PreceptsOfThePrecursors
                 if ( !enclavePlanetsPopulateCommand.RelatedIntegers.Contains( enclave.Planet.Index ) )
                 {
                     enclavePlanetsPopulateCommand.RelatedIntegers.Add( enclave.Planet.Index );
-                    BadgerFactionUtilityMethods.FlushUnitsFromReinforcementPoints( enclave.Planet, faction, Context );
+                    if ( faction.GetIsHostileTowards( enclave.Planet.GetControllingOrInfluencingFaction() ) )
+                        BadgerFactionUtilityMethods.FlushUnitsFromReinforcementPoints( enclave.Planet, faction, Context );
                 }
                 if ( enclave.CurrentMarkLevel < 7 && enclave.GetSecondsSinceCreation() > enclave.CurrentMarkLevel * 1800 )
                     markUpCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
@@ -201,13 +207,13 @@ namespace PreceptsOfThePrecursors
                     if ( enclave.Planet.GetHopsTo( GetNearestHivePlanet( faction, enclave.Planet, Context ) ) == 0 )
                     {
                         Fireteam team = new Fireteam();
-                        team.MyStrengthMultiplierForStrengthCalculation = FInt.One;
-                        team.EnemyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 1, 050 );
-                        team.id = FireteamUtility.GetNextFireteamId( this.Teams );
-                        team.DefenseMode = team.id % 3 == 0;
+                        team.MyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 0, 075 );
+                        team.EnemyStrengthMultiplierForStrengthCalculation = FInt.FromParts( 1, 025 );
+                        team.id = FireteamUtility.GetNextFireteamId( FactionData.Teams );
+                        team.DefenseMode = team.id % 5 == 0;
                         team.StrengthToBringOnline = 0;
                         team.AddUnit( enclave );
-                        this.Teams.AddIfNotAlreadyIn( team );
+                        FactionData.Teams.AddIfNotAlreadyIn( team );
                     }
                     else
                     {
@@ -221,17 +227,14 @@ namespace PreceptsOfThePrecursors
                     Fireteam team = this.GetFireteamById( faction, enclave.FireteamId );
                     if ( team != null )
                     {
-                        if ( team.status == FireteamStatus.Assembling )
-                        {
-                            team.Disband( Context );
-                            enclave.FireteamId = -1;
-                        }
-                        else
-                            team.AddUnit( enclave );
+                        team.AddUnit( enclave );
                     }
                     else
                         enclave.FireteamId = -1; //something happened to the fireteam, so lets find a new one next LRP stage
                 }
+
+                if ( enclave.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength > 500 )
+                    enclaveUnloadCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
 
                 return DelReturn.Continue;
             } );
@@ -240,6 +243,8 @@ namespace PreceptsOfThePrecursors
                 Context.QueueCommandForSendingAtEndOfContext( markUpCommand );
             Context.QueueCommandForSendingAtEndOfContext( enclavePopulateCommand );
             Context.QueueCommandForSendingAtEndOfContext( enclavePlanetsPopulateCommand );
+            if ( enclaveUnloadCommand.RelatedEntityIDs.Count > 0 )
+                Context.QueueCommandForSendingAtEndOfContext( enclaveUnloadCommand );
         }
 
         private Planet GetNearestHivePlanet( Faction faction, Planet planet, ArcenLongTermIntermittentPlanningContext Context, bool careAboutDanger = false )
@@ -302,6 +307,7 @@ namespace PreceptsOfThePrecursors
         {
             GameCommand markUpCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.MarkUpUnits.ToString() ), GameCommandSource.AnythingElse, faction );
             GameCommand ownershipCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.SetOrClearEnclaveOwnership.ToString() ), GameCommandSource.AnythingElse, faction );
+            GameCommand loadYounglingsCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.LoadYounglingsIntoEnclaves.ToString() ), GameCommandSource.AnythingElse, faction );
 
             List<GameEntity_Squad> enclaves = new List<GameEntity_Squad>();
             faction.DoForEntities( ENCLAVE_TAG, workingEnclave =>
@@ -324,30 +330,17 @@ namespace PreceptsOfThePrecursors
                     else
                         return DelReturn.Continue;
                 }
+
                 ownershipCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
                 ownershipCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
 
                 Fireteam team = this.GetFireteamById( faction, enclave.FireteamId );
-                bool shouldAdd = false;
                 if ( team != null )
-                    switch ( team.status )
-                    {
-                        case FireteamStatus.ReadyToAttack:
-                        case FireteamStatus.Attacking:
-                            shouldAdd = true;
-                            break;
-                        default:
-                            if ( youngling.Planet == enclave.Planet )
-                                shouldAdd = true;
-                            break;
-                    }
-                if ( shouldAdd )
                     team.AddUnit( youngling );
-                else
+                if ( youngling.Planet == enclave.Planet && youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500 )
                 {
-                    if ( youngling.Planet != enclave.Planet && youngling.LongRangePlanningData.FinalDestinationPlanetIndex == -1 )
-                        youngling.QueueWormholeCommand( enclave.Planet, Context );
-                    youngling.FireteamId = -1;
+                    loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
+                    loadYounglingsCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
                 }
 
                 return DelReturn.Continue;
@@ -356,11 +349,16 @@ namespace PreceptsOfThePrecursors
             if ( markUpCommand.RelatedEntityIDs.Count > 0 )
                 Context.QueueCommandForSendingAtEndOfContext( markUpCommand );
             Context.QueueCommandForSendingAtEndOfContext( ownershipCommand );
+            if ( loadYounglingsCommand.RelatedIntegers.Count > 0 )
+                Context.QueueCommandForSendingAtEndOfContext( loadYounglingsCommand );
+        }
+
+        private void AttemptToAddYoungling( GameEntity_Squad enclave, Fireteam team, GameEntity_Squad youngling, ArcenLongTermIntermittentPlanningContext Context )
+        {
+
         }
 
         #region Fireteams
-        public ArcenLessLinkedList<Fireteam> Teams = null;
-        public ArcenSparseLookup<Planet, FireteamRegiment> TeamsAimedAtPlanet = new ArcenSparseLookup<Planet, FireteamRegiment>();
         public List<Planet> HivePlanetsForBackgroundThreadOnly = new List<Planet>();
 
         int alliedAssaultFriendlyThreshold = 5000;
@@ -371,11 +369,11 @@ namespace PreceptsOfThePrecursors
 
         public override Fireteam GetFireteamById( Faction faction, int id )
         {
-            return FireteamUtility.GetFireteamById( this.Teams, id );
+            return FireteamUtility.GetFireteamById( FactionData.Teams, id );
         }
         public override FireteamBase GetFireteamBaseById( Faction faction, int id )
         {
-            return FireteamUtility.GetFireteamById( this.Teams, id );
+            return FireteamUtility.GetFireteamById( FactionData.Teams, id );
         }
 
         public override void GetFireteamPreferredAndFallbackTargets_OnBackgroundNonSimThread_Subclass( Faction faction, bool DefenseMode, Planet CurrentPlanetForFireteam, ArcenLongTermIntermittentPlanningContext Context, ref List<FireteamTarget> PreferredTargets, ref List<FireteamTarget> FallbackTargets, object TeamObj )
@@ -624,6 +622,22 @@ namespace PreceptsOfThePrecursors
 
             if ( World_AIW2.Instance.GameSecond == 11 || World_AIW2.Instance.GameSecond % 900 == 0 )
                 World_AIW2.Instance.QueueChatMessageOrCommand( "A new influx of Neinzul have arrived in our galaxy.", ChatType.LogToCentralChat, Context );
+
+            World_AIW2.Instance.DoForPlanets( false, planet =>
+            {
+                if ( planet.UnderInfluenceOfFactionIndex == faction.FactionIndex )
+                    planet.UnderInfluenceOfFactionIndex = -1;
+
+                return DelReturn.Continue;
+            } );
+
+            faction.DoForEntities( HIVE_TAG, hive =>
+            {
+                if ( hive.Planet.UnderInfluenceOfFactionIndex == -1 )
+                    hive.Planet.UnderInfluenceOfFactionIndex = faction.FactionIndex;
+
+                return DelReturn.Continue;
+            } );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }

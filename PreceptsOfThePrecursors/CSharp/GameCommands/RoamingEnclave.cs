@@ -102,6 +102,45 @@ namespace PreceptsOfThePrecursors.GameCommands
         }
     }
 
+    public class LoadYounglingsIntoEnclaves : BaseGameCommand
+    {
+        public override void Execute( GameCommand command, ArcenSimContext context )
+        {
+            for ( int x = 0; x < command.RelatedIntegers.Count; x++ )
+            {
+                GameEntity_Squad unit = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedIntegers[x] );
+                if ( unit == null )
+                    continue;
+                GameEntity_Squad enclave = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedIntegers2[x] );
+                if ( enclave == null )
+                    continue;
+                if ( unit.Planet != enclave.Planet )
+                    continue;
+                if ( unit.GetDistanceTo_VeryCheapButExtremelyRough( enclave.WorldLocation, true ) < 2500 )
+                    enclave.StoreYoungling( unit, context );
+                else
+                {
+                    unit.Orders.ClearOrders( ClearBehavior.DoNotClearBehaviors, ClearDecollisionOnParent.YesClear_AndAlsoClearDecollisionMoveOrders, ClearSource.YesClearAnyOrders_IncludingFromHumans );
+                    unit.Orders.QueueOrder( unit, EntityOrder.Create_Move_Normal( unit, enclave.WorldLocation, true, OrderSource.Other ) );
+                }
+            }
+        }
+    }
+
+    public class UnloadYounglingsFromEnclaves : BaseGameCommand
+    {
+        public override void Execute( GameCommand command, ArcenSimContext context )
+        {
+            for(int x = 0; x < command.RelatedEntityIDs.Count; x++ )
+            {
+                GameEntity_Squad enclave = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[x] );
+                if ( enclave == null )
+                    continue;
+                enclave.UnloadYounglings( context );
+            }
+        }
+    }
+
     public class AddHivesToBuildList : BaseGameCommand
     {
         public override void Execute( GameCommand command, ArcenSimContext context )
