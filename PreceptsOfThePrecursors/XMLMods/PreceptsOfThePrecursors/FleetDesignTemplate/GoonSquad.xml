@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- Starting Fleets for Testing -->
+  <fleet_design name="BattlestarTestFleet"
+        display_name="The Battlestar"
+        description="Swarm em"
+        design_logic="InitialPlayerFleet" weight="100" include_full_cap_of_each_type="true"
+        append_each_ship_description_to_main_description="true"
+        >
+    <ship_membership name="DemocracyDownfall" ship_cap_group="Centerpiece" weight="100" min="1" max="1"/>
+  </fleet_design>
+  
+  <!--These drone "fleets" build a full cap of each type that is a potential within them,
+      which means that they are not really procedural at all.  When a ship says "I am in the 'HiveGolemDrones' fleet and my max cap is 5,"
+      all drone producers that use 'HiveGolemDrones' will have 5 of that type of ship.
+      
+      The weight tag is also not used on these (it's just set to 1) because they are not actually chosen from at random at any time.
+      
+      The potential_ships stuff is not used, because the definitions of ships themselves say what are in there, and we don't have any limitations on types of categories.
+      The ships themselves are filled elsewhere by ships saying "I'm in that fleet" versus this file referencing them directly.-->
+  
+  <fleet_design name="BattlestarFighterWing" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="BattlestarStingrayWing" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="BattlestarRaiderWing" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="BattlestarConcussionCorvetteWing" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="BattlestarPikeCorvetteWing" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="BattlestarGrenadeLauncherCorvetteWing" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="BattlestarFusionBomberWing" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+</root>

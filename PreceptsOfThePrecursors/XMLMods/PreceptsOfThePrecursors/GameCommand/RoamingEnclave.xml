@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+ <!-- Unique commands. -->
+  <command name="MarkUpUnits" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.MarkUpUnits" />
+  <command name="PopulateEnclavesList" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.PopulateEnclavesList" />
+  <command name="PopulateHivesList" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.PopulateHivesList" />
+  <command name="PopulateEnclavePlanetList" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.PopulateEnclavePlanetList" />
+  <command name="PopulateHivePlanetsList" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.PopulateHivePlanetsList" />
+  <command name="SetOrClearEnclaveOwnership" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.SetOrClearEnclaveOwnership" />
+  <command name="AddHivesToBuildList" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.AddHivesToBuildList" />
+  <command name="ClaimHivesFromHumanAllies" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.ClaimHivesFromHumanAllies" />
+</root>

@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CD95C9FA-115C-4719-A453-7CFE0C990C2D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SKCivilianIndustry</RootNamespace>
+    <AssemblyName>SKCivilianIndustry</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AIWarExternalCode, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\AIWarExternalCode.dll</HintPath>
+    </Reference>
+    <Reference Include="AIWarExternalVisualizationCode, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\AIWarExternalVisualizationCode.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcenAIW2Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\ArcenAIW2Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcenAIW2ThirdParty, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\ArcenAIW2ThirdParty.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcenAIW2Visualization, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\ArcenAIW2Visualization.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcenUniversal, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\ArcenUniversal.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib">
+      <HintPath>..\ReliableDLLStorage\mscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PrivateVisExtensions">
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\PrivateVisExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>..\ReliableDLLStorage\System.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\ReliableDLLStorage\System.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.XML">
+      <HintPath>..\ReliableDLLStorage\System.XML.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XMLMods\SKCivilianIndustry\ExternalDataPattern\SK_CivilianIndustry.xml" />
+    <Content Include="XMLMods\SKCivilianIndustry\GameCommand\SK_CivilianIndustry.xml" />
+    <Content Include="XMLMods\SKCivilianIndustry\GameEntity\PartialRecords.xml" />
+    <Content Include="XMLMods\SKCivilianIndustry\GameEntity\SK_CivilianIndustry.xml" />
+    <Content Include="XMLMods\SKCivilianIndustry\SpecialFaction\SK_CivilianIndustry.xml" />
+    <Content Include="XMLMods\SKCivilianIndustry\Tagging Documentation.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CSharp\DescriptionAppenders\CargoDescriptionAppender.cs" />
+    <Compile Include="CSharp\DescriptionAppenders\ConstructionDescriptionAppender.cs" />
+    <Compile Include="CSharp\DescriptionAppenders\IndustryDescriptionAppender.cs" />
+    <Compile Include="CSharp\GameCommands\ExecuteTradeOrder.cs" />
+    <Compile Include="CSharp\GameCommands\InitializeData.cs" />
+    <Compile Include="CSharp\GameCommands\PopulateLists.cs" />
+    <Compile Include="CSharp\SKTradeLogicFaction.cs" />
+    <Compile Include="CSharp\SpecialFaction_SKCivilianIndustry.cs" />
+    <Compile Include="CSharp\Storage\CivResource.cs" />
+    <Compile Include="CSharp\Storage\Persistence\CivCargoData.cs" />
+    <Compile Include="CSharp\Storage\Persistence\CivCargoShipStatus.cs" />
+    <Compile Include="CSharp\Storage\Persistence\CivConstructionData.cs" />
+    <Compile Include="CSharp\Storage\Persistence\CivIndustryData.cs" />
+    <Compile Include="CSharp\Storage\Persistence\CivProtectionData.cs" />
+    <Compile Include="CSharp\Storage\Persistence\CivWorldData.cs" />
+    <Compile Include="CSharp\Utilities\Utilities.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>RD /S /Q "$(SolutionDir)Releases\$(ProjectName)"
+mkdir "$(SolutionDir)Releases\$(ProjectName)\GameData\ModdableLogicDLLs"
+mkdir "$(SolutionDir)Releases\$(ProjectName)\XMLMods"
+copy "$(TargetDir)$(ProjectName).dll" "$(SolutionDir)Releases\$(ProjectName)\GameData\ModdableLogicDLLs"
+Xcopy /e /i /Q "$(ProjectDir)XMLMods" "$(SolutionDir)Releases\$(ProjectName)\XMLMods"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

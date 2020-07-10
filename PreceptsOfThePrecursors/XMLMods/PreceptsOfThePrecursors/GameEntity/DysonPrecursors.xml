@@ -1,0 +1,874 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+  Mothership
+  Seperate entity for each mark, so we can manually scale stats and drone counts
+  -->
+  <entity
+    name="DysonMothership1"
+    display_name="Dyson Mothership"
+    description="This relatively small Zenith ship is attempting to consume metal rich asteroids all across the galaxy. In its current state, it’s quite weak and your leading scientist suggests it’s carcass could be harvested to access the metal rich asteroids it has eaten. Your military advisor says leaving it to it’s own devices may be it’s own reward, but to remain cautious around it, especially when in potentially hostile territory."
+    tags="ShowsOnNormalDisplayMode,DysonMothershipLevel1,DysonMothership"
+    special_entity_type="NPCFactionCenterpiece"
+    voice_group="Zenith"
+    draw_in_galaxy_view="true"
+    cannot_be_stacked="true"
+    visuals="Assets/_FinalGameMeshes/Zenith/Dyson3Bulwark/DysonBulwark.prefab"
+	  icon_name="Official/DysonSentinel"
+    icon_overlay="Official/DysonSentinel_Bastion"
+    uses_large_health_bar="true"
+    category="Ship"
+    visuals_scale_multiplier="8"
+    size_scale="7"
+    collision_priority="1200"
+    starting_mark_level="Mark1"
+    cost_for_ai_to_purchase="10000"
+    hull_points="5000000"
+    shield_points="10000000"
+    strength_multiplier="0.1"
+    should_never_be_captured_by_another_faction="true"
+    speed="BelowAverage1"
+    armor_mm="210"
+    albedo="0.8"
+    mass_tx="6"
+    engine_gx="24"
+    metal_cost="10000000"
+    energy_consumption="25000"
+    ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+    ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+    ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+    priority_as_ai_target="MidNasty"
+    priority_as_frd_target="MidNasty"
+    priority_to_protect="SlightlyLessExpendable"
+    
+    tech_upgrades_that_benefit_me="Unused"
+    fleet_design_template_i_use_for_drones="DysonMothershipDronesLow"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonMothershipDescriptionAppender"
+    eligible_for_hacks="OverrideMothershipPacification,MothershipPacification"
+    shows_on_galaxy_map_for_explored_planets="true"
+    pushes_enemy_shields="true"
+    >
+    <system name="BallisticCannon" display_name="Ballistic Anti-Structure Cannon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" only_targets_static_units="true"
+				>
+    </system>
+    <system name="TachyonArray" display_name="Tachyon Array"
+				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
+    <incoming_damage_modifier based_on="MyTimeAtPlanet" comparison_type="LessThan" compared_to="10" multiplier="0.25" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
+  </entity>
+  <entity
+    name="DysonMothership2"
+    copy_from="DysonMothership1"
+    skip_export="true"
+    description="The Dyson Sphere has incorporated enough mass into itself to increase the size of its internal hangers, allowing it to support more of those Dyson Sentinels and Defenders we’ve been seeing. Combat surveillance also notes the mothership is producing units more quickly. Your lead scientists theorizes that the Dyson Mothership must be stockpiling metal rich asteroids to grow even bigger. Your military advisor suggests now would be a good time to kill it before it becomes too large a threat to battle head on, if you don’t want to risk it roaming around."
+    tags="ShowsOnNormalDisplayMode,DysonMothershipLevel2,DysonMothership"
+    special_entity_type="NPCFactionCenterpiece"
+    starting_mark_level="Mark2"
+    multiplier_to_all_healths="1.5"
+    damage_multiplier_to_all_weapons="1.5"
+    multiplier_to_all_scales="1.5"
+    mass_tx="7"
+    engine_gx="25"
+    fleet_design_template_i_use_for_drones="DysonMothershipDronesLow"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonMothershipDescriptionAppender"
+    eligible_for_hacks="OverrideMothershipPacification,MothershipPacification"
+    shows_on_galaxy_map_for_explored_planets="true"
+    pushes_enemy_shields="true"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1250" />
+  </entity>
+  <entity
+    name="DysonMothership3"
+    copy_from="DysonMothership2"
+    skip_export="true"
+    description="The Dyson Mothership has grown even larger, and it’s appetite has yet to be sated. Combat surveillance has noted that occasionally, the Dyson Mothership will “regurgitate” metal rich asteroids on planets it has visited before, but only on planets that it has not been attacked on. Your lead scientist notes that in addition to the increased hanger space and production rate, the quality of the Dyson Mothership’s units has also increased. Your military advisor thinks that the Dyson Mothership will be able to produce a new ship type soon, should it continue eating metal rich asteroids."
+    tags="ShowsOnNormalDisplayMode,DysonMothershipLevel3,DysonMothership"
+    special_entity_type="NPCFactionCenterpiece"
+    starting_mark_level="Mark3"
+    multiplier_to_all_healths="2.25"
+    damage_multiplier_to_all_weapons="2.25"
+    multiplier_to_all_scales="2.25"
+    mass_tx="8"
+    engine_gx="27"
+    fleet_design_template_i_use_for_drones="DysonMothershipDronesLow"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonMothershipDescriptionAppender"
+    eligible_for_hacks="OverrideMothershipPacification,MothershipPacification"
+    shows_on_galaxy_map_for_explored_planets="true"
+    pushes_enemy_shields="true"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1500" />
+  </entity>
+  <entity
+      name="DysonMothership4"
+      copy_from="DysonMothership3"
+      skip_export="true"
+      description="The Dyson Mothership has increased its size by almost a third. Combat surveillance has witnessed a new type of ship being produced by the Dyson Mothership, dubbed the Dyson Bulwark. Your lead scientist notes has noted an increased power spike emanating from AI territory. Current correlation to the Dyson Mothership unknown, however they theorize that the AI is starting to fear the Dyson Mothership. Your military advisor suggests avoiding the Dyson Mothership on any planet with AI/Hostile forces, lest you get caught in the crossfire."
+      tags="ShowsOnNormalDisplayMode,DysonMothershipLevel4,DysonMothership"
+      special_entity_type="NPCFactionCenterpiece"
+      starting_mark_level="Mark4"
+      multiplier_to_all_healths="3.375"
+      damage_multiplier_to_all_weapons="3.375"
+      multiplier_to_all_scales="3.375"
+      mass_tx="10"
+      engine_gx="29"
+      fleet_design_template_i_use_for_drones="DysonMothershipDronesMed"
+      description_appender_dll="PreceptsOfThePrecursors"
+      description_appender_type="PreceptsOfThePrecursors.DysonMothershipDescriptionAppender"
+      eligible_for_hacks="OverrideMothershipPacification,MothershipPacification"
+      shows_on_galaxy_map_for_explored_planets="true"
+      pushes_enemy_shields="true"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="2500" />
+  </entity>
+  <entity
+      name="DysonMothership5"
+      copy_from="DysonMothership4"
+      skip_export="true"
+      description="The Dyson Mothership has grown to be double the size of the broken golems we have seen. Your lead scientist has observed the Dyson Mothership has “gifted” us metal asteroids on planets it has visited before, and is currently attempting to devise a method of communication with the Dyson Mothership. Your military advisor suggests this is possibly the last time we can conceivably take on the Dyson Mothership. All those extra metal rich asteroids could be used to boost our economy to new heights. Judging by the size and development of the Dyson Mothership, your military advisor also thinks that it’s next growth will allow it to build an even bigger ship than the Dyson Bulwark."
+      tags="ShowsOnNormalDisplayMode,DysonMothershipLevel5,DysonMothership"
+      special_entity_type="NPCFactionCenterpiece"
+      starting_mark_level="Mark5"
+      multiplier_to_all_healths="5.0"
+      damage_multiplier_to_all_weapons="5.0"
+      multiplier_to_all_scales="5.0"
+      mass_tx="12"
+      engine_gx="31"
+      fleet_design_template_i_use_for_drones="DysonMothershipDronesMed"
+      description_appender_dll="PreceptsOfThePrecursors"
+      description_appender_type="PreceptsOfThePrecursors.DysonMothershipDescriptionAppender"
+      eligible_for_hacks="OverrideMothershipPacification,MothershipPacification"
+      shows_on_galaxy_map_for_explored_planets="true"
+      pushes_enemy_shields="true"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="3000" />
+  </entity>
+  <entity
+      name="DysonMothership6"
+      copy_from="DysonMothership5"
+      skip_export="true"
+      description="The Dyson Mothership has enlarged itself to be even bigger than the dreaded devourer golem. Combat Surveillance has witnessed a new ship being built by the Dyson Mothership, dubbed the Dyson Bastion. Your lead Scientist has been attempting to communicate with the Dyson Mothership, but it either is ignoring us, or doesn’t understand us."
+      tags="ShowsOnNormalDisplayMode,DysonMothershipLevel6,DysonMothership"
+      special_entity_type="NPCFactionCenterpiece"
+      starting_mark_level="Mark6"
+      multiplier_to_all_healths="7.5"
+      damage_multiplier_to_all_weapons="7.5"
+      multiplier_to_all_scales="7.5"
+      mass_tx="15"
+      engine_gx="33"
+      fleet_design_template_i_use_for_drones="DysonMothershipDronesHig"
+      description_appender_dll="PreceptsOfThePrecursors"
+      description_appender_type="PreceptsOfThePrecursors.DysonMothershipDescriptionAppender"
+      eligible_for_hacks="OverrideMothershipPacification,MothershipPacification"
+      shows_on_galaxy_map_for_explored_planets="true"
+      pushes_enemy_shields="true"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="4000" />
+  </entity>
+  <entity
+      name="DysonMothership7"
+      copy_from="DysonMothership6"
+      skip_export="true"
+      description="The Dyson Mothership is so large, it appears to be bigger than most catalogued dwarf planets! Your lead scientist has given up on attempting communications and is analyzing the Mothership itself. Currently, it’s been noted to be dedicating massive amounts of power to not affect gravity around itself. Your military advisor suggests staying away from the Dyson Mothership at all costs, lest your forces get eaten by the hordes of Dyson units. Now that the Dyson Mothership has reached this much potential, you are left with one question. What will happen next?"
+      tags="ShowsOnNormalDisplayMode,DysonMothershipLevel7,DysonMothership"
+      special_entity_type="NPCFactionCenterpiece"
+      starting_mark_level="Mark7"
+      multiplier_to_all_healths="10.0"
+      damage_multiplier_to_all_weapons="10.0"
+      multiplier_to_all_scales="10.0"
+      mass_tx="18"
+      engine_gx="36"
+      fleet_design_template_i_use_for_drones="DysonMothershipDronesHig"
+      description_appender_dll="PreceptsOfThePrecursors"
+      description_appender_type="PreceptsOfThePrecursors.DysonMothershipDescriptionAppender"
+      eligible_for_hacks="OverrideMothershipPacification,MothershipPacification"
+      shows_on_galaxy_map_for_explored_planets="true"
+      pushes_enemy_shields="true"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
+  </entity>
+  <!-- 
+  Drones
+  Setting up all of our drone fleets.
+  -->
+  <entity
+    name="DysonMothershipSentinelDrone"
+    copy_from="DysonSentinel"
+    display_name="Dyson Sentinel Drone"
+    special_entity_type="DroneGeneral"
+    speed="Normal3"
+  >
+    <fleet_membership name="DysonMothershipDronesLow" ship_cap_group="Strike" weight="100" min="300" max="300"/>
+    <fleet_membership name="DysonMothershipDronesMed" ship_cap_group="Strike" weight="100" min="300" max="300"/>
+    <fleet_membership name="DysonMothershipDronesHig" ship_cap_group="Strike" weight="100" min="300" max="300"/>
+                                                                                                 
+    <fleet_membership name="DysonSuppressorDronesLow" ship_cap_group="Strike" weight="100" min="200" max="200"/>
+    <fleet_membership name="DysonSuppressorDronesMed" ship_cap_group="Strike" weight="100" min="200" max="200"/>
+    <fleet_membership name="DysonSuppressorDronesHig" ship_cap_group="Strike" weight="100" min="200" max="200"/>
+                                                                                                 
+    <fleet_membership name="DysonProtectorDronesLow"  ship_cap_group="Strike" weight="100" min="100" max="100"/>
+    <fleet_membership name="DysonProtectorDronesMed"  ship_cap_group="Strike" weight="100" min="100" max="100"/>
+    <fleet_membership name="DysonProtectorDronesHig"  ship_cap_group="Strike" weight="100" min="100" max="100"/>
+
+    <fleet_membership name="DysonNodeDronesLow"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
+    <fleet_membership name="DysonNodeDronesMed"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
+  </entity>
+  <entity
+      name="DysonMothershipDefenderDrone"
+      copy_from="DysonDefender"
+      display_name="Dyson Defender Drone"
+      special_entity_type="DroneGeneral"
+      speed="Normal3"
+  >
+    <fleet_membership name="DysonMothershipDronesLow" ship_cap_group="Strike" weight="100" min="300" max="300"/>
+    <fleet_membership name="DysonMothershipDronesMed" ship_cap_group="Strike" weight="100" min="300" max="300"/>
+    <fleet_membership name="DysonMothershipDronesHig" ship_cap_group="Strike" weight="100" min="300" max="300"/>
+
+    <fleet_membership name="DysonSuppressorDronesLow" ship_cap_group="Strike" weight="100" min="200" max="200"/>
+    <fleet_membership name="DysonSuppressorDronesMed" ship_cap_group="Strike" weight="100" min="200" max="200"/>
+    <fleet_membership name="DysonSuppressorDronesHig" ship_cap_group="Strike" weight="100" min="200" max="200"/>
+
+    <fleet_membership name="DysonProtectorDronesLow"  ship_cap_group="Strike" weight="100" min="100" max="100"/>
+    <fleet_membership name="DysonProtectorDronesMed"  ship_cap_group="Strike" weight="100" min="100" max="100"/>
+    <fleet_membership name="DysonProtectorDronesHig"  ship_cap_group="Strike" weight="100" min="100" max="100"/>
+
+    <fleet_membership name="DysonNodeDronesLow"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
+    <fleet_membership name="DysonNodeDronesMed"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
+  </entity>
+  <entity
+      name="DysonMothershipBulwarkDrone"
+      copy_from="DysonBulwark"
+      display_name="Dyson Bulwark Drone"
+      special_entity_type="DroneGeneral"
+      speed="Normal2"
+  >
+    <fleet_membership name="DysonMothershipDronesMed" ship_cap_group="Strike" weight="100" min="15" max="15"/>
+    <fleet_membership name="DysonMothershipDronesHig" ship_cap_group="Strike" weight="100" min="30" max="30"/>
+
+    <fleet_membership name="DysonSuppressorDronesMed" ship_cap_group="Strike" weight="100" min="10" max="10"/>
+    <fleet_membership name="DysonSuppressorDronesHig" ship_cap_group="Strike" weight="100" min="20" max="20"/>
+
+    <fleet_membership name="DysonProtectorDronesMed"  ship_cap_group="Strike" weight="100" min="5" max="5"/>
+    <fleet_membership name="DysonProtectorDronesHig"  ship_cap_group="Strike" weight="100" min="10" max="10"/>
+
+    <fleet_membership name="DysonNodeDronesMed"       ship_cap_group="Strike" weight="100" min="2" max="2"/>
+  </entity>
+  <entity
+      name="DysonMothershipBastionDrone"
+      copy_from="DysonBastion"
+      display_name="Dyson Bastion Drone"
+      special_entity_type="DroneGeneral"
+      speed="Normal1"
+  >
+    <fleet_membership name="DysonMothershipDronesHig" ship_cap_group="Strike" weight="100" min="3" max="3"/>
+
+    <fleet_membership name="DysonSuppressorDronesHig" ship_cap_group="Strike" weight="100" min="2" max="2"/>
+
+    <fleet_membership name="DysonProtectorDronesHig"  ship_cap_group="Strike" weight="100" min="1" max="1"/>
+  </entity>
+  <!-- Proto Spheres
+       Two Sphere types, Suppressor and Protector
+       Suppressor is placed on planets the Mothership dislikes, are very powerful, and will never be friendly to the player.
+       Protector is placed on planets the Mothership likes, are somewhat powerful, and are always friendly to the player.
+  -->
+  <entity
+    name="DysonProtoSuppressorSphere1"
+    tags="ProtoSphere,ShowsOnNormalDisplayMode"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    voice_group="Zenith"
+    gimbal_icon_size_multiplier="1.5"
+    draw_in_galaxy_view="true"
+    visuals="assets/_finalgamemeshes/aibuildings/dysonwarpgate.prefab"
+    icon_name="Official/Dyson_Sphere"
+    category="Ship"
+    size_scale="4.2"
+		visuals_scale_multiplier="3"
+		y_offset_of_icon="50"
+		collision_priority="810"
+		display_name="Dyson Proto Suppressor Sphere Golem"
+		description="A young Proto Dyson Sphere that is currently undergoing the early stages of its life cycle to become a fully fledged Dyson Sphere. Combat surveillance has noted that the Proto Dyson seems to be attacking anything that dares enter its sphere of influence, pardon the pun, but doesn’t seem to be attacking other planets. Your Lead Scientist theorizes this behaviour is due to the stress of undergoing development in hostile territory, and the need for resources to maintain and grow itself. Your military advisor suggests you avoid the Suppressor Dyson, as it is doing more harm to the AI than us, and destroying it, while feasible is ill advised."
+		fleet_design_template_i_use_for_drones="DysonSuppressorDronesLow"
+    drone_starting_behavior_type="Attacker_Full"
+    behavior="Stationary"
+    starting_mark_level="Mark1"
+    cost_for_ai_to_purchase="100000"
+    hull_points="1000000"
+    shield_points="2000000"
+    speed="Immobile"
+    metal_cost="25000000"
+    energy_consumption="0"
+    armor_mm="400"
+    albedo="1"
+    mass_tx="18"
+		ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+		ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+		ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+		description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    
+    priority_as_ai_target="MidNasty"
+    priority_as_frd_target="MidNasty"
+    priority_to_protect="SlightlyLessExpendable"
+    uses_large_health_bar="true"
+    strength_multiplier="0.1"
+    should_never_be_captured_by_another_faction="true"
+    shows_on_galaxy_map_for_explored_planets="true"
+    external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+			>
+    <system name="BallisticCannon" display_name="Ballistic Anti-Structure Cannon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" only_targets_static_units="true"
+				>
+    </system>
+    <system name="TachyonArray" display_name="Tachyon Array"
+				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
+    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
+  </entity>
+  <entity
+    name="DysonProtoProtectorSphere1"
+    display_name="Dyson Proto Protector Sphere Golem"
+		description="A young Proto Dyson Sphere that is currently undergoing an altered version of its life cycle to become an offshoot version of a fully grown Dyson Sphere. Combat surveillance has observed that the Proto Dyson will attack anything aggressive towards us, but have yet to harm our forces. Your lead Scientist believes this behaviour is that the Proto Dyson and Dyson Mothership sees us as a tool that has kept it alive when it was weaker, and desires to make sure that it’s tool remains unbroken. Curiously, it appears that this sphere is harnessing excess energy that we are unable to capture. This may inhibit its maturation, but lets us harness all the energy we need. Your military advisor believes that the Protector Sphere can be interfaced with our hackers, based on the signals we’ve been receiving from the sphere, in order to design ships based around the Dyson Sentinels and Defenders. However, they also think this will hurt the sphere and cause it to lash out."
+    copy_from="DysonProtoSuppressorSphere1"
+    skip_export="true"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    tags="ShowsOnNormalDisplayMode,ProtoSphere"
+    starting_mark_level="Mark1"
+    fleet_design_template_i_use_for_drones="DysonProtectorDronesLow"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    shows_on_galaxy_map_for_explored_planets="true"
+    external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    eligible_for_hacks="StealDysonUnits"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
+  </entity>
+  <entity
+    name="DysonProtoSuppressorSphere2"
+    copy_from="DysonProtoSuppressorSphere1"
+    skip_export="true"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    tags="ShowsOnNormalDisplayMode,ProtoSphere"
+    starting_mark_level="Mark2"
+    multiplier_to_all_healths="1.25"
+    damage_multiplier_to_all_weapons="1.25"
+    multiplier_to_all_scales="1.25"
+    mass_tx="19"
+    fleet_design_template_i_use_for_drones="DysonSuppressorDronesLow"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    shows_on_galaxy_map_for_explored_planets="true"
+    external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
+  </entity>
+  <entity
+    name="DysonProtoProtectorSphere2"
+    display_name="Dyson Proto Protector Sphere Golem"
+		description="A young Proto Dyson Sphere that is currently undergoing an altered version of its life cycle to become an offshoot version of a fully grown Dyson Sphere. Combat surveillance has observed that the Proto Dyson will attack anything aggressive towards us, but have yet to harm our forces. Your lead Scientist believes this behaviour is that the Proto Dyson and Dyson Mothership sees us as a tool that has kept it alive when it was weaker, and desires to make sure that it’s tool remains unbroken. Curiously, it appears that this sphere is harnessing excess energy that we are unable to capture. This may inhibit its maturation, but lets us harness all the energy we need. Your military advisor believes that the Protector Sphere can be interfaced with our hackers, based on the signals we’ve been receiving from the sphere, in order to design ships based around the Dyson Sentinels and Defenders. However, they also think this will hurt the sphere and cause it to lash out."
+    copy_from="DysonProtoSuppressorSphere2"
+    skip_export="true"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    tags="ShowsOnNormalDisplayMode,ProtoSphere"
+    starting_mark_level="Mark2"
+    multiplier_to_all_healths="1.25"
+    damage_multiplier_to_all_weapons="1.25"
+    multiplier_to_all_scales="1.25"
+    fleet_design_template_i_use_for_drones="DysonProtectorDronesLow"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    shows_on_galaxy_map_for_explored_planets="true"
+    external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    eligible_for_hacks="StealDysonUnits"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1500" />
+  </entity>
+  <entity
+    name="DysonProtoSuppressorSphere3"
+    copy_from="DysonProtoSuppressorSphere2"
+    skip_export="true"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    tags="ShowsOnNormalDisplayMode,ProtoSphere"
+    starting_mark_level="Mark3"
+    multiplier_to_all_healths="1.75"
+    damage_multiplier_to_all_weapons="1.75"
+    multiplier_to_all_scales="1.75"
+    mass_tx="20"
+    fleet_design_template_i_use_for_drones="DysonSuppressorDronesLow"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    shows_on_galaxy_map_for_explored_planets="true"
+    external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
+  </entity>
+  <entity
+    name="DysonProtoProtectorSphere3"
+    display_name="Dyson Proto Protector Sphere Golem"
+		description="A young Proto Dyson Sphere that is currently undergoing an altered version of its life cycle to become an offshoot version of a fully grown Dyson Sphere. Combat surveillance has observed that the Proto Dyson will attack anything aggressive towards us, but have yet to harm our forces. Your lead Scientist believes this behaviour is that the Proto Dyson and Dyson Mothership sees us as a tool that has kept it alive when it was weaker, and desires to make sure that it’s tool remains unbroken. Curiously, it appears that this sphere is harnessing excess energy that we are unable to capture. This may inhibit its maturation, but lets us harness all the energy we need. Your military advisor believes that the Protector Sphere can be interfaced with our hackers, based on the signals we’ve been receiving from the sphere, in order to design ships based around the Dyson Sentinels and Defenders. However, they also think this will hurt the sphere and cause it to lash out."
+    copy_from="DysonProtoSuppressorSphere3"
+    skip_export="true"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    tags="ShowsOnNormalDisplayMode,ProtoSphere"
+    starting_mark_level="Mark3"
+    multiplier_to_all_healths="1.75"
+    damage_multiplier_to_all_weapons="1.75"
+    multiplier_to_all_scales="1.75"
+    fleet_design_template_i_use_for_drones="DysonProtectorDronesLow"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    shows_on_galaxy_map_for_explored_planets="true"
+    external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    eligible_for_hacks="StealDysonUnits"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1800" />
+  </entity>
+  <entity
+      name="DysonProtoSuppressorSphere4"
+      copy_from="DysonProtoSuppressorSphere3"
+      skip_export="true"
+      special_entity_type="NPCFactionCenterpiece"
+      grants_minor_faction_planet_control="true"
+      tags="ShowsOnNormalDisplayMode,ProtoSphere"
+      starting_mark_level="Mark4"
+      multiplier_to_all_healths="2.5"
+      damage_multiplier_to_all_weapons="2.5"
+      multiplier_to_all_scales="2.5"
+      mass_tx="22"
+      fleet_design_template_i_use_for_drones="DysonSuppressorDronesMed"
+      description_appender_dll="PreceptsOfThePrecursors"
+      description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+      shows_on_galaxy_map_for_explored_planets="true"
+      external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="2400" />
+  </entity>
+  <entity
+    name="DysonProtoProtectorSphere4"
+    display_name="Dyson Proto Protector Sphere Golem"
+		description="A young Proto Dyson Sphere that is currently undergoing an altered version of its life cycle to become an offshoot version of a fully grown Dyson Sphere. Combat surveillance has observed that the Proto Dyson will attack anything aggressive towards us, but have yet to harm our forces. Your lead Scientist believes this behaviour is that the Proto Dyson and Dyson Mothership sees us as a tool that has kept it alive when it was weaker, and desires to make sure that it’s tool remains unbroken. Curiously, it appears that this sphere is harnessing excess energy that we are unable to capture. This may inhibit its maturation, but lets us harness all the energy we need. Your military advisor believes that the Protector Sphere can be interfaced with our hackers, based on the signals we’ve been receiving from the sphere, in order to design ships based around the Dyson Sentinels and Defenders. However, they also think this will hurt the sphere and cause it to lash out."
+    copy_from="DysonProtoSuppressorSphere4"
+    skip_export="true"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    tags="ShowsOnNormalDisplayMode,ProtoSphere"
+    starting_mark_level="Mark4"
+    multiplier_to_all_healths="2.5"
+    damage_multiplier_to_all_weapons="2.5"
+    multiplier_to_all_scales="2.5"
+    fleet_design_template_i_use_for_drones="DysonProtectorDronesLow"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    shows_on_galaxy_map_for_explored_planets="true"
+  external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    eligible_for_hacks="StealDysonUnits"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="2100" />
+  </entity>
+  <entity
+      name="DysonProtoSuppressorSphere5"
+      copy_from="DysonProtoSuppressorSphere4"
+      skip_export="true"
+      special_entity_type="NPCFactionCenterpiece"
+      grants_minor_faction_planet_control="true"
+      tags="ShowsOnNormalDisplayMode,ProtoSphere"
+      starting_mark_level="Mark5"
+      multiplier_to_all_healths="3.5"
+      damage_multiplier_to_all_weapons="3.5"
+      multiplier_to_all_scales="3.5"
+      mass_tx="24"
+      fleet_design_template_i_use_for_drones="DysonSuppressorDronesMed"
+      description_appender_dll="PreceptsOfThePrecursors"
+      description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+      shows_on_galaxy_map_for_explored_planets="true"
+      external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="2800" />
+  </entity>
+  <entity
+    name="DysonProtoProtectorSphere5"
+    display_name="Dyson Proto Protector Sphere Golem"
+		description="A young Proto Dyson Sphere that is currently undergoing an altered version of its life cycle to become an offshoot version of a fully grown Dyson Sphere. Combat surveillance has observed that the Proto Dyson will attack anything aggressive towards us, but have yet to harm our forces. Your lead Scientist believes this behaviour is that the Proto Dyson and Dyson Mothership sees us as a tool that has kept it alive when it was weaker, and desires to make sure that it’s tool remains unbroken. Curiously, it appears that this sphere is harnessing excess energy that we are unable to capture. This may inhibit its maturation, but lets us harness all the energy we need. Your military advisor believes that the Protector Sphere can be interfaced with our hackers, based on the signals we’ve been receiving from the sphere, in order to design ships based around the Dyson Sentinels and Defenders. However, they also think this will hurt the sphere and cause it to lash out."
+    copy_from="DysonProtoSuppressorSphere5"
+    skip_export="true"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    tags="ShowsOnNormalDisplayMode,ProtoSphere"
+    starting_mark_level="Mark5"
+    multiplier_to_all_healths="3.5"
+    damage_multiplier_to_all_weapons="3.5"
+    multiplier_to_all_scales="3.5"
+    fleet_design_template_i_use_for_drones="DysonProtectorDronesMed"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    shows_on_galaxy_map_for_explored_planets="true"
+    external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    eligible_for_hacks="StealDysonUnits"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="2400" />
+  </entity>
+  <entity
+      name="DysonProtoSuppressorSphere6"
+      copy_from="DysonProtoSuppressorSphere5"
+      skip_export="true"
+      special_entity_type="NPCFactionCenterpiece"
+      grants_minor_faction_planet_control="true"
+      tags="ShowsOnNormalDisplayMode,ProtoSphere"
+      starting_mark_level="Mark6"
+      multiplier_to_all_healths="4.75"
+      damage_multiplier_to_all_weapons="4.75"
+      multiplier_to_all_scales="4.75"
+      mass_tx="28"
+      fleet_design_template_i_use_for_drones="DysonSuppressorDronesHig"
+      description_appender_dll="PreceptsOfThePrecursors"
+      description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+      shows_on_galaxy_map_for_explored_planets="true"
+      external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="3200" />
+  </entity>
+  <entity
+    name="DysonProtoProtectorSphere6"
+    display_name="Dyson Proto Protector Sphere Golem"
+		description="A young Proto Dyson Sphere that is currently undergoing an altered version of its life cycle to become an offshoot version of a fully grown Dyson Sphere. Combat surveillance has observed that the Proto Dyson will attack anything aggressive towards us, but have yet to harm our forces. Your lead Scientist believes this behaviour is that the Proto Dyson and Dyson Mothership sees us as a tool that has kept it alive when it was weaker, and desires to make sure that it’s tool remains unbroken. Curiously, it appears that this sphere is harnessing excess energy that we are unable to capture. This may inhibit its maturation, but lets us harness all the energy we need. Your military advisor believes that the Protector Sphere can be interfaced with our hackers, based on the signals we’ve been receiving from the sphere, in order to design ships based around the Dyson Sentinels and Defenders. However, they also think this will hurt the sphere and cause it to lash out."
+    copy_from="DysonProtoSuppressorSphere6"
+    skip_export="true"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    tags="ShowsOnNormalDisplayMode,ProtoSphere"
+    starting_mark_level="Mark6"
+    multiplier_to_all_healths="4.75"
+    damage_multiplier_to_all_weapons="4.75"
+    multiplier_to_all_scales="4.75"
+    fleet_design_template_i_use_for_drones="DysonProtectorDronesMed"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    shows_on_galaxy_map_for_explored_planets="true"
+    external_invulnerability_unit_tag="DysonNode"
+    external_invulnerability_region="ThisPlanet"
+    eligible_for_hacks="StealDysonUnits"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="2700" />
+  </entity>
+  <entity
+      name="DysonProtoSuppressorSphere7"
+      copy_from="DysonProtoSuppressorSphere6"
+		  description="This Golem is acting as the brains of the operation for Dyson units at this planet. It has reached its final level and has become indestructible. This particular Golem was given orders to Suppress this system, and will unleash its drones upon any who enter."
+      skip_export="true"
+      special_entity_type="NPCFactionCenterpiece"
+      grants_minor_faction_planet_control="true"
+      tags="ShowsOnNormalDisplayMode,ProtoSphere"
+      starting_mark_level="Mark7"
+      multiplier_to_all_healths="6.25"
+      damage_multiplier_to_all_weapons="6.25"
+      multiplier_to_all_scales="6.25"
+      mass_tx="31"
+      fleet_design_template_i_use_for_drones="DysonSuppressorDronesHig"
+      description_appender_dll="PreceptsOfThePrecursors"
+      description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+      shows_on_galaxy_map_for_explored_planets="true"
+      immune_to_all_damage="true"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="3600" />
+  </entity>
+  <entity
+    name="DysonProtoProtectorSphere7"
+    display_name="Dyson Proto Protector Sphere Golem"
+		description="A young Proto Dyson Sphere that is currently undergoing an altered version of its life cycle to become an offshoot version of a fully grown Dyson Sphere. Combat surveillance has observed that the Proto Dyson will attack anything aggressive towards us, but have yet to harm our forces. Your lead Scientist believes this behaviour is that the Proto Dyson and Dyson Mothership sees us as a tool that has kept it alive when it was weaker, and desires to make sure that it’s tool remains unbroken. Curiously, it appears that this sphere is harnessing excess energy that we are unable to capture. This may inhibit its maturation, but lets us harness all the energy we need. Your military advisor believes that the Protector Sphere can be interfaced with our hackers, based on the signals we’ve been receiving from the sphere, in order to design ships based around the Dyson Sentinels and Defenders. However, they also think this will hurt the sphere and cause it to lash out."
+    copy_from="DysonProtoSuppressorSphere7"
+    skip_export="true"
+    special_entity_type="NPCFactionCenterpiece"
+    grants_minor_faction_planet_control="true"
+    tags="ShowsOnNormalDisplayMode,ProtoSphere"
+    starting_mark_level="Mark7"
+    multiplier_to_all_healths="6.25"
+    damage_multiplier_to_all_weapons="6.25"
+    multiplier_to_all_scales="6.25"
+    fleet_design_template_i_use_for_drones="DysonProtectorDronesHig"
+    description_appender_dll="PreceptsOfThePrecursors"
+    description_appender_type="PreceptsOfThePrecursors.DysonProtoSphereDescriptionAppender"
+    shows_on_galaxy_map_for_explored_planets="true"
+    immune_to_all_damage="true"
+    eligible_for_hacks="StealDysonUnits"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="3000" />
+  </entity>
+  <!-- Dyson Nodes
+       Built by the Mothership on trusted planets, and by Proto Spheres over time.
+       Each comes with a small compliment of drones.
+       Passively grants resources to nearby Proto Spheres, can be destroyed/hacked by players for resoruces.
+       -->
+  <entity
+    name="DysonNode1"
+    tags="DysonNode,InvulnerabilityGranter"
+    voice_group="Zenith"
+    gimbal_icon_size_multiplier="1.5"
+    visuals="Assets/_FinalGameMeshes/AIBuildings/DistributionAndInstigator/DistributionNode.prefab"
+    icon_name="Official/SomethingSpaceDoor"
+    category="Ship"
+    size_scale="2.4"
+		visuals_scale_multiplier="2"
+		y_offset_of_icon="50"
+		collision_priority="810"
+		display_name="Dyson Node"
+		description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres and The Mothership on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 200k Metal."
+		fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
+    drone_starting_behavior_type="Attacker_Full"
+    behavior="Stationary"
+    starting_mark_level="Mark1"
+    cost_for_ai_to_purchase="10000"
+    hull_points="500000"
+    shield_points="1000000"
+    speed="Immobile"
+    metal_cost="200000"
+    energy_consumption="0"
+    armor_mm="400"
+    albedo="1"
+    mass_tx="18"
+		ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+		ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+		ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+    
+    priority_as_ai_target="NotDangerous"
+    priority_as_frd_target="NotDangerous"
+    priority_to_protect="Expendable"
+    uses_large_health_bar="true"
+    strength_multiplier="0.1"
+    should_never_be_captured_by_another_faction="true"
+    eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
+			>
+    <system name="BallisticCannon" display_name="Ballistic Anti-Structure Cannon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" only_targets_static_units="true"
+				>
+    </system>
+    <system name="TachyonArray" display_name="Tachyon Array"
+				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
+    <metal_flow purpose="BuildingDronesInternally" throughput="600" />
+  </entity>
+  <entity
+    name="DysonNode2"
+    copy_from="DysonNode1"
+    skip_export="true"
+    description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 400k Metal."
+    tags="DysonNode,InvulnerabilityGranter"
+    starting_mark_level="Mark2"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
+    multiplier_to_all_healths="1.25"
+    damage_multiplier_to_all_weapons="1.25"
+    multiplier_to_all_scales="1.25"
+    eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
+    metal_cost="400000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="800" />
+  </entity>
+  <entity
+    name="DysonNode3"
+    copy_from="DysonNode2"
+    skip_export="true"
+    description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 600k Metal."
+    tags="DysonNode,InvulnerabilityGranter"
+    starting_mark_level="Mark3"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
+    multiplier_to_all_healths="1.5"
+    damage_multiplier_to_all_weapons="1.5"
+    multiplier_to_all_scales="1.5"
+    eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
+    metal_cost="600000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
+  </entity>
+  <entity
+    name="DysonNode4"
+    copy_from="DysonNode3"
+    skip_export="true"
+    description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 800k Metal."
+    tags="DysonNode,InvulnerabilityGranter"
+    starting_mark_level="Mark4"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
+    multiplier_to_all_healths="1.75"
+    damage_multiplier_to_all_weapons="1.75"
+    multiplier_to_all_scales="1.75"
+    eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
+    metal_cost="800000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
+  </entity>
+  <entity
+    name="DysonNode5"
+    copy_from="DysonNode4"
+    skip_export="true"
+    description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 1m Metal."
+    tags="DysonNode,InvulnerabilityGranter"
+    starting_mark_level="Mark5"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
+    multiplier_to_all_healths="2.0"
+    damage_multiplier_to_all_weapons="2.0"
+    multiplier_to_all_scales="2.0"
+    eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
+    metal_cost="1000000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
+  </entity>
+  <entity
+    name="DysonNode6"
+    copy_from="DysonNode5"
+    skip_export="true"
+    tags="DysonNode,InvulnerabilityGranter"
+    description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 1.25m Metal."
+    starting_mark_level="Mark6"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
+    multiplier_to_all_healths="2.25"
+    damage_multiplier_to_all_weapons="2.25"
+    multiplier_to_all_scales="2.25"
+    eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
+    metal_cost="1250000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
+  </entity>
+  <entity
+    name="DysonNode7"
+    copy_from="DysonNode6"
+    skip_export="true"
+    description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 1.5m Metal."
+    tags="DysonNode,InvulnerabilityGranter"
+    starting_mark_level="Mark7"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
+    multiplier_to_all_healths="2.5"
+    damage_multiplier_to_all_weapons="2.5"
+    multiplier_to_all_scales="2.5"
+    eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
+    metal_cost="1500000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1800" />
+  </entity>
+  <entity
+    name="DysonNodeAncient"
+    copy_from="DysonNode1"
+    display_name="Ancient Dyson Node"
+    skip_export="true"
+    description="An ancient Node that has survived since ancient times, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 500k Metal and 3k Science."
+    tags="DysonNode,DysonNodeAncient,InvulnerabilityGranter,ShowsOnNormalDisplayMode"
+    starting_mark_level="Mark1"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
+    multiplier_to_all_healths="50.0"
+    damage_multiplier_to_all_weapons="10.0"
+    multiplier_to_all_scales="5.0"
+    eligible_for_hacks="AwakenDysonPrecursors"
+    metal_cost="500000"
+    science_to_grant_on_death="3000"
+    shows_on_galaxy_map_for_explored_planets="true"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="6000" />
+  </entity>
+  <!-- 'Big' units spawnt by a Sphere once it hits level 7.
+        Enforcers are used as an offensive fleet for the Precursor to wield as it sees fit.
+        Seedlings are given to the player as a reward for services rendered. -->
+  <entity
+      name="DysonEnforcer"
+      copy_from="DysonMothership3"
+      skip_export="true"
+      display_name="Dyson Enforcer"
+      description="A large ship that appears to be hostile to everything and everyone. Combat Survaillence has witnessed this ship utterly crushing groups of AI units. Your lead scientist is unable to detect any of the signals normaly emitted from the Dyson Mothership, leading them to believe that it is non sentient, and that we will be unable to comunicate or negotiate a cease fire with it. Your military advisor suggests that while it can be used as a good distraction for our own assaults, we should be wary to not attack it directly."
+      tags="ShowsOnNormalDisplayMode,DysonEnforcer"
+      special_entity_type="NPCFactionCenterpiece"
+      starting_mark_level="Mark4"
+      multiplier_to_all_healths="5.0"
+      damage_multiplier_to_all_weapons="5.0"
+      multiplier_to_all_scales="5.0"
+      mass_tx="10"
+      engine_gx="29"
+      fleet_design_template_i_use_for_drones="DysonSuppressorDronesMed"
+      pushes_enemy_shields="true"
+      eligible_for_hacks=""
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
+  </entity>
+  <entity
+        name="DysonSeedling"
+        copy_from="DysonMothership3"
+        skip_export="true"
+        display_name="Dyson Seedling"
+        description=" It appears that our mutualistic relationship with the Proto Dyson Sphere has paid off. We have been gifted a fully functional and living Zenith starship! Your lead Scientist has been configuring the Zenith starship, which we have now dubbed the Dyson Seedling to respond to our orders. They also note that this particular zenith, unlike the clearly sentient mothership lacks a sort of intelligence, despite being alive. Kind of like a clone without a personality."
+        tags="ShowsOnNormalDisplayMode,DysonSeedling"
+        special_entity_type="MobileLoneWolfFleetFlagship"
+        starting_mark_level="Mark4"
+        multiplier_to_all_healths="5.0"
+        damage_multiplier_to_all_weapons="5.0"
+        multiplier_to_all_scales="5.0"
+        mass_tx="10"
+        engine_gx="29"
+        fleet_design_template_i_use_for_drones="DysonSeedlingDrones"
+        pushes_enemy_shields="true"
+        capturable_can_seed_at_all="false"
+        eligible_for_hacks=""
+        energy_consumption="25000"
+        tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+        
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
+  </entity>
+  <!-- Seedling Drones-->
+  <entity
+    name="DysonSeedlingSentinelDrone"
+    copy_from="DysonSentinel"
+    display_name="Dyson Sentinel Drone"
+    starting_mark_level="Mark4"
+    special_entity_type="DroneGeneral"
+    speed="Normal3"
+    tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+    
+    energy_consumption="0"
+  >
+    <fleet_membership name="DysonSeedlingDrones"  ship_cap_group="Strike" weight="100" min="200" max="200"/>
+  </entity>
+  <entity
+      name="DysonSeedlingDefenderDrone"
+      copy_from="DysonDefender"
+      display_name="Dyson Defender Drone"
+      starting_mark_level="Mark4"
+      special_entity_type="DroneGeneral"
+      speed="Normal3"
+      tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+      
+      energy_consumption="0"
+  >
+    <fleet_membership name="DysonSeedlingDrones"  ship_cap_group="Strike" weight="100" min="200" max="200"/>
+  </entity>
+  <entity
+      name="DysonSeedlingBulwarkDrone"
+      copy_from="DysonBulwark"
+      display_name="Dyson Bulwark Drone"
+      starting_mark_level="Mark4"
+      special_entity_type="DroneGeneral"
+      speed="Normal2"
+      tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+      
+    energy_consumption="0"
+  >
+    <fleet_membership name="DysonSeedlingDrones"  ship_cap_group="Strike" weight="100" min="5"  max="5"/>
+  </entity>
+</root>

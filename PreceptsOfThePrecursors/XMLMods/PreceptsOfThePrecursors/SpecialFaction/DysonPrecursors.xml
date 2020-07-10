@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- The Main Precursor faction. Consists of one singular super unit, the Dyson Mothership. -->
+  <faction  
+    name="DysonPrecursors"
+    display_name="Dyson Precursors"
+    dll_name="PreceptsOfThePrecursors"
+    type_name="PreceptsOfThePrecursors.DysonPrecursors"
+    team_center_color="Blue" team_border_color="cF8F8FF"
+    type="SpecialFaction"
+    can_be_targeted_by_annoyed_non_human_units="true"
+    must_be_at_most_one="true"
+    player_discoverable="true"
+    description="A (relatively) small Dyson Mothership is scouring the galaxy looking for resources. It appears weak, but whoes to say what would happen if this ship manages to achieve its goal?
+    
+This Mothership will work to gather resources and rebuild Zenith control over the galaxy, completely consuming Metal Generators to produce Dyson Nodes to secure territory it considers its own. Time will tell if you'll have a place in this new Zenith takeover.
+
+&lt;color=#f25e1c&gt;HIGH IMPACT:&lt;/color&gt; This faction can permanently modify the galaxy, capable of bringing intense pressure to planets and semi-permanently removing resources from planets.">
+    <custom_field name="Intensity" display_name="Strength" description="Just how effective is this faction?"
+      sort_group="200" setting_type="IntSlider" default="5" min="1" max="10" />
+    <custom_field name="DebugMode" display_name="Debug" description="Enables debug mode, cutting leveling and building costs by 90%. Development only"
+              sort_group="250" setting_type="CustomDropdownArbitraryOptions" arbitrary_options="Enabled,Disabled" default_option="Disabled" />
+  </faction>
+  <!-- Protectors are a subfaction that are placed by the Precursors on planets that need protected.
+  They are not as strong as the Suppressors, but allow the existence of aliens the Dyson consider friendly. -->
+  <faction name="DysonProtectors"
+           display_name="Dyson Protectors"
+           dll_name="PreceptsOfThePrecursors"
+           type_name="PreceptsOfThePrecursors.DysonProtectors"
+           team_center_color="Blue" team_border_color="Gold"
+           type="SpecialFaction"
+           should_not_be_shown="true"
+           player_discoverable="true"
+           auto_add_one_of_faction_if_missing_on_save_load="true"
+           description="A subfaction of the Dyson Precursors, these are given various tasks related to protecting territory. Unlike Suppressors, these are willing to allow the existence of aliens, and are non-hostile to Humans."
+  >
+  </faction>
+  <!-- Suppressors are a subfaction that are placed by the Precursors on planets that need suppressed.
+  They are notably stronger than Protectors, but will attempt to attack anything that enters the planet. -->
+  <faction name="DysonSuppressors"
+           display_name="Dyson Suppressors"
+           dll_name="PreceptsOfThePrecursors"
+           type_name="PreceptsOfThePrecursors.DysonSuppressors"
+           team_center_color="Purple" team_border_color="cE52B50"
+           type="SpecialFaction"
+           should_not_be_shown="true"
+           player_discoverable="true"
+           auto_add_one_of_faction_if_missing_on_save_load="true"
+           description="A subfaction of the Dyson Precursors, these are given various tasks related to suppressing territory. Unlike Protectors, these will not allow the existence of aliens, and are hostile to Humans."
+  >
+  </faction>
+</root>

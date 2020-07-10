@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CF5C0EDE-E953-46AF-B818-CC6B49226779}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PreceptsOfThePrecursors</RootNamespace>
+    <AssemblyName>PreceptsOfThePrecursors</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AIWarExternalCode, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\AIWarExternalCode.dll</HintPath>
+    </Reference>
+    <Reference Include="AIWarExternalVisualizationCode, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\AIWarExternalVisualizationCode.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcenAIW2Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\ArcenAIW2Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcenAIW2ThirdParty, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\ArcenAIW2ThirdParty.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcenAIW2Visualization, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\ArcenAIW2Visualization.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcenUniversal, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\ArcenUniversal.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib">
+      <HintPath>..\ReliableDLLStorage\mscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PrivateVisExtensions">
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\PrivateVisExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>..\ReliableDLLStorage\System.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>..\ReliableDLLStorage\System.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.XML">
+      <HintPath>..\ReliableDLLStorage\System.XML.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\GoonSquad.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\FleetDesignTemplate\GoonSquad.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\FleetDesignTemplate\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\GoonSquad.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\HackingType\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\GoonSquad.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ModDescription.txt" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ModIsOffByDefault.txt.txt" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\GoonSquad.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\TechUpgrade\GoonSquad.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CSharp\BulkPathfinding.cs" />
+    <Compile Include="CSharp\ExternalData\RoamingEnclave.cs" />
+    <Compile Include="CSharp\ExternalData\GoonSquad.cs" />
+    <Compile Include="CSharp\ExternalData\DysonPrecursors.cs" />
+    <Compile Include="CSharp\GameCommands\RoamingEnclave.cs" />
+    <Compile Include="CSharp\GameCommands\DysonPrecursors.cs" />
+    <Compile Include="CSharp\Hacking\DysonPrecursors.cs" />
+    <Compile Include="CSharp\SpecialFactions\DysonPrecursors.cs" />
+    <Compile Include="CSharp\SpecialFactions\GoonSquad.cs" />
+    <Compile Include="CSharp\SpecialFactions\RoamingEnclave.cs" />
+    <Compile Include="CSharp\Trust.cs" />
+    <Compile Include="CSharp\Utilities.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>RD /S /Q "$(SolutionDir)Releases\$(ProjectName)"
+mkdir "$(SolutionDir)Releases\$(ProjectName)\GameData\ModdableLogicDLLs"
+mkdir "$(SolutionDir)Releases\$(ProjectName)\XMLMods"
+copy "$(TargetDir)$(ProjectName).dll" "$(SolutionDir)Releases\$(ProjectName)\GameData\ModdableLogicDLLs"
+Xcopy /e /i /Q "$(ProjectDir)XMLMods" "$(SolutionDir)Releases\$(ProjectName)\XMLMods"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

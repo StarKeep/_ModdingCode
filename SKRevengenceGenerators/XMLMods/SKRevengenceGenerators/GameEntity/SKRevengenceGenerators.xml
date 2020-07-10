@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <entity name="DarkSpireVengeanceGenerator" is_partial_record="true"
+        target_type_for_player="AutotargetAlways" immune_to_all_damage="false" hull_points="20000000" shield_points="70000000"
+        priority_as_ai_target="NotDangerous" priority_as_frd_target="NotDangerous" priority_to_protect="Expendable"
+  >
+  </entity>
+</root>

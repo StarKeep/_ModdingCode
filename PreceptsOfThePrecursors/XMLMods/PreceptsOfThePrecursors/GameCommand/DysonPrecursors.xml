@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+ <!-- Unique commands. -->
+  <command name="SetPlanetToBuildOn" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.GameCommand_SetPlanetToBuildOn" />
+</root>

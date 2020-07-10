@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+  <journal name="MothershipSeen" sidebar_text="{FactionColor}{UnitTypeName}&lt;/color&gt; found on {PlanetName}"
+        text_replacement_related_faction="true"
+        text_replacement_related_faction_color="true"
+        text_replacement_related_planet="true"
+        text_replacement_related_unit_type="true"
+        chat_text="We have discovered a {FactionColor}{UnitTypeName}&lt;/color&gt; on {PlanetName}. Your advisor's response has been noted in the journal."
+        full_text="Commander? You’re gonna wanna see this… we’ve spotted another one of those giant Zenith beings. Unlike the neutral Trader or perpetually ravenous Devourer, this one seems much more… active… to say the least. We’ve noticed it engaging the AI. Only time will tell if it is also hostile to us."
+      />
+  <journal name="MothershipNear" sidebar_text="{FactionColor}{UnitTypeName}&lt;/color&gt; near our territory"
+        text_replacement_related_faction="true"
+        text_replacement_related_faction_color="true"
+        text_replacement_related_planet="true"
+        text_replacement_related_unit_type="true"
+        chat_text="Alert! The {FactionColor}{UnitTypeName}&lt;/color&gt; is on {PlanetName}, which is adjacent to our territory! Your advisor's response has been noted in the journal."
+        full_text="Commander? The energy readings that it gives off is staggering! Anyways, it seems like the Zenith Mothership doesn’t actively participate in combat, but delegates almost all of the combat to smaller zenith organisms to fight for it hence the name. It seems to be approaching our territory. The AI’s been trying to take it down, but as for who shot first I’m not sure. If it was the AI, we might have a potential ally on our side. If the Zenith Mothership shot first… we may have a bit of trouble inbound, to put it lightly."
+      />
+  <journal name="MothershipOnPlayerPlanet" sidebar_text="{FactionColor}{UnitTypeName}&lt;/color&gt; near our territory"
+        text_replacement_related_faction="true"
+        text_replacement_related_faction_color="true"
+        text_replacement_related_planet="true"
+        text_replacement_related_unit_type="true"
+        chat_text="Alert! The {FactionColor}{UnitTypeName}&lt;/color&gt; is on {PlanetName}, which is adjacent to our territory! Your advisor's response has been noted in the journal."
+        full_text="Uh… Commander? The Zenith Mothership is on one of our planets… We’ve received a transmission from it, and it reads as follows:
+
+
+Ah, finally, a respite from the silent one.
+This… calmness… I can appreciate.
+I do not desire us to fight, my hostile intent, none.
+
+I have awoken from my slumber, but my kin are gone.
+It seems I must fulfill my duty, to restore my race to it’s former glory.
+Given enough time, I shall rebuild, and usher in a new dawn.
+
+From what the science crew and I’ve been able to gather is that the Zenith Mothership has been attacked by the AI and was recently awakened from a sort of stasis or hibernation. We think that it is attempting to rebuild the Zenith race, but given how little we know of the Zenith, it’s difficult to predict what exactly the Zenith Mothership will do. "
+      />
+</root>

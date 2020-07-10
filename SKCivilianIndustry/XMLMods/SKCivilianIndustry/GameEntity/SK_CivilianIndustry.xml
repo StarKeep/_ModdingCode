@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--    
+            The main station of our faction.
+            Auto builds on player homeworlds.
+            Builds Cargo Ships and Militia Construction Ships
+    -->
+  <entity name="GrandStation" display_name="Grand Shipyard"
+          description="The central point of civilian activites. People will stake their claim on the galactic market here, and buy cargo ships in response to high trade demand."
+          tags="CivGrandShipyard,CivGrandShipyardSpawnsBaseCivCargoShip,ShowsOnNormalDisplayMode"
+          visuals="assets/_finalgamemeshes/humanbuildings/spacedock/spacedock.prefab"
+          gimbal_name="AstroTrainStation"
+          icon_name="Official/AstroTrainStation" gimbal_icon_size_multiplier="1.5"
+          category="Ship"
+          visuals_scale_multiplier="12" size_scale="12" y_offset_of_icon="30"
+          collision_priority="810"
+          behavior="Stationary"
+          starting_mark_level="Mark1"
+          cost_for_ai_to_purchase="90000"
+          hull_points="5000000" shield_points="100000" speed="Immobile"
+          armor_mm="250" albedo="0.8" mass_tx="4"
+          metal_cost="50000" energy_consumption="10000"
+          ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+          ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+          ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+          voice_group="Silent"
+          priority_as_frd_target="MajorPlanetLevelObjective"
+          priority_as_ai_target="MajorPlanetLevelObjective"
+          priority_to_protect="MajorPlanetLevelObjective"
+            
+          tech_upgrades_that_benefit_me="Unused"
+    >
+  </entity>
+  <!--    Trade stations.
+            Auto builds on non homeworld planets.
+            Resources are always inported or exported through this station.
+    -->
+  <entity name="TradeStation" display_name="Trade Station"
+          description="The center of trade for this planet."
+          tags="CivTrade,CivImport,CivStorage25000,ShowsOnNormalDisplayMode"
+          visuals="assets/_finalgamemeshes/humanbuildings/spacedock/spacedock.prefab"
+          gimbal_name="AstroTrainStation"
+          icon_name="Official/AstroTrainStation" gimbal_icon_size_multiplier="1.5"
+          category="Ship"
+          visuals_scale_multiplier="7.5" size_scale="7.5" y_offset_of_icon="30"
+          collision_priority="810"
+          behavior="Stationary"
+          starting_mark_level="Mark1"
+          cost_for_ai_to_purchase="90000"
+          hull_points="150000" shield_points="25000" speed="Immobile"
+          armor_mm="250" albedo="0.8" mass_tx="4"
+          metal_cost="10000" energy_consumption="5000"
+          ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+          ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+          ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+          voice_group="Silent"
+          priority_as_frd_target="MajorPlanetLevelObjective"
+          priority_as_ai_target="MajorPlanetLevelObjective"
+          priority_to_protect="IgnoreMe"
+            
+          tech_upgrades_that_benefit_me="Unused"
+    >
+  </entity>
+  <!--    Cargo ship.
+            Used to transfer resources.
+            Note that CivStorage100 is the default value, and is not required. Simply kept in as an example.
+    -->
+  <entity name="CivCargoShip" display_name="Cargo Ship" cannot_be_stacked="true"
+          description="A civilian trade ship. It is tasked with moving resources throughout your planets. Upgraded by Metal Generation and Light Tech."
+          tags="CivCargoShip,BaseCivCargoShip,CivStorage100,ShowsOnNormalDisplayMode" should_never_be_captured_by_another_faction="true"
+          visuals="assets/_finalgamemeshes/humanoddities/colonyship/colonyship.prefab"
+          icon_name="Official/ColonyShip"
+          gimbal_icon_size_multiplier="0.75"
+          size_scale="1"
+          visuals_scale_multiplier="1"
+          category="Ship"
+          y_offset_of_icon="10"
+          collision_priority="900"
+          starting_mark_level="Mark1"
+          cost_for_ai_to_purchase="90000"
+          hull_points="50000" shield_points="0" speed="Normal1"
+          metal_cost="5000" energy_consumption="0"
+          armor_mm="300" engine_gx="22" albedo="0.8" mass_tx="33"
+          voice_group="Starship"
+          ship_or_structure_explosion_sfx="ShipStarship_Explosion"
+          strength_multiplier="0"
+          ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+          ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+          priority_as_ai_target="MinorResourceGeneration"
+          priority_as_frd_target="MinorResourceGeneration"
+          priority_to_protect="IgnoreMe"
+            
+          tech_upgrades_that_benefit_me="Unused"
+    >
+  </entity>
+  <!--    Miltia outpost.
+          Built to fortify planets with stationary units and mobile units that won't leave the planet.
+    -->
+  <entity name="MilitiaOutpost" display_name="Militia Outpost" tags="CivIndustry,CivBuild/TritiumSniperTurret/5/Iron/Auto10,CivBuild/ConcussionTurret/5/Steel/Auto10,CivBuild/MLRSTurret/5/Protium/Auto10,CivBuild/PikeTurret/5/Disrupeon/Auto10,CivBuild/SpiderTurret/5/Staalreem/Auto10,CivBuild/AmbushTurret/5/Ambium/Auto10,CivBuild/NucleophilicTurret/5/Trigon/Auto10,CivBuild/GrenadeLauncherTurret/5/Scrap/Auto10"
+          visuals="assets/_finalgamemeshes/buildings/fortress/fortressai.prefab"
+          icon_name="Official/Fortress" gimbal_icon_size_multiplier="1.5"
+          y_offset_of_icon="35"
+          category="Ship"
+          size_scale="9"
+          visuals_scale_multiplier="3"
+          collision_priority="800"
+          description="The centerpiece of a militia defensive force, this will request resources to build turrets and ships that will not leave the planet."
+          behavior="Stationary"
+          starting_mark_level="Mark1" max_mark_level="5" tech_upgrades_that_benefit_me="Unused"
+          cost_for_ai_to_purchase="3000"
+          hull_points="100000" shield_points="500000"
+          speed="Immobile"
+          metal_cost="1500000" energy_consumption="10000"
+          armor_mm="300" albedo="0.7" mass_tx="7"
+          ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+          ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostMassive_Explosion"
+          voice_group="Turret"
+          priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
+          >
+    <system name="FusionRockets" display_name="Fortress Fusion Rockets"
+          category="Weapon" firing_timing="OnlyInRange"
+          damage_per_shot="1500" range="High1" shot_speed="Normal" rate_of_fire="Normal"
+          shots_per_salvo="30" fires_salvos_sequentially="false"
+          shot_type_data="FusionRocket"
+				  >
+      <outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="2" />
+    </system>
+    <system name="EnergyWave" display_name="Fortress Energy Wave"
+          category="Weapon" firing_timing="OnlyInRange" shots_per_salvo="4"
+          damage_per_shot="3750" range="High1" shot_speed="Normal" rate_of_fire="Low" fires_salvos_sequentially="true"
+          shot_type_data="EnergyWave"
+				  >
+      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtLeast" compared_to="5" multiplier="6" />
+    </system>
+  </entity>
+  <!--    Patrol post.
+          Built to fortify planets with mobile units that will defend adjacent planets.
+  -->
+  <entity name="PatrolPost" tags="CivIndustry,CivBuild/VWing/5/Iron/Auto10,CivBuild/ConcussionCorvette/5/Steel/Auto10,CivBuild/FusionBomber/5/Protium/Auto10,CivBuild/PikeCorvette/5/Disrupeon/Auto10,CivBuild/Eyebot/5/Staalreem/Auto10,CivBuild/Vanguard/5/Ambium/Auto10,CivBuild/AutocannonMinipod/5/Trigon/Auto10,CivBuild/GrenadeLauncherCorvette/5/Scrap/Auto10"
+			visuals="Assets/_FinalGameMeshes/AIBuildings/GuardPosts/Pike/GuardPostPike.prefab"
+			icon_name="Official/GuardPost" icon_overlay="Official/GuardPost_Pike" gimbal_icon_size_multiplier="1.4"
+			category="Ship"
+			size_scale="5" y_offset_of_icon="30"
+			visuals_scale_multiplier="13"
+			collision_priority="1000"
+			display_name="Patrol Post"
+			description="The centerpiece of a militia defensive force, this will request resources to build mobile units to patrol adjacent planets."
+			behavior="Stationary"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Unused"
+			cost_for_ai_to_purchase="200"
+			hull_points="50000" shield_points="250000" speed="Immobile"
+			metal_cost="80000" energy_consumption="10000"
+			armor_mm="70" albedo="0.3" mass_tx="5"
+			voice_group="Silent"
+			ship_or_structure_explosion_sfx="Turret_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			
+      priority_as_ai_target="NormalGuardPost" priority_as_frd_target="NormalGuardPost" priority_to_protect="NormalGuardPost"
+			>
+    <system name="Petard" display_name="Petard"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1200" range="AboveAverage3" shot_speed="Normal" rate_of_fire="High"
+				shots_per_salvo="10" fires_salvos_sequentially="false"
+				shot_type_data="PikeShot_Gold" cloaking_percent_loss_from_firing="0.1"
+				>
+      <outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtLeast" compared_to="90" multiplier="6" />
+      <outgoing_damage_modifier based_on="CurrentHullPercentage" applies_to="HullOnly" comparison_type="AtLeast" compared_to="75" multiplier="2" />
+    </system>
+  </entity>
+  <!--
+            Construction Posts
+            Built in response to build requests; transforms into a fully operational building after a while.
+  -->
+  <entity name="CivConstructionPost"
+			visuals="assets/_finalgamemeshes/humanbuildings/spacedock/spacedock.prefab"
+			icon_name="Official/SpaceDock" gimbal_icon_size_multiplier="1.5"
+			category="Ship"
+			visuals_scale_multiplier="1.2" size_scale="0.8"
+			y_offset_of_icon="20"
+			collision_priority="1000"
+			display_name="Militia Construction Post"
+			description="The Civilians are attempting to construct a building here."
+			behavior="Stationary"
+			special_entity_type="FactoryForPlayerMobileFleets"
+			starting_mark_level="Markless"
+			cost_for_ai_to_purchase="200"
+			hull_points="4000" shield_points="8000" speed="Immobile"
+			metal_cost="25000" energy_consumption="500"
+			armor_mm="90" albedo="0.2" mass_tx="3"
+			ship_or_structure_explosion_sfx="StructureLarge_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="StructureLostOnOtherPlanet_Explosion"
+			voice_group="Civilian"
+      priority_as_ai_target="MidNasty" priority_as_frd_target="NotDangerous" priority_to_protect="MidFavoriteToy"
+          
+      description_appender_dll="SKCivilianIndustry"
+      description_appender_type="SKCivilianIndustry.DescriptionAppenders.ConstructionBuildingAppender"
+			>
+  </entity>
+</root>

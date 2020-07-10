@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- Logic faction. -->
+  <faction name="LogicFaction"
+           display_name="Hidden Logic Faction"
+           dll_name="SKRevengenceGenerators"
+           type_name="SKRevengenceGenerators.LogicFaction"
+           team_center_color="Gray" team_border_color="Gray"
+           type="SpecialFaction"
+           should_not_be_shown="true"
+           player_discoverable="true"
+           auto_add_one_of_faction_if_missing_on_save_load="true"
+           description="A faction used for logic related to SKRevengenceGenerators. If you see this, thats not good."
+  >
+  </faction>
+</root>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--These drone "fleets" build a full cap of each type that is a potential within them,
+      which means that they are not really procedural at all.  When a ship says "I am in the 'HiveGolemDrones' fleet and my max cap is 5,"
+      all drone producers that use 'HiveGolemDrones' will have 5 of that type of ship.
+      
+      The weight tag is also not used on these (it's just set to 1) because they are not actually chosen from at random at any time.
+      
+      The potential_ships stuff is not used, because the definitions of ships themselves say what are in there, and we don't have any limitations on types of categories.
+      The ships themselves are filled elsewhere by ships saying "I'm in that fleet" versus this file referencing them directly.-->
+  
+  <fleet_design name="DysonMothershipDronesLow" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonMothershipDronesMed" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonMothershipDronesHig" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  
+  <fleet_design name="DysonSuppressorDronesLow" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonSuppressorDronesMed" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonSuppressorDronesHig" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  
+  <fleet_design name="DysonProtectorDronesLow" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonProtectorDronesMed" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonProtectorDronesHig" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  
+  <fleet_design name="DysonNodeDronesLow" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonNodeDronesMed" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+
+  <fleet_design name="DysonSeedlingDrones" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+</root>

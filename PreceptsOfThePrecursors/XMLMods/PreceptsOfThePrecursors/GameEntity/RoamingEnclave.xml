@@ -1,0 +1,645 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- Enclave Units
+  -->
+  <entity name="YounglingWorm"
+			visuals="assets/_finalgamemeshes/fleetships/multi_needler_corvette/multi_needler corvette single.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/Corvette"
+			voice_group="Zenith"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			category="Ship" is_strikecraft="true"
+			collision_priority="100"
+			display_name="Youngling Worm"
+			description="The most simplistic Youngling, this Youngling boasts no speciality, and is the only unit type that an Enclave can personally build."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Disruptive,Medium"
+			cost_for_ai_to_purchase="15"
+			hull_points="250" shield_points="250" speed="AboveAverage5"
+			metal_cost="150" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="100" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+    <system name="Plink" display_name="Plink"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="Tiny3" shot_speed="Normal" rate_of_fire="Normal"
+				shot_type_data="PikeShot_Gold"
+				>
+    </system>
+  </entity>
+  <entity name="YounglingPuffin"
+			visuals="assets/_finalgamemeshes/fleetships/sentinelfrigate/sentinelfrigate.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/SentinelFrigate"
+			voice_group="Zenith"
+			category="Ship" is_strikecraft="true"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			collision_priority="100"
+			display_name="Youngling Puffin"
+			description="Modeled after various Technologist human units, this (relative to other Younglings) slow moving Youngling can attack targets anywhere on the planet."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Light,Technologist"
+			cost_for_ai_to_purchase="15"
+			hull_points="500" shield_points="500" speed="AboveAverage4"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="13" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+    <system name="PeckerEnergyWave" display_name="Pecker Energy Wave"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
+				shot_type_data="EnergyWave"
+				>
+      <outgoing_damage_modifier applies_to="AllShields" based_on="MaxBubbleForcefield" comparison_type="GreaterThan" compared_to="10000" multiplier="5" />
+    </system>
+  </entity>
+  <entity name="YounglingSnake"
+			visuals="assets/_finalgamemeshes/starships/assaultstarship/assaultstarship.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/Spider"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			category="Ship" is_strikecraft="true"
+			collision_priority="100"
+			display_name="Youngling Snake"
+			description="Modeled after various Subterfuge human units, this zippy little Youngling paralizes hostile units while pulling them near itself."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Subterfuge,Light"
+			cost_for_ai_to_purchase="15"
+			hull_points="750" shield_points="750" speed="High"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" engine_gx="13" albedo="0.1" mass_tx="0.1"
+			voice_group="Zenith"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+      amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+    <system name="GrapplingBolt" display_name="Grappling Bolt"
+       category="Weapon" firing_timing="OnlyInRange"
+       damage_per_shot="50" range="Tiny2" shot_speed="Normal" rate_of_fire="Normal"
+       shots_per_salvo="3" fires_salvos_sequentially="false"
+       shot_type_data="ParalysisProngedShot_Blue" added_target_evaluator="ParalyzerAsPrimary"
+       base_knockback_per_shot="-250"
+       base_paralysis_seconds_per_shot="4" paralysis_to_ships_mass_tx_less_than="2"
+				>
+      <outgoing_damage_modifier based_on="AttackDistance" comparison_type="LessThan" compared_to="1000" multiplier="5.0" />
+    </system>
+  </entity>
+  <entity name="YounglingEel"
+			visuals="assets/_finalgamemeshes/fleetships/LightningCorvette/LightningCorvette.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/Corvette" icon_overlay="Official/Corvette_Tesla"
+			voice_group="Zenith"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			category="Ship" is_strikecraft="true"
+			collision_priority="100"
+			display_name="Youngling Eel"
+			description="Modeled after various Splash human units, this (relative to other Younglings) slow moving Youngling deals damage to enemies near itself, and takes slightly reduced damage from hostiles away from itself."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Splash,Medium"
+			cost_for_ai_to_purchase="15"
+			hull_points="1250" shield_points="1250" speed="AboveAverage4"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="15" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+    <system name="TeslaCoil" display_name="Tesla Coil"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="Tiny3" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="false"
+				shot_type_data="LightningExplosionAOEShot"
+				area_of_effect_size="3200"
+				shots_detonate_immediately="true"
+				maximum_number_of_targets_hit_per_shot="5"
+				stack_damage_multiplier="2"
+				>
+    </system>
+    <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="2500" multiplier="0.75" />
+  </entity>
+  <entity name="YounglingCheetah"
+			visuals="assets/_finalgamemeshes/fleetships/raider/raider.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/Raider"
+			voice_group="Raider"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			category="Ship" is_strikecraft="true"
+			collision_priority="100"
+			display_name="Youngling Cheetah"
+			description="Modeled after various Raid human units, this extremely quick and cloaked Youngling shreds ships slower moving ships."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Light,Raid"
+			cost_for_ai_to_purchase="30"
+			hull_points="500" shield_points="500" speed="VeryHigh1"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="18" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+			>
+    <system name="AmbushCannon" display_name="Ambush Cannon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="Normal6" shot_speed="Fast" rate_of_fire="Normal" fires_salvos_sequentially="true"
+				shot_type_data="PlasmaBolt"
+				>
+      <outgoing_damage_modifier based_on="CurrentSpeedIfMoving" comparison_type="AtMost" compared_to="1200" multiplier="5" />
+    </system>
+    <system name="Cloaker" display_name="Cloaking Device" category="Passive" cloaking_points="500" > </system>
+  </entity>
+  <entity name="YounglingBadger"
+			visuals="assets/_finalgamemeshes/fleetships/vorticularcutlass/vorticularcutlass.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/VorticularCutlass"
+			voice_group="Zenith"
+			category="Ship" is_strikecraft="true"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			collision_priority="100"
+			display_name="Youngling Badger"
+			description="Modeled after various Melee human units, this (relative to other Younglings) slow moving Youngling has a thick outer hull to protect itself from distant fire as it approaches its target."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Melee,Heavy"
+			cost_for_ai_to_purchase="30" strength_multiplier="0.9"
+			hull_points="1500" shield_points="1500" speed="AboveAverage3"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="15" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+
+    <system name="Claws" display_name="Claws"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="AlmostNone" shot_speed="Fast" rate_of_fire="Normal" fires_salvos_sequentially="false"
+				shot_type_data="MeleeInvisible" added_target_evaluator="Melee"
+				>
+    </system>
+    <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="500" multiplier="0.05" />
+  </entity>
+  <entity name="YounglingLion"
+			visuals="assets/_finalgamemeshes/fleetships/fighter/fighterold.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/Fighter"
+			voice_group="Zenith"
+			category="Ship" is_strikecraft="true"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			collision_priority="100"
+			display_name="Youngling Lion"
+			description="Modeled after various Generalist human units, this Youngling is capable of engine stunning its targets, and gains a higher than normal Harmonic bonus than its fellow Younglings."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Generalist,Medium"
+			cost_for_ai_to_purchase="30"
+			hull_points="1000" shield_points="1000" speed="AboveAverage5"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="13" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="10" max_amount_added_to_damage_per_ship_of_this_type_on_planet="100"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+
+    <system name="GraviticRoar" display_name="Gravitic Roar"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="Small1" shot_speed="Normal" rate_of_fire="Normal"
+        shots_per_salvo="3" fires_salvos_sequentially="false"
+				shot_type_data="ElegantCurl"
+        base_engine_stun_per_shot="5"
+        engine_stun_to_engine_gx_less_than="22"
+				max_engine_stun_seconds="5" added_target_evaluator="EngineDamageAsMinorPart"
+				>
+    </system>
+  </entity>
+  <entity name="YounglingApe"
+			visuals="assets/_finalgamemeshes/fleetships/bomber/bomber.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/Bomber"
+			voice_group="Zenith"
+			category="Ship" is_strikecraft="true"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			collision_priority="100"
+			display_name="Youngling Ape"
+			description="Modeled after various Fusion human units, this Youngling boasts above average (for a Youngling) durability and the ability to hold a single target in place while piercing most of its shields."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Fusion,Heavy"
+			cost_for_ai_to_purchase="30"
+			hull_points="1500" shield_points="1500" speed="AboveAverage5"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="15" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+    <system name="BananaBomb" display_name="Banana Bomb"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="Small5" shot_speed="Slow" rate_of_fire="Normal" fires_salvos_sequentially="true"
+				shot_type_data="FusionBomb"
+				base_percent_damage_bypasses_personal_shields="0.6"
+				>
+      <outgoing_damage_modifier based_on="CurrentPersonalShieldPercentage" applies_to="HullOnly" comparison_type="AtLeast" compared_to="50" multiplier="1.1" />
+    </system>
+    <system name="TractorBeam" display_name="Tractor Beam"
+				  category="Passive"
+				  tractor_range="Small1" tractor_count="1" tractor_hits_albedo_less_than="0.5" tractor_hits_engine_gx_less_than="15"
+				  >
+    </system>
+  </entity>
+  <entity name="YounglingBee"
+      tags="EnclaveUnit"
+			visuals="assets/_finalgamemeshes/fleetships/multi_needler_corvette/multi_needler corvette single.prefab"
+			icon_name="Official/Corvette" icon_overlay="Official/Corvette_Pike"
+			voice_group="Zenith"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			category="Ship" is_strikecraft="true"
+			collision_priority="100"
+			display_name="Youngling Bee"
+			description="Modeled after various Disruptive human units, this Youngling suppresses the weapons of hostile targets from long range."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Disruptive,Medium"
+			cost_for_ai_to_purchase="31"
+			hull_points="750" shield_points="750" speed="AboveAverage5"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="15" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+    <system name="ShockingSting" display_name="Shocking Sting"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="25" range="High2" shot_speed="Normal" rate_of_fire="Normal"
+				shots_per_salvo="4" fires_salvos_sequentially="false"
+				shot_type_data="PikeShot_Gold"
+        base_enemy_weapon_reload_slowing_seconds_per_shot="2" enemy_weapon_reload_slowing_to_armor_mm_less_than="80" added_target_evaluator="WeaponJamAsPrimary"
+				>
+    </system>
+  </entity>
+  <entity name="YounglingShrike"
+			visuals="assets/_finalgamemeshes/fleetships/sentinelfrigate/sentinelfrigate.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/SentinelFrigate"
+			voice_group="Zenith"
+			category="Ship" is_strikecraft="true"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			collision_priority="100"
+			display_name="Youngling Shrike"
+			description="Modeled after various Concussion human units, this (relative to other Younglings) slow moving Youngling can attack up to 2 targets at a large range, dealing bonus damage to low armored targets."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Light,Technologist"
+			cost_for_ai_to_purchase="15"
+			hull_points="500" shield_points="500" speed="AboveAverage4"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="13" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+    <system name="PeckerMissile" display_name="Pecker Missiles"
+				category="Weapon" firing_timing="OnlyInRange" shots_per_salvo="2"
+				damage_per_shot="50" range="High2" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
+				shot_type_data="GuidedMissile"
+				>
+      <outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="6" />
+    </system>
+  </entity>
+  <entity name="YounglingWolf"
+			visuals="assets/_finalgamemeshes/fleetships/raptor/raptor.prefab"
+      tags="EnclaveUnit"
+			icon_name="Official/Raptor"
+			voice_group="Zenith"
+			category="Ship" is_strikecraft="true"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			collision_priority="100"
+			display_name="Youngling Wolf"
+			description="Modeled after various Ambush human units, this cloaked Youngling deals bonus damage when it or its target has just entered the planet, and gains a higher than normal Harmonic bonus than its fellow Younglings."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Light,Ambush"
+			cost_for_ai_to_purchase="30"
+			hull_points="750" shield_points="750" speed="High"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="15" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="10" max_amount_added_to_damage_per_ship_of_this_type_on_planet="100"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+			>
+    <system name="HuntingLaser" display_name="Hunting Laser"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="AboveAverage4" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
+				shot_type_data="LaserPulse_DeepBlue"
+				>
+      <outgoing_damage_modifier based_on="TargetTimeAtPlanet" comparison_type="LessThan" compared_to="20" multiplier="4" />
+      <outgoing_damage_modifier based_on="MyTimeAtPlanet" comparison_type="LessThan" compared_to="20" multiplier="4" />
+    </system>
+    <system name="Cloaker" display_name="Cloaking Device" category="Passive" cloaking_points="500" ></system>
+  </entity>
+  <entity name="YounglingAnt"
+    tags="EnclaveUnit"
+	  visuals="Assets/_FinalGameMeshes/Zenith/Dyson2Defender/DysonDefender.prefab"
+	  icon_name="Official/DysonSentinel"
+	  voice_group="Zenith"
+	  size_scale="0.7"
+	  visuals_scale_multiplier="1.4"
+	  category="Ship" is_strikecraft="true"
+	  collision_priority="100"
+	  display_name="Youngling Ant"
+	  description="Modeled after various Zenith units, this Youngling boasts a thick outer shell and rapid healing as it fights off aggressors."
+	  starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Fusion,Medium"
+	  cost_for_ai_to_purchase="30"
+    health_change_per_damage_dealt="5"
+	  hull_points="750" shield_points="750" speed="AboveAverage5"
+	  metal_cost="250" energy_consumption="250"
+		armor_mm="40" albedo="0.1" engine_gx="15" mass_tx="0.1"
+		ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+		ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+		amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+    priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+	  >
+    <system name="AcidicSiphon" display_name="Acidic Siphon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" shots_per_salvo="3" range="High2" shot_speed="Slow" rate_of_fire="Normal" fires_salvos_sequentially="true"
+				shot_type_data="DoubleShot_Green"
+				>
+    </system>
+    <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="3000" multiplier="0.33" />
+  </entity>
+  <entity name="YounglingTurtle"
+      tags="EnclaveUnit"
+      visuals="Assets/_FinalGameMeshes/Macrophage/Harvester/MacrophageHarvester.prefab"
+      icon_name="Official/MacrophageHarvester"
+      category="Ship"
+      size_scale="0.4"
+			visuals_scale_multiplier="0.8"
+      collision_priority="500"
+      display_name="Youngling Turtle"
+      description="Modeled after various Macrophage units, this slow moving Youngling draws fire away from its weaker siblings."
+      voice_group="Zenith"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Forcefields,Heavy"
+			cost_for_ai_to_purchase="30"
+			health_change_per_damage_dealt="2"
+			hull_points="1250" shield_points="1250" speed="AboveAverage3"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="15" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+			priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
+			>
+    <system name="Yawn" display_name="Yawn"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="VeryTiny1" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="false"
+			 shot_type_data="FlakShotAOEBurstAtEnd"
+			 area_of_effect_size="1000"
+			 shots_detonate_immediately="true"
+			 maximum_number_of_targets_hit_per_shot="12"
+				>
+    </system>
+    <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="1000" multiplier="0.05" />
+  </entity>
+  <!-- These Clanlings are unused, but kept in for potential future expansions of the faction. -->
+  <entity name="ClanlingMammoth"
+      tags="EnclaveUnit"
+			gimbal_icon_size_multiplier="1.5"
+      visuals="Assets/_FinalGameMeshes/Spire/SpireLostFrigate/SpireLostFrigate.prefab"
+      icon_name="Official/Spire_Frigate"
+      uses_large_health_bar="true"
+      category="Ship"
+      size_scale="3.5"
+			visuals_scale_multiplier="7"
+      y_offset_of_icon="35"
+      collision_priority="500"
+      display_name="Clanling Mammoth"
+      description="Modeled after various Spire units, this relatively large Clanling ship boats a low powered Lance and shields all its nearby siblings from distant fire."
+      voice_group="Zenith"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Forcefields,Heavy"
+      shield_size_scale="7" my_forcefield_does_not_shrink="true"
+			cost_for_ai_to_purchase="3000"
+			hull_points="5000" shield_points="50000" speed="AboveAverage3"
+			metal_cost="2500" energy_consumption="2500"
+			armor_mm="150" albedo="0.7" engine_gx="20" mass_tx="2"
+			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+		  amount_added_to_damage_per_ship_of_this_type_on_planet="25" max_amount_added_to_damage_per_ship_of_this_type_on_planet="250"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+			>
+    <system name="TuskLance" display_name="Tusk Lance"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="500" range="AboveAverage3" shot_speed="Normal" rate_of_fire="Normal"
+				stack_damage_multiplier="1.25"
+				shot_type_data="HeavyBeamInvisible"
+				beam_length_multiplier="1.3"
+				hits_all_intersecting_targets="true"
+				shots_detonate_immediately="true"
+				maximum_number_of_targets_hit_per_shot="30"
+				>
+    </system>
+    <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5000" multiplier="0.05" />
+  </entity>
+  <entity name="ClanlingBear"
+      tags="EnclaveUnit"
+			gimbal_icon_size_multiplier="1.5"
+      visuals="assets/_finalgamemeshes/guardians/lightningguardian/lightningguardian.prefab"
+      icon_name="Official/GuardianDire"
+      uses_large_health_bar="true"
+      category="Ship"
+      size_scale="3.5"
+			visuals_scale_multiplier="7"
+      y_offset_of_icon="35"
+      collision_priority="500"
+      display_name="Clanling Bear"
+      description="Modeled after various Dire Guardian AI units, this relatively large Clanling ship boasts some very cost-effective durability and firepower."
+      voice_group="Zenith"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Heavy"
+			cost_for_ai_to_purchase="3000"
+			hull_points="10000" shield_points="10000" speed="AboveAverage3"
+			metal_cost="2500" energy_consumption="2500"
+			armor_mm="150" albedo="0.7" engine_gx="20" mass_tx="2"
+			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+		  amount_added_to_damage_per_ship_of_this_type_on_planet="25" max_amount_added_to_damage_per_ship_of_this_type_on_planet="250"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+			>
+    <system name="ClawSwipe" display_name="Claw Swipe"
+      category="Weapon" firing_timing="OnlyInRange"
+      damage_per_shot="500" range="Tiny3" shot_speed="Normal" rate_of_fire="Normal"
+      shot_type_data="PikeShot_Gold"
+				>
+    </system>
+    <system name="BellowingRoar" display_name="Bellowing Roar"
+     category="Weapon" firing_timing="OnlyInRange"
+     damage_per_shot="250" range="Small5" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="false"
+     shot_type_data="FlakShotAOEBurstAtEnd"
+     area_of_effect_size="5000"
+     shots_detonate_immediately="true"
+     maximum_number_of_targets_hit_per_shot="40"
+     stack_damage_multiplier="2"
+				>
+    </system>
+  </entity>
+  <entity name="ClanlingWyvern"
+      tags="EnclaveUnit"
+			gimbal_icon_size_multiplier="1.5"
+      visuals="assets/_finalgamemeshes/guardians/lightningguardian/lightningguardian.prefab"
+      icon_name="Official/SomethingPortal"
+      uses_large_health_bar="true"
+      category="Ship"
+      size_scale="7"
+			visuals_scale_multiplier="14"
+      y_offset_of_icon="35"
+      collision_priority="800"
+      display_name="Clanling Wyvern"
+      description="Modeled after various Tiered AI units, this large Clanling ship boasts some very cost-effective durability and firepower."
+      voice_group="Zenith"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Heavy"
+			cost_for_ai_to_purchase="30000"
+			hull_points="500000" shield_points="500000" speed="AboveAverage3"
+			metal_cost="50000" energy_consumption="50000"
+			armor_mm="210" albedo="0.8" engine_gx="26" mass_tx="7"
+			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+		  amount_added_to_damage_per_ship_of_this_type_on_planet="250" max_amount_added_to_damage_per_ship_of_this_type_on_planet="1000"
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+			>
+    <system name="ClawSwipe" display_name="Claw Swipe"
+      category="Weapon" firing_timing="OnlyInRange"
+      damage_per_shot="5000" range="Tiny3" shot_speed="Normal" rate_of_fire="Normal"
+      shot_type_data="PikeShot_Gold"
+				>
+    </system>
+    <system name="BellowingRoar" display_name="Bellowing Roar"
+     category="Weapon" firing_timing="OnlyInRange"
+     damage_per_shot="2500" range="Small5" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="false"
+     shot_type_data="FlakShotAOEBurstAtEnd"
+     area_of_effect_size="5000"
+     shots_detonate_immediately="true"
+     maximum_number_of_targets_hit_per_shot="120"
+     stack_damage_multiplier="2"
+				>
+    </system>
+    <system name="LightningBreath" display_name="Lightning Breath"
+      category="Weapon" firing_timing="OnlyInRange" shots_per_salvo="12"
+      damage_per_shot="500" range="High2" shot_speed="Normal" rate_of_fire="Normal"
+      shot_type_data="LightningGuardianExplosionAOEShot"
+     area_of_effect_size="5000"
+     maximum_number_of_targets_hit_per_shot="120"
+				>
+    </system>
+  </entity>
+  <!-- Hive Units
+			These spawn Youngling/Clanling units over time, which will either assign themselves to Enclaves, Player Fleets, or attack on their own.
+  -->
+  <entity name="NeinzulHiveBase"
+			visuals="Assets/_FinalGameMeshes/Macrophage/Telium/MacrophageTelium.prefab" gimbal_name="Telium"
+			icon_name="Official/Telium" gimbal_icon_size_multiplier="1.2"
+			category="Ship"
+			size_scale="4"
+			visuals_scale_multiplier="1.5"
+			y_offset_of_icon="30"
+			collision_priority="810"
+			display_name="Base Hive"
+			description="This should never be spawned. If you see this unit, please report it to the mod author."
+			behavior="Stationary"
+			starting_mark_level="Mark1"
+			cost_for_ai_to_purchase="3200"
+			hull_points="250000" shield_points="500000" speed="Immobile"
+			metal_cost="250000" energy_consumption="50000"
+			armor_mm="30" albedo="0.1" mass_tx="4"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			voice_group="Silent" should_never_be_captured_by_another_faction="true"      
+      priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="NotDangerous" priority_to_protect="BigFavoriteToy"
+			>
+  </entity>
+  <entity name="HiveYounglingPuffin" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Puffin Hive" description="This Neinzul Hive is the home to a Puffin swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingSnake" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Snake Hive" description="This Neinzul Hive is the home to a Snake swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingEel" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Eel Hive" description="This Neinzul Hive is the home to a Eel swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingCheetah" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Cheetah Hive" description="This Neinzul Hive is the home to a Cheetah swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingBadger" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Badger Hive" description="This Neinzul Hive is the home to a Badger swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingLion" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Lion Hive" description="This Neinzul Hive is the home to a Lion swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingApe" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Ape Hive" description="This Neinzul Hive is the home to a Ape swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingBee" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Bee Hive" description="This Neinzul Hive is the home to a Bee swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingShrike" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Shrike Hive" description="This Neinzul Hive is the home to a Shrike swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingWolf" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Wolf Hive" description="This Neinzul Hive is the home to a Wolf swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingAnt" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+          display_name="Youngling Ant Hive" description="This Neinzul Hive is the home to a Ant swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveYounglingTurtle" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+         display_name="Youngling Turtle Hive" description="This Neinzul Hive is the home to a Turtle swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <!-- Build by the player, gets transformed into an above hive when complete. -->
+	<entity name="HiveYounglingHuman" copy_from="NeinzulHiveBase" skip_export="true" metal_cost="2000000" energy_consumption="250000" strength_multiplier="0.01"
+						display_name="Neinzul Hive Construction Post" build_sidebar_categories_i_am_part_of="NeinzulEnclaveBuildings" absolute_max_cap_when_in_fleets="1"
+					description="This can be built in order to provide a place for your Neinzul allies to call home. Upon completion, the Neinzul will take full control of it and use it to produce a random Youngling unit. Any fleets you keep on this planet will slowly build up their own force of Younglings. This building will not cost energy when completed."
+					>
+		<metal_flow purpose="SelfConstruction" throughput="50"/>
+	</entity>
+  <!-- The Enclave itself. -->
+  <entity name="RoamingEnclave" cannot_be_stacked="true"
+			tags="ShowsOnNormalDisplayMode,RoamingEnclave" strength_multiplier="0.5"
+			draw_in_galaxy_view="true" 
+			gimbal_icon_size_multiplier="2.25"
+			visuals="Assets/_FinalGameMeshes/Specials/AstroTrain/AstroTrainCarrierStyle.prefab"
+			icon_name="Official/AstroTrain"
+			uses_large_health_bar="true"
+			category="Ship"
+			size_scale="7"
+			visuals_scale_multiplier="2"
+			y_offset_of_icon="10"
+			collision_priority="100"
+			display_name="Roaming Enclave"
+			description="A focus point for a Neinzul Swarm, this Enclave roams the galaxy, attempting to protect its territory. Peppers nearby targets in very powerful pheremones that greatly increasing the potency of its Younglings."
+			starting_mark_level="Mark1"
+			cost_for_ai_to_purchase="500000"
+			hull_points="1000000" shield_points="1000000" speed="BelowAverage2"
+			metal_cost="250000" energy_consumption="25000"
+			armor_mm="210" albedo="0.8" engine_gx="31" mass_tx="6"
+			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			voice_group="Zenith"
+      
+      priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
+			pushes_enemy_shields="true"
+			should_never_be_captured_by_another_faction="true"
+			>
+    <system name="FrenzyPheromones" display_name="Frenzy Pheromones"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1" range="Tiny3" shot_speed="Normal" rate_of_fire="Devourer"
+				shots_per_salvo="50" fires_salvos_sequentially="true"
+				shot_type_data="DoubleShot_Red"
+        damage_amplification="true" damage_amplification_duration="2" damage_amplification_flat="500"
+				>
+    </system>
+    <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5000" multiplier="0.05" />
+  </entity>
+</root>

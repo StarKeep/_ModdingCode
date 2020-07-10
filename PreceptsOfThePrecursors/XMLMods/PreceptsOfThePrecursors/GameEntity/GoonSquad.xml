@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- Deomcracy's Downfall. Nothing but grenades. And no shields because he loves the smell of grenades in the morning. -->
+  <entity
+		name="DemocracyDownfall" is_ark="true" display_name="Democracy's Downfall" special_entity_type="MobileOfficerCombatFleetFlagship" 
+    fleet_design_logic_i_grant_one_from="MobileCombatFleet" voice_group="Ark_AlanEdwards" gimbal_icon_size_multiplier="1.5"
+		visuals="assets/_finalgamemeshes/arks/arkone/arkone.prefab" icon_name="Official/Ark" draw_in_galaxy_view="true"
+    tags="ShowsOnNormalDisplayMode,Capturable" capturable_seed_weight="250" capturable_max_per_galaxy="1"
+    description="The flagship of a once great human general. A major design flaw made the weapons extremely short range."
+    size_scale="7"
+		visuals_scale_multiplier="3"
+		y_offset_of_icon="40"
+		uses_large_health_bar="true"
+		category="Ship"
+		collision_priority="12000"
+		aip_to_claim="5"
+		metal_to_claim="750000"
+		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_ArkGeneral"
+		cost_for_ai_to_purchase="250"
+		hull_points="1200000" shield_points="0" speed="High"
+		metal_cost="750000" energy_consumption="12500"
+    assist_range="Normal1"
+		armor_mm="180" albedo="0.8" engine_gx="22" mass_tx="7"
+		ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+		ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostMassive_Explosion"
+		ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+		speed_multiplier_first_5_seconds_on_planet="1.5"
+    priority_as_ai_target="NormalStarship" priority_as_frd_target="NormalStarship" priority_to_protect="MajorPlanetLevelObjective"
+    firing_delay_for_transported_ships="6"
+		shows_on_galaxy_map_for_explored_planets="true" always_visible_to_players="true"
+    >
+    <system name="CrowdGrenade" display_name="Red Velvet Grenade"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="5000" range="Tiny1" shot_speed="Normal" rate_of_fire="Low"
+				shots_per_salvo="5" fires_salvos_sequentially="true"
+				shot_type_data="FlakShotAOEBurstAtEnd"
+				area_of_effect_size="1300"
+        stack_damage_multiplier="2"
+				maximum_number_of_targets_hit_per_shot="50"
+				>
+      <outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="60" multiplier="5" />
+    </system>
+    <system name="WeaponlockGrenade" display_name="White Stripe Grenade"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1300" range="Tiny4" shot_speed="Normal" rate_of_fire="Low"
+				shots_per_salvo="5" fires_salvos_sequentially="true"
+				shot_type_data="FlakShotAOEBurstAtEnd"
+				area_of_effect_size="650"
+				maximum_number_of_targets_hit_per_shot="13"
+        base_enemy_weapon_reload_slowing_seconds_per_shot="8" enemy_weapon_reload_slowing_to_armor_mm_less_than="80"
+				max_enemy_weapon_reload_slowing_seconds="20"
+				>
+    </system>
+    <system name="EnginelockGrenade" display_name="Blue Tar Grenade"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1300" range="Tiny4" shot_speed="Normal" rate_of_fire="Low"
+				shots_per_salvo="5" fires_salvos_sequentially="true"
+				shot_type_data="FlakShotAOEBurstAtEnd"
+				area_of_effect_size="650"
+				maximum_number_of_targets_hit_per_shot="13"
+				base_engine_stun_per_shot="8" engine_stun_to_engine_gx_less_than="14"
+				max_engine_stun_seconds="30"
+				>
+    </system>
+    <metal_flow purpose="RebuildingRemains" throughput="100" increase_per_mark_level="100"/>
+  </entity>
+  <!-- Battlestar, produces an ever increasing amount of drone carriers around itself. Heavily shielded, weak to shield piercing. -->
+  <entity name="Battlestar"
+      special_entity_type="MobileLoneWolfFleetFlagship"
+			tags="ShowsOnNormalDisplayMode,Capturable" capturable_seed_weight="65" capturable_max_per_galaxy="1"
+			voice_group="MasterCombatant" gimbal_icon_size_multiplier="1.5"
+			draw_in_galaxy_view="true"
+			visuals="assets/_finalgamemeshes/guardians/carrierguardian/carrierguardian.prefab"
+      icon_name="Official/SomethingAperture" icon_overlay="Official/Guardian_Carrier"
+			uses_large_health_bar="true"
+			category="Ship"
+			size_scale="4.5"
+			visuals_scale_multiplier="3.8"
+			y_offset_of_icon="30"
+			display_name="Battlestar"
+			description="A shield heavy drone supership, this ship constantly outputs an ever increasing number of strikecraft wings as it levels up. While its various fighter wings provide support, this ship is personally capable of very powerful single target damage at extreme ranges.
+Constantly summons wings consisting of 6 ships, gaining new ones every mark.
+Mark 1: Fighter
+Mark 2: Stingray
+Mark 3: Raider
+Mark 4: Concussion
+Mark 5: Pike
+Mark 6: Grenade
+Mark 7: Bomber"
+			collision_priority="810"
+			metal_to_claim="2000000"
+			aip_to_claim="40"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
+			cost_for_ai_to_purchase="10000" strength_multiplier="5"
+			hull_points="250000" shield_points="1500000" speed="AboveAverage1"
+			armor_mm="180" albedo="0.7" engine_gx="18" mass_tx="9"
+			metal_cost="2000000" energy_consumption="75000"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+      priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="BigFavoriteToy"
+      drone_starting_behavior_type="Attacker_Full"
+			>
+    <system name="OrchestrationCannon" display_name="Orchestration Cannon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="10000" range="EssentiallyInfinite" shot_speed="VeryFast" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				shot_type_data="ExtremeLongRangeRailgun"
+				>
+      <outgoing_damage_modifier based_on="AttackDistance" comparison_type="MultiplesOf" compared_to="2500" multiplier="1" />
+    </system>
+    <system name="MarineSquad" display_name="Marine Squad"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="100000" range="VeryTiny1" shot_speed="VeryFast" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				shot_type_data="ExtremeLongRangeRailgun"
+				>
+    </system>
+    <system name="FighterSquad" display_name="Fighter Squad"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
+				shot_type_data="BattlestarFighterWingLeader"
+				system_is_hidden_for_ui="true"
+				>
+    </system>
+    <system name="StingraySquad" display_name="Stingray Squad" min_mark_level_to_function="2"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				shot_type_data="BattlestarStingrayWingLeader"
+				system_is_hidden_for_ui="true"
+				>
+    </system>
+		<system name="RaiderSquad" display_name="Raider Squad" min_mark_level_to_function="3"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				shot_type_data="BattlestarRaiderWingLeader"
+				system_is_hidden_for_ui="true"
+				>
+    </system>
+    <system name="ConcussionCorvetteSquad" display_name="Concussion Corvette Squad" min_mark_level_to_function="4"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				shot_type_data="BattlestarConcussionCorvetteWingLeader"
+				system_is_hidden_for_ui="true"
+				>
+    </system>
+		<system name="PikeCorvetteSquad" display_name="Pike Corvette Squad" min_mark_level_to_function="5"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				shot_type_data="BattlestarPikeCorvetteWingLeader"
+				system_is_hidden_for_ui="true"
+				>
+    </system>
+		<system name="Grenade Launcher Corvette Squad" display_name="Grenade Launcher Corvette Squad" min_mark_level_to_function="6"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				shot_type_data="BattlestarGrenadeLauncherCorvetteWingLeader"
+				system_is_hidden_for_ui="true"
+				>
+    </system>
+    <system name="BomberSquad" display_name="Bomber Squad" min_mark_level_to_function="7"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				shot_type_data="BattlestarFusionBomberWingLeader"
+				system_is_hidden_for_ui="true"
+				>
+    </system>
+  </entity>
+  <!-- Battlestar wings. -->
+  <entity skip_export="true" copy_from="VWing" name="BattlestarFighterWingLeader" display_name="Fighter Wing Leader"
+		self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1" always_self_attritions="true" energy_consumption="0"
+		description="The leader of a Battlestar Fighter wing."
+		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+		fleet_design_template_i_use_for_drones="BattlestarFighterWing" drone_starting_behavior_type="Attacker_Full"
+    multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
+    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+	>
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
+	</entity>
+  <entity skip_export="true" copy_from="VWing" name="BattlestarFighterWingMember" display_name="Fighter Wing Member" special_entity_type="DroneGeneral"
+   self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="25" energy_consumption="0"
+   description="A member of a Battlestar Fighter wing." 
+   starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
+    multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
+    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+	>
+    <fleet_membership name="BattlestarFighterWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
+  </entity>
+
+  <entity skip_export="true" copy_from="Stingray" name="BattlestarStingrayWingLeader" display_name="Stingray Wing Leader" 
+		self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1" always_self_attritions="true" energy_consumption="0"
+		description="The leader of a Battlestar Stingray wing."
+		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+		fleet_design_template_i_use_for_drones="BattlestarStingrayWing" drone_starting_behavior_type="Attacker_Full"
+    multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
+    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+	>
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
+  </entity>
+  <entity skip_export="true" copy_from="Stingray" name="BattlestarStingrayWingMember" display_name="Stingray Wing Member" special_entity_type="DroneGeneral"
+   self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="25" energy_consumption="0"
+   description="The leader of a Battlestar Stingray wing."
+   starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
+    multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
+    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+	>
+    <fleet_membership name="BattlestarStingrayWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
+  </entity>
+
+<entity skip_export="true" copy_from="Raider" name="BattlestarRaiderWingLeader" display_name="Raider Wing Leader" 
+		self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1" always_self_attritions="true" energy_consumption="0"
+		description="The leader of a Battlestar Raider wing."
+		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+		fleet_design_template_i_use_for_drones="BattlestarRaiderWing" drone_starting_behavior_type="Attacker_Full"
+    multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
+    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+	>
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
+  </entity>
+  <entity skip_export="true" copy_from="Raider" name="BattlestarRaiderWingMember" display_name="Raider Wing Member" special_entity_type="DroneGeneral"
+   self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="25" energy_consumption="0"
+   description="The leader of a Battlestar Raider wing."
+   starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
+    multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
+    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+	>
+    <fleet_membership name="BattlestarRaiderWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
+  </entity>
+
+<entity skip_export="true" copy_from="ConcussionCorvette" name="BattlestarConcussionCorvetteWingLeader" display_name="Concussion Corvette Wing Leader" 
+		self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1" always_self_attritions="true" energy_consumption="0"
+		description="The leader of a Battlestar ConcussionCorvette wing."
+		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+		fleet_design_template_i_use_for_drones="BattlestarConcussionCorvetteWing" drone_starting_behavior_type="Attacker_Full"
+    multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
+    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+	>
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
+  </entity>
+  <entity skip_export="true" copy_from="ConcussionCorvette" name="BattlestarConcussionCorvetteWingMember" display_name="Concussion Corvette Wing Member" special_entity_type="DroneGeneral"
+   self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="25" energy_consumption="0"
+   description="The leader of a Battlestar ConcussionCorvette wing."
+   starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
+    multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
+    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+	>
+    <fleet_membership name="BattlestarConcussionCorvetteWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
+  </entity>
+
+<entity skip_export="true" copy_from="PikeCorvette" name="BattlestarPikeCorvetteWingLeader" display_name="Pike Corvette Wing Leader" 
+		self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1" always_self_attritions="true" energy_consumption="0"
+		description="The leader of a Battlestar PikeCorvette wing."
+		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+		fleet_design_template_i_use_for_drones="BattlestarPikeCorvetteWing" drone_starting_behavior_type="Attacker_Full"
+    multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
+    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+	>
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
+  </entity>
+  <entity skip_export="true" copy_from="PikeCorvette" name="BattlestarPikeCorvetteWingMember" display_name="Pike Corvette Wing Member" special_entity_type="DroneGeneral"
+   self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="25" energy_consumption="0"
+   description="The leader of a Battlestar PikeCorvette wing."
+   starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
+    multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
+    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+	>
+    <fleet_membership name="BattlestarPikeCorvetteWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
+  </entity>
+
+<entity skip_export="true" copy_from="GrenadeLauncherCorvette" name="BattlestarGrenadeLauncherCorvetteWingLeader" display_name="Grenade Launcher Corvette Wing Leader" 
+		self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1" always_self_attritions="true" energy_consumption="0"
+		description="The leader of a Battlestar GrenadeLauncherCorvette wing."
+		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+		fleet_design_template_i_use_for_drones="BattlestarGrenadeLauncherCorvetteWing" drone_starting_behavior_type="Attacker_Full"
+    multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
+    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+	>
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
+  </entity>
+  <entity skip_export="true" copy_from="GrenadeLauncherCorvette" name="BattlestarGrenadeLauncherCorvetteWingMember" display_name="Grenade Launcher Corvette Wing Member" special_entity_type="DroneGeneral"
+   self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="25" energy_consumption="0"
+   description="The leader of a Battlestar GrenadeLauncherCorvette wing."
+   starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
+    multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
+    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+	>
+    <fleet_membership name="BattlestarGrenadeLauncherCorvetteWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
+  </entity>
+
+<entity skip_export="true" copy_from="FusionBomber" name="BattlestarFusionBomberWingLeader" display_name="FusionBomber Wing Leader" 
+		self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1" always_self_attritions="true" energy_consumption="0"
+		description="The leader of a Battlestar FusionBomber wing."
+		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
+		fleet_design_template_i_use_for_drones="BattlestarFusionBomberWing" drone_starting_behavior_type="Attacker_Full"
+    multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
+    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+	>
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
+  </entity>
+  <entity skip_export="true" copy_from="FusionBomber" name="BattlestarFusionBomberWingMember" display_name="FusionBomber Wing Member" special_entity_type="DroneGeneral"
+   self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="25" energy_consumption="0"
+   description="The leader of a Battlestar FusionBomber wing."
+   starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
+    multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
+    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+	>
+    <fleet_membership name="BattlestarFusionBomberWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
+  </entity>
+</root>
