@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SKRevengenceGenerators", "SKRevengenceGenerators\SKRevengenceGenerators.csproj", "{576C2A42-D2F9-4B8A-A90F-FA7798C1F355}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SKCivilianIndustry", "SKCivilianIndustry\SKCivilianIndustry.csproj", "{CD95C9FA-115C-4719-A453-7CFE0C990C2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreceptsOfThePrecursors", "PreceptsOfThePrecursors\PreceptsOfThePrecursors.csproj", "{CF5C0EDE-E953-46AF-B818-CC6B49226779}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{576C2A42-D2F9-4B8A-A90F-FA7798C1F355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{576C2A42-D2F9-4B8A-A90F-FA7798C1F355}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{576C2A42-D2F9-4B8A-A90F-FA7798C1F355}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{576C2A42-D2F9-4B8A-A90F-FA7798C1F355}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD95C9FA-115C-4719-A453-7CFE0C990C2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CD95C9FA-115C-4719-A453-7CFE0C990C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD95C9FA-115C-4719-A453-7CFE0C990C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
