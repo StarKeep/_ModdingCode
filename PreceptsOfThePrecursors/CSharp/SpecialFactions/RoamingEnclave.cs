@@ -121,6 +121,8 @@ namespace PreceptsOfThePrecursors
 
             HandleEnclaveRegeneration();
 
+            HandleYounglingCombining( Context );
+
             HandleUnitSpawningForEnclaves( Context );
 
             HandleUnitSpawningForHives( Context );
@@ -133,6 +135,12 @@ namespace PreceptsOfThePrecursors
                 if ( Enclaves[x].RepairDelaySeconds <= 0 )
                     Enclaves[x].TakeHullRepair( Enclaves[x].GetMaxHullPoints() / 100 );
             }
+        }
+
+        private void HandleYounglingCombining( ArcenSimContext Context )
+        {
+            for ( int x = 0; x < Enclaves.Count; x++ )
+                Enclaves[x].CombineYounglingsIfAble( Context );
         }
 
         private void HandleUnitSpawningForEnclaves( ArcenSimContext Context )

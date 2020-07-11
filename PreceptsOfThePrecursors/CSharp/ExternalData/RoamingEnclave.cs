@@ -195,6 +195,16 @@ namespace PreceptsOfThePrecursors
         private int strength;
         public int Strength { get { return strength; } }
 
+        public void AddStrength(int strength )
+        {
+            this.strength += strength;
+        }
+
+        public void SubtractStrength(int strength )
+        {
+            this.strength -= strength;
+        }
+
         public void AddYoungling( GameEntity_Squad youngling )
         {
             if ( !UnitsByMark.GetHasKey( youngling.CurrentMarkLevel ) )
@@ -284,6 +294,34 @@ namespace PreceptsOfThePrecursors
             StoredYounglings = new ArcenSparseLookup<Unit, YounglingCollection>();
         }
 
+        public void AttemptToCombineYounglings( GameEntity_Squad enclave, Unit unit )
+        {
+            if ( !StoredYounglings.GetHasKey( unit ) )
+                return;
+
+            YounglingCollection collection = StoredYounglings[unit];
+
+            GameEntityTypeData unitData = GameEntityTypeDataTable.Instance.GetRowByName( unit.ToString() );
+
+            for ( byte x = 1, y = 7; x < 7; x++, y-- )
+            {
+                if ( collection.UnitsByMark.GetHasKey( x ) )
+                {
+                    if ( collection.UnitsByMark[x] > y * 2 )
+                    {
+                        collection.SubtractStrength( unitData.GetForMark( x ).GetCalculatedStrengthPerSquadForFleetOrNull(null) * y);
+                        collection.AddStrength( unitData.GetForMark( (byte)(x + 1) ).GetCalculatedStrengthPerSquadForFleetOrNull( null ) );
+
+                        collection.UnitsByMark[x] -= y;
+                        if ( collection.UnitsByMark.GetHasKey( (byte)(x + 1) ) )
+                            collection.UnitsByMark[(byte)(x + 1)]++;
+                        else
+                            collection.UnitsByMark.AddPair( (byte)(x + 1), 1 );
+                    }
+                }
+            }
+        }
+
         public StoredYounglingsData()
         {
             StoredYounglings = new ArcenSparseLookup<Unit, YounglingCollection>();
@@ -362,11 +400,22 @@ namespace PreceptsOfThePrecursors
             enclave.AdditionalStrengthFromFactions = storage.TotalStrength;
         }
 
-        public static void UnloadYounglings( this GameEntity_Squad enclave, ArcenSimContext Context, int spawnLimit = 50 )
+        public static void UnloadYounglings( this GameEntity_Squad enclave, ArcenSimContext Context )
         {
             StoredYounglingsData storage = enclave.GetStoredYounglings();
             storage.DeployYounglings( enclave, Context );
             enclave.AdditionalStrengthFromFactions = 0;
+        }
+
+        public static void CombineYounglingsIfAble(this GameEntity_Squad enclave, ArcenSimContext Context )
+        {
+            enclave.AdditionalStrengthFromFactions = 0;
+            
+            StoredYounglingsData collection = enclave.GetStoredYounglings();
+            for ( int x = 0; x < collection.StoredYounglings.GetPairCount(); x++ )
+                collection.AttemptToCombineYounglings( enclave, collection.StoredYounglings.GetPairByIndex( x ).Key );
+
+            enclave.AdditionalStrengthFromFactions = collection.TotalStrength;
         }
 
         // This loads the data assigned to whatever ParentObject you pass. So, say, you could assign the same class to different ships, and each would be able to get back the values assigned to it.
