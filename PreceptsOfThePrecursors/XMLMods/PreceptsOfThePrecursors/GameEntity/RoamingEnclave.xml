@@ -22,6 +22,8 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
     <system name="Plink" display_name="Plink"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -50,6 +52,8 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
     <system name="PeckerEnergyWave" display_name="Pecker Energy Wave"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -79,6 +83,8 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
       amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
     <system name="GrapplingBolt" display_name="Grappling Bolt"
        category="Weapon" firing_timing="OnlyInRange"
@@ -111,6 +117,8 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
     <system name="TeslaCoil" display_name="Tesla Coil"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -144,7 +152,9 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-			>
+			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
+      >
     <system name="AmbushCannon" display_name="Ambush Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="50" range="Normal6" shot_speed="Fast" rate_of_fire="Normal" fires_salvos_sequentially="true"
@@ -174,6 +184,8 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
 
     <system name="Claws" display_name="Claws"
@@ -204,6 +216,8 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="10" max_amount_added_to_damage_per_ship_of_this_type_on_planet="100"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
 
     <system name="GraviticRoar" display_name="Gravitic Roar"
@@ -237,6 +251,8 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
     <system name="BananaBomb" display_name="Banana Bomb"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -272,6 +288,8 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
     <system name="ShockingSting" display_name="Shocking Sting"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -302,6 +320,8 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
     <system name="PeckerMissile" display_name="Pecker Missiles"
 				category="Weapon" firing_timing="OnlyInRange" shots_per_salvo="2"
@@ -331,7 +351,9 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="10" max_amount_added_to_damage_per_ship_of_this_type_on_planet="100"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-			>
+			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
+      >
     <system name="HuntingLaser" display_name="Hunting Laser"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="50" range="AboveAverage4" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
@@ -343,27 +365,29 @@
     <system name="Cloaker" display_name="Cloaking Device" category="Passive" cloaking_points="500" ></system>
   </entity>
   <entity name="YounglingAnt"
-    tags="EnclaveUnit"
-	  visuals="Assets/_FinalGameMeshes/Zenith/Dyson2Defender/DysonDefender.prefab"
-	  icon_name="Official/DysonSentinel"
-	  voice_group="Zenith"
-	  size_scale="0.7"
-	  visuals_scale_multiplier="1.4"
-	  category="Ship" is_strikecraft="true"
-	  collision_priority="100"
-	  display_name="Youngling Ant"
-	  description="Modeled after various Zenith units, this Youngling boasts a thick outer shell and rapid healing as it fights off aggressors."
-	  starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Fusion,Medium"
-	  cost_for_ai_to_purchase="30"
-    health_change_per_damage_dealt="5"
-	  hull_points="750" shield_points="750" speed="AboveAverage5"
-	  metal_cost="250" energy_consumption="250"
-		armor_mm="40" albedo="0.1" engine_gx="15" mass_tx="0.1"
-		ship_or_structure_explosion_sfx="ShipSmall_Explosion"
-		ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
-		amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
-    priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-	  >
+			tags="EnclaveUnit"
+			visuals="Assets/_FinalGameMeshes/Zenith/Dyson2Defender/DysonDefender.prefab"
+			icon_name="Official/DysonSentinel"
+			voice_group="Zenith"
+			size_scale="0.7"
+			visuals_scale_multiplier="1.4"
+			category="Ship" is_strikecraft="true"
+			collision_priority="100"
+			display_name="Youngling Ant"
+			description="Modeled after various Zenith units, this Youngling boasts a thick outer shell and rapid healing as it fights off aggressors."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Fusion,Medium"
+			cost_for_ai_to_purchase="30"
+			health_change_per_damage_dealt="5"
+			hull_points="750" shield_points="750" speed="AboveAverage5"
+			metal_cost="250" energy_consumption="250"
+			armor_mm="40" albedo="0.1" engine_gx="15" mass_tx="0.1"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
+			priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
+      >
     <system name="AcidicSiphon" display_name="Acidic Siphon"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="50" shots_per_salvo="3" range="High2" shot_speed="Slow" rate_of_fire="Normal" fires_salvos_sequentially="true"
@@ -393,7 +417,9 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
 			priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
-			>
+			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
+      >
     <system name="Yawn" display_name="Yawn"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="50" range="VeryTiny1" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="false"

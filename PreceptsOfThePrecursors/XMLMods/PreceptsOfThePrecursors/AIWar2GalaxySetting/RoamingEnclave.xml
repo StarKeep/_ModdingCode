@@ -4,9 +4,6 @@
   <galaxy_setting category="Enclaves" name="EnclaveMaxHopsFromHiveToAttack" display_name="Global Max Hops from Hives to Attack" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
     description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
   />
-  <galaxy_setting category="Enclaves" name="EnclaveMaxHopsFromHiveToDefend" display_name="Global Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
-    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
-  />
   <galaxy_setting category="Enclaves" name="MakeEveryXFireteamDefensive" display_name="Global Make Every X Fireteam Defensive" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
     description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
   />
@@ -22,9 +19,6 @@
   />
   <galaxy_setting category="Enclaves" name="PearlEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="2" min="0" max="10" changeable_during_gameplay="true"
     description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
-  />
-  <galaxy_setting category="Enclaves" name="PearlEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
-    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
   />
   <galaxy_setting category="Enclaves" name="PearlMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="5" min="0" max="10" changeable_during_gameplay="true"
     description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
@@ -42,9 +36,6 @@
   <galaxy_setting category="Enclaves" name="CrystalEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="2" min="0" max="10" changeable_during_gameplay="true"
     description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
   />
-  <galaxy_setting category="Enclaves" name="CrystalEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="0" min="0" max="1" changeable_during_gameplay="true"
-    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
-  />
   <galaxy_setting category="Enclaves" name="CrystalMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="2" min="0" max="10" changeable_during_gameplay="true"
     description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
   />
@@ -60,9 +51,6 @@
   />
   <galaxy_setting category="Enclaves" name="DiamondEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="2" min="0" max="10" changeable_during_gameplay="true"
     description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
-  />
-  <galaxy_setting category="Enclaves" name="DiamondEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="0" min="0" max="1" changeable_during_gameplay="true"
-    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
   />
   <galaxy_setting category="Enclaves" name="DiamondMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="0" min="0" max="10" changeable_during_gameplay="true"
     description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
@@ -80,9 +68,6 @@
   <galaxy_setting category="Enclaves" name="RubyEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
     description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
   />
-  <galaxy_setting category="Enclaves" name="RubyEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
-    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
-  />
   <galaxy_setting category="Enclaves" name="RubyMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
     description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
   />
@@ -98,9 +83,6 @@
   />
   <galaxy_setting category="Enclaves" name="SaphireEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
     description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
-  />
-  <galaxy_setting category="Enclaves" name="SaphireEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
-    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
   />
   <galaxy_setting category="Enclaves" name="SaphireMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
     description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
@@ -118,9 +100,6 @@
   <galaxy_setting category="Enclaves" name="EmeraldEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
     description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
   />
-  <galaxy_setting category="Enclaves" name="EmeraldEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="1" min="0" max="1" changeable_during_gameplay="true"
-    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
-  />
   <galaxy_setting category="Enclaves" name="EmeraldMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="4" min="0" max="10" changeable_during_gameplay="true"
     description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."
   />
@@ -136,9 +115,6 @@
   />
   <galaxy_setting category="Enclaves" name="OnyxEnclaveMaxHopsFromHiveToAttack" display_name="Max Hops from Hives to Attack" type="IntSlider" default="6" min="0" max="10" changeable_during_gameplay="true"
     description="How far away can non-defensive Enclaves attack from planets with friendly Hives?"
-  />
-  <galaxy_setting category="Enclaves" name="OnyxEnclaveMaxHopsFromHiveToDefend" display_name="Max Hops from Hives to Defend" type="IntSlider" default="0" min="0" max="1" changeable_during_gameplay="true"
-    description="How far away can defensive Enclaves attack from planets with friendly Hives?"
   />
   <galaxy_setting category="Enclaves" name="OnyxMakeEveryXFireteamDefensive" display_name="Make Every X Fireteam Defensive" type="IntSlider" default="0" min="0" max="10" changeable_during_gameplay="true"
     description="Defensive Enclaves put a much higher priority on defending Hives. You can modify this to change their overall aggression. Can be set to 0 to disable defensive Enclaves entirely."

@@ -27,7 +27,6 @@ namespace PreceptsOfThePrecursors
         public enum Integers
         {
             EnclaveMaxHopsFromHiveToAttack,
-            EnclaveMaxHopsFromHiveToDefend,
             MakeEveryXFireteamDefensive,
             RetreatAtXHull
         }
@@ -119,23 +118,11 @@ namespace PreceptsOfThePrecursors
             if ( FactionData == null )
                 FactionData = faction.GetEnclaveFactionData();
 
-            HandleYounglingDegeneration( faction );
-
             HandleEnclaveRegeneration();
 
             HandleUnitSpawningForEnclaves( Context );
 
             HandleUnitSpawningForHives( Context );
-        }
-
-        private void HandleYounglingDegeneration( Faction faction )
-        {
-            faction.DoForEntities( YOUNGLING_TAG, youngling =>
-            {
-                youngling.TakeHullRepair( -10 );
-
-                return DelReturn.Continue;
-            } );
         }
 
         private void HandleEnclaveRegeneration()
@@ -198,7 +185,6 @@ namespace PreceptsOfThePrecursors
         public abstract void HandleHiveExpansion( Faction faction, ArcenSimContext Context );
 
         private int AttackHops;
-        private int DefenseHops;
         private int FireteamsPerDefense;
         private int RetreatPercentage;
 
@@ -208,7 +194,6 @@ namespace PreceptsOfThePrecursors
                 return;
 
             AttackHops = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.EnclaveMaxHopsFromHiveToAttack );
-            DefenseHops = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.EnclaveMaxHopsFromHiveToDefend );
             FireteamsPerDefense = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.MakeEveryXFireteamDefensive );
             RetreatPercentage = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.RetreatAtXHull );
 
@@ -432,7 +417,7 @@ namespace PreceptsOfThePrecursors
                 }
                 else
                 {
-                    if ( youngling.GetCurrentHullPoints() < 300 || youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength <= 50 )
+                    if ( youngling.GetCurrentHullPoints() < youngling.GetCurrentHullPoints() * 0.33 || youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength <= 50 )
                     {
                         youngling.FireteamId = -1;
                         loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
@@ -485,7 +470,7 @@ namespace PreceptsOfThePrecursors
             List<Planet> alliedAssaults = new List<Planet>();
             List<Planet> hivesThreatened = new List<Planet>();
             List<Planet> fallbackAttackPlanets = new List<Planet>();
-            List<Planet> fallbackDefensePlanets = new List<Planet>();
+            ArcenSparseLookup<int, List<Planet>> planetsByEnclaveCount = new ArcenSparseLookup<int, List<Planet>>();
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
@@ -506,7 +491,7 @@ namespace PreceptsOfThePrecursors
                         hivesInDanger.Add( planet );
                     }
                 }
-                else if ( hops <= DefenseHops )
+                else if ( hops == 1 )
                 {
                     if ( hostileStrength > hivesThreatenedThreshold )
                     {
@@ -518,27 +503,51 @@ namespace PreceptsOfThePrecursors
                 {
                     if ( hops <= AttackHops )
                         fallbackAttackPlanets.Add( planet );
-                    else if ( hops <= DefenseHops )
-                        fallbackDefensePlanets.Add( planet );
                 }
+
+                int enclaveOnPlanet = 0;
+
+                planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( ENCLAVE_TAG, entity =>
+                {
+                    enclaveOnPlanet++;
+
+                    return DelReturn.Continue;
+                } );
+
+                if ( planetsByEnclaveCount.GetHasKey( enclaveOnPlanet ) )
+                    planetsByEnclaveCount[enclaveOnPlanet].Add( planet );
+                else
+                    planetsByEnclaveCount.AddPair( enclaveOnPlanet, new List<Planet>() { planet } );
 
                 return DelReturn.Continue;
             } );
 
+            planetsByEnclaveCount.Sort( ( pair1, pair2 ) => pair1.Key.CompareTo( pair2.Key ) );
+
             if ( DefenseMode )
             {
                 if ( hivesInDanger.Count > 0 )
+                {
                     for ( int x = 0; x < hivesInDanger.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesInDanger[x] ) );
+                    if ( hivesThreatened.Count > 0 )
+                        for ( int x = 0; x < hivesThreatened.Count; x++ )
+                            FallbackTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
+                    else
+                        for ( int x = 0; x < HivePlanets.Count; x++ )
+                            FallbackTargets.Add( new FireteamTarget( HivePlanets[x] ) );
+                }
                 else if ( hivesThreatened.Count > 0 )
+                {
                     for ( int x = 0; x < hivesThreatened.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
-                if ( fallbackDefensePlanets.Count > 0 )
-                    for ( int x = 0; x < fallbackDefensePlanets.Count; x++ )
-                        FallbackTargets.Add( new FireteamTarget( fallbackDefensePlanets[x] ) );
-                else
-                    for ( int x = 0; x < HivePlanets.Count; x++ )
-                        FallbackTargets.Add( new FireteamTarget( HivePlanets[x] ) );
+                    if ( planetsByEnclaveCount.GetPairCount() > 0 )
+                        for ( int x = 0; x < planetsByEnclaveCount.GetPairByIndex( 0 ).Value.Count; x++ )
+                            FallbackTargets.Add( new FireteamTarget( planetsByEnclaveCount.GetPairByIndex( 0 ).Value[x] ) );
+                    else
+                        for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
+                            FallbackTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
+                }
             }
             else
             {
