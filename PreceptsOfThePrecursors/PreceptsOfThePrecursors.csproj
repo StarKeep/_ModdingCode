@@ -94,6 +94,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\FleetDesignTemplate\GoonSquad.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\FleetDesignTemplate\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\GoonSquad.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\DysonPrecursors.xml" />
@@ -114,6 +115,7 @@
     <Compile Include="CSharp\ExternalData\RoamingEnclave.cs" />
     <Compile Include="CSharp\ExternalData\GoonSquad.cs" />
     <Compile Include="CSharp\ExternalData\DysonPrecursors.cs" />
+    <Compile Include="CSharp\GameCommands\GoonSquad.cs" />
     <Compile Include="CSharp\GameCommands\RoamingEnclave.cs" />
     <Compile Include="CSharp\GameCommands\DysonPrecursors.cs" />
     <Compile Include="CSharp\Hacking\DysonPrecursors.cs" />

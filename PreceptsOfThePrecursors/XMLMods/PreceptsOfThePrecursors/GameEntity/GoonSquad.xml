@@ -305,11 +305,11 @@ Mark 7: Bomber"
     <fleet_membership name="BattlestarFusionBomberWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
 
-	<!-- The Clockwork. Weak scrap cannons, supported by a very, very powerful, but small, wing of ships. Also comes complete with an immensely powerful Titan Beam... that is hard to aim. -->
+	<!-- The Clockwork. A ship of extreme strengths and weaknesses. -->
   <entity name="TheClockwork"
 			special_entity_type="MobileOfficerCombatFleetFlagship" fleet_design_logic_i_grant_one_from="MobileCombatFleet"
 			voice_group="Ark_JackBishop" gimbal_icon_size_multiplier="1.5" is_ark="true"
-			visuals="assets/_finalgamemeshes/arks/arkrorqualhegira/rorqualhegira.prefab"
+			visuals="assets/_finalgamemeshes/arks/arkone/arkone.prefab"
 			icon_name="Official/Ark"
 			draw_in_galaxy_view="true"
 			tags="ShowsOnNormalDisplayMode,Capturable" capturable_seed_weight="100" capturable_max_per_galaxy="1"
@@ -325,7 +325,7 @@ Mark 7: Bomber"
 			metal_to_claim="500000"
 			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_ArkGeneral"
 			cost_for_ai_to_purchase="200"
-			hull_points="250000" shield_points="1500000" speed="AboveAverage4"
+			hull_points="1250000" shield_points="1250000" speed="AboveAverage3"
 			metal_cost="500000" energy_consumption="7000"
       assist_range="Normal1"
 			armor_mm="85" albedo="0.8" engine_gx="18" mass_tx="7"
@@ -347,7 +347,7 @@ Mark 7: Bomber"
     </system>
     <system name="TitanBeam" display_name="TitanBeam"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="50000" range="VeryTiny1" shot_speed="Normal" rate_of_fire="Low"
+				damage_per_shot="50000" range="Tiny4" shot_speed="Normal" rate_of_fire="Low"
 				shots_per_salvo="1" fires_salvos_sequentially="true"
 				stack_damage_multiplier="3"
 				shot_type_data="HeavyBeamInvisible"
@@ -356,6 +356,84 @@ Mark 7: Bomber"
 				shots_detonate_immediately="true"
 				maximum_number_of_targets_hit_per_shot="50"
 				>
+    </system>
+  </entity>
+
+	<!-- The Neinzul Shardling Swarm. Consume smaller ships whole, and shaves off more of itself from larger ships. -->
+	<entity name="NeinzulShardlingSwarm" is_ark="true"
+			special_entity_type="MobileLoneWolfFleetFlagship"
+			voice_group="Ark_JackBishop" gimbal_icon_size_multiplier="1.5"
+			visuals="assets/_finalgamemeshes/fleetships/vorticularcutlass/vorticularcutlass.prefab"
+			icon_name="Official/Ark"
+			draw_in_galaxy_view="true"
+			tags="ShowsOnNormalDisplayMode,Capturable" capturable_seed_weight="100" capturable_max_per_galaxy="1"
+			size_scale="13"
+			visuals_scale_multiplier="4"
+			y_offset_of_icon="40"
+			uses_large_health_bar="true"
+			category="Ship"
+			collision_priority="10000"
+			display_name="Neinzul Shardling Swarm"
+			description="This Neinzul ship is actually a collection of thousands of small Neinzul Shardlings. It is capable of shredding targets, near instantly killing low Mass (2 or lower) ones, and creating more Shardlings from high Mass (5 or higher) targets, which share their main ship's weapon."
+			aip_to_claim="40"
+			metal_to_claim="500000"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_ArkGeneral"
+			cost_for_ai_to_purchase="200"			
+			hull_points="250000" shield_points="1500000" speed="AboveAverage4"
+			metal_cost="500000" energy_consumption="7000"
+      assist_range="Normal1"			
+			armor_mm="85" albedo="0.8" engine_gx="18" mass_tx="7"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"                        
+	    speed_multiplier_first_5_seconds_on_planet="1.5"
+			shows_on_galaxy_map_for_explored_planets="true" always_visible_to_players="true"
+      priority_as_ai_target="NormalStarship" priority_as_frd_target="NormalStarship" priority_to_protect="MajorPlanetLevelObjective"
+			>
+	<metal_flow purpose="RebuildingRemains" throughput="100" increase_per_mark_level="100"/>
+    <system name="ShardlingCarver" display_name="Shardling Carver"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="500" range="Tiny3" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="false"
+				shot_type_data="MeleeInvisible" added_target_evaluator="WeaponJamAsPrimary"
+				area_of_effect_size="3200"				
+				shots_detonate_immediately="true"
+				maximum_number_of_targets_hit_per_shot="50"
+				stack_damage_multiplier="2"
+				>
+      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="100" /> 
+    </system>
+	<incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="3000" multiplier="0.2" />
+  </entity>
+	<entity name="NeinzulShardling"			
+			visuals="assets/_finalgamemeshes/fleetships/vorticularcutlass/vorticularcutlass.prefab"
+			icon_name="Official/VorticularCutlass"
+			voice_group="Melee"
+			category="Ship" is_strikecraft="true"
+			size_scale="1"
+			visuals_scale_multiplier="2.4"
+			collision_priority="100"
+			display_name="Neinzul Shardling"
+			description="Shaved off of a large ship, this Neinzul Shardling is capable of devestating low mass targets."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Unused"
+			cost_for_ai_to_purchase="42" strength_multiplier="0.9"
+			hull_points="1200" shield_points="0" speed="AboveAverage5"
+			metal_cost="1250" energy_consumption="0"
+			armor_mm="90" albedo="0.3" engine_gx="13" mass_tx="0.21"
+			ship_or_structure_explosion_sfx="ShipSmall_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			
+      priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      >
+    <system name="ShardlingCarver" display_name="Shardling Carver"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="250" range="Tiny1" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="false"
+				shot_type_data="MeleeInvisible" added_target_evaluator="WeaponJamAsPrimary"
+				area_of_effect_size="3200"				
+				shots_detonate_immediately="true"
+				maximum_number_of_targets_hit_per_shot="5"
+				stack_damage_multiplier="2"
+				>
+      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="100" /> 
     </system>
   </entity>
 </root>
