@@ -495,6 +495,7 @@ namespace PreceptsOfThePrecursors
             List<Planet> hivesInDanger = new List<Planet>();
             List<Planet> alliedAssaults = new List<Planet>();
             List<Planet> hivesThreatened = new List<Planet>();
+            List<GameEntity_Squad> bigTargets = new List<GameEntity_Squad>();
             List<Planet> fallbackAttackPlanets = new List<Planet>();
             ArcenSparseLookup<int, List<Planet>> planetsByEnclaveCount = new ArcenSparseLookup<int, List<Planet>>();
 
@@ -538,6 +539,23 @@ namespace PreceptsOfThePrecursors
                     {
                         hivesThreatened.Add( planet );
                     }
+                } else if (hops <= AttackHops )
+                {
+                    if ( !(this is RoamingEnclaveAITeam) )
+                    {
+                        planet.DoForEntities( "ExtragalacticWar", entity =>
+                        {
+                            bigTargets.Add( entity );
+
+                            return DelReturn.Continue;
+                        } );
+                        planet.DoForEntities( SpecialEntityType.AIDireGuardian, entity =>
+                        {
+                            bigTargets.Add( entity );
+
+                            return DelReturn.Continue;
+                        } );
+                    }
                 }
 
                 if ( hostileStrength > 500 )
@@ -572,13 +590,15 @@ namespace PreceptsOfThePrecursors
                 if ( hivesInDanger.Count > 0 )
                     for ( int x = 0; x < hivesInDanger.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesInDanger[x] ) );
+                else if ( bigTargets.Count > 0 )
+                    for ( int x = 0; x < bigTargets.Count; x++ )
+                        PreferredTargets.Add( new FireteamTarget( bigTargets[x] ) );
                 else if ( hivesThreatened.Count > 0 )
                     for ( int x = 0; x < hivesThreatened.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
                 else if ( alliedAssaults.Count > 0 )
                     for ( int x = 0; x < alliedAssaults.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( alliedAssaults[x] ) );
-
                 if ( fallbackAttackPlanets.Count > 0 )
                     for ( int x = 0; x < fallbackAttackPlanets.Count; x++ )
                         FallbackTargets.Add( new FireteamTarget( fallbackAttackPlanets[x] ) );
