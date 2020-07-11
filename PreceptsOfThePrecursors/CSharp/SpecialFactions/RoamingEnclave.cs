@@ -38,7 +38,7 @@ namespace PreceptsOfThePrecursors
         YounglingPuffin,
         YounglingSnake,
         YounglingEel,
-        YounglingCheetaht,
+        YounglingCheetah,
         YounglingBadger,
         YounglingLion,
         YounglingApe,
