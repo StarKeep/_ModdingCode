@@ -224,6 +224,12 @@ namespace PreceptsOfThePrecursors
 
             Fireteam.DoFor( FactionData.Teams, delegate ( Fireteam team )
             {
+                if ( team.DefenseMode && team.TargetPlanet != null && team.TargetPlanet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, team.TargetPlanet, Context ) ) > 0 )
+                {
+                    team.DiscardCurrentObjectives();
+                    return DelReturn.Continue;
+                }
+
                 switch ( team.status )
                 {
                     case FireteamStatus.Disbanded:
@@ -515,6 +521,21 @@ namespace PreceptsOfThePrecursors
                     {
                         hivesInDanger.Add( planet );
                     }
+
+                    int enclaveOnPlanet = 0;
+
+                    planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( ENCLAVE_TAG, entity =>
+                    {
+                        if ( entity.PlanetFaction.Faction == faction )
+                            enclaveOnPlanet++;
+
+                        return DelReturn.Continue;
+                    } );
+
+                    if ( planetsByEnclaveCount.GetHasKey( enclaveOnPlanet ) )
+                        planetsByEnclaveCount[enclaveOnPlanet].Add( planet );
+                    else
+                        planetsByEnclaveCount.AddPair( enclaveOnPlanet, new List<Planet>() { planet } );
                 }
                 else if ( hops == 1 )
                 {
@@ -530,21 +551,6 @@ namespace PreceptsOfThePrecursors
                         fallbackAttackPlanets.Add( planet );
                 }
 
-                int enclaveOnPlanet = 0;
-
-                planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( ENCLAVE_TAG, entity =>
-                {
-                    if ( entity.PlanetFaction.Faction == faction )
-                        enclaveOnPlanet++;
-
-                    return DelReturn.Continue;
-                } );
-
-                if ( planetsByEnclaveCount.GetHasKey( enclaveOnPlanet ) )
-                    planetsByEnclaveCount[enclaveOnPlanet].Add( planet );
-                else
-                    planetsByEnclaveCount.AddPair( enclaveOnPlanet, new List<Planet>() { planet } );
-
                 return DelReturn.Continue;
             } );
 
@@ -556,30 +562,11 @@ namespace PreceptsOfThePrecursors
                 {
                     for ( int x = 0; x < hivesInDanger.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesInDanger[x] ) );
-                    if ( hivesThreatened.Count > 0 )
-                        for ( int x = 0; x < hivesThreatened.Count; x++ )
-                            FallbackTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
-                    else
-                        for ( int x = 0; x < HivePlanets.Count; x++ )
-                            FallbackTargets.Add( new FireteamTarget( HivePlanets[x] ) );
-                }
-                else if ( hivesThreatened.Count > 0 )
-                {
-                    for ( int x = 0; x < hivesThreatened.Count; x++ )
-                        PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
-                    if ( planetsByEnclaveCount.GetPairCount() > 0 )
-                        for ( int x = 0; x < planetsByEnclaveCount.GetPairByIndex( 0 ).Value.Count; x++ )
-                            FallbackTargets.Add( new FireteamTarget( planetsByEnclaveCount.GetPairByIndex( 0 ).Value[x] ) );
-                    else
-                        for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
-                            FallbackTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
                 }
                 else if ( planetsByEnclaveCount.GetPairCount() > 0 )
                 {
                     for ( int x = 0; x < planetsByEnclaveCount.GetPairByIndex( 0 ).Value.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( planetsByEnclaveCount.GetPairByIndex( 0 ).Value[x] ) );
-                    for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
-                        FallbackTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
                 }
                 else
                     for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
