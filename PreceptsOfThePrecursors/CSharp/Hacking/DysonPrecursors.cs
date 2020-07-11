@@ -277,19 +277,24 @@ namespace PreceptsOfThePrecursors
             // Every 30 seconds, spawn in another node if there is room.
             if ( Hacker.ActiveHack_DurationThusFar % 30 == 0 )
             {
-                int highestMarkNode = 0;
-                planet.DoForEntities( delegate ( GameEntity_Squad workingEntity )
+                planet.DoForLinkedNeighborsAndSelf( false, workingPlanet =>
                 {
-                    if ( workingEntity.TypeData.GetHasTag( DysonPrecursors.DYSON_NODE_NAME ) )
-                        highestMarkNode = Math.Max( highestMarkNode, workingEntity.CurrentMarkLevel );
+                    int highestMarkNode = 0;
+                    workingPlanet.DoForEntities( delegate ( GameEntity_Squad workingEntity )
+                    {
+                        if ( workingEntity.TypeData.GetHasTag( DysonPrecursors.DYSON_NODE_NAME ) )
+                            highestMarkNode = Math.Max( highestMarkNode, workingEntity.CurrentMarkLevel );
+
+                        return DelReturn.Continue;
+                    } );
+                    if ( highestMarkNode < 7 )
+                    {
+                        (spawnFaction.Implementation as DysonSuppressors).CreateDysonNode( spawnFaction, workingPlanet, highestMarkNode + 1, Context, string.Empty );
+                        World_AIW2.Instance.QueueChatMessageOrCommand( $"Another Dyson Node has been awakened on {workingPlanet.Name}.", ChatType.ShowToEveryone, Context );
+                    }
 
                     return DelReturn.Continue;
                 } );
-                if ( highestMarkNode < 7 )
-                {
-                    (spawnFaction.Implementation as DysonSuppressors).CreateDysonNode( spawnFaction, planet, highestMarkNode + 1, Context, string.Empty );
-                    World_AIW2.Instance.QueueChatMessageOrCommand( "Another Dyson Node has been awakened on the planet!", ChatType.ShowToEveryone, Context );
-                }
             }
 
             base.DoOneSecondOfHackingLogic_AsPartOfMainSim( Target, planet, Hacker, Context, type, Event );
@@ -301,8 +306,8 @@ namespace PreceptsOfThePrecursors
             precursorFaction.HasBeenAwakenedByPlayer = true;
 
             // Give a notifiaction and science.
-            World_AIW2.Instance.QueueChatMessageOrCommand( "The Dyson Precursors have been awakened, and you have gained 10000 science from studying the process.", ChatType.ShowToEveryone, Context );
-            Hacker.PlanetFaction.Faction.StoredScience += 10000;
+            World_AIW2.Instance.QueueChatMessageOrCommand( "The Dyson Precursors have been awakened, and you have gained 20000 science from studying the process.", ChatType.ShowToEveryone, Context );
+            Hacker.PlanetFaction.Faction.StoredScience += 20000;
 
             // Spawn the mothership.
             (precursorFaction.Implementation as DysonPrecursors).SpawnMothership( TargetOrNull, precursorFaction, Context );
