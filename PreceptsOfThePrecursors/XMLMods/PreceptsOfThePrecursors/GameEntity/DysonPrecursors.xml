@@ -773,7 +773,7 @@
     description="An ancient Node that has survived since ancient times, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 500k Metal and 3k Science."
     tags="DysonNode,DysonNodeAncient,InvulnerabilityGranter,ShowsOnNormalDisplayMode"
     starting_mark_level="Mark1"
-    fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
+    fleet_design_template_i_use_for_drones="DysonSuppressorDronesHig"
     multiplier_to_all_healths="50.0"
     damage_multiplier_to_all_weapons="10.0"
     multiplier_to_all_scales="5.0"
@@ -782,7 +782,7 @@
     science_to_grant_on_death="3000"
     shows_on_galaxy_map_for_explored_planets="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="6000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
   <!-- 'Big' units spawnt by a Sphere once it hits level 7.
         Enforcers are used as an offensive fleet for the Precursor to wield as it sees fit.
