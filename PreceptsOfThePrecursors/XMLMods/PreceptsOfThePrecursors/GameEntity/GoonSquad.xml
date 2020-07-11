@@ -367,19 +367,19 @@ Mark 7: Bomber"
 			icon_name="Official/Ark"
 			draw_in_galaxy_view="true"
 			tags="ShowsOnNormalDisplayMode,Capturable" capturable_seed_weight="100" capturable_max_per_galaxy="1"
-			size_scale="13"
-			visuals_scale_multiplier="4"
+			size_scale="8"
+			visuals_scale_multiplier="25"
 			y_offset_of_icon="40"
 			uses_large_health_bar="true"
 			category="Ship"
 			collision_priority="10000"
 			display_name="Neinzul Shardling Swarm"
-			description="This Neinzul ship is actually a collection of thousands of small Neinzul Shardlings. It is capable of shredding targets, near instantly killing low Mass (2 or lower) ones, and creating more Shardlings from high Mass (5 or higher) targets, which share their main ship's weapon."
+			description="This Neinzul ship is actually a collection of thousands of small Neinzul Shardlings. It is capable of shredding targets, near instantly killing low Mass (1 or lower) targets, and creating more Shardlings from high Mass (5 or higher) targets."
 			aip_to_claim="40"
 			metal_to_claim="500000"
 			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_ArkGeneral"
 			cost_for_ai_to_purchase="200"			
-			hull_points="250000" shield_points="1500000" speed="AboveAverage4"
+			hull_points="1250000" shield_points="500000" speed="AboveAverage4"
 			metal_cost="500000" energy_consumption="7000"
       assist_range="Normal1"			
 			armor_mm="85" albedo="0.8" engine_gx="18" mass_tx="7"
@@ -400,7 +400,7 @@ Mark 7: Bomber"
 				shots_detonate_immediately="true"
 				maximum_number_of_targets_hit_per_shot="25"
 				>
-      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="100" /> 
+      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="1" multiplier="100" /> 
     </system>
 	<incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5000" multiplier="0.2" />
   </entity>
@@ -435,7 +435,6 @@ Mark 7: Bomber"
 				maximum_number_of_targets_hit_per_shot="5"
 				stack_damage_multiplier="2"
 				>
-      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="100" /> 
     </system>
   </entity>
 </root>

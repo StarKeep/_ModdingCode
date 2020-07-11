@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- Starting Fleets for Testing -->
-  <fleet_design name="TestFleet"
-        display_name="The Test Fleet"
-        description="Latest Goon Squad ship goes here for testing."
+  <fleet_design name="GSTestFleet1"
+        display_name="Democracy Downfall"
+        description="Goon Squad Test Fleet"
+        design_logic="InitialPlayerFleet" weight="100" include_full_cap_of_each_type="true"
+        append_each_ship_description_to_main_description="true"
+        >
+    <ship_membership name="DemocracyDownfall" ship_cap_group="Centerpiece" weight="100" min="1" max="1"/>
+  </fleet_design>
+  <fleet_design name="GSTestFleet2"
+        display_name="Battlestar"
+        description="Goon Squad Test Fleet"
+        design_logic="InitialPlayerFleet" weight="100" include_full_cap_of_each_type="true"
+        append_each_ship_description_to_main_description="true"
+        >
+    <ship_membership name="Battlestar" ship_cap_group="Centerpiece" weight="100" min="1" max="1"/>
+  </fleet_design>
+  <fleet_design name="GSTestFleet3"
+        display_name="The Clockwork"
+        description="Goon Squad Test Fleet"
+        design_logic="InitialPlayerFleet" weight="100" include_full_cap_of_each_type="true"
+        append_each_ship_description_to_main_description="true"
+        >
+    <ship_membership name="TheClockwork" ship_cap_group="Centerpiece" weight="100" min="1" max="1"/>
+  </fleet_design>
+  <fleet_design name="GSTestFleet4"
+        display_name="Neinzul Shardling Swarm"
+        description="Goon Squad Test Fleet"
         design_logic="InitialPlayerFleet" weight="100" include_full_cap_of_each_type="true"
         append_each_ship_description_to_main_description="true"
         >

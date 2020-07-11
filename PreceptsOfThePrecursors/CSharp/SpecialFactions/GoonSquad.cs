@@ -95,7 +95,7 @@ namespace PreceptsOfThePrecursors
                 if ( entity.PlanetFaction.Faction.GetIsHostileTowards( faction ) )
                     entity.Planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( ( GameEntity_Squad otherEntity ) =>
                       {
-                          if ( otherEntity.TypeData.Mass_tX < 5 )
+                          if ( otherEntity.TypeData.Mass_tX < 5 || otherEntity.TypeData.TargetTypeForPlayer != PlayerTargetType.AutotargetAlways )
                               return DelReturn.Continue;
 
                           if ( entity.Systems[0].GetIsTargetInRange( otherEntity, RangeCheckType.ForActualFiring ) )
