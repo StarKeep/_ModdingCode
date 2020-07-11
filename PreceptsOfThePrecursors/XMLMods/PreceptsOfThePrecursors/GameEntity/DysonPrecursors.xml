@@ -58,7 +58,7 @@
     <system name="TachyonArray" display_name="Tachyon Array"
 				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
     <incoming_damage_modifier based_on="MyTimeAtPlanet" comparison_type="LessThan" compared_to="10" multiplier="0.25" />
-    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
   </entity>
   <entity
     name="DysonMothership2"
@@ -80,7 +80,7 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1250" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2500" />
   </entity>
   <entity
     name="DysonMothership3"
@@ -102,7 +102,7 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1500" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="3000" />
   </entity>
   <entity
       name="DysonMothership4"
@@ -124,7 +124,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2500" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="4000" />
   </entity>
   <entity
       name="DysonMothership5"
@@ -146,7 +146,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="3000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
   </entity>
   <entity
       name="DysonMothership6"
@@ -168,7 +168,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="4000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="7500" />
   </entity>
   <entity
       name="DysonMothership7"
@@ -190,7 +190,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
   <!-- 
   Drones
