@@ -548,6 +548,15 @@ namespace PreceptsOfThePrecursors
                         for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
                             FallbackTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
                 }
+                else if ( planetsByEnclaveCount.GetPairCount() > 0 )
+                {
+                    for ( int x = 0; x < planetsByEnclaveCount.GetPairByIndex( 0 ).Value.Count; x++ )
+                        PreferredTargets.Add( new FireteamTarget( planetsByEnclaveCount.GetPairByIndex( 0 ).Value[x] ) );
+                    for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
+                        FallbackTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
+                } else
+                    for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
+                        PreferredTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
             }
             else
             {
