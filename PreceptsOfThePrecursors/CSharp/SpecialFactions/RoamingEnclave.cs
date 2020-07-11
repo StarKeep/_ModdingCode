@@ -244,7 +244,7 @@ namespace PreceptsOfThePrecursors
                     case FireteamStatus.Assembling:
                     case FireteamStatus.Staging:
                     case FireteamStatus.ReadyToAttack:
-                        if (team.History.Count > 0 )
+                        if ( team.History.Count > 0 )
                         {
                             int latestSecond = 0;
                             for ( int x = 0; x < team.History.Count; x++ )
@@ -252,6 +252,7 @@ namespace PreceptsOfThePrecursors
                             if ( World_AIW2.Instance.GameSecond - latestSecond > 60 )
                                 team.DiscardCurrentObjectives();
                         }
+
                         break;
                     default:
                         break;
@@ -539,7 +540,8 @@ namespace PreceptsOfThePrecursors
                     {
                         hivesThreatened.Add( planet );
                     }
-                } else if (hops <= AttackHops )
+                }
+                else if ( hops <= AttackHops )
                 {
                     if ( !(this is RoamingEnclaveAITeam) )
                     {
@@ -581,25 +583,27 @@ namespace PreceptsOfThePrecursors
                     for ( int x = 0; x < planetsByEnclaveCount.GetPairByIndex( 0 ).Value.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( planetsByEnclaveCount.GetPairByIndex( 0 ).Value[x] ) );
                 }
-                else
-                    for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
-                        PreferredTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
+                for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
+                    FallbackTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
             }
             else
             {
                 if ( hivesInDanger.Count > 0 )
                     for ( int x = 0; x < hivesInDanger.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesInDanger[x] ) );
-                else if ( bigTargets.Count > 0 )
+                else
+                {
+                    if ( alliedAssaults.Count > 0 )
+                        for ( int x = 0; x < alliedAssaults.Count; x++ )
+                            PreferredTargets.Add( new FireteamTarget( alliedAssaults[x] ) );
+                    if ( hivesThreatened.Count > 0 )
+                        for ( int x = 0; x < hivesThreatened.Count; x++ )
+                            PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
+                }
+                if ( bigTargets.Count > 0 )
                     for ( int x = 0; x < bigTargets.Count; x++ )
-                        PreferredTargets.Add( new FireteamTarget( bigTargets[x] ) );
-                else if ( hivesThreatened.Count > 0 )
-                    for ( int x = 0; x < hivesThreatened.Count; x++ )
-                        PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
-                else if ( alliedAssaults.Count > 0 )
-                    for ( int x = 0; x < alliedAssaults.Count; x++ )
-                        PreferredTargets.Add( new FireteamTarget( alliedAssaults[x] ) );
-                if ( fallbackAttackPlanets.Count > 0 )
+                        FallbackTargets.Add( new FireteamTarget( bigTargets[x] ) );
+                else if ( fallbackAttackPlanets.Count > 0 )
                     for ( int x = 0; x < fallbackAttackPlanets.Count; x++ )
                         FallbackTargets.Add( new FireteamTarget( fallbackAttackPlanets[x] ) );
             }
