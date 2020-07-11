@@ -289,7 +289,7 @@ namespace PreceptsOfThePrecursors
                 if ( RetreatPercentage > 0 && enclave.GetCurrentHullPoints() < (enclave.GetMaxHullPoints() / 100) * RetreatPercentage )
                 {
                     if ( enclave.Planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) ) > 0 )
-                        enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context, true ) );
+                        enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) );
                     enclave.FireteamId = -1;
                 }
                 else
@@ -316,7 +316,7 @@ namespace PreceptsOfThePrecursors
                         else
                         {
                             if ( hostileStrength < 500 || alliedStrength < hostileStrength )
-                                enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context, true ) );
+                                enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) );
                         }
                     }
                     else
@@ -332,7 +332,7 @@ namespace PreceptsOfThePrecursors
                                 case FireteamStatus.ReadyToAttack:
                                     if ( (hostileStrength < 500 || alliedStrength < hostileStrength * 2) && enclave.LongRangePlanningData.FinalDestinationPlanetIndex == -1
                                     && enclave.Planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) ) > 0 )
-                                        enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context, true ) );
+                                        enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) );
                                     break;
                                 default:
                                     break;
@@ -357,29 +357,16 @@ namespace PreceptsOfThePrecursors
                 Context.QueueCommandForSendingAtEndOfContext( enclaveUnloadCommand );
         }
 
-        private Planet GetNearestHivePlanetBackgroundThreadOnly( Faction faction, Planet planet, ArcenLongTermIntermittentPlanningContext Context, bool careAboutDanger = false )
+        private Planet GetNearestHivePlanetBackgroundThreadOnly( Faction faction, Planet planet, ArcenLongTermIntermittentPlanningContext Context )
         {
             Planet bestPlanet = null;
-            int lowestDanger = 99999;
             for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
             {
                 Planet hivePlanet = HivePlanetsForBackgroundThreadOnly[x];
                 int hops = planet.GetHopsTo( hivePlanet );
-                int danger = Fireteam.GetDangerOfPath( faction, Context, planet, hivePlanet, false, out short _ );
 
                 if ( bestPlanet == null )
-                {
                     bestPlanet = hivePlanet;
-                    lowestDanger = danger;
-                }
-                else if ( careAboutDanger )
-                {
-                    if ( danger < lowestDanger )
-                    {
-                        bestPlanet = hivePlanet;
-                        lowestDanger = danger;
-                    }
-                }
                 else if ( hops < planet.GetHopsTo( bestPlanet ) )
                     bestPlanet = hivePlanet;
             }
@@ -600,12 +587,12 @@ namespace PreceptsOfThePrecursors
 
         public override Planet GetFireteamLurkPlanet_OnBackgroundNonSimThread_Subclass( Faction faction, Planet TargetPlanet, int TeamStrength, Planet CurrentPlanetForFireteam, ArcenLongTermIntermittentPlanningContext Context )
         {
-            return GetNearestHivePlanetBackgroundThreadOnly( faction, TargetPlanet, Context, true );
+            return GetNearestHivePlanetBackgroundThreadOnly( faction, TargetPlanet, Context );
         }
 
         public override GameEntity_Squad GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( Faction faction, Planet CurrentPlanetForFireteam, ArcenLongTermIntermittentPlanningContext Context )
         {
-            return GetNearestHivePlanetBackgroundThreadOnly( faction, CurrentPlanetForFireteam, Context, true ).GetPlanetFactionForFaction( faction ).Entities.GetFirstMatching( HIVE_TAG, false, true );
+            return GetNearestHivePlanetBackgroundThreadOnly( faction, CurrentPlanetForFireteam, Context ).GetPlanetFactionForFaction( faction ).Entities.GetFirstMatching( HIVE_TAG, false, true );
         }
         #endregion
     }
