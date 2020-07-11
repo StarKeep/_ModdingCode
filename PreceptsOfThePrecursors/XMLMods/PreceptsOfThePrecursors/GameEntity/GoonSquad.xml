@@ -389,6 +389,7 @@ Mark 7: Bomber"
 	    speed_multiplier_first_5_seconds_on_planet="1.5"
 			shows_on_galaxy_map_for_explored_planets="true" always_visible_to_players="true"
       priority_as_ai_target="NormalStarship" priority_as_frd_target="NormalStarship" priority_to_protect="MajorPlanetLevelObjective"
+          health_change_per_damage_dealt="0.1"
 			>
 	<metal_flow purpose="RebuildingRemains" throughput="100" increase_per_mark_level="100"/>
     <system name="ShardlingCarver" display_name="Shardling Carver"
@@ -397,12 +398,11 @@ Mark 7: Bomber"
 				shot_type_data="MeleeInvisible" added_target_evaluator="WeaponJamAsPrimary"
 				area_of_effect_size="3200"				
 				shots_detonate_immediately="true"
-				maximum_number_of_targets_hit_per_shot="50"
-				stack_damage_multiplier="2"
+				maximum_number_of_targets_hit_per_shot="25"
 				>
       <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="100" /> 
     </system>
-	<incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="3000" multiplier="0.2" />
+	<incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5000" multiplier="0.2" />
   </entity>
 	<entity name="NeinzulShardling"			
 			visuals="assets/_finalgamemeshes/fleetships/vorticularcutlass/vorticularcutlass.prefab"
@@ -423,6 +423,8 @@ Mark 7: Bomber"
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
+		  always_self_attritions="true"
       >
     <system name="ShardlingCarver" display_name="Shardling Carver"
 				category="Weapon" firing_timing="OnlyInRange"
