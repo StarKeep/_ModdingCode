@@ -1,6 +1,7 @@
 ﻿using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
+using System;
 using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
@@ -220,6 +221,30 @@ namespace PreceptsOfThePrecursors
             ArcenCharacterBuffer buffer = this.tracingBuffer_longTerm;
             FireteamUtility.UpdateFireteams( faction, Context, FactionData.Teams, FactionData.TeamsAimedAtPlanet, buffer, FInt.One );
             FireteamUtility.UpdateRegiments( faction, Context, FactionData.Teams, FactionData.TeamsAimedAtPlanet, buffer, 1, true );
+
+            Fireteam.DoFor( FactionData.Teams, delegate ( Fireteam team )
+            {
+                switch ( team.status )
+                {
+                    case FireteamStatus.Disbanded:
+                    case FireteamStatus.Assembling:
+                    case FireteamStatus.Staging:
+                    case FireteamStatus.ReadyToAttack:
+                        if (team.History.Count > 0 )
+                        {
+                            int latestSecond = 0;
+                            for ( int x = 0; x < team.History.Count; x++ )
+                                latestSecond = Math.Max( latestSecond, team.History[x].GameSecond );
+                            if ( World_AIW2.Instance.GameSecond - latestSecond > 60 )
+                                team.DiscardCurrentObjectives();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                return DelReturn.Continue;
+            } );
 
             faction.ExecuteMovementCommands( Context );
             faction.ExecuteWormholeCommands( Context );
@@ -444,7 +469,7 @@ namespace PreceptsOfThePrecursors
         }
 
         #region Fireteams
-        public List<Planet> HivePlanetsForBackgroundThreadOnly = new List<Planet>();
+        private List<Planet> HivePlanetsForBackgroundThreadOnly = new List<Planet>();
 
         int alliedAssaultFriendlyThreshold = 5000;
         int alliedAssaultHostileThresholdMult = 2;
@@ -480,7 +505,7 @@ namespace PreceptsOfThePrecursors
                 int friendlyStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Friendly].TotalStrength;
 
                 if ( this is RoamingEnclavePlayerTeam && friendlyStrength > alliedAssaultFriendlyThreshold
-                  && hostileStrength > friendlyStrength * alliedAssaultHostileThresholdMult )
+                  && hostileStrength * alliedAssaultHostileThresholdMult > friendlyStrength )
                 {
                     alliedAssaults.Add( planet );
                 }
@@ -509,7 +534,8 @@ namespace PreceptsOfThePrecursors
 
                 planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( ENCLAVE_TAG, entity =>
                 {
-                    enclaveOnPlanet++;
+                    if ( entity.PlanetFaction.Faction == faction )
+                        enclaveOnPlanet++;
 
                     return DelReturn.Continue;
                 } );
@@ -554,7 +580,8 @@ namespace PreceptsOfThePrecursors
                         PreferredTargets.Add( new FireteamTarget( planetsByEnclaveCount.GetPairByIndex( 0 ).Value[x] ) );
                     for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
                         FallbackTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
-                } else
+                }
+                else
                     for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( HivePlanetsForBackgroundThreadOnly[x] ) );
             }

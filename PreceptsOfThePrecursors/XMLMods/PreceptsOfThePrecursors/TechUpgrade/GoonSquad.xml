@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
 
-  <item name="Battlestar" sort_group="20" sort_index="1" display_name="&lt;color=#808080&gt;Battlestar&lt;/color&gt;" science_cost_per_time_unlocked="500,2000,4000,6000,8000,10000" icon_path="assets/sci-fi_game_icons/icons/png/transparent/58_b.png"/>
+  <item name="Battlestar" sort_group="20" sort_index="1" display_name="&lt;color=#808080&gt;Battlestar&lt;/color&gt;" science_cost_per_time_unlocked="500,1500,2000,3000,4500,7500" icon_path="assets/sci-fi_game_icons/icons/png/transparent/58_b.png"/>
 
 </root>

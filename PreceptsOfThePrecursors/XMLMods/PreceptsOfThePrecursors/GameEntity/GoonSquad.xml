@@ -304,4 +304,58 @@ Mark 7: Bomber"
 	>
     <fleet_membership name="BattlestarFusionBomberWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
+
+	<!-- The Clockwork. Weak scrap cannons, supported by a very, very powerful, but small, wing of ships. Also comes complete with an immensely powerful Titan Beam... that is hard to aim. -->
+  <entity name="TheClockwork"
+			special_entity_type="MobileOfficerCombatFleetFlagship" fleet_design_logic_i_grant_one_from="MobileCombatFleet"
+			voice_group="Ark_JackBishop" gimbal_icon_size_multiplier="1.5" is_ark="true"
+			visuals="assets/_finalgamemeshes/arks/arkrorqualhegira/rorqualhegira.prefab"
+			icon_name="Official/Ark"
+			draw_in_galaxy_view="true"
+			tags="ShowsOnNormalDisplayMode,Capturable" capturable_seed_weight="100" capturable_max_per_galaxy="1"
+			size_scale="9"
+			visuals_scale_multiplier="3"
+			y_offset_of_icon="40"
+			uses_large_health_bar="true"
+			category="Ship"
+			collision_priority="10000"
+			display_name="The Clockwork"
+			description="A mishmash of technology from another galaxy, The Clockwork boasts a Scrap Cannon that is capable of shredding anything... that has no armor, a Titan Beam of immense power and range... that can only be aimed at nearby targets, and a hanger bay which allows the rapid launching of ships without the usual firing delay... which comes at a cost of the ship to be poorly designed for warp travel, bringing it to a near standstill after warping. How this ship survived for so long is a mystery."
+			aip_to_claim="10"
+			metal_to_claim="500000"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_ArkGeneral"
+			cost_for_ai_to_purchase="200"
+			hull_points="250000" shield_points="1500000" speed="AboveAverage4"
+			metal_cost="500000" energy_consumption="7000"
+      assist_range="Normal1"
+			armor_mm="85" albedo="0.8" engine_gx="18" mass_tx="7"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+      speed_multiplier_first_5_seconds_on_planet="0.1"
+			shows_on_galaxy_map_for_explored_planets="true" always_visible_to_players="true"
+      priority_as_ai_target="NormalStarship" priority_as_frd_target="NormalStarship" priority_to_protect="MajorPlanetLevelObjective"
+			>
+    <metal_flow purpose="RebuildingRemains" throughput="100" increase_per_mark_level="100"/>
+    <system name="ScrapCannon" display_name="Scrap Cannon"
+         category="Weapon" firing_timing="OnlyInRange"
+         damage_per_shot="100" range="AboveAverage3" shot_speed="Slow" rate_of_fire="Misery"
+         shots_per_salvo="50" fires_salvos_sequentially="false"
+         shot_type_data="ElegantCurl"
+				>
+      <outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="40" multiplier="100" />
+    </system>
+    <system name="TitanBeam" display_name="TitanBeam"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50000" range="VeryTiny1" shot_speed="Normal" rate_of_fire="Low"
+				shots_per_salvo="1" fires_salvos_sequentially="true"
+				stack_damage_multiplier="3"
+				shot_type_data="HeavyBeamInvisible"
+				beam_length_multiplier="10"
+				hits_all_intersecting_targets="true"
+				shots_detonate_immediately="true"
+				maximum_number_of_targets_hit_per_shot="50"
+				>
+    </system>
+  </entity>
 </root>
