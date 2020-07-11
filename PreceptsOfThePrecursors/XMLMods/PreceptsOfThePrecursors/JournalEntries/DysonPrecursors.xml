@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-
+  <!-- Lore entries. -->
   <journal name="MothershipSeen" sidebar_text="{FactionColor}{UnitTypeName}&lt;/color&gt; found on {PlanetName}"
         text_replacement_related_faction="true"
         text_replacement_related_faction_color="true"
@@ -36,4 +36,21 @@ Given enough time, I shall rebuild, and usher in a new dawn.
 
 From what the science crew and I’ve been able to gather is that the Zenith Mothership has been attacked by the AI and was recently awakened from a sort of stasis or hibernation. We think that it is attempting to rebuild the Zenith race, but given how little we know of the Zenith, it’s difficult to predict what exactly the Zenith Mothership will do. "
       />
+  
+  <!-- Game Guides -->
+  <journal name="MothershipTrust" sidebar_text="Guide: Mothership Trust"
+           chat_text="A guide for interacting with the mothership has been posted in the journals section."
+           full_text="The Mothership is a fickle creature. It considers itself the owner of every planet in this galaxy, and will fight for control over those it considers her own.
+The more a planet refuses to be suppressed, the lower her trust on that planet gets. As her trust lowers, she will be more willing to construct special Suppressor nodes, which will attack all non-Zenith ships on the planet.
+If a faction is willing to bow before her, however, she will allow their continued existence. Prove that you are capable of holding territory against those she considers hostile, and she will treat you as a vassal.
+This even extends to you managing to take territory she has previously claimed. Taking it from her will anger her Suppressors greatly, but if you hold it from them regardless, she will eventually honor your strength and leave the planet for you.
+Should you prove yourself in battle while she is nearby, she may even bestow you extra bonuses, such as Mines she has previously consumed, or potent Protector Dysons to help stronghold your territory."
+           />
+
+  <journal name="MothershipSubfactions" sidebar_text="Guide: Mothership Subfactions"
+           chat_text="A guide for interacting with the mothership has been posted in the journals section."
+           full_text="The Mothership is but a single entity, and delegates the control of her territory to two subfactions, the Suppressors, and the Protectors.
+The Suppressors will destroy absolutely any non-Zenith that enter the planet, regardless of anything. If these are found on a planet, this is hers. Full stop. You will have to fight an uphill battle to claim it for your own.
+The Protectors will also destroy non-Zenith that enter the planet, but have made an exception for her allies. These can coexist alongside allied forces, but end to be notably weaker than their Suppressor equivilents."
+           />
 </root>

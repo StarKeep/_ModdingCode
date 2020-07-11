@@ -410,9 +410,10 @@ namespace PreceptsOfThePrecursors
         }
         private void GiveJournalsAsNeeded( Faction faction, ArcenSimContext Context )
         {
-            MothershipJournal( faction, Context );
+            MothershipLoreJournals( faction, Context );
+            GameGuides( faction, Context );
         }
-        private void MothershipJournal( Faction faction, ArcenSimContext Context )
+        private void MothershipLoreJournals( Faction faction, ArcenSimContext Context )
         {
             if ( Mothership == null )
                 return;
@@ -458,6 +459,22 @@ namespace PreceptsOfThePrecursors
 
                 // Add our new entry to be managed by our MothershipData on load.
                 MothershipData.JournalEntries.AddPair( "MothershipNear", header );
+            }
+        }
+        private void GameGuides(Faction faction, ArcenSimContext Context )
+        {
+            if (World_AIW2.Instance.GameSecond > Context.RandomToUse.Next(600, 1800) && !MothershipData.JournalEntries.GetHasKey( "MothershipTrust" ) )
+            {
+                World_AIW2.Instance.QueueLogJournalEntryToSidebar( "MothershipTrust", string.Empty, Context );
+
+                MothershipData.JournalEntries.AddPair( "MothershipTrust", string.Empty );
+            }
+
+            if (World_AIW2.Instance.GameSecond > Context.RandomToUse.Next(1200, 2400) && !MothershipData.JournalEntries.GetHasKey( "MothershipSubfactions" ) )
+            {
+                World_AIW2.Instance.QueueLogJournalEntryToSidebar( "MothershipSubfactions", string.Empty, Context );
+
+                MothershipData.JournalEntries.AddPair( "MothershipSubfactions", string.Empty );
             }
         }
         private void HandleMothershipOnPlayerPlanet( Faction faction, ArcenSimContext Context )
