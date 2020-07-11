@@ -189,9 +189,9 @@ namespace PreceptsOfThePrecursors
 
             Buffer.Add( $"\nIt is currently {mood} ({trust}) towards us on this planet. " );
             if ( MothershipData.IsGainingTrust )
-                Buffer.Add( " Its trust towards this planet is currently increasing. " );
+                Buffer.Add( " Its trust towards nearby planets is currently increasing. " );
             else if ( MothershipData.IsLosingTrust )
-                Buffer.Add( " Its trust towards this planet is currently decreasing. " );
+                Buffer.Add( " Its trust towards nearby planets is currently decreasing. " );
 
             if ( RelatedEntityOrNull.Planet.GetIsControlledByFactionType( FactionType.Player ) && trust > -1000 && trust <= 1000 )
                 Buffer.Add( " It has recognized that we consider this planet our home and has ceased aggression... for now. " );
@@ -323,21 +323,21 @@ namespace PreceptsOfThePrecursors
                 return;
 
             Initialize( faction, Context );
-            
+
             GiveJournalsAsNeeded( faction, Context );
-            
+
             UpdateAllegiance( faction, Context );
-            
+
             GenerateResource( faction, Context );
-            
+
             HandleMovedToNewPlanetLogicIfNeeded();
-            
+
             HandleTrust( faction );
-            
+
             HandleMineConsumption( faction, Context );
-            
+
             GetReadyToMoveOnIfAble( faction, Context );
-            
+
             HandleAIResponse( faction, Context );
         }
 
@@ -461,16 +461,16 @@ namespace PreceptsOfThePrecursors
                 MothershipData.JournalEntries.AddPair( "MothershipNear", header );
             }
         }
-        private void GameGuides(Faction faction, ArcenSimContext Context )
+        private void GameGuides( Faction faction, ArcenSimContext Context )
         {
-            if (World_AIW2.Instance.GameSecond > Context.RandomToUse.Next(600, 1800) && !MothershipData.JournalEntries.GetHasKey( "MothershipTrust" ) )
+            if ( World_AIW2.Instance.GameSecond > Context.RandomToUse.Next( 600, 1800 ) && !MothershipData.JournalEntries.GetHasKey( "MothershipTrust" ) )
             {
                 World_AIW2.Instance.QueueLogJournalEntryToSidebar( "MothershipTrust", string.Empty, Context );
 
                 MothershipData.JournalEntries.AddPair( "MothershipTrust", string.Empty );
             }
 
-            if (World_AIW2.Instance.GameSecond > Context.RandomToUse.Next(1200, 2400) && !MothershipData.JournalEntries.GetHasKey( "MothershipSubfactions" ) )
+            if ( World_AIW2.Instance.GameSecond > Context.RandomToUse.Next( 1200, 2400 ) && !MothershipData.JournalEntries.GetHasKey( "MothershipSubfactions" ) )
             {
                 World_AIW2.Instance.QueueLogJournalEntryToSidebar( "MothershipSubfactions", string.Empty, Context );
 
@@ -752,23 +752,34 @@ namespace PreceptsOfThePrecursors
 
             if ( MothershipUndamaged( hullForTrustGain, shieldForTrustGain ) && HumanStrengthAdvantage( humanStrength, hostileStrength ) )
             {
-                if ( trust < MothershipData.Trust.MaxTrust( Mothership.Planet ) )
+                Mothership.Planet.DoForLinkedNeighborsAndSelf( false, planet =>
                 {
-                    short potentialChange = (short)(baseChange + nodeBonus);
-                    short change = Math.Max( baseChange, potentialChange );
-                    MothershipData.Trust.AddOrSubtractTrust( Mothership.Planet, change );
-                    MothershipData.IsGainingTrust = true;
-                }
+                    if ( trust < MothershipData.Trust.MaxTrust( Mothership.Planet ) )
+                    {
+                        short potentialChange = (short)(baseChange + nodeBonus);
+                        short change = Math.Max( baseChange, potentialChange );
+
+                        MothershipData.Trust.AddOrSubtractTrust( planet, change );
+                        MothershipData.IsGainingTrust = true;
+                    }
+                    return DelReturn.Continue;
+                } );
+                
             }
             else if ( MothershipDamaged( hullForTrustLoss, shieldForTrustLoss ) || !HumanStrengthAdvantage( humanStrength, hostileStrength ) )
             {
-                if ( trust > MothershipData.Trust.MinTrust( Mothership.Planet ) )
+                Mothership.Planet.DoForLinkedNeighborsAndSelf( false, planet =>
                 {
-                    short potentialChange = (short)((-baseChange) + nodeBonus);
-                    short change = Math.Min( baseChange, potentialChange );
-                    MothershipData.Trust.AddOrSubtractTrust( Mothership.Planet, change );
-                    MothershipData.IsLosingTrust = true;
-                }
+                    if ( trust > MothershipData.Trust.MinTrust( Mothership.Planet ) )
+                    {
+                        short potentialChange = (short)((-baseChange) + nodeBonus);
+                        short change = Math.Min( baseChange, potentialChange );
+
+                        MothershipData.Trust.AddOrSubtractTrust( planet, change );
+                        MothershipData.IsLosingTrust = true;
+                    }
+                    return DelReturn.Continue;
+                } );  
             }
         }
         private bool MothershipDamaged( int hullForTrustLoss, int shieldForTrustLoss )
