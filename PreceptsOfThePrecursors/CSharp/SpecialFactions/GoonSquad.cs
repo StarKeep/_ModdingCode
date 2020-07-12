@@ -22,7 +22,8 @@ namespace PreceptsOfThePrecursors
         public enum Ship
         {
             DemocracyDownfall,
-            NeinzulShardlingSwarm
+            NeinzulShardlingSwarm,
+            TheClockwork
         }
 
         public static ArcenSparseLookup<Ship, EntityCollection> Ships;
@@ -50,11 +51,14 @@ namespace PreceptsOfThePrecursors
                     switch ( shipType )
                     {
                         case Ship.DemocracyDownfall:
-                            HandleDownfall( entity );
+                            AddDownfallJournal( entity );
                             break;
                         case Ship.NeinzulShardlingSwarm:
                             if ( entity.SelfBuildingMetalRemaining <= 0 && entity.SecondsSpentAsRemains <= 0 )
                                 HandleShardling( entity, Context );
+                            break;
+                        case Ship.TheClockwork:
+                            AddClockworkJournal( entity );
                             break;
                         default:
                             break;
@@ -83,10 +87,16 @@ namespace PreceptsOfThePrecursors
             }
         }
 
-        private void HandleDownfall( GameEntity_Squad entity )
+        private void AddDownfallJournal( GameEntity_Squad entity )
         {
             if ( entity.PlanetFaction.Faction.Type == FactionType.Player && !goonData.JournalEntries.GetHasKey( Ship.DemocracyDownfall.ToString() ) )
                 messageToSend = Ship.DemocracyDownfall.ToString();
+        }
+
+        private void AddClockworkJournal(GameEntity_Squad entity )
+        {
+            if ( entity.PlanetFaction.Faction.Type == FactionType.Player && !goonData.JournalEntries.GetHasKey( Ship.TheClockwork.ToString() ) )
+                messageToSend = Ship.TheClockwork.ToString();
         }
 
         private void HandleShardling( GameEntity_Squad entity, ArcenSimContext Context )
