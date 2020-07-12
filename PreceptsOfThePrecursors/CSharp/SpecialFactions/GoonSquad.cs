@@ -53,7 +53,8 @@ namespace PreceptsOfThePrecursors
                             HandleDownfall( entity );
                             break;
                         case Ship.NeinzulShardlingSwarm:
-                            HandleShardling( entity, Context );
+                            if ( entity.SelfBuildingMetalRemaining <= 0 && entity.SecondsSpentAsRemains <= 0 )
+                                HandleShardling( entity, Context );
                             break;
                         default:
                             break;
@@ -100,7 +101,7 @@ namespace PreceptsOfThePrecursors
 
                           if ( entity.Systems[0].GetIsTargetInRange( otherEntity, RangeCheckType.ForActualFiring ) )
                           {
-                              GameEntity_Squad shardling = GameEntity_Squad.CreateNew( entity.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "NeinzulShardling" ), entity.CurrentMarkLevel, 
+                              GameEntity_Squad shardling = GameEntity_Squad.CreateNew( entity.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "NeinzulShardling" ), entity.CurrentMarkLevel,
                                   entity.FleetMembership.Fleet, 1, otherEntity.WorldLocation, Context );
                               shardling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, entity.PlanetFaction.Faction.FactionIndex );
                           }
