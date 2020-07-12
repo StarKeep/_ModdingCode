@@ -31,59 +31,6 @@ namespace PreceptsOfThePrecursors
             MakeEveryXFireteamDefensive,
             RetreatAtXHull
         }
-
-        public enum ExtConstantBooleans
-        {
-            MetalCostOverride,
-            Length
-        }
-
-        public enum ExtConstantIntegers
-        {
-            WormCost,
-            YounglingCost,
-            SecondsBetweenInfluxPeriod,
-            SecondsBetweenInfluxPeriodRandomizer,
-            SecondsUntilSubfactionRespawn,
-            SecondsUntilSubfactionRespawnRandomizer,
-            Length
-        }
-
-        private static ArcenSparseLookup<ExtConstantBooleans, bool> boolConstants;
-        private static ArcenSparseLookup<ExtConstantIntegers, int> intConstants;
-
-        private static bool Initialized = false;
-
-        private static void Initialize()
-        {
-            if ( Initialized )
-                return;
-            CustomDataSet constants = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclave" );
-            boolConstants = new ArcenSparseLookup<ExtConstantBooleans, bool>();
-            for ( int x = 0; x < (int)ExtConstantBooleans.Length; x++ )
-                boolConstants.AddPair( (ExtConstantBooleans)x, constants.GetBool_Slow( ((ExtConstantBooleans)x).ToString() ) );
-            intConstants = new ArcenSparseLookup<ExtConstantIntegers, int>();
-            for ( int x = 0; x < (int)ExtConstantIntegers.Length; x++ )
-                intConstants.AddPair( (ExtConstantIntegers)x, constants.GetInt_Slow( ((ExtConstantIntegers)x).ToString() ) );
-            Initialized = true;
-        }
-
-        public static bool GetBoolFromConstants( ExtConstantBooleans boolean )
-        {
-            if ( !Initialized )
-                Initialize();
-
-            return boolConstants[boolean];
-        }
-
-        public static int GetIntFromConstants( ExtConstantIntegers integer )
-        {
-            if ( !Initialized )
-                Initialize();
-            return intConstants[integer];
-        }
-
-
     }
     public enum Unit
     {
@@ -100,9 +47,7 @@ namespace PreceptsOfThePrecursors
         YounglingWolf,
         YounglingAnt,
         YounglingTurtle,
-        ClanlingMammoth,
-        ClanlingBear,
-        ClanlingWyvern
+        Length
     }
 
     // Base for all Enclave subfactions.
@@ -131,6 +76,14 @@ namespace PreceptsOfThePrecursors
         public static int Intensity;
 
         public EnclaveFactionData FactionData;
+
+        public static ArcenSparseLookup<GameEntityTypeData, int> SecondsPerUnitProduction;
+        public static ArcenSparseLookup<GameEntityTypeData, GameEntityTypeData> YounglingTypeByHive;
+
+        public static int SecondsPerInflux;
+        public static int SecondsPerInfluxRandomizer;
+        public static int SecondsForRespawn;
+        public static int SecondsForRespawnRandomizer;
 
         public enum Commands
         {
@@ -196,7 +149,7 @@ namespace PreceptsOfThePrecursors
                     Enclaves[x].TakeHullRepair( Enclaves[x].GetMaxHullPoints() / 100 );
             }
             if ( this is RoamingEnclavePlayerTeam )
-                for(int x = 0; x < (this as RoamingEnclavePlayerTeam).PlayerEnclaves.Count; x++ )
+                for ( int x = 0; x < (this as RoamingEnclavePlayerTeam).PlayerEnclaves.Count; x++ )
                     if ( (this as RoamingEnclavePlayerTeam).PlayerEnclaves[x].RepairDelaySeconds <= 0 )
                         (this as RoamingEnclavePlayerTeam).PlayerEnclaves[x].TakeHullRepair( Enclaves[x].GetMaxHullPoints() / 100 );
         }
@@ -209,50 +162,43 @@ namespace PreceptsOfThePrecursors
 
         private void HandleUnitSpawningForEnclaves( ArcenSimContext Context )
         {
-            if ( Enclaves.Count > 0 && CanSpawnUnits( null, out GameEntityTypeData unitData, EnclaveSettings.GetIntFromConstants(EnclaveSettings.ExtConstantIntegers.WormCost ) ))
-                SpawnUnitsForEnclave( Enclaves, unitData, Context );
+            if ( Enclaves.Count > 0 && CanSpawnUnits( null) )
+                SpawnUnitsForEnclave( Enclaves, Context );
         }
 
         private void HandleUnitSpawningForHives( ArcenSimContext Context )
         {
             for ( int y = 0; y < Hives.Count; y++ )
-                if ( CanSpawnUnits( Hives[y], out GameEntityTypeData unitData, EnclaveSettings.GetIntFromConstants(EnclaveSettings.ExtConstantIntegers.YounglingCost ) ))
-                    SpawnUnitsForHive( Hives[y], unitData, Context );
+                if ( CanSpawnUnits( Hives[y] ))
+                    SpawnUnitsForHive( Hives[y], Context );
         }
 
-        private bool CanSpawnUnits( GameEntity_Squad hiveOrNull, out GameEntityTypeData unitData, int costOverride )
+        private bool CanSpawnUnits( GameEntity_Squad hiveOrNull )
         {
-            unitData = GameEntityTypeDataTable.Instance.GetRowByName( hiveOrNull != null ? hiveOrNull.TypeData.InternalName.Substring( 4 ) : Unit.YounglingWorm.ToString() );
-            if ( unitData == null )
-            {
-                ArcenDebugging.ArcenDebugLogSingleLine( "Failed to find unit data for " + hiveOrNull.TypeData.DisplayName, Verbosity.ShowAsError );
-                return false;
-            }
-            int cost = unitData.MetalCost;
-            if ( EnclaveSettings.GetBoolFromConstants( EnclaveSettings.ExtConstantBooleans.MetalCostOverride ) )
-                cost = costOverride;
-            return World_AIW2.Instance.GameSecond % (cost / (20 + (Intensity * 3))) == 0;
+            GameEntityTypeData younglingData = hiveOrNull != null && YounglingTypeByHive.GetHasKey( hiveOrNull.TypeData ) ? YounglingTypeByHive[hiveOrNull.TypeData] : GameEntityTypeDataTable.Instance.GetRowByName( "YounglingWorm" );
+
+            return World_AIW2.Instance.GameSecond % SecondsPerUnitProduction[younglingData] == 0;
         }
 
-        private void SpawnUnitsForHive( GameEntity_Squad hive, GameEntityTypeData unitData, ArcenSimContext Context )
+        private void SpawnUnitsForHive( GameEntity_Squad hive, ArcenSimContext Context )
         {
-            GameEntity_Squad unit = GameEntity_Squad.CreateNew( hive.PlanetFaction, unitData, hive.CurrentMarkLevel, hive.PlanetFaction.FleetUsedAtPlanet, 0, hive.WorldLocation, Context );
+            GameEntity_Squad unit = GameEntity_Squad.CreateNew( hive.PlanetFaction, YounglingTypeByHive[hive.TypeData], hive.CurrentMarkLevel, hive.PlanetFaction.FleetUsedAtPlanet, 0, hive.WorldLocation, Context );
             unit.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, hive.PlanetFaction.Faction.FactionIndex );
             unit.MinorFactionStackingID = -1;
             if ( this is RoamingEnclavePlayerTeam )
-                (this as RoamingEnclavePlayerTeam).SpawnYounglingsForPlayerEnclaves( hive, unitData, Context );
+                (this as RoamingEnclavePlayerTeam).SpawnYounglingsForPlayerEnclaves( hive, Context );
         }
 
-        private void SpawnUnitsForEnclave( List<GameEntity_Squad> enclaves, GameEntityTypeData unitData, ArcenSimContext Context )
+        private void SpawnUnitsForEnclave( List<GameEntity_Squad> enclaves, ArcenSimContext Context )
         {
             for ( int x = 0; x < enclaves.Count; x++ )
             {
                 GameEntity_Squad enclave = enclaves[x];
-                GameEntity_Squad unit = GameEntity_Squad.CreateNew( enclave.PlanetFaction, unitData, enclave.CurrentMarkLevel, enclave.PlanetFaction.FleetUsedAtPlanet, 0, enclave.WorldLocation, Context );
+                GameEntity_Squad unit = GameEntity_Squad.CreateNew( enclave.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "YounglingWorm" ), enclave.CurrentMarkLevel, enclave.PlanetFaction.FleetUsedAtPlanet, 0, enclave.WorldLocation, Context );
                 enclave.StoreYoungling( unit, Context );
             }
             if ( this is RoamingEnclavePlayerTeam )
-                (this as RoamingEnclavePlayerTeam).SpawnYounglingsForPlayerEnclaves( null, unitData, Context );
+                (this as RoamingEnclavePlayerTeam).SpawnYounglingsForPlayerEnclaves( null, Context );
         }
 
         public abstract Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context );
@@ -704,6 +650,43 @@ namespace PreceptsOfThePrecursors
 
         public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
+            if ( BaseRoamingEnclave.SecondsPerUnitProduction == null )
+            {
+                BaseRoamingEnclave.SecondsPerUnitProduction = new ArcenSparseLookup<GameEntityTypeData, int>();
+                bool useExternal = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetBool_Slow( "MetalCostOverride" );
+
+                for ( int x = 0; x < (int)Unit.Length; x++ )
+                {
+                    GameEntityTypeData entityType = GameEntityTypeDataTable.Instance.GetRowByName( ((Unit)x).ToString() );
+                    int baseCost;
+                    if ( useExternal || entityType.MetalCost == 0 )
+                    {
+                        if ( x == 0 )
+                            baseCost = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "WormCost" );
+                        else
+                            baseCost = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "YounglingCost" );
+                    }
+                    else
+                        baseCost = GameEntityTypeDataTable.Instance.GetRowByName( ((Unit)x).ToString() ).MetalCost;
+                    int secondsPer = baseCost / (20 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity * 3));
+                    BaseRoamingEnclave.SecondsPerUnitProduction.AddPair( entityType, secondsPer );
+                }
+
+                BaseRoamingEnclave.YounglingTypeByHive = new ArcenSparseLookup<GameEntityTypeData, GameEntityTypeData>();
+                List<GameEntityTypeData> hiveData = GameEntityTypeDataTable.Instance.GetAllRowsWithTagOrNull( BaseRoamingEnclave.HIVE_TAG );
+                for(int x = 0; x < hiveData.Count; x++ )
+                {
+                    GameEntityTypeData younglingData = GameEntityTypeDataTable.Instance.GetRowByName( hiveData[x].InternalName.Substring( 4 ) );
+                    if ( younglingData != null )
+                        BaseRoamingEnclave.YounglingTypeByHive.AddPair( hiveData[x], younglingData );
+                }
+
+                BaseRoamingEnclave.SecondsPerInflux = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "SecondsBetweenInfluxPeriod" );
+                BaseRoamingEnclave.SecondsPerInfluxRandomizer = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "SecondsBetweenInfluxPeriodRandomizer" );
+                BaseRoamingEnclave.SecondsForRespawn = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "SecondsUntilSubfactionRespawn" );
+                BaseRoamingEnclave.SecondsForRespawnRandomizer = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "SecondsUntilSubfactionRespawnRandomizer" );
+            }
+
             BaseRoamingEnclave.EnclavesGloballyEnabled = true;
             BaseRoamingEnclave.Intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
 
@@ -718,8 +701,7 @@ namespace PreceptsOfThePrecursors
             {
                 isInflux = true;
                 World_AIW2.Instance.QueueChatMessageOrCommand( "A new influx of Neinzul have arrived in our galaxy.", ChatType.LogToCentralChat, Context );
-                int randomizer = EnclaveSettings.GetIntFromConstants( EnclaveSettings.ExtConstantIntegers.SecondsBetweenInfluxPeriodRandomizer );
-                worldData.SecondsUntilNextInflux = EnclaveSettings.GetIntFromConstants(EnclaveSettings.ExtConstantIntegers.SecondsBetweenInfluxPeriod) + Context.RandomToUse.Next(-randomizer, randomizer);
+                worldData.SecondsUntilNextInflux = BaseRoamingEnclave.SecondsPerInflux + Context.RandomToUse.Next( -BaseRoamingEnclave.SecondsPerInfluxRandomizer, BaseRoamingEnclave.SecondsPerInfluxRandomizer );
             }
             else
                 worldData.SecondsUntilNextInflux--;
@@ -735,8 +717,7 @@ namespace PreceptsOfThePrecursors
                     {
                         if ( REFaction.FactionData.SecondsUntilNextRespawn == -1 )
                         {
-                            int randomizer = EnclaveSettings.GetIntFromConstants( EnclaveSettings.ExtConstantIntegers.SecondsUntilSubfactionRespawnRandomizer );
-                            REFaction.FactionData.SecondsUntilNextRespawn = EnclaveSettings.GetIntFromConstants(EnclaveSettings.ExtConstantIntegers.SecondsUntilSubfactionRespawn) + Context.RandomToUse.Next(-randomizer, randomizer);
+                            REFaction.FactionData.SecondsUntilNextRespawn = BaseRoamingEnclave.SecondsForRespawn + Context.RandomToUse.Next( -BaseRoamingEnclave.SecondsForRespawnRandomizer, BaseRoamingEnclave.SecondsPerInfluxRandomizer );
                         }
                         if ( REFaction.FactionData.SecondsUntilNextRespawn > 0 )
                             REFaction.FactionData.SecondsUntilNextRespawn--;
@@ -1278,14 +1259,14 @@ namespace PreceptsOfThePrecursors
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
 
-        public void SpawnYounglingsForPlayerEnclaves( GameEntity_Squad hive, GameEntityTypeData unitData, ArcenSimContext Context )
+        public void SpawnYounglingsForPlayerEnclaves( GameEntity_Squad hive, ArcenSimContext Context )
         {
             Faction spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( RoamingEnclavePlayerTeam ) );
             for ( int x = 0; x < PlayerEnclaves.Count; x++ )
             {
                 GameEntity_Squad enclave = PlayerEnclaves[x];
                 PlanetFaction pFaction = hive != null ? hive.PlanetFaction : enclave.Planet.GetPlanetFactionForFaction( spawnFaction );
-                GameEntity_Squad unit = GameEntity_Squad.CreateNew( pFaction, unitData, enclave.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, hive != null ? hive.WorldLocation : enclave.WorldLocation, Context );
+                GameEntity_Squad unit = GameEntity_Squad.CreateNew( pFaction, GameEntityTypeDataTable.Instance.GetRowByName( "YounglingWorm" ), enclave.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, hive != null ? hive.WorldLocation : enclave.WorldLocation, Context );
                 if ( hive == null )
                     enclave.StoreYoungling( unit, Context );
                 else
