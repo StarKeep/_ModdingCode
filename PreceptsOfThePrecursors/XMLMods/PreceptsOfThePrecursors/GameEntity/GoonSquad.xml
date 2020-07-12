@@ -437,4 +437,52 @@ Mark 7: Bomber"
 				>
     </system>
   </entity>
+
+	<!-- The Grand Engineer. Middling offensive capabilities, but potent engineering capabilities. -->
+	<entity name="GrandEngineer"
+			special_entity_type="MobileOfficerCombatFleetFlagship" fleet_design_logic_i_grant_one_from="MobileCombatFleet" 
+      tags="ShowsOnNormalDisplayMode,Capturable" capturable_seed_weight="75" capturable_max_per_galaxy="1"
+      voice_group="Ark_CherylHarris" gimbal_icon_size_multiplier="1.5"
+			draw_in_galaxy_view="true" is_ark="true"
+			visuals="assets/_finalgamemeshes/specials/engineer/engineer.prefab"
+			icon_name="Official/Ark"
+			uses_large_health_bar="true"
+			category="Ship"
+			size_scale="8"
+			visuals_scale_multiplier="40"
+			y_offset_of_icon="70"
+			display_name="Grand Engineer"
+			description="Very middling Flagship that provides some acceptable firepower, its main benefit being is its amazing engineering ability."
+			collision_priority="810"
+			should_never_be_captured_by_another_faction="true"
+			metal_to_claim="5000000"
+			aip_to_claim="20"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_ArkGeneral"
+			cost_for_ai_to_purchase="10000"			
+			hull_points="500000" shield_points="750000" speed="High"
+			metal_cost="5000000" energy_consumption="50000"
+      assist_range="AboveAverage4"			
+			armor_mm="160" albedo="0.5" engine_gx="21" mass_tx="7"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			speed_multiplier_first_5_seconds_on_planet="1.5"
+			shows_on_galaxy_map_for_explored_planets="true" always_visible_to_players="true"
+			firing_delay_for_transported_ships="6"
+      priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
+			>
+		<metal_flow purpose="SelfConstruction" throughput="500"/>
+    <metal_flow purpose="RebuildingRemains" throughput="2000" increase_per_mark_level="500"/>
+		<metal_flow purpose="RepairingHullsOfFriendlies" throughput="5000" increase_per_mark_level="5000"/>
+    <metal_flow purpose="RepairingShieldsOfFriendlies" throughput="5000" increase_per_mark_level="5000"/>
+    <metal_flow purpose="RepairingEnginesOfFriendlies" throughput="5000" increase_per_mark_level="5000"/>
+    <metal_flow purpose="AssistConstruction" throughput="2500" increase_per_mark_level="2500"/>
+    <system name="BallisticDoubleshot" display_name="Ballistic Doubleshot"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="2000" range="AboveAverage3" shot_speed="Normal" rate_of_fire="Normal"
+				shots_per_salvo="20" added_shots_per_salvo_per_mark="20" fires_salvos_sequentially="false"
+				shot_type_data="DoubleShot_Green"
+				>
+    </system>	
+  </entity>
 </root>
