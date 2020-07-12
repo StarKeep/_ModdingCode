@@ -153,18 +153,18 @@ namespace PreceptsOfThePrecursors
 
         private void HandleUnitSpawningForEnclaves( ArcenSimContext Context )
         {
-            if ( Enclaves.Count > 0 && CanSpawnUnits( null, out GameEntityTypeData unitData ) )
+            if ( Enclaves.Count > 0 && CanSpawnUnits( null, out GameEntityTypeData unitData, 150 ) )
                 SpawnUnitsForEnclave( Enclaves, unitData, Context );
         }
 
         private void HandleUnitSpawningForHives( ArcenSimContext Context )
         {
             for ( int y = 0; y < Hives.Count; y++ )
-                if ( CanSpawnUnits( Hives[y], out GameEntityTypeData unitData ) )
+                if ( CanSpawnUnits( Hives[y], out GameEntityTypeData unitData, 250 ) )
                     SpawnUnitsForHive( Hives[y], unitData, Context );
         }
 
-        private bool CanSpawnUnits( GameEntity_Squad hiveOrNull, out GameEntityTypeData unitData )
+        private bool CanSpawnUnits( GameEntity_Squad hiveOrNull, out GameEntityTypeData unitData, int fallbackCost )
         {
             unitData = GameEntityTypeDataTable.Instance.GetRowByName( hiveOrNull != null ? hiveOrNull.TypeData.InternalName.Substring( 4 ) : Unit.YounglingWorm.ToString() );
             if ( unitData == null )
@@ -172,6 +172,9 @@ namespace PreceptsOfThePrecursors
                 ArcenDebugging.ArcenDebugLogSingleLine( "Failed to find unit data for " + hiveOrNull.TypeData.DisplayName, Verbosity.ShowAsError );
                 return false;
             }
+            int cost = unitData.MetalCost;
+            if ( cost == 0 )
+                cost = fallbackCost;
             return World_AIW2.Instance.GameSecond % (unitData.MetalCost / (20 + (Intensity * 3))) == 0;
         }
 
