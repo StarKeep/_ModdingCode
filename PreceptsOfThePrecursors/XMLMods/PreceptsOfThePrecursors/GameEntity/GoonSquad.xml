@@ -626,4 +626,55 @@ Mark 7: Bomber"
     </system>
   </entity>
 
+	<!-- Mean Green. A slow moving behemoth of an ark. Has effectively no killing power, but incredible healing when wading into swarms of hostiles. -->
+	<entity name="MeanGreen"
+			special_entity_type="MobileLoneWolfFleetFlagship"
+      tags="ShowsOnNormalDisplayMode,Capturable" capturable_seed_weight="75" capturable_max_per_galaxy="1"
+      voice_group="Ark_LucieLeroux" gimbal_icon_size_multiplier="1.5"
+			draw_in_galaxy_view="true" is_golem="true"
+			visuals="Assets/_FinalGameMeshes/Macrophage/Harvester/MacrophageHarvester.prefab"
+      icon_name="Official/MacrophageHarvester"
+			uses_large_health_bar="true"
+			category="Ship"
+			size_scale="14"
+			visuals_scale_multiplier="6"
+			y_offset_of_icon="55"
+			collision_priority="810"
+			display_name="Mean Green"
+			description="Researched by some crazy scientist in the far past, this is a fully tamed Macrophage, outfitted with incredible armor. While its offensive power is lackluster, its defensive power is unmatched."
+			should_never_be_captured_by_another_faction="true"
+			metal_to_claim="5000000"
+			aip_to_claim="50"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_GolemBotnet"
+			cost_for_ai_to_purchase="20000" strength_multiplier="2"			
+			hull_points="7500000" shield_points="0" speed="AboveAverage1"      
+			health_change_per_damage_dealt="50"
+			metal_cost="7500000" energy_consumption="50000"
+      assist_range="Normal1"			
+			armor_mm="230" albedo="0.9" engine_gx="22" mass_tx="12"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			speed_multiplier_first_5_seconds_on_planet="1.5"
+			shows_on_galaxy_map_for_explored_planets="true" always_visible_to_players="true"
+      priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
+			>
+		<metal_flow purpose="RebuildingRemains" throughput="100" increase_per_mark_level="100"/>		
+    <system name="Shards" display_name="Osteoclast Shards"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="50" range="Normal3" shot_speed="Slow" rate_of_fire="Misery"
+				shots_per_salvo="10" added_shots_per_salvo_per_mark="10" fires_salvos_sequentially="false"
+				shot_type_data="PlasmaTorpedoAOEBurstAtEnd"
+				>
+    </system>
+    <system name="EnergyWave" display_name="Osteoclast Energy Wave"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="500" range="Normal3" shot_speed="VeryFast" rate_of_fire="Misery"
+				shots_per_salvo="5" added_shots_per_salvo_per_mark="5" fires_salvos_sequentially="false"
+				shot_type_data="EnergyWave"				
+				>
+    </system>
+		<incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="4000" multiplier="0.5" />
+  </entity>
+
 </root>

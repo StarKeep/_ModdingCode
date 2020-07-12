@@ -49,6 +49,14 @@
         >
     <ship_membership name="ReprocessorRegnat" ship_cap_group="Centerpiece" weight="100" min="1" max="1"/>
   </fleet_design>
+  <fleet_design name="GSTestFleet7"
+       display_name="Mean Green"
+       description="Goon Squad Test Fleet"
+       design_logic="InitialPlayerFleet" weight="100" include_full_cap_of_each_type="true"
+       append_each_ship_description_to_main_description="true"
+        >
+    <ship_membership name="MeanGreen" ship_cap_group="Centerpiece" weight="100" min="1" max="1"/>
+  </fleet_design>
   
   <!--These drone "fleets" build a full cap of each type that is a potential within them,
       which means that they are not really procedural at all.  When a ship says "I am in the 'HiveGolemDrones' fleet and my max cap is 5,"
