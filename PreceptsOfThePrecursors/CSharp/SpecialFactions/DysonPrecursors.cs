@@ -512,7 +512,7 @@ namespace PreceptsOfThePrecursors
                 Hacking_OverrideMothershipPacification.IsActive = false;
             }
             else if ( Mothership.GetSecondsSinceEnteringThisPlanet() > 10 &&
-                ((Mothership.Planet.GetIsControlledByFactionType( FactionType.Player ) && MothershipData.Trust.GetTrust( Mothership.Planet ) < -1000) ||
+                ((Mothership.Planet.GetIsControlledByFactionType( FactionType.Player ) && MothershipData.Trust.GetTrust( Mothership.Planet ) < -2000) ||
                 (!Mothership.Planet.GetIsControlledByFactionType( FactionType.Player ) && MothershipData.Trust.GetTrust( Mothership.Planet ) < 1000)) )
                 enemyThisFactionToAll( faction );
             else
