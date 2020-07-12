@@ -677,4 +677,72 @@ Mark 7: Bomber"
 		<incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="4000" multiplier="0.5" />
   </entity>
 
+	<!-- The Marker. Sniper ranged debuffs. -->
+<entity name="TheMarker"
+			special_entity_type="MobileOfficerCombatFleetFlagship" fleet_design_logic_i_grant_one_from="MobileCombatFleet"
+			voice_group="Ark_JackBishop" gimbal_icon_size_multiplier="1.5" is_ark="true"
+			visuals="assets/_finalgamemeshes/arks/arkone/arkone.prefab"
+			icon_name="Official/Ark"
+			draw_in_galaxy_view="true"
+			tags="ShowsOnNormalDisplayMode,Capturable" capturable_seed_weight="75" capturable_max_per_galaxy="1"
+			size_scale="9"
+			visuals_scale_multiplier="3"
+			y_offset_of_icon="40"
+			uses_large_health_bar="true"
+			category="Ship"
+			collision_priority="10000"
+			display_name="The Marker"
+			description="A long range sniper support. Sprays an ever increasing number of debuffs on foes all across the gravity well. Starts with Acidic. Gains Weapon Lock at Mark 3, Engine Stun at Mark 5, and Paralyze at Mark 7."
+			aip_to_claim="10"
+			metal_to_claim="500000"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_ArkGeneral"
+			cost_for_ai_to_purchase="200"
+			hull_points="750000" shield_points="750000" speed="AboveAverage1"
+			metal_cost="500000" energy_consumption="7000"
+      assist_range="Normal1"
+			armor_mm="85" albedo="0.8" engine_gx="18" mass_tx="7"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+      speed_multiplier_first_5_seconds_on_planet="0.1"
+       firing_delay_for_transported_ships="6"
+			shows_on_galaxy_map_for_explored_planets="true" always_visible_to_players="true"
+      priority_as_ai_target="NormalStarship" priority_as_frd_target="NormalStarship" priority_to_protect="MajorPlanetLevelObjective"
+			>
+    <metal_flow purpose="RebuildingRemains" throughput="100" increase_per_mark_level="100"/>
+    <system name="AcidicSniper" display_name="Acidic Sniper"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="2500" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal"
+				shots_per_salvo="1" added_shots_per_salvo_per_mark="1" fires_salvos_sequentially="true"
+				shot_type_data="DoubleShot_Green"
+        damage_amplification="true" damage_amplification_duration="5" damage_amplification_flat="1000"
+				>
+    </system>
+		<system name="WeaponlockSniper" display_name="Weaponlock Sniper" min_mark_level_to_function="3"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="2500" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal"
+				shots_per_salvo="1" added_shots_per_salvo_per_mark="1" fires_salvos_sequentially="true"
+				shot_type_data="ElegantCurl" added_target_evaluator="WeaponJamAsPrimary"
+        base_enemy_weapon_reload_slowing_seconds_per_shot="3" added_enemy_weapon_reload_slowing_seconds_per_shot_per_mark="3"
+				max_enemy_weapon_reload_slowing_seconds="30" enemy_weapon_reload_slowing_to_armor_mm_less_than="90"				
+				>	
+    </system>
+		<system name="EnginelockSniper" display_name="Enginelock Sniper" min_mark_level_to_function="5"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="2500" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal"
+        shots_per_salvo="1" added_shots_per_salvo_per_mark="1" fires_salvos_sequentially="true"
+				shot_type_data="ElegantCurl" base_engine_stun_per_shot="3" engine_stun_to_engine_gx_less_than="19"
+				max_engine_stun_seconds="9" added_target_evaluator="EngineDamageAsMinorPart"
+				>	
+    </system>
+		<system name="ParalysisSniper" display_name="Paralysis Sniper" min_mark_level_to_function="7"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="2500" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal"
+				shots_per_salvo="1" added_shots_per_salvo_per_mark="1" fires_salvos_sequentially="true"
+				shot_type_data="ParalysisProngedShot_Blue" added_target_evaluator="ParalyzerAsPrimary"
+				base_paralysis_seconds_per_shot="8" added_paralysis_seconds_per_shot_per_mark="4" paralysis_to_ships_mass_tx_less_than="4"
+				>
+    </system>
+  </entity>
+
 </root>
