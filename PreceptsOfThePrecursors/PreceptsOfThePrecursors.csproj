@@ -101,6 +101,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\GoonSquad.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\HackingType\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\GoonSquad.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ModDescription.txt" />

@@ -165,10 +165,6 @@ namespace PreceptsOfThePrecursors
             if ( RelatedEntityOrNull == null )
                 return;
 
-            // Testchamber.
-            if ( RelatedEntityOrNull.PlanetFaction.Faction.Type == FactionType.Player )
-                return;
-
             StoredYounglingsData storage = RelatedEntityOrNull.GetStoredYounglings();
             if ( storage.StoredYounglings.GetPairCount() > 0 )
                 Buffer.Add( $"This Enclave contains the following Younglings of total strength {RelatedEntityOrNull.AdditionalStrengthFromFactions}.\n" );
@@ -270,6 +266,7 @@ namespace PreceptsOfThePrecursors
 
         public void DeployYounglings( GameEntity_Squad enclave, ArcenSimContext Context )
         {
+            Faction spawnFaction = enclave.PlanetFaction.Faction.Type == FactionType.SpecialFaction ? enclave.PlanetFaction.Faction : World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( RoamingEnclavePlayerTeam ) );
             for ( int x = 0; x < StoredYounglings.GetPairCount(); x++ )
             {
                 Unit unitName = StoredYounglings.GetPairByIndex( x ).Key;
@@ -283,9 +280,9 @@ namespace PreceptsOfThePrecursors
                     while( toSpawnInTotal > 0 )
                     {
                         short toSpawn = (short)Math.Min( toSpawnInTotal, StackingCutoff );
-                        GameEntity_Squad youngling = GameEntity_Squad.CreateNew( enclave.PlanetFaction, unitData, markLevel, enclave.PlanetFaction.FleetUsedAtPlanet, 1, enclave.WorldLocation, Context );
+                        GameEntity_Squad youngling = GameEntity_Squad.CreateNew( enclave.Planet.GetPlanetFactionForFaction( spawnFaction), unitData, markLevel, enclave.Planet.GetPlanetFactionForFaction(spawnFaction).FleetUsedAtPlanet, 1, enclave.WorldLocation, Context );
                         youngling.AddOrSetExtraStackedSquadsInThis( (short)(toSpawn - 1), true );
-                        youngling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, enclave.PlanetFaction.Faction.FactionIndex );
+                        youngling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
                         youngling.MinorFactionStackingID = enclave.PrimaryKeyID;
                         toSpawnInTotal -= toSpawn;
                     }

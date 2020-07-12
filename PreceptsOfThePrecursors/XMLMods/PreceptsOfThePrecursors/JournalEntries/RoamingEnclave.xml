@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+  <journal name="PlayerRoamingEnclaveAvailable" sidebar_text="PlayerRoamingEnclaveAvailable"
+        text_replacement_related_planet="true"
+        chat_text="We have received blueprints as a gift from the Enclave on {PlanetName}."
+        full_text="We have been gifted blueprints for what appears to be a variant of a Roaming Enclave, modified for human use.
+
+Based on these blueprints containing a large amount of hanger space, we believe building this ship will allow us direct control over our own Youngling swarm."
+      />
+</root>

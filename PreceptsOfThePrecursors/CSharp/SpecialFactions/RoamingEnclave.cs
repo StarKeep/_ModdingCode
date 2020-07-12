@@ -89,7 +89,10 @@ namespace PreceptsOfThePrecursors
             AddHivesToBuildList,
             ClaimHivesFromHumanAllies,
             LoadYounglingsIntoEnclaves,
-            UnloadYounglingsFromEnclaves
+            UnloadYounglingsFromEnclaves,
+            AddPlayerRoamingYounglingToBuildList,
+            ActivatePlayerRoamingYoungling,
+            PopulatePlayerEnclavesList
         }
         public BaseRoamingEnclave()
         {
@@ -135,6 +138,10 @@ namespace PreceptsOfThePrecursors
                 if ( Enclaves[x].RepairDelaySeconds <= 0 )
                     Enclaves[x].TakeHullRepair( Enclaves[x].GetMaxHullPoints() / 100 );
             }
+            if ( this is RoamingEnclavePlayerTeam )
+                for(int x = 0; x < (this as RoamingEnclavePlayerTeam).PlayerEnclaves.Count; x++ )
+                    if ( (this as RoamingEnclavePlayerTeam).PlayerEnclaves[x].RepairDelaySeconds <= 0 )
+                        (this as RoamingEnclavePlayerTeam).PlayerEnclaves[x].TakeHullRepair( Enclaves[x].GetMaxHullPoints() / 100 );
         }
 
         private void HandleYounglingCombining( ArcenSimContext Context )
@@ -173,7 +180,7 @@ namespace PreceptsOfThePrecursors
             unit.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, hive.PlanetFaction.Faction.FactionIndex );
             unit.MinorFactionStackingID = -1;
             if ( this is RoamingEnclavePlayerTeam )
-                (this as RoamingEnclavePlayerTeam).SpawnUnitsForPlayerCenterpieces( hive, unitData, Context );
+                (this as RoamingEnclavePlayerTeam).SpawnYounglingsForPlayerEnclaves( hive, unitData, Context );
         }
 
         private void SpawnUnitsForEnclave( List<GameEntity_Squad> enclaves, GameEntityTypeData unitData, ArcenSimContext Context )
@@ -182,9 +189,10 @@ namespace PreceptsOfThePrecursors
             {
                 GameEntity_Squad enclave = enclaves[x];
                 GameEntity_Squad unit = GameEntity_Squad.CreateNew( enclave.PlanetFaction, unitData, enclave.CurrentMarkLevel, enclave.PlanetFaction.FleetUsedAtPlanet, 0, enclave.WorldLocation, Context );
-                unit.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, enclave.PlanetFaction.Faction.FactionIndex );
-                unit.MinorFactionStackingID = enclave.PrimaryKeyID;
+                enclave.StoreYoungling( unit, Context );
             }
+            if ( this is RoamingEnclavePlayerTeam )
+                (this as RoamingEnclavePlayerTeam).SpawnYounglingsForPlayerEnclaves( null, unitData, Context );
         }
 
         public abstract Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context );
@@ -428,6 +436,10 @@ namespace PreceptsOfThePrecursors
                     else
                         return DelReturn.Continue;
                 }
+
+                // If player controlled, leave the Youngling alone.
+                if ( enclave.PlanetFaction.Faction.Type == FactionType.Player )
+                    return DelReturn.Continue;
 
                 ownershipCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
                 ownershipCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
@@ -1148,6 +1160,8 @@ namespace PreceptsOfThePrecursors
 
     public class RoamingEnclavePlayerTeam : BaseRoamingEnclave
     {
+        public List<GameEntity_Squad> PlayerEnclaves = new List<GameEntity_Squad>();
+
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             if ( !EnclavesGloballyEnabled )
@@ -1161,39 +1175,22 @@ namespace PreceptsOfThePrecursors
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
 
-        public void SpawnUnitsForPlayerCenterpieces( GameEntity_Squad hive, GameEntityTypeData unitData, ArcenSimContext Context )
+        public void SpawnYounglingsForPlayerEnclaves( GameEntity_Squad hive, GameEntityTypeData unitData, ArcenSimContext Context )
         {
-            hive.Planet.DoForEntities( EntityRollupType.MobileFleetFlagships, centerpiece =>
+            Faction spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( RoamingEnclavePlayerTeam ) );
+            for ( int x = 0; x < PlayerEnclaves.Count; x++ )
             {
-                if ( centerpiece.PlanetFaction.Faction.Type == FactionType.Player && centerpiece.TypeData.SpecialType != SpecialEntityType.MobileSupportFleetFlagship )
+                GameEntity_Squad enclave = PlayerEnclaves[x];
+                PlanetFaction pFaction = hive != null ? hive.PlanetFaction : enclave.Planet.GetPlanetFactionForFaction( spawnFaction );
+                GameEntity_Squad unit = GameEntity_Squad.CreateNew( pFaction, unitData, enclave.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, hive != null ? hive.WorldLocation : enclave.WorldLocation, Context );
+                if ( hive == null )
+                    enclave.StoreYoungling( unit, Context );
+                else
                 {
-                    Fleet.Membership mem = centerpiece.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( unitData, 1 );
-
-                    int count = 0;
-                    for ( int x = 0; x < mem.TransportContents.Count; x++ )
-                        count += 1 + mem.TransportContents[x].ExtraShipsInStack;
-                    mem.DoForEntities( entity =>
-                    {
-                        if ( count == 50 )
-                            entity.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
-                        else
-                            count += 1 + entity.ExtraStackedSquadsInThis;
-
-                        return DelReturn.Continue;
-                    } );
-
-                    if ( count >= 50 )
-                        return DelReturn.Continue;
-
-                    GameEntity_Squad unit = GameEntity_Squad.CreateNew( centerpiece.PlanetFaction, unitData, centerpiece.PlanetFaction.Faction.GetGlobalMarkLevelForShipLine( unitData ),
-                        centerpiece.PlanetFaction.FleetUsedAtPlanet, 0, hive.WorldLocation, Context );
-
-                    mem.AddEntityToFleetMembership( unit );
-                    unit.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, centerpiece.PlanetFaction.Faction.FactionIndex );
+                    unit.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                    unit.MinorFactionStackingID = enclave.PrimaryKeyID;
                 }
-
-                return DelReturn.Continue;
-            } );
+            }
         }
 
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
@@ -1308,6 +1305,10 @@ namespace PreceptsOfThePrecursors
             AddAndClaimHivesFromPlayers( faction, Context );
 
             base.DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( faction, Context );
+
+            HandlePlayerEnclaveSpawning( faction, Context );
+
+            HandlePlayerYounglingLogic( faction, Context );
         }
 
         private void AddAndClaimHivesFromPlayers( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
@@ -1340,5 +1341,99 @@ namespace PreceptsOfThePrecursors
                 Context.QueueCommandForSendingAtEndOfContext( takeFullyBuiltHivesCommand );
         }
 
+        private void HandlePlayerEnclaveSpawning( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
+        {
+            GameCommand spawnEnclaves = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.AddPlayerRoamingYounglingToBuildList.ToString() ), GameCommandSource.AnythingElse, faction );
+            GameCommand activateEnclaves = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.ActivatePlayerRoamingYoungling.ToString() ), GameCommandSource.AnythingElse, faction );
+            GameCommand populatePlayerEnclaves = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.PopulatePlayerEnclavesList.ToString() ), GameCommandSource.AnythingElse, faction );
+
+            World_AIW2.Instance.DoForFactions( otherFaction =>
+            {
+                if ( otherFaction.Type == FactionType.Player && faction.GetIsFriendlyTowards( otherFaction ) )
+                {
+                    int giftedEnclave = 0;
+                    otherFaction.DoForEntities( ENCLAVE_TAG, ( GameEntity_Squad entity ) =>
+                    {
+                        giftedEnclave++;
+
+                        populatePlayerEnclaves.RelatedEntityIDs.Add( entity.PrimaryKeyID );
+
+                        return DelReturn.Continue;
+                    } );
+                    Fleet.Membership mem = otherFaction.GetFactionKing().FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "PlayerRoamingEnclaveConstructor" ) );
+                    if ( mem != null )
+                        giftedEnclave += mem.ExplicitBaseSquadCap;
+
+                    int toGetAnother = 10;
+                    for ( int x = 0; x < giftedEnclave; x++ )
+                        toGetAnother *= 2;
+                    if ( Hives.Count >= toGetAnother )
+                        spawnEnclaves.RelatedEntityIDs.Add( otherFaction.GetFactionKing().PrimaryKeyID );
+                    if ( mem != null )
+                        mem.DoForEntities( playerEnclave =>
+                        {
+                            if ( playerEnclave.SelfBuildingMetalRemaining <= 0 && playerEnclave.SecondsSpentAsRemains <= 0 )
+                                activateEnclaves.RelatedEntityIDs.Add( playerEnclave.PrimaryKeyID );
+
+                            return DelReturn.Continue;
+                        } );
+                }
+
+                return DelReturn.Continue;
+            } );
+
+            if ( spawnEnclaves.RelatedEntityIDs.Count > 0 )
+                Context.QueueCommandForSendingAtEndOfContext( spawnEnclaves );
+            if ( activateEnclaves.RelatedEntityIDs.Count > 0 )
+                Context.QueueCommandForSendingAtEndOfContext( activateEnclaves );
+            if ( populatePlayerEnclaves.RelatedEntityIDs.Count > 0 )
+                Context.QueueCommandForSendingAtEndOfContext( populatePlayerEnclaves );
+        }
+
+        private void HandlePlayerYounglingLogic( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
+        {
+            GameCommand loadYounglingsCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.LoadYounglingsIntoEnclaves.ToString() ), GameCommandSource.AnythingElse, faction );
+            GameCommand enclaveUnloadCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.UnloadYounglingsFromEnclaves.ToString() ), GameCommandSource.AnythingElse, faction );
+
+            World_AIW2.Instance.DoForFactions( otherFaction =>
+            {
+                if ( otherFaction.Type != FactionType.Player || otherFaction.GetIsHostileTowards( faction ) )
+                    return DelReturn.Continue;
+                otherFaction.DoForEntities( ENCLAVE_TAG, enclave =>
+                {
+                    if ( !enclave.FleetMembership.Fleet.IsFleetInTransportLoadMode )
+                        enclaveUnloadCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
+
+                    faction.DoForEntities( YOUNGLING_TAG, youngling =>
+                    {
+                        if ( youngling.MinorFactionStackingID != enclave.PrimaryKeyID )
+                            return DelReturn.Continue;
+
+                        if ( youngling.Planet == enclave.Planet )
+                        {
+                            if ( enclave.FleetMembership.Fleet.IsFleetInTransportLoadMode || youngling.GetCurrentHullPoints() < youngling.GetMaxHullPoints() * 0.33 )
+                            {
+                                loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
+                                loadYounglingsCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
+                            }
+                            else if ( enclave.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength <= 50 && youngling.GetDistanceTo_VeryCheapButExtremelyRough( enclave.WorldLocation, false ) > 1000 )
+                                youngling.QueueMovementCommand( enclave.WorldLocation );
+                        }
+                        else if ( youngling.LongRangePlanningData.FinalDestinationPlanetIndex == -1 )
+                            youngling.QueueWormholeCommand( enclave.Planet, Context );
+
+                        return DelReturn.Continue;
+                    } );
+
+                    return DelReturn.Continue;
+                } );
+                return DelReturn.Continue;
+            } );
+
+            if ( loadYounglingsCommand.RelatedIntegers.Count > 0 )
+                Context.QueueCommandForSendingAtEndOfContext( loadYounglingsCommand );
+            if ( enclaveUnloadCommand.RelatedEntityIDs.Count > 0 )
+                Context.QueueCommandForSendingAtEndOfContext( enclaveUnloadCommand );
+        }
     }
 }

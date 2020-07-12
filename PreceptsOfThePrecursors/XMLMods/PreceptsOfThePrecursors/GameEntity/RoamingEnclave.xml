@@ -624,13 +624,13 @@
   </entity>
   <!-- Build by the player, gets transformed into an above hive when complete. -->
 	<entity name="HiveYounglingHuman" copy_from="NeinzulHiveBase" skip_export="true" metal_cost="2000000" energy_consumption="250000" strength_multiplier="0.01"
-						display_name="Neinzul Hive Construction Post" build_sidebar_categories_i_am_part_of="NeinzulEnclaveBuildings" absolute_max_cap_when_in_fleets="1"
-					description="This can be built in order to provide a place for your Neinzul allies to call home. Upon completion, the Neinzul will take full control of it and use it to produce a random Youngling unit. Any fleets you keep on this planet will slowly build up their own force of Younglings. This building will not cost energy when completed."
+						display_name="Neinzul Hive Construction Post" build_sidebar_categories_i_am_part_of="NeinzulEnclaveStructures" absolute_max_cap_when_in_fleets="1"
+					description="This can be built in order to provide a place for your Neinzul allies to call home. Upon completion, the Neinzul will take full control of it and use it to produce a random Youngling unit. This building will not cost energy when completed."
 					>
 		<metal_flow purpose="SelfConstruction" throughput="50"/>
 	</entity>
   <!-- The Enclave itself. -->
-  <entity name="RoamingEnclave" cannot_be_stacked="true"
+  <entity name="RoamingEnclave" cannot_be_stacked="true" special_entity_type="MobileLoneWolfFleetFlagship"
 			tags="ShowsOnNormalDisplayMode,RoamingEnclave" strength_multiplier="0.5"
 			draw_in_galaxy_view="true" 
 			gimbal_icon_size_multiplier="2.25"
@@ -654,6 +654,53 @@
 			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
 			voice_group="Zenith"
       
+      priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
+			pushes_enemy_shields="true"
+			should_never_be_captured_by_another_faction="true"
+      description_appender_dll="PreceptsOfThePrecursors"
+			description_appender_type="PreceptsOfThePrecursors.EnclaveYounglingsStorageDescriptionAppender"
+			>
+    <system name="FrenzyPheromones" display_name="Frenzy Pheromones"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1" range="Tiny3" shot_speed="Normal" rate_of_fire="Devourer"
+				shots_per_salvo="50" fires_salvos_sequentially="true"
+				shot_type_data="DoubleShot_Red"
+        damage_amplification="true" damage_amplification_duration="2" damage_amplification_flat="500"
+				>
+    </system>
+    <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5000" multiplier="0.05" />
+  </entity>
+  <!-- Player-controlled Enclave. Can build your first one at 5 hives, than every double hives later. (5,10,20,40...) -->
+  <entity name="PlayerRoamingEnclaveConstructor" copy_from="NeinzulHiveBase" skip_export="true" metal_cost="5000000" energy_consumption="50000" strength_multiplier="0.01"
+						display_name="Roaming Enclave Constructor" build_sidebar_categories_i_am_part_of="NeinzulEnclaveStructures"
+					description="A gift from the Pearl Enclave, this can be built to gain a controllable Roaming Enclave."
+					>
+    <metal_flow purpose="SelfConstruction" throughput="50"/>
+  </entity>
+  <entity name="PlayerRoamingEnclave" cannot_be_stacked="true"
+			tags="ShowsOnNormalDisplayMode,RoamingEnclave"
+			draw_in_galaxy_view="true"
+			gimbal_icon_size_multiplier="2.25"
+			visuals="Assets/_FinalGameMeshes/Specials/AstroTrain/AstroTrainCarrierStyle.prefab"
+			icon_name="Official/AstroTrain"
+			uses_large_health_bar="true"
+			category="Ship"
+			size_scale="7"
+			visuals_scale_multiplier="2"
+			y_offset_of_icon="10"
+			collision_priority="100"
+			display_name="Roaming Enclave"
+			description="A focus point for a Neinzul Swarm, this Enclave has accepted a human commander on board. Peppers nearby targets in very powerful pheremones that greatly increasing the potency of its Younglings. Rapidly regenerats Hull while out of combat."
+			starting_mark_level="Mark1"
+			cost_for_ai_to_purchase="500000"
+			hull_points="1000000" shield_points="50000" speed="BelowAverage2"
+			metal_cost="250000" energy_consumption="25000"
+			armor_mm="210" albedo="0.8" engine_gx="31" mass_tx="6"
+			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			voice_group="Zenith"
+      build_sidebar_categories_i_am_part_of="NeinzulEnclaveStructures"
       priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
 			pushes_enemy_shields="true"
 			should_never_be_captured_by_another_faction="true"

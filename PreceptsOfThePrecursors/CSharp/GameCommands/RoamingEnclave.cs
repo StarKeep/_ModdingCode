@@ -172,4 +172,62 @@ namespace PreceptsOfThePrecursors.GameCommands
             }
         }
     }
+
+    public class AddPlayerRoamingYounglingToBuildList : BaseGameCommand
+    {
+        public override void Execute( GameCommand command, ArcenSimContext context )
+        {
+            for(int x = 0; x < command.RelatedEntityIDs.Count; x++ )
+            {
+                GameEntity_Squad station = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[x] );
+
+                station.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "PlayerRoamingEnclaveConstructor" ) ).ExplicitBaseSquadCap += 1;
+
+                World_AIW2.Instance.QueueLogJournalEntryToSidebar( "PlayerRoamingEnclaveAvailable", string.Empty, station.Planet, context );
+            }
+        }
+    }
+
+    public class ActivatePlayerRoamingYoungling : BaseGameCommand
+    {
+        public override void Execute( GameCommand command, ArcenSimContext context )
+        {
+            for(int x = 0; x < command.RelatedEntityIDs.Count; x++ )
+            {
+                GameEntity_Squad enclaveConstructor = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[x] );
+
+                enclaveConstructor.FleetMembership.ExplicitBaseSquadCap--;
+
+                GameEntity_Squad enclave = enclaveConstructor.Planet.Mapgen_SeedEntity( context, enclaveConstructor.PlanetFaction.Faction, GameEntityTypeDataTable.Instance.GetRowByName("PlayerRoamingEnclave"), PlanetSeedingZone.MostAnywhere );
+
+                enclave.SetWorldLocation( enclaveConstructor.WorldLocation );
+
+                enclave.FleetMembership.RemoveEntity( enclave, false );
+
+                Fleet fleet = Fleet.Create( FleetCategory.PlayerMobile, enclaveConstructor.PlanetFaction.Faction, enclaveConstructor.PlanetFaction, enclave );
+
+                fleet.NameRaw = "Pearl Enclave's Gift";
+
+                enclaveConstructor.Despawn( context, true, InstancedRendererDeactivationReason.TransformedIntoAnotherEntityType );
+            }
+        }
+    }
+
+    public class PopulatePlayerEnclavesList : BaseGameCommand
+    {
+        public override void Execute( GameCommand command, ArcenSimContext context )
+        {
+            Faction faction = command.GetRelatedFaction();
+            if ( faction == null )
+                return;
+            RoamingEnclavePlayerTeam REFaction = faction.Implementation as RoamingEnclavePlayerTeam;
+            REFaction.PlayerEnclaves = new List<GameEntity_Squad>();
+            for ( int x = 0; x < command.RelatedEntityIDs.Count; x++ )
+            {
+                GameEntity_Squad entity = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[x] );
+                if ( entity != null )
+                    REFaction.PlayerEnclaves.Add( entity );
+            }
+        }
+    } 
 }
