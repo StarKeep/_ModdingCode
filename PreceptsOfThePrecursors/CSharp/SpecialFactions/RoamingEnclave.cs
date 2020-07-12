@@ -8,9 +8,9 @@ namespace PreceptsOfThePrecursors
 {
     public static class EnclaveSettings
     {
-        public static int GetInt( Faction faction, Integers setting )
+        public static int GetInt( Faction faction, GalaxyIntegers setting )
         {
-            bool useCustom = AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( faction.SpecialFactionData.InternalName.Substring( 14 ) + Booleans.EnclaveSettingsEnabled.ToString() );
+            bool useCustom = AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( faction.SpecialFactionData.InternalName.Substring( 14 ) + GalaxyBooleans.EnclaveSettingsEnabled.ToString() );
             if ( useCustom )
                 return AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( faction.SpecialFactionData.InternalName.Substring( 14 ) + setting.ToString() );
             else
@@ -18,19 +18,72 @@ namespace PreceptsOfThePrecursors
         }
         public static bool GetIsEnabled( Faction faction )
         {
-            return AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( faction.SpecialFactionData.InternalName.Substring( 14 ) + Booleans.EnclaveEnabled );
+            return AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( faction.SpecialFactionData.InternalName.Substring( 14 ) + GalaxyBooleans.EnclaveEnabled );
         }
-        public enum Booleans
+        public enum GalaxyBooleans
         {
             EnclaveEnabled,
             EnclaveSettingsEnabled
         }
-        public enum Integers
+        public enum GalaxyIntegers
         {
             EnclaveMaxHopsFromHiveToAttack,
             MakeEveryXFireteamDefensive,
             RetreatAtXHull
         }
+
+        public enum ExtConstantBooleans
+        {
+            MetalCostOverride,
+            Length
+        }
+
+        public enum ExtConstantIntegers
+        {
+            WormCost,
+            YounglingCost,
+            SecondsBetweenInfluxPeriod,
+            SecondsBetweenInfluxPeriodRandomizer,
+            SecondsUntilSubfactionRespawn,
+            SecondsUntilSubfactionRespawnRandomizer,
+            Length
+        }
+
+        private static ArcenSparseLookup<ExtConstantBooleans, bool> boolConstants;
+        private static ArcenSparseLookup<ExtConstantIntegers, int> intConstants;
+
+        private static bool Initialized = false;
+
+        private static void Initialize()
+        {
+            if ( Initialized )
+                return;
+            CustomDataSet constants = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclave" );
+            boolConstants = new ArcenSparseLookup<ExtConstantBooleans, bool>();
+            for ( int x = 0; x < (int)ExtConstantBooleans.Length; x++ )
+                boolConstants.AddPair( (ExtConstantBooleans)x, constants.GetBool_Slow( ((ExtConstantBooleans)x).ToString() ) );
+            intConstants = new ArcenSparseLookup<ExtConstantIntegers, int>();
+            for ( int x = 0; x < (int)ExtConstantIntegers.Length; x++ )
+                intConstants.AddPair( (ExtConstantIntegers)x, constants.GetInt_Slow( ((ExtConstantIntegers)x).ToString() ) );
+            Initialized = true;
+        }
+
+        public static bool GetBoolFromConstants( ExtConstantBooleans boolean )
+        {
+            if ( !Initialized )
+                Initialize();
+
+            return boolConstants[boolean];
+        }
+
+        public static int GetIntFromConstants( ExtConstantIntegers integer )
+        {
+            if ( !Initialized )
+                Initialize();
+            return intConstants[integer];
+        }
+
+
     }
     public enum Unit
     {
@@ -120,6 +173,9 @@ namespace PreceptsOfThePrecursors
             if ( !EnclavesGloballyEnabled )
                 return;
 
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
+                return;
+
             if ( FactionData == null )
                 FactionData = faction.GetEnclaveFactionData();
 
@@ -153,18 +209,18 @@ namespace PreceptsOfThePrecursors
 
         private void HandleUnitSpawningForEnclaves( ArcenSimContext Context )
         {
-            if ( Enclaves.Count > 0 && CanSpawnUnits( null, out GameEntityTypeData unitData, 150 ) )
+            if ( Enclaves.Count > 0 && CanSpawnUnits( null, out GameEntityTypeData unitData, EnclaveSettings.GetIntFromConstants(EnclaveSettings.ExtConstantIntegers.WormCost ) ))
                 SpawnUnitsForEnclave( Enclaves, unitData, Context );
         }
 
         private void HandleUnitSpawningForHives( ArcenSimContext Context )
         {
             for ( int y = 0; y < Hives.Count; y++ )
-                if ( CanSpawnUnits( Hives[y], out GameEntityTypeData unitData, 250 ) )
+                if ( CanSpawnUnits( Hives[y], out GameEntityTypeData unitData, EnclaveSettings.GetIntFromConstants(EnclaveSettings.ExtConstantIntegers.YounglingCost ) ))
                     SpawnUnitsForHive( Hives[y], unitData, Context );
         }
 
-        private bool CanSpawnUnits( GameEntity_Squad hiveOrNull, out GameEntityTypeData unitData, int fallbackCost )
+        private bool CanSpawnUnits( GameEntity_Squad hiveOrNull, out GameEntityTypeData unitData, int costOverride )
         {
             unitData = GameEntityTypeDataTable.Instance.GetRowByName( hiveOrNull != null ? hiveOrNull.TypeData.InternalName.Substring( 4 ) : Unit.YounglingWorm.ToString() );
             if ( unitData == null )
@@ -173,9 +229,9 @@ namespace PreceptsOfThePrecursors
                 return false;
             }
             int cost = unitData.MetalCost;
-            if ( cost == 0 )
-                cost = fallbackCost;
-            return World_AIW2.Instance.GameSecond % (unitData.MetalCost / (20 + (Intensity * 3))) == 0;
+            if ( EnclaveSettings.GetBoolFromConstants( EnclaveSettings.ExtConstantBooleans.MetalCostOverride ) )
+                cost = costOverride;
+            return World_AIW2.Instance.GameSecond % (cost / (20 + (Intensity * 3))) == 0;
         }
 
         private void SpawnUnitsForHive( GameEntity_Squad hive, GameEntityTypeData unitData, ArcenSimContext Context )
@@ -214,9 +270,12 @@ namespace PreceptsOfThePrecursors
             if ( !EnclavesGloballyEnabled )
                 return;
 
-            AttackHops = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.EnclaveMaxHopsFromHiveToAttack );
-            FireteamsPerDefense = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.MakeEveryXFireteamDefensive );
-            RetreatPercentage = EnclaveSettings.GetInt( faction, EnclaveSettings.Integers.RetreatAtXHull );
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
+                return;
+
+            AttackHops = EnclaveSettings.GetInt( faction, EnclaveSettings.GalaxyIntegers.EnclaveMaxHopsFromHiveToAttack );
+            FireteamsPerDefense = EnclaveSettings.GetInt( faction, EnclaveSettings.GalaxyIntegers.MakeEveryXFireteamDefensive );
+            RetreatPercentage = EnclaveSettings.GetInt( faction, EnclaveSettings.GalaxyIntegers.RetreatAtXHull );
 
             FactionData.TeamsAimedAtPlanet.Clear();
 
@@ -659,7 +718,8 @@ namespace PreceptsOfThePrecursors
             {
                 isInflux = true;
                 World_AIW2.Instance.QueueChatMessageOrCommand( "A new influx of Neinzul have arrived in our galaxy.", ChatType.LogToCentralChat, Context );
-                worldData.SecondsUntilNextInflux = 900;
+                int randomizer = EnclaveSettings.GetIntFromConstants( EnclaveSettings.ExtConstantIntegers.SecondsBetweenInfluxPeriodRandomizer );
+                worldData.SecondsUntilNextInflux = EnclaveSettings.GetIntFromConstants(EnclaveSettings.ExtConstantIntegers.SecondsBetweenInfluxPeriod) + Context.RandomToUse.Next(-randomizer, randomizer);
             }
             else
                 worldData.SecondsUntilNextInflux--;
@@ -674,7 +734,10 @@ namespace PreceptsOfThePrecursors
                     if ( REFaction.Hives.Count == 0 && REFaction.Enclaves.Count == 0 )
                     {
                         if ( REFaction.FactionData.SecondsUntilNextRespawn == -1 )
-                            REFaction.FactionData.SecondsUntilNextRespawn = 1800;
+                        {
+                            int randomizer = EnclaveSettings.GetIntFromConstants( EnclaveSettings.ExtConstantIntegers.SecondsUntilSubfactionRespawnRandomizer );
+                            REFaction.FactionData.SecondsUntilNextRespawn = EnclaveSettings.GetIntFromConstants(EnclaveSettings.ExtConstantIntegers.SecondsUntilSubfactionRespawn) + Context.RandomToUse.Next(-randomizer, randomizer);
+                        }
                         if ( REFaction.FactionData.SecondsUntilNextRespawn > 0 )
                             REFaction.FactionData.SecondsUntilNextRespawn--;
                         if ( REFaction.FactionData.SecondsUntilNextRespawn == 0 )
@@ -792,6 +855,12 @@ namespace PreceptsOfThePrecursors
     {
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
+            if ( !EnclavesGloballyEnabled )
+                return;
+
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
+                return;
+
             enemyThisFactionToAll( faction );
 
             FInt pseudoAIP = CalculateFactionOwnership( faction );
@@ -906,6 +975,12 @@ namespace PreceptsOfThePrecursors
             faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Minor Faction Team Red";
             allyThisFactionToMinorFactionTeam( faction, "Minor Faction Team Red" );
 
+            if ( !EnclavesGloballyEnabled )
+                return;
+
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
+                return;
+
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
@@ -959,6 +1034,12 @@ namespace PreceptsOfThePrecursors
         {
             faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Minor Faction Team Blue";
             allyThisFactionToMinorFactionTeam( faction, "Minor Faction Team Blue" );
+
+            if ( !EnclavesGloballyEnabled )
+                return;
+
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
+                return;
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
@@ -1014,6 +1095,12 @@ namespace PreceptsOfThePrecursors
             faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Minor Faction Team Green";
             allyThisFactionToMinorFactionTeam( faction, "Minor Faction Team Green" );
 
+            if ( !EnclavesGloballyEnabled )
+                return;
+
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
+                return;
+
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
@@ -1067,6 +1154,12 @@ namespace PreceptsOfThePrecursors
         {
             faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Dark Alliance";
             allyThisFactionToMinorFactionTeam( faction, "Dark Alliance" );
+
+            if ( !EnclavesGloballyEnabled )
+                return;
+
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
+                return;
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
@@ -1131,6 +1224,12 @@ namespace PreceptsOfThePrecursors
         {
             allyThisFactionToAI( faction );
 
+            if ( !EnclavesGloballyEnabled )
+                return;
+
+            if ( !EnclaveSettings.GetIsEnabled( faction ) )
+                return;
+
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
@@ -1168,13 +1267,13 @@ namespace PreceptsOfThePrecursors
 
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
+            allyThisFactionToHumans( faction );
+
             if ( !EnclavesGloballyEnabled )
                 return;
 
             if ( !EnclaveSettings.GetIsEnabled( faction ) )
                 return;
-
-            allyThisFactionToHumans( faction );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
