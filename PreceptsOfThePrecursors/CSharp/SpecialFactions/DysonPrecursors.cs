@@ -359,7 +359,7 @@ namespace PreceptsOfThePrecursors
                     JournalEntry journal = JournalEntryTable.Instance.GetRowByName( entry );
 
                     // Update our journal's text to include our new header if needed.
-                    if ( journal.FullText.Substring( 10 ) != header.Substring( 10 ) )
+                    if ( !journal.FullText.Contains( header ) )
                         journal.FullText = header + journal.FullText;
                 }
 
@@ -764,7 +764,7 @@ namespace PreceptsOfThePrecursors
                     }
                     return DelReturn.Continue;
                 } );
-                
+
             }
             else if ( MothershipDamaged( hullForTrustLoss, shieldForTrustLoss ) || !HumanStrengthAdvantage( humanStrength, hostileStrength ) )
             {
@@ -779,7 +779,7 @@ namespace PreceptsOfThePrecursors
                         MothershipData.IsLosingTrust = true;
                     }
                     return DelReturn.Continue;
-                } );  
+                } );
             }
         }
         private bool MothershipDamaged( int hullForTrustLoss, int shieldForTrustLoss )

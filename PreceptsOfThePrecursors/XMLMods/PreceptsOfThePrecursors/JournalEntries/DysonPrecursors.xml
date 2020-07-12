@@ -44,13 +44,17 @@ From what the science crew and I’ve been able to gather is that the Zenith Mot
 
 She will passively gain Trust towards your ownership on planets where you exert a military advantage without damaging her.
 
-Be warned however, that if her trust towards on a planet ever drops to -2000, she will attack on sight while there."
+Be warned however, that if her trust towards on a planet ever drops to -2000, she will attack on sight while there.
+
+On the opposing end, prove that you are worthy on neutral planets, and raise your strength above 1000, and she will deem the planet under your control, no longer acting hostile while there."
            />
 
   <journal name="MothershipSubfactions" sidebar_text="Guide: Mothership Subfactions"
            chat_text="A guide for interacting with the mothership has been posted in the journals section."
            full_text="The Mothership is but a single entity, and delegates the control of her territory to two subfactions, the Suppressors, and the Protectors.
+           
 The Suppressors will destroy absolutely any non-Zenith that enter the planet, regardless of anything. If these are found on a planet, this is hers. Full stop. You will have to fight an uphill battle to claim it for your own.
+
 The Protectors will also destroy non-Zenith that enter the planet, but have made an exception for her allies. These can coexist alongside allied forces, but end to be notably weaker than their Suppressor equivilents."
            />
 </root>
