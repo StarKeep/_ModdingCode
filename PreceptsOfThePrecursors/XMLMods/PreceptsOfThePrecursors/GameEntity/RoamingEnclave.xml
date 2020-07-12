@@ -630,7 +630,7 @@
 		<metal_flow purpose="SelfConstruction" throughput="50"/>
 	</entity>
   <!-- The Enclave itself. -->
-  <entity name="RoamingEnclave" cannot_be_stacked="true" special_entity_type="MobileLoneWolfFleetFlagship"
+  <entity name="RoamingEnclave" cannot_be_stacked="true"
 			tags="ShowsOnNormalDisplayMode,RoamingEnclave" strength_multiplier="0.5"
 			draw_in_galaxy_view="true" 
 			gimbal_icon_size_multiplier="2.25"
@@ -677,7 +677,7 @@
 					>
     <metal_flow purpose="SelfConstruction" throughput="50"/>
   </entity>
-  <entity name="PlayerRoamingEnclave" cannot_be_stacked="true"
+  <entity name="PlayerRoamingEnclave" cannot_be_stacked="true" special_entity_type="MobileLoneWolfFleetFlagship"
 			tags="ShowsOnNormalDisplayMode,PlayerRoamingEnclave"
 			draw_in_galaxy_view="true"
 			gimbal_icon_size_multiplier="2.25"
