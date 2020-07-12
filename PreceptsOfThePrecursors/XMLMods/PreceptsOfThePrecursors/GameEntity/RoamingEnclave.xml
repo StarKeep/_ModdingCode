@@ -678,7 +678,7 @@
     <metal_flow purpose="SelfConstruction" throughput="50"/>
   </entity>
   <entity name="PlayerRoamingEnclave" cannot_be_stacked="true"
-			tags="ShowsOnNormalDisplayMode,RoamingEnclave"
+			tags="ShowsOnNormalDisplayMode,PlayerRoamingEnclave"
 			draw_in_galaxy_view="true"
 			gimbal_icon_size_multiplier="2.25"
 			visuals="Assets/_FinalGameMeshes/Specials/AstroTrain/AstroTrainCarrierStyle.prefab"
@@ -693,7 +693,7 @@
 			description="A focus point for a Neinzul Swarm, this Enclave has accepted a human commander on board. Peppers nearby targets in very powerful pheremones that greatly increasing the potency of its Younglings. Rapidly regenerats Hull while out of combat."
 			starting_mark_level="Mark1"
 			cost_for_ai_to_purchase="500000"
-			hull_points="1000000" shield_points="50000" speed="BelowAverage2"
+			hull_points="1000000" shield_points="1000000" speed="BelowAverage2"
 			metal_cost="250000" energy_consumption="25000"
 			armor_mm="210" albedo="0.8" engine_gx="31" mass_tx="6"
 			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"

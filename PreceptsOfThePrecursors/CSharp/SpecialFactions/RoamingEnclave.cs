@@ -63,6 +63,7 @@ namespace PreceptsOfThePrecursors
 
         // Unit names and tags.
         public static string ENCLAVE_TAG = "RoamingEnclave";
+        public static string PLAYER_ENCLAVE_TAG = "PlayerRoamingEnclave";
         public static string HIVE_TAG = "EnclaveHive";
         public static string YOUNGLING_TAG = "EnclaveUnit";
         public static string HUMAN_HIVE_NAME = "HiveYounglingHuman";
@@ -1352,7 +1353,7 @@ namespace PreceptsOfThePrecursors
                 if ( otherFaction.Type == FactionType.Player && faction.GetIsFriendlyTowards( otherFaction ) )
                 {
                     int giftedEnclave = 0;
-                    otherFaction.DoForEntities( ENCLAVE_TAG, ( GameEntity_Squad entity ) =>
+                    otherFaction.DoForEntities( PLAYER_ENCLAVE_TAG, ( GameEntity_Squad entity ) =>
                     {
                         giftedEnclave++;
 
@@ -1399,7 +1400,7 @@ namespace PreceptsOfThePrecursors
             {
                 if ( otherFaction.Type != FactionType.Player || otherFaction.GetIsHostileTowards( faction ) )
                     return DelReturn.Continue;
-                otherFaction.DoForEntities( ENCLAVE_TAG, enclave =>
+                otherFaction.DoForEntities( PLAYER_ENCLAVE_TAG, enclave =>
                 {
                     if ( !enclave.FleetMembership.Fleet.IsFleetInTransportLoadMode )
                         enclaveUnloadCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );

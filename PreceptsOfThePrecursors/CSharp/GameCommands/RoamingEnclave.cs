@@ -198,7 +198,7 @@ namespace PreceptsOfThePrecursors.GameCommands
 
                 enclaveConstructor.FleetMembership.ExplicitBaseSquadCap--;
 
-                GameEntity_Squad enclave = enclaveConstructor.Planet.Mapgen_SeedEntity( context, enclaveConstructor.PlanetFaction.Faction, GameEntityTypeDataTable.Instance.GetRowByName("PlayerRoamingEnclave"), PlanetSeedingZone.MostAnywhere );
+                GameEntity_Squad enclave = enclaveConstructor.Planet.Mapgen_SeedEntity( context, enclaveConstructor.PlanetFaction.Faction, GameEntityTypeDataTable.Instance.GetRowByName(BaseRoamingEnclave.PLAYER_ENCLAVE_TAG), PlanetSeedingZone.MostAnywhere );
 
                 enclave.SetWorldLocation( enclaveConstructor.WorldLocation );
 
