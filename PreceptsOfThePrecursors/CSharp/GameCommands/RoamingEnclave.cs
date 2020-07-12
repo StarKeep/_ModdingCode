@@ -181,7 +181,7 @@ namespace PreceptsOfThePrecursors.GameCommands
             {
                 GameEntity_Squad station = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[x] );
 
-                station.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "PlayerRoamingEnclaveConstructor" ) ).ExplicitBaseSquadCap += 1;
+                station.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "PlayerRoamingEnclaveConstructor" ) ).ExplicitBaseSquadCap = 1;
 
                 World_AIW2.Instance.QueueLogJournalEntryToSidebar( "PlayerRoamingEnclaveAvailable", string.Empty, station.Planet, context );
             }
