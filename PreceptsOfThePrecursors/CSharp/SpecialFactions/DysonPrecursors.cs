@@ -9,21 +9,21 @@ namespace PreceptsOfThePrecursors
     // Costs for various things.
     public enum MinesToMarkUp
     {
-        One = 10,
-        Two = 25,
-        Three = 50,
-        Four = 75,
-        Five = 100,
-        Six = 120
+        One = 14,
+        Two = 28,
+        Three = 42,
+        Four = 56,
+        Five = 70,
+        Six = 84
     }
     public enum ResourcesToMarkUp
     {
-        One = 100000,
-        Two = 250000,
-        Three = 500000,
-        Four = 750000,
-        Five = 1000000,
-        Six = 1200000
+        One = 70000,
+        Two = 140000,
+        Three = 210000,
+        Four = 280000,
+        Five = 350000,
+        Six = 420000
     }
     public static class PrecursorCosts
     {
