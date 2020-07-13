@@ -677,8 +677,8 @@ Mark 7: Bomber"
 		<incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="4000" multiplier="0.5" />
   </entity>
 
-	<!-- The Marker. Sniper ranged debuffs. -->
-<entity name="TheMarker"
+	<!-- Veritgo Stratus. Sniper ranged debuffs. -->
+<entity name="VeritgoStratus"
 			special_entity_type="MobileOfficerCombatFleetFlagship" fleet_design_logic_i_grant_one_from="MobileCombatFleet"
 			voice_group="Ark_JackBishop" gimbal_icon_size_multiplier="1.5" is_ark="true"
 			visuals="assets/_finalgamemeshes/arks/arkone/arkone.prefab"
@@ -691,7 +691,7 @@ Mark 7: Bomber"
 			uses_large_health_bar="true"
 			category="Ship"
 			collision_priority="10000"
-			display_name="The Marker"
+			display_name="Veritgo Stratus"
 			description="A long range sniper support. Sprays an ever increasing number of debuffs on foes all across the gravity well. Starts with Acidic. Gains Weapon Lock at Mark 3, Engine Stun at Mark 5, and Paralyze at Mark 7."
 			aip_to_claim="10"
 			metal_to_claim="500000"
