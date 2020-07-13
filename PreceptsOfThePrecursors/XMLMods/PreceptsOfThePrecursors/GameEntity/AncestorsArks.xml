@@ -501,7 +501,7 @@ Mark 7: Bomber"
 			y_offset_of_icon="55"
 			collision_priority="810"
 			display_name="Reprocessor Regnat"
-			description="Ancient Zenith ship capable of pulling in hostile ships and processing them for metal. It is capable of pulling any targets with Mass less than its current Mark level."
+			description="Ancient Zenith ship capable of pulling in hostile ships and processing them for metal. It is capable of pulling any targets with Mass less than its current Mark level. Gains Greater Metabolization at Mark 5."
 			should_never_be_captured_by_another_faction="true"
 			metal_to_claim="5000000"
 			aip_to_claim="50"
@@ -530,8 +530,8 @@ Mark 7: Bomber"
 				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="1"
 				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
 				shot_type_data="ExplosiveInvisible"	
-				>	
-      <death_effect_damage type="GreaterMetabolization" tier_name="BountyHunter"/>
+				>
+      <death_effect_damage type="Metabolization" tier_name="Gangsaw"/>
       <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="1" multiplier="10" />
     </system>
   <system name="Pull2" display_name="Reaper's Harpoon" min_mark_level_to_function="2"
@@ -545,8 +545,8 @@ Mark 7: Bomber"
 				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="2"
 				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
 				shot_type_data="ExplosiveInvisible"
-				>	
-      <death_effect_damage type="GreaterMetabolization" tier_name="BountyHunter"/>
+				>
+      <death_effect_damage type="Metabolization" tier_name="Gangsaw"/>
       <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="10" />
     </system>
 <system name="Pull3" display_name="Reaper's Harpoon" min_mark_level_to_function="3"
@@ -560,8 +560,8 @@ Mark 7: Bomber"
 				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="3"
 				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
 				shot_type_data="ExplosiveInvisible"	
-				>	
-      <death_effect_damage type="GreaterMetabolization" tier_name="BountyHunter"/>
+				>
+      <death_effect_damage type="Metabolization" tier_name="Gangsaw"/>
       <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="3" multiplier="10" />
     </system>
 <system name="Pull4" display_name="Reaper's Harpoon" min_mark_level_to_function="4"
@@ -575,8 +575,8 @@ Mark 7: Bomber"
 				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="4"
 				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
 				shot_type_data="ExplosiveInvisible"
-				>	
-      <death_effect_damage type="GreaterMetabolization" tier_name="BountyHunter"/>
+				>
+      <death_effect_damage type="Metabolization" tier_name="Gangsaw"/>
       <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="4" multiplier="10" />
     </system>
 <system name="Pull5" display_name="Reaper's Harpoon" min_mark_level_to_function="5"
