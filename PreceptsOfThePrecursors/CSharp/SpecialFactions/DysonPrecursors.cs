@@ -268,13 +268,16 @@ namespace PreceptsOfThePrecursors
         }
         public override void UpdatePowerLevel( Faction faction )
         {
+            faction.OverallPowerLevel = FInt.Zero;
             if ( MothershipData == null )
                 return;
             if ( MothershipData.Level < 7 )
             {
-                faction.OverallPowerLevel = FInt.Zero;
+                for ( int x = 0; x < MothershipData.Level; x++ )
+                    faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
                 return;
             }
+            faction.OverallPowerLevel = FInt.FromParts( 3, 000 );
             int bigUnits = 0;
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
@@ -282,14 +285,11 @@ namespace PreceptsOfThePrecursors
                      bigUnits++;
                  return DelReturn.Continue;
              } );
-            if ( bigUnits > 10 )
-                faction.OverallPowerLevel = FInt.FromParts( 3, 0 );
-            else if ( bigUnits > 5 )
-                faction.OverallPowerLevel = FInt.FromParts( 2, 0 ) + ((FInt)(bigUnits - 5) / 5);
-            else if ( bigUnits > 0 )
-                faction.OverallPowerLevel = FInt.FromParts( 1, 0 ) + ((FInt)bigUnits / 5);
+            if ( bigUnits >= 4 )
+                faction.OverallPowerLevel += FInt.FromParts( 2, 000 );
             else
-                faction.OverallPowerLevel = FInt.FromParts( 1, 0 );
+                for ( int x = 0; x < bigUnits; x++ )
+                    faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
         }
         public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
