@@ -319,6 +319,9 @@ namespace PreceptsOfThePrecursors
 
                 return DelReturn.Continue;
             } );
+
+            // Pop the node.
+            TargetOrNull.Despawn( Context, true, InstancedRendererDeactivationReason.IFinishedMyJob );
             
             return base.DoSuccessfulCompletionLogic(TargetOrNull, planet, Hacker, Context, type, Event);
         }
