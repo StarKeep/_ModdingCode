@@ -23,7 +23,8 @@ namespace PreceptsOfThePrecursors
         {
             DemocracyDownfall,
             NeinzulShardlingSwarm,
-            TheClockwork
+            TheClockwork,
+            ReprocessorRegnat
         }
 
         public static ArcenSparseLookup<Ship, EntityCollection> Ships;
@@ -59,6 +60,9 @@ namespace PreceptsOfThePrecursors
                             break;
                         case Ship.TheClockwork:
                             AddClockworkJournal( entity );
+                            break;
+                        case Ship.ReprocessorRegnat:
+                            AddReprocessorRegnatJournal( entity );
                             break;
                         default:
                             break;
@@ -97,6 +101,12 @@ namespace PreceptsOfThePrecursors
         {
             if ( entity.PlanetFaction.Faction.Type == FactionType.Player && !goonData.JournalEntries.GetHasKey( Ship.TheClockwork.ToString() ) )
                 messageToSend = Ship.TheClockwork.ToString();
+        }
+
+        private void AddReprocessorRegnatJournal(GameEntity_Squad entity )
+        {
+            if ( entity.PlanetFaction.Faction.Type == FactionType.Player && !goonData.JournalEntries.GetHasKey( Ship.ReprocessorRegnat.ToString() ) )
+                messageToSend = Ship.ReprocessorRegnat.ToString();
         }
 
         private void HandleShardling( GameEntity_Squad entity, ArcenSimContext Context )
