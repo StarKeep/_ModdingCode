@@ -50,7 +50,7 @@
 />
   <item name="AwakenDysonPrecursors" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.Hacking_AwakenDysonPrecursors"
      display_name="Awaken The Precursors"
-     description="Our scientists have detected a large sentient energy source in this ancient piece of Zenith technology. They believe we could either kill it for a quick boost in scientific research, or reenable it via hack for a much greater reward, at the cost of more than likely angering whatever lies within. Grants 20000 Science if completed."
+     description="Our scientists have detected a large sentient energy source in this ancient piece of Zenith technology. They believe we could either kill it for a quick boost in scientific research, or reenable it via hack for a much greater reward, at the cost of more than likely angering whatever lies within. Grants 20000 Science if completed. Upon completion, this will awaken the Dyson Mothership, if she is not already awoken."
      hack_duration="300"
      cost_in_hacking_points="20"
      primary_hacking_response_interval="9000"

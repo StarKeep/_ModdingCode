@@ -283,7 +283,13 @@ namespace PreceptsOfThePrecursors
                     workingPlanet.DoForEntities( delegate ( GameEntity_Squad workingEntity )
                     {
                         if ( workingEntity.TypeData.GetHasTag( DysonPrecursors.DYSON_NODE_NAME ) )
-                            highestMarkNode = Math.Max( highestMarkNode, workingEntity.CurrentMarkLevel );
+                        {
+                            // If this is a protector node, pop it to make room for a suppressor node.
+                            if ( workingEntity.PlanetFaction.Faction.Implementation is DysonProtectors )
+                                workingEntity.Die( Context, true );
+                            else
+                                highestMarkNode = Math.Max( highestMarkNode, workingEntity.CurrentMarkLevel );
+                        }
 
                         return DelReturn.Continue;
                     } );
@@ -322,8 +328,8 @@ namespace PreceptsOfThePrecursors
 
             // Pop the node.
             TargetOrNull.Despawn( Context, true, InstancedRendererDeactivationReason.IFinishedMyJob );
-            
-            return base.DoSuccessfulCompletionLogic(TargetOrNull, planet, Hacker, Context, type, Event);
+
+            return base.DoSuccessfulCompletionLogic( TargetOrNull, planet, Hacker, Context, type, Event );
         }
     }
 }
