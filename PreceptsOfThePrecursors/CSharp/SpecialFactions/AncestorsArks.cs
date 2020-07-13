@@ -6,17 +6,17 @@ using System;
 namespace PreceptsOfThePrecursors
 {
     // Main faction class.
-    public class GoonSquad : BaseSpecialFaction
+    public class AncestorsArks : BaseSpecialFaction
     {
-        protected override string TracingName => "GoonSquad";
+        protected override string TracingName => "AncestorsArks";
         protected override bool EverNeedsToRunLongRangePlanning => true;
         protected override int MinimumSecondsBetweenLongRangePlannings => 5;
 
-        public static GoonSquadData goonData;
+        public static AncestorsArksData goonData;
 
         public enum Commands
         {
-            PopulateGoonSquad
+            PopulateAncestorsArks
         }
 
         public enum Ship
@@ -30,14 +30,14 @@ namespace PreceptsOfThePrecursors
 
         public static string messageToSend;
 
-        public GoonSquad() { goonData = null; messageToSend = null; }
+        public AncestorsArks() { goonData = null; messageToSend = null; }
 
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             if ( goonData == null )
             {
-                goonData = World.Instance.GetGoonSquadData();
-                World.Instance.SetGoonSquadData( goonData );
+                goonData = World.Instance.GetAncestorsArksData();
+                World.Instance.SetAncestorsArksData( goonData );
             }
 
             if ( Ships == null )
@@ -124,7 +124,7 @@ namespace PreceptsOfThePrecursors
 
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
-            GameCommand populateCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.PopulateGoonSquad.ToString() ), GameCommandSource.AnythingElse, faction );
+            GameCommand populateCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.PopulateAncestorsArks.ToString() ), GameCommandSource.AnythingElse, faction );
             populateCommand.RelatedBool = true;
 
             World_AIW2.Instance.DoForEntities( ( GameEntity_Squad workingEntity ) =>

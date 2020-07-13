@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- Logic faction. -->
-  <faction name="GoonSquad"
+  <faction name="AncestorsArks"
            display_name="Goon Squad Logic Faction"
            dll_name="PreceptsOfThePrecursors"
-           type_name="PreceptsOfThePrecursors.GoonSquad"
+           type_name="PreceptsOfThePrecursors.AncestorsArks"
            team_center_color="Gray" team_border_color="Gray"
            type="SpecialFaction"
            should_not_be_shown="true"

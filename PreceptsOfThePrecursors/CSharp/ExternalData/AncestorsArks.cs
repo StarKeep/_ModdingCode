@@ -7,12 +7,12 @@ using System.Collections.Generic;
 namespace PreceptsOfThePrecursors
 {
     // Class used to keep track of the Dyson Mothership's stats. Stored on the faction, since each faction will only ever have one Mothership.
-    public class GoonSquadData
+    public class AncestorsArksData
     {
         // What Journals have been sent, and what header did we assign it? Helps us figure out when a log is invalid to be sent.
         public ArcenSparseLookup<string, string> JournalEntries;
 
-        public GoonSquadData()
+        public AncestorsArksData()
         {
             JournalEntries = new ArcenSparseLookup<string, string>();
         }
@@ -27,7 +27,7 @@ namespace PreceptsOfThePrecursors
                 buffer.AddString_Condensed( pair.Value );
             }
         }
-        public GoonSquadData( ArcenDeserializationBuffer buffer )
+        public AncestorsArksData( ArcenDeserializationBuffer buffer )
         {
             int count = buffer.ReadInt32(ReadStyle.NonNeg);
             JournalEntries = new ArcenSparseLookup<string, string>();
@@ -35,10 +35,10 @@ namespace PreceptsOfThePrecursors
                 JournalEntries.AddPair( buffer.ReadString_Condensed(), buffer.ReadString_Condensed() );
         }    
     }
-    public class GoonSquadExternalData : IArcenExternalDataPatternImplementation
+    public class AncestorsArksExternalData : IArcenExternalDataPatternImplementation
     {
         // Make sure you use the same class name that you use for whatever data you want saved here.
-        private GoonSquadData Data;
+        private AncestorsArksData Data;
 
         public static int PatternIndex;
 
@@ -61,33 +61,33 @@ namespace PreceptsOfThePrecursors
 
         public void InitializeData( object ParentObject, object[] Target )
         {
-            this.Data = new GoonSquadData();
+            this.Data = new AncestorsArksData();
             Target[0] = this.Data;
         }
         public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
         {
             //For saving to disk, translate this object into the buffer
-            GoonSquadData data = (GoonSquadData)Source[0];
+            AncestorsArksData data = (AncestorsArksData)Source[0];
             data.SerializeTo( Buffer );
         }
         public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new GoonSquadData( Buffer );
+            Target[0] = new AncestorsArksData( Buffer );
         }
     }
-    public static class GoonSquadExternalDataExtensions
+    public static class AncestorsArksExternalDataExtensions
     {
         // This loads the data assigned to whatever ParentObject you pass. So, say, you could assign the same class to different ships, and each would be able to get back the values assigned to it.
         // In our specific case here, we're going to be assigning a dictionary to every faction.
-        public static GoonSquadData GetGoonSquadData( this World ParentObject )
+        public static AncestorsArksData GetAncestorsArksData( this World ParentObject )
         {
-            return (GoonSquadData)ParentObject.ExternalData.GetCollectionByPatternIndex( GoonSquadExternalData.PatternIndex ).Data[0];
+            return (AncestorsArksData)ParentObject.ExternalData.GetCollectionByPatternIndex( AncestorsArksExternalData.PatternIndex ).Data[0];
         }
         // This meanwhile saves the data, assigning it to whatever ParentObject you pass.
-        public static void SetGoonSquadData( this World ParentObject, GoonSquadData data )
+        public static void SetAncestorsArksData( this World ParentObject, AncestorsArksData data )
         {
-            ParentObject.ExternalData.GetCollectionByPatternIndex( GoonSquadExternalData.PatternIndex ).Data[0] = data;
+            ParentObject.ExternalData.GetCollectionByPatternIndex( AncestorsArksExternalData.PatternIndex ).Data[0] = data;
         }
     }
 }

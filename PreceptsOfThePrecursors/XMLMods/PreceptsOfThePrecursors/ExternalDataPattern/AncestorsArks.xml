@@ -4,5 +4,5 @@
       name is equal to the class in your main cs file.
       type_name is what you've called the storage class in your externaldata cs file.
 -->
-  <item name="GoonSquadData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GoonSquadExternalData" />
+  <item name="AncestorsArksData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.AncestorsArksExternalData" />
 </root>
