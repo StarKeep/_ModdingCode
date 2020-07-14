@@ -324,10 +324,13 @@
     external_invulnerability_unit_tag="DysonNode"
     external_invulnerability_region="ThisPlanet"
 			>
-    <system name="BallisticCannon" display_name="Ballistic Anti-Structure Cannon"
+    <system name="ZenithSuppressionCannon" display_name="Zenith Suppression Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="1000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
-				shot_type_data="ArmorPiercingShell" only_targets_static_units="true"
+				damage_per_shot="1400" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" shots_per_salvo="14" added_shots_per_salvo_per_mark="14"
+				base_engine_stun_per_shot="7" engine_stun_to_engine_gx_less_than="18"	max_engine_stun_seconds="21"
+        base_enemy_weapon_reload_slowing_seconds_per_shot="7" enemy_weapon_reload_slowing_to_armor_mm_less_than="180"
+				max_enemy_weapon_reload_slowing_seconds="21"
 				>
     </system>
     <system name="TachyonArray" display_name="Tachyon Array"
@@ -661,10 +664,13 @@
     should_never_be_captured_by_another_faction="true"
     eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
 			>
-    <system name="BallisticCannon" display_name="Ballistic Anti-Structure Cannon"
+    <system name="ZenithSuppressionCannon" display_name="Zenith Suppression Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="1000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
-				shot_type_data="ArmorPiercingShell" only_targets_static_units="true"
+				damage_per_shot="1400" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" shots_per_salvo="14" added_shots_per_salvo_per_mark="14"
+				base_engine_stun_per_shot="7" engine_stun_to_engine_gx_less_than="18"	max_engine_stun_seconds="21"
+        base_enemy_weapon_reload_slowing_seconds_per_shot="7" enemy_weapon_reload_slowing_to_armor_mm_less_than="180"
+				max_enemy_weapon_reload_slowing_seconds="21"
 				>
     </system>
     <system name="TachyonArray" display_name="Tachyon Array"
