@@ -162,14 +162,14 @@ namespace PreceptsOfThePrecursors
 
         private void HandleUnitSpawningForEnclaves( ArcenSimContext Context )
         {
-            if ( Enclaves.Count > 0 && CanSpawnUnits( null) )
+            if ( Enclaves.Count > 0 && CanSpawnUnits( null ) )
                 SpawnUnitsForEnclave( Enclaves, Context );
         }
 
         private void HandleUnitSpawningForHives( ArcenSimContext Context )
         {
             for ( int y = 0; y < Hives.Count; y++ )
-                if ( CanSpawnUnits( Hives[y] ))
+                if ( CanSpawnUnits( Hives[y] ) )
                     SpawnUnitsForHive( Hives[y], Context );
         }
 
@@ -496,7 +496,6 @@ namespace PreceptsOfThePrecursors
 
         int alliedAssaultFriendlyThreshold = 5000;
         int alliedAssaultHostileThresholdMult = 2;
-        int maxStrengthToBreakThrough = 10000;
         int hivesInDangerThreshold = 2500;
         int hivesThreatenedThreshold = 5000;
 
@@ -528,7 +527,7 @@ namespace PreceptsOfThePrecursors
                 int hostileStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength;
                 int friendlyStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Friendly].TotalStrength;
 
-                if ( this is RoamingEnclavePlayerTeam && friendlyStrength > alliedAssaultFriendlyThreshold
+                if ( friendlyStrength > alliedAssaultFriendlyThreshold
                   && hostileStrength * alliedAssaultHostileThresholdMult > friendlyStrength )
                 {
                     alliedAssaults.Add( planet );
@@ -583,8 +582,7 @@ namespace PreceptsOfThePrecursors
 
                 if ( hostileStrength > 500 )
                 {
-                    if ( hops <= AttackHops )
-                        fallbackAttackPlanets.Add( planet );
+                    fallbackAttackPlanets.Add( planet );
                 }
 
                 return DelReturn.Continue;
@@ -674,7 +672,7 @@ namespace PreceptsOfThePrecursors
 
                 BaseRoamingEnclave.YounglingTypeByHive = new ArcenSparseLookup<GameEntityTypeData, GameEntityTypeData>();
                 List<GameEntityTypeData> hiveData = GameEntityTypeDataTable.Instance.GetAllRowsWithTagOrNull( BaseRoamingEnclave.HIVE_TAG );
-                for(int x = 0; x < hiveData.Count; x++ )
+                for ( int x = 0; x < hiveData.Count; x++ )
                 {
                     GameEntityTypeData younglingData = GameEntityTypeDataTable.Instance.GetRowByName( hiveData[x].InternalName.Substring( 4 ) );
                     if ( younglingData != null )
@@ -854,15 +852,15 @@ namespace PreceptsOfThePrecursors
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = 1;
+            int toSpawn = 3;
             if ( Intensity > 1 )
-                toSpawn += Intensity;
+                toSpawn += Intensity * 3;
             if ( Intensity > 5 )
-                toSpawn += Intensity - 5;
+                toSpawn += (Intensity - 5) * 3;
             if ( Intensity > 7 )
-                toSpawn += Intensity - 7;
+                toSpawn += (Intensity - 7) * 3;
             if ( Intensity == 10 )
-                toSpawn += 5;
+                toSpawn += 10;
 
             List<Planet> potentialPlanets = new List<Planet>();
             World_AIW2.Instance.DoForPlanets( false, planet =>
