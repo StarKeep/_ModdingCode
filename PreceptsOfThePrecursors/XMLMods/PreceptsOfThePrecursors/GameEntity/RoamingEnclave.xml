@@ -632,7 +632,6 @@
   <!-- The Enclave itself. -->
   <entity name="RoamingEnclave" cannot_be_stacked="true"
 			tags="ShowsOnNormalDisplayMode,RoamingEnclave" strength_multiplier="0.5"
-			draw_in_galaxy_view="true" 
 			gimbal_icon_size_multiplier="2.25"
 			visuals="Assets/_FinalGameMeshes/Specials/AstroTrain/AstroTrainCarrierStyle.prefab"
 			icon_name="Official/AstroTrain"
@@ -643,7 +642,7 @@
 			y_offset_of_icon="10"
 			collision_priority="100"
 			display_name="Roaming Enclave"
-			description="A focus point for a Neinzul Swarm, this Enclave roams the galaxy, attempting to protect its territory. Peppers nearby targets in very powerful pheremones that greatly increasing the potency of its Younglings. Rapidly regenerats Hull while out of combat."
+			description="A focus point for a Youngling Swarm, this Enclave roams the galaxy, attempting to protect its territory. Peppers nearby targets in very powerful pheremones that greatly increasing the potency of its Younglings. Rapidly regenerats Hull while out of combat."
 			starting_mark_level="Mark1"
 			cost_for_ai_to_purchase="500000"
 			hull_points="1000000" shield_points="1000000" speed="BelowAverage2"
