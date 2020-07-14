@@ -852,15 +852,15 @@ namespace PreceptsOfThePrecursors
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = 3;
+            int toSpawn = 2;
             if ( Intensity > 1 )
-                toSpawn += Intensity * 3;
+                toSpawn += Intensity * 2;
             if ( Intensity > 5 )
-                toSpawn += (Intensity - 5) * 3;
+                toSpawn += (Intensity - 5) * 2;
             if ( Intensity > 7 )
-                toSpawn += (Intensity - 7) * 3;
+                toSpawn += (Intensity - 7) * 2;
             if ( Intensity == 10 )
-                toSpawn += 10;
+                toSpawn += 5;
 
             List<Planet> potentialPlanets = new List<Planet>();
             World_AIW2.Instance.DoForPlanets( false, planet =>
