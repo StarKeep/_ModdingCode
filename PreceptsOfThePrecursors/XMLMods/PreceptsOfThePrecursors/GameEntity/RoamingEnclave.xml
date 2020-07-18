@@ -5,7 +5,7 @@
   <entity name="YounglingWorm"
 			visuals="assets/_finalgamemeshes/fleetships/multi_needler_corvette/multi_needler corvette single.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/Corvette"
+			icon_name="Ships1/Corvette"
 			voice_group="Zenith"
 			size_scale="0.7"
 			visuals_scale_multiplier="1.4"
@@ -35,7 +35,7 @@
   <entity name="YounglingPuffin"
 			visuals="assets/_finalgamemeshes/fleetships/sentinelfrigate/sentinelfrigate.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/SentinelFrigate"
+			icon_name="Ships1/SentinelFrigate"
 			voice_group="Zenith"
 			category="Ship" is_strikecraft="true"
 			size_scale="0.7"
@@ -66,7 +66,7 @@
   <entity name="YounglingSnake"
 			visuals="assets/_finalgamemeshes/starships/assaultstarship/assaultstarship.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/Spider"
+			icon_name="Ships1/Spider"
 			size_scale="0.7"
 			visuals_scale_multiplier="1.4"
 			category="Ship" is_strikecraft="true"
@@ -100,7 +100,7 @@
   <entity name="YounglingEel"
 			visuals="assets/_finalgamemeshes/fleetships/LightningCorvette/LightningCorvette.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/Corvette" icon_overlay="Official/Corvette_Tesla"
+			icon_name="Ships1/Corvette" icon_overlay="Overlays1/Corvette_Tesla"
 			voice_group="Zenith"
 			size_scale="0.7"
 			visuals_scale_multiplier="1.4"
@@ -135,7 +135,7 @@
   <entity name="YounglingCheetah"
 			visuals="assets/_finalgamemeshes/fleetships/raider/raider.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/Raider"
+			icon_name="Ships1/Raider"
 			voice_group="Raider"
 			size_scale="0.7"
 			visuals_scale_multiplier="1.4"
@@ -167,7 +167,7 @@
   <entity name="YounglingBadger"
 			visuals="assets/_finalgamemeshes/fleetships/vorticularcutlass/vorticularcutlass.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/VorticularCutlass"
+			icon_name="Ships1/VorticularCutlass"
 			voice_group="Zenith"
 			category="Ship" is_strikecraft="true"
 			size_scale="0.7"
@@ -199,7 +199,7 @@
   <entity name="YounglingLion"
 			visuals="assets/_finalgamemeshes/fleetships/fighter/fighterold.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/Fighter"
+			icon_name="Ships1/Fighter"
 			voice_group="Zenith"
 			category="Ship" is_strikecraft="true"
 			size_scale="0.7"
@@ -234,7 +234,7 @@
   <entity name="YounglingApe"
 			visuals="assets/_finalgamemeshes/fleetships/bomber/bomber.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/Bomber"
+			icon_name="Ships1/Bomber"
 			voice_group="Zenith"
 			category="Ship" is_strikecraft="true"
 			size_scale="0.7"
@@ -271,7 +271,7 @@
   <entity name="YounglingBee"
       tags="EnclaveUnit"
 			visuals="assets/_finalgamemeshes/fleetships/multi_needler_corvette/multi_needler corvette single.prefab"
-			icon_name="Official/Corvette" icon_overlay="Official/Corvette_Pike"
+			icon_name="Ships1/Corvette" icon_overlay="Overlays1/Corvette_Pike"
 			voice_group="Zenith"
 			size_scale="0.7"
 			visuals_scale_multiplier="1.4"
@@ -303,7 +303,7 @@
   <entity name="YounglingShrike"
 			visuals="assets/_finalgamemeshes/fleetships/sentinelfrigate/sentinelfrigate.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/SentinelFrigate"
+			icon_name="Ships1/SentinelFrigate"
 			voice_group="Zenith"
 			category="Ship" is_strikecraft="true"
 			size_scale="0.7"
@@ -334,7 +334,7 @@
   <entity name="YounglingWolf"
 			visuals="assets/_finalgamemeshes/fleetships/raptor/raptor.prefab"
       tags="EnclaveUnit"
-			icon_name="Official/Raptor"
+			icon_name="Ships1/Raptor"
 			voice_group="Zenith"
 			category="Ship" is_strikecraft="true"
 			size_scale="0.7"
@@ -367,7 +367,7 @@
   <entity name="YounglingAnt"
 			tags="EnclaveUnit"
 			visuals="Assets/_FinalGameMeshes/Zenith/Dyson2Defender/DysonDefender.prefab"
-			icon_name="Official/DysonSentinel"
+			icon_name="Ships1/DysonSentinel"
 			voice_group="Zenith"
 			size_scale="0.7"
 			visuals_scale_multiplier="1.4"
@@ -399,7 +399,7 @@
   <entity name="YounglingTurtle"
       tags="EnclaveUnit"
       visuals="Assets/_FinalGameMeshes/Macrophage/Harvester/MacrophageHarvester.prefab"
-      icon_name="Official/MacrophageHarvester"
+      icon_name="Ships1/MacrophageHarvester"
       category="Ship"
       size_scale="0.4"
 			visuals_scale_multiplier="0.8"
@@ -419,6 +419,9 @@
 			priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
 		  always_self_attritions="true"
+      external_invulnerability_unit_tag="EnclaveElderling"
+      external_invulnerability_unit_type="None"
+      external_invulnerability_region="Galaxy"
       >
     <system name="Yawn" display_name="Yawn"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -431,12 +434,11 @@
     </system>
     <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="1000" multiplier="0.05" />
   </entity>
-  <!-- These Clanlings are unused, but kept in for potential future expansions of the faction. -->
+  <!-- Clanlings. Lacks the restricted lifespan of Younglings. Gain 1 Hive for every 3 Youngling hives on a planet. Requires Spire Debris. -->
   <entity name="ClanlingMammoth"
-      tags="EnclaveUnit"
-			gimbal_icon_size_multiplier="1.5"
+          tags="EnclaveUnit"
       visuals="Assets/_FinalGameMeshes/Spire/SpireLostFrigate/SpireLostFrigate.prefab"
-      icon_name="Official/Spire_Frigate"
+      icon_name="ShipsSpire/Spire_Frigate"
       uses_large_health_bar="true"
       category="Ship"
       size_scale="3.5"
@@ -450,7 +452,7 @@
       shield_size_scale="7" my_forcefield_does_not_shrink="true"
 			cost_for_ai_to_purchase="3000"
 			hull_points="5000" shield_points="50000" speed="AboveAverage3"
-			metal_cost="2500" energy_consumption="2500"
+			metal_cost="2000" energy_consumption="2000"
 			armor_mm="150" albedo="0.7" engine_gx="20" mass_tx="2"
 			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
@@ -471,10 +473,9 @@
     <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5000" multiplier="0.05" />
   </entity>
   <entity name="ClanlingBear"
-      tags="EnclaveUnit"
-			gimbal_icon_size_multiplier="1.5"
+          tags="EnclaveUnit"
       visuals="assets/_finalgamemeshes/guardians/lightningguardian/lightningguardian.prefab"
-      icon_name="Official/GuardianDire"
+      icon_name="Ships1/GuardianDire"
       uses_large_health_bar="true"
       category="Ship"
       size_scale="3.5"
@@ -484,10 +485,10 @@
       display_name="Clanling Bear"
       description="Modeled after various Dire Guardian AI units, this relatively large Clanling ship boasts some very cost-effective durability and firepower."
       voice_group="Zenith"
-			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Heavy"
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Heavy,Generalist"
 			cost_for_ai_to_purchase="3000"
 			hull_points="10000" shield_points="10000" speed="AboveAverage3"
-			metal_cost="2500" energy_consumption="2500"
+			metal_cost="2000" energy_consumption="2000"
 			armor_mm="150" albedo="0.7" engine_gx="20" mass_tx="2"
 			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
@@ -511,19 +512,20 @@
 				>
     </system>
   </entity>
-  <entity name="ClanlingWyvern"
-      tags="EnclaveUnit"
+  <!-- Elderling. Not used currently. -->
+  <entity name="ElderlingWyvern"
+      tags="EnclaveElderling"
 			gimbal_icon_size_multiplier="1.5"
       visuals="assets/_finalgamemeshes/guardians/lightningguardian/lightningguardian.prefab"
-      icon_name="Official/SomethingPortal"
+      icon_name="Ships2/SomethingPortal"
       uses_large_health_bar="true"
       category="Ship"
       size_scale="7"
 			visuals_scale_multiplier="14"
       y_offset_of_icon="35"
       collision_priority="800"
-      display_name="Clanling Wyvern"
-      description="Modeled after various Tiered AI units, this large Clanling ship boasts some very cost-effective durability and firepower."
+      display_name="Elderling Wyvern"
+      description="Modeled after various Tiered AI units, this large Elderling ship boasts some very cost-effective durability and firepower."
       voice_group="Zenith"
 			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Heavy"
 			cost_for_ai_to_purchase="30000"
@@ -561,11 +563,11 @@
     </system>
   </entity>
   <!-- Hive Units
-			These spawn Youngling/Clanling units over time, which will either assign themselves to Enclaves, Player Fleets, or attack on their own.
+			These spawn Youngling/Clanling units over time, which join Enclave fleets.
   -->
   <entity name="NeinzulHiveBase"
 			visuals="Assets/_FinalGameMeshes/Macrophage/Telium/MacrophageTelium.prefab" gimbal_name="Telium"
-			icon_name="Official/Telium" gimbal_icon_size_multiplier="1.2"
+			icon_name="Ships1/Telium" gimbal_icon_size_multiplier="1.2"
 			category="Ship" grants_minor_faction_planet_control="true"
 			size_scale="4"
 			visuals_scale_multiplier="1.5"
@@ -587,40 +589,40 @@
 			>
   </entity>
   <entity name="HiveYounglingPuffin" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Puffin Hive" description="This Neinzul Hive is the home to a Puffin swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Puffin Hive" description="This Neinzul Hive is the home to a Puffin swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingSnake" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Snake Hive" description="This Neinzul Hive is the home to a Snake swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Snake Hive" description="This Neinzul Hive is the home to a Snake swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingEel" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Eel Hive" description="This Neinzul Hive is the home to a Eel swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Eel Hive" description="This Neinzul Hive is the home to a Eel swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingCheetah" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Cheetah Hive" description="This Neinzul Hive is the home to a Cheetah swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Cheetah Hive" description="This Neinzul Hive is the home to a Cheetah swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingBadger" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Badger Hive" description="This Neinzul Hive is the home to a Badger swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Badger Hive" description="This Neinzul Hive is the home to a Badger swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingLion" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Lion Hive" description="This Neinzul Hive is the home to a Lion swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Lion Hive" description="This Neinzul Hive is the home to a Lion swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingApe" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Ape Hive" description="This Neinzul Hive is the home to a Ape swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Ape Hive" description="This Neinzul Hive is the home to a Ape swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingBee" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Bee Hive" description="This Neinzul Hive is the home to a Bee swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Bee Hive" description="This Neinzul Hive is the home to a Bee swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingShrike" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Shrike Hive" description="This Neinzul Hive is the home to a Shrike swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Shrike Hive" description="This Neinzul Hive is the home to a Shrike swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingWolf" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Wolf Hive" description="This Neinzul Hive is the home to a Wolf swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Wolf Hive" description="This Neinzul Hive is the home to a Wolf swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingAnt" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-          display_name="Youngling Ant Hive" description="This Neinzul Hive is the home to a Ant swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+          display_name="Youngling Ant Hive" description="This Neinzul Hive is the home to a Ant swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveYounglingTurtle" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-         display_name="Youngling Turtle Hive" description="This Neinzul Hive is the home to a Turtle swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+         display_name="Youngling Turtle Hive" description="This Neinzul Hive is the home to a Turtle swarm." tags="EnclaveHive,YounglingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <!-- Build by the player, gets transformed into an above hive when complete. -->
 	<entity name="HiveYounglingHuman" copy_from="NeinzulHiveBase" skip_export="true" metal_cost="2000000" energy_consumption="250000" strength_multiplier="0.01"
@@ -629,12 +631,19 @@
 					>
 		<metal_flow purpose="SelfConstruction" throughput="50"/>
 	</entity>
+  <!-- Clanling Hives -->
+  <entity name="HiveClanlingMammoth" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+        display_name="Clanling Mammoth Hive" description="This Neinzul Hive is the home to a Mammoth swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
+  <entity name="HiveClanlingBear" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
+        display_name="Clanling Bear Hive" description="This Neinzul Hive is the home to a Clanling swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+  </entity>
   <!-- The Enclave itself. -->
   <entity name="RoamingEnclave" cannot_be_stacked="true"
 			tags="ShowsOnNormalDisplayMode,RoamingEnclave" strength_multiplier="0.5"
 			gimbal_icon_size_multiplier="2.25"
 			visuals="Assets/_FinalGameMeshes/Specials/AstroTrain/AstroTrainCarrierStyle.prefab"
-			icon_name="Official/AstroTrain"
+			icon_name="Ships1/AstroTrain"
 			uses_large_health_bar="true"
 			category="Ship"
 			size_scale="7"
@@ -662,7 +671,7 @@
     <system name="FrenzyPheromones" display_name="Frenzy Pheromones"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="1" range="Tiny3" shot_speed="Normal" rate_of_fire="Devourer"
-				shots_per_salvo="50" fires_salvos_sequentially="true"
+				shots_per_salvo="50" fires_salvos_sequentially="false"
 				shot_type_data="DoubleShot_Red"
         damage_amplification="true" damage_amplification_duration="2" damage_amplification_flat="500"
 				>
@@ -681,7 +690,7 @@
 			draw_in_galaxy_view="true"
 			gimbal_icon_size_multiplier="2.25"
 			visuals="Assets/_FinalGameMeshes/Specials/AstroTrain/AstroTrainCarrierStyle.prefab"
-			icon_name="Official/AstroTrain"
+			icon_name="Ships1/AstroTrain"
 			uses_large_health_bar="true"
 			category="Ship"
 			size_scale="7"
@@ -709,7 +718,7 @@
     <system name="FrenzyPheromones" display_name="Frenzy Pheromones"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="1" range="Tiny3" shot_speed="Normal" rate_of_fire="Devourer"
-				shots_per_salvo="50" fires_salvos_sequentially="true"
+				shots_per_salvo="50" fires_salvos_sequentially="false"
 				shot_type_data="DoubleShot_Red"
         damage_amplification="true" damage_amplification_duration="2" damage_amplification_flat="500"
 				>

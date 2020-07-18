@@ -14,8 +14,8 @@
     draw_in_galaxy_view="true"
     cannot_be_stacked="true"
     visuals="Assets/_FinalGameMeshes/Zenith/Dyson3Bulwark/DysonBulwark.prefab"
-	  icon_name="Official/DysonSentinel"
-    icon_overlay="Official/DysonSentinel_Bastion"
+	  icon_name="Ships1/DysonSentinel"
+    icon_overlay="Overlays2/DysonSentinel_Bastion"
     uses_large_health_bar="true"
     category="Ship"
     visuals_scale_multiplier="8"
@@ -287,7 +287,7 @@
     gimbal_icon_size_multiplier="1.5"
     draw_in_galaxy_view="true"
     visuals="assets/_finalgamemeshes/aibuildings/dysonwarpgate.prefab"
-    icon_name="Official/Dyson_Sphere"
+    icon_name="Ships1/Dyson_Sphere"
     category="Ship"
     size_scale="4.2"
 		visuals_scale_multiplier="3"
@@ -631,7 +631,7 @@
     voice_group="Zenith"
     gimbal_icon_size_multiplier="1.5"
     visuals="Assets/_FinalGameMeshes/AIBuildings/DistributionAndInstigator/DistributionNode.prefab"
-    icon_name="Official/SomethingSpaceDoor"
+    icon_name="Ships2/SomethingSpaceDoor"
     category="Ship"
     size_scale="2.4"
 		visuals_scale_multiplier="2"
@@ -792,91 +792,188 @@
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
-  <!-- 'Big' units spawnt by a Sphere once it hits level 7.
-        Enforcers are used as an offensive fleet for the Precursor to wield as it sees fit.
-        Seedlings are given to the player as a reward for services rendered. -->
+  <!--  Dyson Packets
+        Built by Dyson Nodes, these release swarms of drones when killed.
+  -->
   <entity
-      name="DysonEnforcer"
-      copy_from="DysonMothership3"
-      skip_export="true"
-      display_name="Dyson Enforcer"
-      description="A large ship that appears to be hostile to everything and everyone. Combat Survaillence has witnessed this ship utterly crushing groups of AI units. Your lead scientist is unable to detect any of the signals normaly emitted from the Dyson Mothership, leading them to believe that it is non sentient, and that we will be unable to comunicate or negotiate a cease fire with it. Your military advisor suggests that while it can be used as a good distraction for our own assaults, we should be wary to not attack it directly."
-      tags="ShowsOnNormalDisplayMode,DysonEnforcer"
-      special_entity_type="NPCFactionCenterpiece"
-      starting_mark_level="Mark4"
-      multiplier_to_all_healths="5.0"
-      damage_multiplier_to_all_weapons="5.0"
-      multiplier_to_all_scales="5.0"
-      mass_tx="10"
-      engine_gx="29"
-      fleet_design_template_i_use_for_drones="DysonSuppressorDronesMed"
-      pushes_enemy_shields="true"
-      eligible_for_hacks=""
+    name="DysonPacket1"
+    tags="DysonPacket"
+    voice_group="Zenith"
+    gimbal_icon_size_multiplier="1.5"
+    visuals="assets/_finalgamemeshes/humanoddities/colonyship/colonyship.prefab"
+		icon_name="Ships1/ColonyShip"
+    category="Ship"
+    size_scale="2.4"
+		visuals_scale_multiplier="2"
+		y_offset_of_icon="50"
+		collision_priority="810"
+		display_name="Level 1 Dyson Packet"
+		description="Built by a Dyson Node, this is a weaponless drone transporter that releases an additional swarm of drones on death."
+    starting_mark_level="Mark1"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
+    drone_starting_behavior_type="Attacker_Full"
+    cost_for_ai_to_purchase="10000"
+    hull_points="10000"
+    shield_points="20000"
+    speed="BelowAverage1"
+    metal_cost="250000"
+    energy_consumption="2500"
+    armor_mm="40"
+    albedo="0.3"
+    mass_tx="1.5"
+    engine_gx="8"
+		ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+		ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+		ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+    priority_as_ai_target="NotDangerous"
+    priority_as_frd_target="NotDangerous"
+    priority_to_protect="Expendable"
+    strength_multiplier="5.0"
+    should_never_be_captured_by_another_faction="true"
+			>
+    <system name="ZenithProbingCannon" display_name="Zenith Probing Cannon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="100" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" shots_per_salvo="5"
+				>
+    </system>
+  </entity>
+  <entity
+    name="DysonPacket2"
+    copy_from="DysonPacket1"
+    skip_export="true"
+    display_name="Level 2 Dyson Packet"
+    tags="DysonPacket"
+    starting_mark_level="Mark2"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
+    metal_cost="500000"
+    energy_consumption="5000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="800" />
+  </entity>
+  <entity
+    name="DysonPacket3"
+    copy_from="DysonPacket2"
+    skip_export="true"
+    display_name="Level 3 Dyson Packet"
+    tags="DysonPacket"
+    starting_mark_level="Mark3"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
+    metal_cost="750000"
+    energy_consumption="7500"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
+  </entity>
+  <entity
+    name="DysonPacket4"
+    copy_from="DysonPacket3"
+    skip_export="true"
+    display_name="Level 4 Dyson Packet"
+    tags="DysonPacket"
+    starting_mark_level="Mark4"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
+    metal_cost="1000000"
+    energy_consumption="10000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
+  </entity>
+  <entity
+    name="DysonPacket5"
+    copy_from="DysonPacket4"
+    skip_export="true"
+    display_name="Level 5 Dyson Packet"
+    tags="DysonPacket"
+    starting_mark_level="Mark5"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
+    metal_cost="2000000"
+    energy_consumption="20000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
+  </entity>
+  <entity
+    name="DysonPacket6"
+    copy_from="DysonPacket5"
+    skip_export="true"
+    display_name="Level 6 Dyson Packet"
+    tags="DysonPacket"
+    starting_mark_level="Mark6"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
+    metal_cost="3000000"
+    energy_consumption="30000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
+  </entity>
+  <entity
+    name="DysonPacket7"
+    copy_from="DysonPacket6"
+    skip_export="true"
+    display_name="Level 7 Dyson Packet"
+    tags="DysonPacket"
+    starting_mark_level="Mark7"
+    fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
+    metal_cost="4000000"
+    energy_consumption="40000"
+    >
+    <metal_flow purpose="BuildingDronesInternally" throughput="1800" />
+  </entity>
+  <entity
+    name="DysonPacket8"
+    copy_from="DysonPacket7"
+    skip_export="true"
+    display_name="Level 8 Dyson Packet"
+    tags="DysonPacket"
+    starting_mark_level="Mark7"
+    fleet_design_template_i_use_for_drones="DysonProtectorDronesHig"
+    metal_cost="6000000"
+    energy_consumption="60000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
   </entity>
   <entity
-        name="DysonSeedling"
-        copy_from="DysonMothership3"
-        skip_export="true"
-        display_name="Dyson Seedling"
-        description=" It appears that our mutualistic relationship with the Proto Dyson Sphere has paid off. We have been gifted a fully functional and living Zenith starship! Your lead Scientist has been configuring the Zenith starship, which we have now dubbed the Dyson Seedling to respond to our orders. They also note that this particular zenith, unlike the clearly sentient mothership lacks a sort of intelligence, despite being alive. Kind of like a clone without a personality."
-        tags="ShowsOnNormalDisplayMode,DysonSeedling"
-        special_entity_type="MobileLoneWolfFleetFlagship"
-        starting_mark_level="Mark4"
-        multiplier_to_all_healths="5.0"
-        damage_multiplier_to_all_weapons="5.0"
-        multiplier_to_all_scales="5.0"
-        mass_tx="10"
-        engine_gx="29"
-        fleet_design_template_i_use_for_drones="DysonSeedlingDrones"
-        pushes_enemy_shields="true"
-        capturable_can_seed_at_all="false"
-        eligible_for_hacks=""
-        energy_consumption="25000"
-        tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
-        
+    name="DysonPacket9"
+    copy_from="DysonPacket8"
+    skip_export="true"
+    display_name="Level 9 Dyson Packet"
+    tags="DysonPacket"
+    starting_mark_level="Mark7"
+    fleet_design_template_i_use_for_drones="DysonSuppressorDronesHig"
+    metal_cost="10000000"
+    energy_consumption="100000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2200" />
   </entity>
-  <!-- Seedling Drones-->
+  <!-- Copies of the basic Dyson units that are set to decay over time. For on-death spawns.
+   -->
   <entity
-    name="DysonSeedlingSentinelDrone"
+    name="DysonSentinelDecaying"
     copy_from="DysonSentinel"
-    display_name="Dyson Sentinel Drone"
-    starting_mark_level="Mark4"
-    special_entity_type="DroneGeneral"
-    speed="Normal3"
-    tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
-    
-    energy_consumption="0"
+    display_name="Dyson Sentinel"
+    self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+		  always_self_attritions="true"
   >
-    <fleet_membership name="DysonSeedlingDrones"  ship_cap_group="Strike" weight="100" min="200" max="200"/>
   </entity>
   <entity
-      name="DysonSeedlingDefenderDrone"
+      name="DysonDefenderDecaying"
       copy_from="DysonDefender"
-      display_name="Dyson Defender Drone"
-      starting_mark_level="Mark4"
-      special_entity_type="DroneGeneral"
-      speed="Normal3"
-      tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
-      
-      energy_consumption="0"
+      display_name="Dyson Defender"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+		  always_self_attritions="true"
   >
-    <fleet_membership name="DysonSeedlingDrones"  ship_cap_group="Strike" weight="100" min="200" max="200"/>
   </entity>
   <entity
-      name="DysonSeedlingBulwarkDrone"
+      name="DysonBulwarkDecaying"
       copy_from="DysonBulwark"
-      display_name="Dyson Bulwark Drone"
-      starting_mark_level="Mark4"
-      special_entity_type="DroneGeneral"
-      speed="Normal2"
-      tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
-      
-    energy_consumption="0"
+      display_name="Dyson Bulwark"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+		  always_self_attritions="true"
   >
-    <fleet_membership name="DysonSeedlingDrones"  ship_cap_group="Strike" weight="100" min="5"  max="5"/>
+  </entity>
+  <entity
+      name="DysonBastionDecaying"
+      copy_from="DysonBastion"
+      display_name="Dyson Bastion"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+		  always_self_attritions="true"
+  >
   </entity>
 </root>

@@ -25,7 +25,6 @@
         chat_text="Alert! The {FactionColor}{UnitTypeName}&lt;/color&gt; is on {PlanetName}, which is adjacent to our territory! Your advisor's response has been noted in the journal."
         full_text="Uh… Commander? The Zenith Mothership is on one of our planets… We’ve received a transmission from it, and it reads as follows:
 
-
 Ah, finally, a respite from the silent one.
 This… calmness… I can appreciate.
 I do not desire us to fight, my hostile intent, none.
@@ -46,7 +45,7 @@ She will passively gain Trust towards your ownership on planets where you exert 
 
 Be warned however, that if her trust towards on a planet ever drops to -2000, she will attack on sight while there.
 
-On the opposing end, prove that you are worthy on neutral planets, and raise your strength above 1000, and she will deem the planet under your control, no longer acting hostile while there."
+On the opposing end, prove that you are worthy on neutral planets, and raise your trust above 1000, and she will deem the planet under your control, no longer acting hostile while there."
            />
 
   <journal name="MothershipSubfactions" sidebar_text="Guide: Mothership Subfactions"

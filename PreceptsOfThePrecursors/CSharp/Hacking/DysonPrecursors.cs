@@ -158,9 +158,9 @@ namespace PreceptsOfThePrecursors
             // Spawn drones. Small ones every second, big ones every 5 seconds. Use the Suppressor faction.
             // Not too strong, the big spawns come from popping Dyson Nodes.
             Faction spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
-            GameEntityTypeData sentinelData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefender" );
-            GameEntityTypeData defenderData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinel" );
-            GameEntityTypeData bulwarkData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwark" );
+            GameEntityTypeData sentinelData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderDecaying" );
+            GameEntityTypeData defenderData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelDecaying" );
+            GameEntityTypeData bulwarkData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkDecaying" );
             planet.Mapgen_SeedEntity( Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
             planet.Mapgen_SeedEntity( Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
             if ( Hacker.ActiveHack_DurationThusFar % 5 == 0 )
@@ -257,9 +257,9 @@ namespace PreceptsOfThePrecursors
         {
             // Spawn drones. small ones every second, big one every 10 seconds. Use the Suppressor faction.
             Faction spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
-            GameEntityTypeData sentinelData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefender" );
-            GameEntityTypeData defenderData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinel" );
-            GameEntityTypeData bulwarkData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwark" );
+            GameEntityTypeData sentinelData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderDecaying" );
+            GameEntityTypeData defenderData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelDecaying" );
+            GameEntityTypeData bulwarkData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkDecaying" );
             List<GameEntity_Squad> spawntShips = new List<GameEntity_Squad>();
             spawntShips.Add( planet.Mapgen_SeedEntity( Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem ) );
             spawntShips.Add( planet.Mapgen_SeedEntity( Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem ) );

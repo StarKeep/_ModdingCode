@@ -130,9 +130,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>RD /S /Q "$(SolutionDir)Releases\$(ProjectName)"
-mkdir "$(SolutionDir)Releases\$(ProjectName)\GameData\ModdableLogicDLLs"
+mkdir "$(SolutionDir)Releases\$(ProjectName)\XMLMods\$(ProjectName)\ModdableLogicDLLs"
 mkdir "$(SolutionDir)Releases\$(ProjectName)\XMLMods"
-copy "$(TargetDir)$(ProjectName).dll" "$(SolutionDir)Releases\$(ProjectName)\GameData\ModdableLogicDLLs"
+copy "$(TargetDir)$(ProjectName).dll" "$(SolutionDir)Releases\$(ProjectName)\XMLMods\$(ProjectName)\ModdableLogicDLLs"
 Xcopy /e /i /Q "$(ProjectDir)XMLMods" "$(SolutionDir)Releases\$(ProjectName)\XMLMods"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

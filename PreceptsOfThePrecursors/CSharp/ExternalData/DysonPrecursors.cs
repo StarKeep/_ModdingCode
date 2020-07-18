@@ -193,10 +193,6 @@ namespace PreceptsOfThePrecursors
         // Type of Protosphere.
         public ProtoSphereType Type;
 
-        // The Level 7 entity for this sphere.
-        private int bigUnit;
-        public GameEntity_Squad BigUnit { get { return World_AIW2.Instance.GetEntityByID_Squad( bigUnit ); } set { bigUnit = value.PrimaryKeyID; } }
-
         // When did the BigUnit die?
         public int GameSecondBigUnitDied;
         public int GameSecondsSinceBigUnitDeath { get { if ( GameSecondBigUnitDied == -1 ) return 0; else return World_AIW2.Instance.GameSecond - GameSecondBigUnitDied; } }
@@ -209,7 +205,6 @@ namespace PreceptsOfThePrecursors
             Level = 0;
             Resources = 0;
             Type = ProtoSphereType.None;
-            bigUnit = -1;
             GameSecondBigUnitDied = 0;
             HasBeenHacked = false;
         }
@@ -218,7 +213,7 @@ namespace PreceptsOfThePrecursors
             buffer.AddByte( ReadStyleByte.Normal, Level );
             buffer.AddInt32( ReadStyle.PosExceptNeg1, Resources );
             buffer.AddByte( ReadStyleByte.Normal, (byte)Type );
-            buffer.AddInt32( ReadStyle.PosExceptNeg1, bigUnit );
+            buffer.AddInt32( ReadStyle.PosExceptNeg1, -1 );
             buffer.AddInt32( ReadStyle.PosExceptNeg1, GameSecondBigUnitDied );
             buffer.AddItem( HasBeenHacked );
         }
@@ -227,7 +222,7 @@ namespace PreceptsOfThePrecursors
             Level = buffer.ReadByte( ReadStyleByte.Normal );
             Resources = buffer.ReadInt32(ReadStyle.PosExceptNeg1 );
             Type = (ProtoSphereType)buffer.ReadByte( ReadStyleByte.Normal );
-            bigUnit = buffer.ReadInt32(ReadStyle.PosExceptNeg1 );
+            buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             GameSecondBigUnitDied = buffer.ReadInt32(ReadStyle.PosExceptNeg1 );
             HasBeenHacked = buffer.ReadBool();
         }

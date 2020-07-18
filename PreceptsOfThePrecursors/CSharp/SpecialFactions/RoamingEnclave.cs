@@ -47,6 +47,8 @@ namespace PreceptsOfThePrecursors
         YounglingWolf,
         YounglingAnt,
         YounglingTurtle,
+        ClanlingMammoth,
+        ClanlingBear,
         Length
     }
 
@@ -62,6 +64,8 @@ namespace PreceptsOfThePrecursors
         // Unit names and tags.
         public static string ENCLAVE_TAG = "RoamingEnclave";
         public static string PLAYER_ENCLAVE_TAG = "PlayerRoamingEnclave";
+        public static string CLANLING_HIVE_TAG = "ClanlingHive";
+        public static string YOUNGLING_HIVE_TAG = "YounglingHive";
         public static string HIVE_TAG = "EnclaveHive";
         public static string YOUNGLING_TAG = "EnclaveUnit";
         public static string HUMAN_HIVE_NAME = "HiveYounglingHuman";
@@ -114,9 +118,7 @@ namespace PreceptsOfThePrecursors
         public override void UpdatePowerLevel( Faction faction )
         {
             faction.OverallPowerLevel = FInt.Zero;
-            if ( Hives.Count > 50 )
-                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
-            else if ( Hives.Count > 10 )
+            if ( Hives.Count >= 10 )
                 faction.OverallPowerLevel = FInt.FromParts( 1, 000 ) + (FInt.FromParts( 0, 025 ) * (Hives.Count - 10));
             else
                 faction.OverallPowerLevel = FInt.FromParts( 0, 010 ) * Hives.Count;
@@ -666,7 +668,9 @@ namespace PreceptsOfThePrecursors
                     }
                     else
                         baseCost = GameEntityTypeDataTable.Instance.GetRowByName( ((Unit)x).ToString() ).MetalCost;
+                    ArcenDebugging.SingleLineQuickDebug( $"Setting up Youngling Cost for {entityType.DisplayName}" );
                     int secondsPer = baseCost / (20 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity * 3));
+                    ArcenDebugging.SingleLineQuickDebug( $"Base cost: {baseCost}, secondsPer: {secondsPer}" );
                     BaseRoamingEnclave.SecondsPerUnitProduction.AddPair( entityType, secondsPer );
                 }
 
@@ -796,7 +800,7 @@ namespace PreceptsOfThePrecursors
 
             for ( int x = 0; x < Hives.Count && duplicationChance > 10; x++ )
                 if ( Context.RandomToUse.Next( duplicationChance -= Context.RandomToUse.Next( 50 ) ) > 10 )
-                    Hives[x].Planet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                    Hives[x].Planet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
 
             int toSpawn = 1;
             if ( Intensity >= 4 )
@@ -810,7 +814,7 @@ namespace PreceptsOfThePrecursors
                 {
                     if ( !HivePlanets.Contains( planet ) )
                     {
-                        planet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                        planet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                         toSpawn--;
                     }
 
@@ -825,8 +829,36 @@ namespace PreceptsOfThePrecursors
             {
                 Planet spawnPlanet = HivePlanets[Context.RandomToUse.Next( HivePlanets.Count )];
 
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
             }
+
+            if ( faction.HasObtainedSpireDebris )
+                World_AIW2.Instance.DoForPlanets( false, planet =>
+                {
+                    int clanlingHives = 0, younglingHives = 0;
+                    planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( HIVE_TAG, ( GameEntity_Squad entity ) =>
+                    {
+                        if ( entity.TypeData.GetHasTag( YOUNGLING_HIVE_TAG ) )
+                            younglingHives++;
+                        else
+                            clanlingHives++;
+
+                        return DelReturn.Continue;
+                    } );
+
+                    for ( int x = younglingHives; x >= 3; x -= 3 )
+                        if ( clanlingHives > 0 )
+                        {
+                            clanlingHives--;
+                            continue;
+                        }
+                        else
+                        {
+                            planet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, CLANLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                        }
+
+                    return DelReturn.Continue;
+                } );
         }
     }
 
@@ -878,7 +910,7 @@ namespace PreceptsOfThePrecursors
 
             for ( int x = 0; x < toSpawn; x++ )
             {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
 
@@ -999,7 +1031,7 @@ namespace PreceptsOfThePrecursors
 
             for ( int x = 0; x < toSpawn; x++ )
             {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
 
@@ -1059,7 +1091,7 @@ namespace PreceptsOfThePrecursors
 
             for ( int x = 0; x < toSpawn; x++ )
             {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
 
@@ -1119,7 +1151,7 @@ namespace PreceptsOfThePrecursors
 
             for ( int x = 0; x < toSpawn; x++ )
             {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
 
@@ -1189,7 +1221,7 @@ namespace PreceptsOfThePrecursors
 
             for ( int x = 0; x < toSpawn; x++ )
             {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
 
@@ -1232,7 +1264,7 @@ namespace PreceptsOfThePrecursors
 
             for ( int x = 0; x < toSpawn; x++ )
             {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             }
 
@@ -1277,7 +1309,7 @@ namespace PreceptsOfThePrecursors
 
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
-            // Spawn in a bunch of enclaves based on intensity and a singular hive.
+            // Spawn in a bunch of enclaves based on intensity and a couple hives.
             int toSpawn = 1;
             if ( Intensity >= 3 )
                 toSpawn += Intensity / 3;
@@ -1295,7 +1327,7 @@ namespace PreceptsOfThePrecursors
             {
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
                 if ( x < 3 )
-                    spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                    spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
             }
             return spawnPlanet;
         }
@@ -1368,11 +1400,11 @@ namespace PreceptsOfThePrecursors
 
             Planet spawnPlanet = validPlanets[Context.RandomToUse.Next( validPlanets.Count )];
 
-            spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+            spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
 
             for ( int x = 0; x < forceSpawn.Count; x++ )
             {
-                forceSpawn[x].Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                forceSpawn[x].Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
             }
         }
 
