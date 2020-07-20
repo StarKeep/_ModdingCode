@@ -1528,6 +1528,7 @@ namespace PreceptsOfThePrecursors
     }
     public abstract class BaseDysonSubfaction : BaseSpecialFaction
     {
+        protected override bool EverNeedsToRunLongRangePlanning => false;
         // A list of Zenith factions that the Precursors, Suppressors, and Protectors should always be allied to.
         public static List<Faction> FactionsToAllyTo;
         public BaseDysonSubfaction()
