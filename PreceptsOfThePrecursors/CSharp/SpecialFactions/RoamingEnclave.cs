@@ -670,6 +670,11 @@ namespace PreceptsOfThePrecursors
                         baseCost = GameEntityTypeDataTable.Instance.GetRowByName( ((Unit)x).ToString() ).MetalCost;
                     ArcenDebugging.SingleLineQuickDebug( $"Setting up Youngling Cost for {entityType.DisplayName}" );
                     int secondsPer = baseCost / (20 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity * 3));
+                    if (secondsPer < 1)
+                    {
+                        ArcenDebugging.ArcenDebugLogSingleLine( $"Error! Per Second value for {entityType.DisplayName} is {secondsPer}, it must be at least 1. Defaulting the value to 1.", Verbosity.ShowAsError );
+                        secondsPer = 1;
+                    }
                     ArcenDebugging.SingleLineQuickDebug( $"Base cost: {baseCost}, secondsPer: {secondsPer}" );
                     BaseRoamingEnclave.SecondsPerUnitProduction.AddPair( entityType, secondsPer );
                 }

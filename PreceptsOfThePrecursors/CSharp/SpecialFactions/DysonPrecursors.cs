@@ -386,11 +386,7 @@ namespace PreceptsOfThePrecursors
                 if ( MothershipData.SecondsUntilRespawn == 0 || World_AIW2.Instance.GameSecond < 60 )
                 {
                     // Find our Ancient Node, or create a new one if needed.
-                    GameEntity_Squad ancientNode = null;
-                    for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
-                        for ( int y = 0; y < DysonNodes.GetPairByIndex( x ).Value.Length; y++ )
-                            if ( DysonNodes.GetPairByIndex( x ).Value[y].TypeData.InternalName == DYSON_ANCIENT_NODE_NAME )
-                                ancientNode = DysonNodes.GetPairByIndex( x ).Value[y];
+                    GameEntity_Squad ancientNode = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonSuppressors)).GetFirstMatching(DYSON_ANCIENT_NODE_NAME, true, true);
                     if ( ancientNode == null )
                         ancientNode = SpawnAncientNode( faction, Context );
                     SpawnMothership( ancientNode, faction, Context );
