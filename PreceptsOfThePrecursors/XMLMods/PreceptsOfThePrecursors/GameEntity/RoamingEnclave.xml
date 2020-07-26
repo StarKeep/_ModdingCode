@@ -418,10 +418,6 @@
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
 			priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
-		  always_self_attritions="true"
-      external_invulnerability_unit_tag="EnclaveElderling"
-      external_invulnerability_unit_type="None"
-      external_invulnerability_region="Galaxy"
       >
     <system name="Yawn" display_name="Yawn"
 				category="Weapon" firing_timing="OnlyInRange"
