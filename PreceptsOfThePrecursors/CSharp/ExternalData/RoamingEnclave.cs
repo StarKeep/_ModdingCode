@@ -167,7 +167,7 @@ namespace PreceptsOfThePrecursors
 
             StoredYounglingsData storage = RelatedEntityOrNull.GetStoredYounglings();
             if ( storage.StoredYounglings.GetPairCount() > 0 )
-                Buffer.Add( $"This Enclave contains the following Younglings of total strength {RelatedEntityOrNull.AdditionalStrengthFromFactions}.\n" );
+                Buffer.Add( $"This Enclave contains the following Younglings of total strength {Math.Round( RelatedEntityOrNull.AdditionalStrengthFromFactions / 1000f, 3 )}.\n" );
             for ( int x = 0; x < storage.StoredYounglings.GetPairCount(); x++ )
             {
                 int count = 0;
@@ -180,7 +180,8 @@ namespace PreceptsOfThePrecursors
                     count += pair.Value;
                     strength += unitData.GetForMark( pair.Key ).StrengthPerSquad_Original_DoesNotIncreaseWithMarkLevel * pair.Value;
                 }
-                Buffer.Add( $"{count} {unitData.DisplayName} ({(double)strength / 1000} strength)\n" );
+                if ( Window_InGameHoverEntityInfo.CalculateTooltipDetailLevel() >= TooltipDetail.Full )
+                    Buffer.Add( $"{count} {unitData.DisplayName} ({(double)strength / 1000} strength)\n" );
             }
         }
     }
@@ -191,12 +192,12 @@ namespace PreceptsOfThePrecursors
         private int strength;
         public int Strength { get { return strength; } }
 
-        public void AddStrength(int strength )
+        public void AddStrength( int strength )
         {
             this.strength += strength;
         }
 
-        public void SubtractStrength(int strength )
+        public void SubtractStrength( int strength )
         {
             this.strength -= strength;
         }
@@ -277,10 +278,10 @@ namespace PreceptsOfThePrecursors
                     byte markLevel = collection.UnitsByMark.GetPairByIndex( i ).Key;
                     int toSpawnInTotal = collection.UnitsByMark[markLevel];
                     int StackingCutoff = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "StackingCutoffNPCs" );
-                    while( toSpawnInTotal > 0 )
+                    while ( toSpawnInTotal > 0 )
                     {
                         short toSpawn = (short)Math.Min( toSpawnInTotal, StackingCutoff );
-                        GameEntity_Squad youngling = GameEntity_Squad.CreateNew( enclave.Planet.GetPlanetFactionForFaction( spawnFaction), unitData, markLevel, enclave.Planet.GetPlanetFactionForFaction(spawnFaction).FleetUsedAtPlanet, 1, enclave.WorldLocation, Context );
+                        GameEntity_Squad youngling = GameEntity_Squad.CreateNew( enclave.Planet.GetPlanetFactionForFaction( spawnFaction ), unitData, markLevel, enclave.Planet.GetPlanetFactionForFaction( spawnFaction ).FleetUsedAtPlanet, 1, enclave.WorldLocation, Context );
                         youngling.AddOrSetExtraStackedSquadsInThis( (short)(toSpawn - 1), true );
                         youngling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
                         youngling.MinorFactionStackingID = enclave.PrimaryKeyID;
@@ -306,7 +307,7 @@ namespace PreceptsOfThePrecursors
                 {
                     if ( collection.UnitsByMark[x] > y * 2 )
                     {
-                        collection.SubtractStrength( unitData.GetForMark( x ).GetCalculatedStrengthPerSquadForFleetOrNull(null) * y);
+                        collection.SubtractStrength( unitData.GetForMark( x ).GetCalculatedStrengthPerSquadForFleetOrNull( null ) * y );
                         collection.AddStrength( unitData.GetForMark( (byte)(x + 1) ).GetCalculatedStrengthPerSquadForFleetOrNull( null ) );
 
                         collection.UnitsByMark[x] -= y;
@@ -404,10 +405,10 @@ namespace PreceptsOfThePrecursors
             enclave.AdditionalStrengthFromFactions = 0;
         }
 
-        public static void CombineYounglingsIfAble(this GameEntity_Squad enclave, ArcenSimContext Context )
+        public static void CombineYounglingsIfAble( this GameEntity_Squad enclave, ArcenSimContext Context )
         {
             enclave.AdditionalStrengthFromFactions = 0;
-            
+
             StoredYounglingsData collection = enclave.GetStoredYounglings();
             for ( int x = 0; x < collection.StoredYounglings.GetPairCount(); x++ )
                 collection.AttemptToCombineYounglings( enclave, collection.StoredYounglings.GetPairByIndex( x ).Key );

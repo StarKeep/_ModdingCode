@@ -851,36 +851,35 @@ namespace PreceptsOfThePrecursors
         // Spawn an Ancient Node somewhere in the galaxy.
         private GameEntity_Squad SpawnAncientNode( Faction faction, ArcenSimContext Context )
         {
-            // Attempt to find a planet between 5 and 7 hops from a player planet, preferring lower marks.
-            List<Planet> validPlants = new List<Planet>();
-            List<Planet> preferredPlanets = new List<Planet>();
-            int currentLowestMark = 8;
-            World_AIW2.Instance.DoForPlanets( false, delegate ( Planet workingPlanet )
+            List<Planet> potentialPlanets = new List<Planet>();
+            byte bestMark = 7;
+            World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                int hops = BadgerFactionUtilityMethods.GetHopsToPlayerPlanet( workingPlanet, Context );
-                if ( hops > 1 )
-                {
-                    validPlants.Add( workingPlanet );
-                    if ( hops >= 5 && hops <= 7 && workingPlanet.MarkLevelForAIOnly.Ordinal <= currentLowestMark )
-                    {
-                        if ( workingPlanet.MarkLevelForAIOnly.Ordinal < currentLowestMark )
-                        {
-                            preferredPlanets = new List<Planet>();
-                            currentLowestMark = workingPlanet.MarkLevelForAIOnly.Ordinal;
-                        }
-                        preferredPlanets.Add( workingPlanet );
-                    }
-                }
+                if ( planet.MarkLevelForAIOnly.Ordinal > bestMark )
+                    return DelReturn.Continue;
 
+                bool isValid = true;
+                World_AIW2.Instance.DoForEntities( EntityRollupType.KingUnitsOnly, ( GameEntity_Squad king ) =>
+                {
+                    if ( planet.GetHopsTo( king.Planet ) < 3 )
+                        isValid = false;
+
+                    return DelReturn.Continue;
+                } );
+
+                if ( isValid && BadgerFactionUtilityMethods.GetHopsToPlayerPlanet( planet, Context ) > 1 )
+                {
+                    if ( planet.MarkLevelForAIOnly.Ordinal < bestMark )
+                    {
+                        potentialPlanets = new List<Planet>();
+                        bestMark = planet.MarkLevelForAIOnly.Ordinal;
+                    }
+                    potentialPlanets.Add( planet );
+                }
                 return DelReturn.Continue;
             } );
-            Planet spawnPlanet = null;
-            if ( preferredPlanets.Count > 0 )
-                spawnPlanet = preferredPlanets[Context.RandomToUse.Next( preferredPlanets.Count )];
-            else if ( validPlants.Count > 0 )
-                spawnPlanet = validPlants[Context.RandomToUse.Next( validPlants.Count )];
-            else
-                spawnPlanet = World_AIW2.Instance.CurrentGalaxy.GetRandomPlanet( false, Context );
+
+            Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
 
             // If not the start of the game, notify the player.
             //if ( World_AIW2.Instance.GameSecond > 60 )
