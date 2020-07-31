@@ -681,7 +681,7 @@
 					>
     <metal_flow purpose="SelfConstruction" throughput="50"/>
   </entity>
-  <entity name="PlayerRoamingEnclave" cannot_be_stacked="true" special_entity_type="MobileLoneWolfFleetFlagship"
+  <entity name="PlayerRoamingEnclave" cannot_be_stacked="true" special_entity_type="MobileLoneWolfFleetFlagship" capturable_seed_weight="0" capturable_max_per_galaxy="0"
 			tags="ShowsOnNormalDisplayMode,PlayerRoamingEnclave"
 			draw_in_galaxy_view="true"
 			gimbal_icon_size_multiplier="2.25"
