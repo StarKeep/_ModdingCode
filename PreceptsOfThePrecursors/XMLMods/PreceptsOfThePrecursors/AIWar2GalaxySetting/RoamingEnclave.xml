@@ -10,6 +10,9 @@
   <galaxy_setting category="Enclaves" name="RetreatAtXHull" display_name="Global Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
     description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
   />
+  <galaxy_setting category="Enclaves" name="MaxDefensiveEnclave" display_name="Max Defensive Enclave" type="IntSlider" default="5" min="-1" max="100" changeable_during_gameplay="true"
+    description="The maximum amount of Defensive Enclave that an Enclave subfaction can have. Set to -1 for unlimited, and 0 to disable Defensive Enclaves all together."
+  />
   <!-- Pearl Enclave -->
   <galaxy_setting category="Enclaves" name="PearlEnclaveEnabled" display_name="Pearl Enclave Enabled" type="BoolToggle" default="true"
     description="Enables the Pearl Enclave, which is allied to the player. This cannot be disabled after the game starts."
@@ -25,6 +28,9 @@
   />
   <galaxy_setting category="Enclaves" name="PearlRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="50" min="0" max="75" changeable_during_gameplay="true"
     description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <galaxy_setting category="Enclaves" name="PearlMaxDefensiveEnclave" display_name="Max Defensive Enclave" type="IntSlider" default="10" min="-1" max="100" changeable_during_gameplay="true"
+    description="The maximum amount of Defensive Enclave that this subfaction can have. Set to -1 for unlimited, and 0 to disable Defensive Enclaves all together."
   />
   <!-- Crystal Enclave -->
   <galaxy_setting category="Enclaves" name="CrystalEnclaveEnabled" display_name="Crystal Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
@@ -42,6 +48,9 @@
   <galaxy_setting category="Enclaves" name="CrystalRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="75" min="0" max="75" changeable_during_gameplay="true"
     description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
   />
+  <galaxy_setting category="Enclaves" name="CrystalMaxDefensiveEnclave" display_name="Max Defensive Enclave" type="IntSlider" default="-1" min="-1" max="100" changeable_during_gameplay="true"
+    description="The maximum amount of Defensive Enclave that this subfaction can have. Set to -1 for unlimited, and 0 to disable Defensive Enclaves all together."
+  />
   <!-- Diamond Enclave -->
   <galaxy_setting category="Enclaves" name="DiamondEnclaveEnabled" display_name="Diamond Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
     description="Enables the Diamond Enclave, which is allied to the AI. Disabling this after the game starts will only stop new Enclaves and Hives from spawning."
@@ -57,6 +66,9 @@
   />
   <galaxy_setting category="Enclaves" name="DiamondRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="25" min="0" max="75" changeable_during_gameplay="true"
     description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <galaxy_setting category="Enclaves" name="DiamondMaxDefensiveEnclave" display_name="Max Defensive Enclave" type="IntSlider" default="10" min="-1" max="100" changeable_during_gameplay="true"
+    description="The maximum amount of Defensive Enclave that this subfaction can have. Set to -1 for unlimited, and 0 to disable Defensive Enclaves all together."
   />
   <!-- Ruby Enclave -->
   <galaxy_setting category="Enclaves" name="RubyEnclaveEnabled" display_name="Ruby Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
@@ -74,6 +86,9 @@
   <galaxy_setting category="Enclaves" name="RubyRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
     description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
   />
+  <galaxy_setting category="Enclaves" name="RubyMaxDefensiveEnclave" display_name="Max Defensive Enclave" type="IntSlider" default="5" min="-1" max="100" changeable_during_gameplay="true"
+    description="The maximum amount of Defensive Enclave that this subfaction can have. Set to -1 for unlimited, and 0 to disable Defensive Enclaves all together."
+  />
   <!-- Saphire Enclave -->
   <galaxy_setting category="Enclaves" name="SaphireEnclaveEnabled" display_name="Saphire Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
     description="Enables the Saphire Enclave, which is allied to the Blue team. Disabling this after the game starts will only stop new Enclaves and Hives from spawning."
@@ -89,6 +104,9 @@
   />
   <galaxy_setting category="Enclaves" name="SaphireRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
     description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <galaxy_setting category="Enclaves" name="SaphireMaxDefensiveEnclave" display_name="Max Defensive Enclave" type="IntSlider" default="5" min="-1" max="100" changeable_during_gameplay="true"
+    description="The maximum amount of Defensive Enclave that this subfaction can have. Set to -1 for unlimited, and 0 to disable Defensive Enclaves all together."
   />
   <!-- Emerald Enclave -->
   <galaxy_setting category="Enclaves" name="EmeraldEnclaveEnabled" display_name="Emerald Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
@@ -106,6 +124,9 @@
   <galaxy_setting category="Enclaves" name="EmeraldRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
     description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
   />
+  <galaxy_setting category="Enclaves" name="EmeraldMaxDefensiveEnclave" display_name="Max Defensive Enclave" type="IntSlider" default="5" min="-1" max="100" changeable_during_gameplay="true"
+    description="The maximum amount of Defensive Enclave that this subfaction can have. Set to -1 for unlimited, and 0 to disable Defensive Enclaves all together."
+  />
   <!-- Onyx Enclave -Dark Alliance- -->
   <galaxy_setting category="Enclaves" name="OnyxEnclaveEnabled" display_name="Onyx Enclave Enabled" type="BoolToggle" default="true" changeable_during_gameplay="true"
     description="Enables the Onyx Enclave, which is allied to the REDACTED. Disabling this after the game starts will only stop new Enclaves and Hives from spawning."
@@ -121,5 +142,8 @@
   />
   <galaxy_setting category="Enclaves" name="OnyxRetreatAtXHull" display_name="Retreat Hull Percentage" type="IntSlider" default="0" min="0" max="75" changeable_during_gameplay="true"
     description="The percentage of hull at which point Enclaves will retreat to a Hive planet for repairs. Disabled when set to 0."
+  />
+  <galaxy_setting category="Enclaves" name="OnyxMaxDefensiveEnclave" display_name="Max Defensive Enclave" type="IntSlider" default="0" min="-1" max="100" changeable_during_gameplay="true"
+    description="The maximum amount of Defensive Enclave that this subfaction can have. Set to -1 for unlimited, and 0 to disable Defensive Enclaves all together."
   />
 </root>

@@ -29,7 +29,8 @@ namespace PreceptsOfThePrecursors
         {
             EnclaveMaxHopsFromHiveToAttack,
             MakeEveryXFireteamDefensive,
-            RetreatAtXHull
+            RetreatAtXHull,
+            MaxDefensiveEnclave
         }
     }
     public enum Unit
@@ -212,6 +213,7 @@ namespace PreceptsOfThePrecursors
         private int AttackHops;
         private int FireteamsPerDefense;
         private int RetreatPercentage;
+        private int MaxDefensiveEnclave;
 
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
@@ -224,6 +226,7 @@ namespace PreceptsOfThePrecursors
             AttackHops = EnclaveSettings.GetInt( faction, EnclaveSettings.GalaxyIntegers.EnclaveMaxHopsFromHiveToAttack );
             FireteamsPerDefense = EnclaveSettings.GetInt( faction, EnclaveSettings.GalaxyIntegers.MakeEveryXFireteamDefensive );
             RetreatPercentage = EnclaveSettings.GetInt( faction, EnclaveSettings.GalaxyIntegers.RetreatAtXHull );
+            MaxDefensiveEnclave = EnclaveSettings.GetInt( faction, EnclaveSettings.GalaxyIntegers.MaxDefensiveEnclave );
 
             FactionData.TeamsAimedAtPlanet.Clear();
 
@@ -324,7 +327,7 @@ namespace PreceptsOfThePrecursors
                                 team.MyStrengthMultiplierForStrengthCalculation = FInt.One;
                                 team.EnemyStrengthMultiplierForStrengthCalculation = FInt.One;
                                 team.id = FireteamUtility.GetNextFireteamId( FactionData.Teams );
-                                if ( FireteamsPerDefense > 0 )
+                                if ( FireteamsPerDefense > 0 && FireteamsPerDefense != 0 && (FireteamsPerDefense == -1 || team.id / FireteamsPerDefense <= MaxDefensiveEnclave) )
                                     team.DefenseMode = team.id % FireteamsPerDefense == 0;
                                 else
                                     team.DefenseMode = false;
@@ -670,7 +673,7 @@ namespace PreceptsOfThePrecursors
                         baseCost = GameEntityTypeDataTable.Instance.GetRowByName( ((Unit)x).ToString() ).MetalCost;
                     ArcenDebugging.SingleLineQuickDebug( $"Setting up Youngling Cost for {entityType.DisplayName}" );
                     int secondsPer = baseCost / (20 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity * 3));
-                    if (secondsPer < 1)
+                    if ( secondsPer < 1 )
                     {
                         ArcenDebugging.ArcenDebugLogSingleLine( $"Error! Per Second value for {entityType.DisplayName} is {secondsPer}, it must be at least 1. Defaulting the value to 1.", Verbosity.ShowAsError );
                         secondsPer = 1;
