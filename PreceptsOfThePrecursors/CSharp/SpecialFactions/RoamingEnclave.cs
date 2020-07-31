@@ -898,9 +898,6 @@ namespace PreceptsOfThePrecursors
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                 GameEntity_Squad enclave = spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem );
                 enclave.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
-                ArcenSparseLookup<byte, int> spawnWorms = new ArcenSparseLookup<byte, int>();
-                spawnWorms.AddPair( 1, 500 );
-                enclave.GetStoredYounglings().StoredYounglings.AddPair( Unit.YounglingWorm, new YounglingCollection() { UnitsByMark = spawnWorms } );
             }
 
             return spawnPlanet;
