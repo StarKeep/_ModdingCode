@@ -677,7 +677,7 @@ namespace PreceptsOfThePrecursors
 
             // Trust.
             // Increase so long as the following are true:
-            // Hull Has Not Decreased (By > 5%) Since Entering 
+            // Hull Has Not Decreased by more than 10% since entering
             // AND 
             // Shields Are Above 90%
             // AND
@@ -685,7 +685,7 @@ namespace PreceptsOfThePrecursors
             // Decrease by 1 so long as the following are true:
             // Not Player Owned
             // OR
-            // Hull Has Decreased (By > 5%) Since Entering OR Shields Are Below 60%
+            // Hull Has Decreased (By 50% of current at time of entry) Since Entering OR Shields Are Below 60%
             // Absolute trust cannot go below 1k if Node on planet.
             // Trust increases faster based on adjacent nodes.
             short baseChange = 1;
@@ -705,8 +705,8 @@ namespace PreceptsOfThePrecursors
 
             bool alliedPlanet = Mothership.Planet.GetControllingOrInfluencingFaction().GetIsFriendlyTowards( faction );
             int trust = MothershipData.Trust.GetTrust( Mothership.Planet );
-            int hullForTrustGain = MothershipData.HullWhenEnteredPlanet - Mothership.TypeData.GetForMark( Mothership.CurrentMarkLevel ).BaseHullPoints / 20;
-            int hullForTrustLoss = MothershipData.HullWhenEnteredPlanet - Mothership.TypeData.GetForMark( Mothership.CurrentMarkLevel ).BaseHullPoints / 20;
+            int hullForTrustGain = MothershipData.HullWhenEnteredPlanet - Mothership.GetMaxHullPoints() / 10;
+            int hullForTrustLoss = MothershipData.HullWhenEnteredPlanet / 2;
             int shieldForTrustLoss = (Mothership.TypeData.GetForMark( Mothership.CurrentMarkLevel ).BaseShieldPoints / 10) * 6;
             int shieldForTrustGain = (Mothership.TypeData.GetForMark( Mothership.CurrentMarkLevel ).BaseShieldPoints / 10) * 9;
 
