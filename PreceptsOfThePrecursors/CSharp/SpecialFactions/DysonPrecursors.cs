@@ -631,7 +631,8 @@ namespace PreceptsOfThePrecursors
                 Mothership = Mothership.TransformInto(Context, newMothershipData, 1);
                 MothershipData.Level++;
                 MothershipData.Resources = 0;
-                World_AIW2.Instance.QueueChatMessageOrCommand("The Dyson Mothership on " + Mothership.Planet.Name + " has leveled up to level " + MothershipData.Level + ".", ChatType.LogToCentralChat, Context);
+                if (Mothership.Planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
+                    World_AIW2.Instance.QueueChatMessageOrCommand("The Dyson Mothership on " + Mothership.Planet.Name + " has leveled up to level " + MothershipData.Level + ".", ChatType.LogToCentralChat, Context);
             }
         }
         private void HandleMovedToNewPlanetLogicIfNeeded()
@@ -799,7 +800,8 @@ namespace PreceptsOfThePrecursors
                    {
                        mine.Despawn(Context, true, InstancedRendererDeactivationReason.GettingIntoTransport);
                        MothershipData.Mines++;
-                       World_AIW2.Instance.QueueChatMessageOrCommand("A Dyson Mothership on " + Mothership.Planet.Name + " has just consumed a Mine.", ChatType.LogToCentralChat, Context);
+                       if (Mothership.Planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
+                           World_AIW2.Instance.QueueChatMessageOrCommand("A Dyson Mothership on " + Mothership.Planet.Name + " has just consumed a Mine.", ChatType.LogToCentralChat, Context);
                        Mothership.TakeHullRepair(Mothership.TypeData.GetForMark(Mothership.CurrentMarkLevel).BaseHullPoints / 20);
                        return DelReturn.Break;
                    }
@@ -837,30 +839,34 @@ namespace PreceptsOfThePrecursors
         private GameEntity_Squad SpawnAncientNode(Faction faction, ArcenSimContext Context)
         {
             List<Planet> potentialPlanets = new List<Planet>();
-            World_AIW2.Instance.DoForPlanets(false, planet =>
+            short workingHops = (short)BadgerFactionUtilityMethods.findHumanKing().GetHopsTo(BadgerFactionUtilityMethods.findAIKing());
+            while (potentialPlanets.Count == 0)
             {
-                bool isValid = true;
-                planet.DoForPlanetsWithinXHops(Context, 2, (workingPlanet, hops) =>
+                World_AIW2.Instance.DoForPlanets(false, planet =>
                 {
-                    if (workingPlanet.GetControllingOrInfluencingFaction().Type == FactionType.Player)
-                        isValid = false;
-                    if (workingPlanet.GetCommandStationOrNull() != null && workingPlanet.GetCommandStationOrNull().TypeData.IsKingUnit)
-                        isValid = false;
+                    bool isValid = true;
+                    planet.DoForPlanetsWithinXHops(Context, workingHops, (workingPlanet, hops) =>
+                    {
+                        if (workingPlanet.GetControllingOrInfluencingFaction().Type == FactionType.Player)
+                            isValid = false;
+                        if (workingPlanet.GetCommandStationOrNull() != null && workingPlanet.GetCommandStationOrNull().TypeData.IsKingUnit)
+                            isValid = false;
 
+                        return DelReturn.Continue;
+                    });
+
+                    if (isValid)
+                    {
+                        potentialPlanets.Add(planet);
+                    }
                     return DelReturn.Continue;
                 });
-
-                if (isValid)
-                {
-                    potentialPlanets.Add(planet);
-                }
-                return DelReturn.Continue;
-            });
+                workingHops--;
+            }
 
             Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next(potentialPlanets.Count)];
 
-            // If not the start of the game, notify the player.
-            //if ( World_AIW2.Instance.GameSecond > 60 )
+            if (spawnPlanet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
             World_AIW2.Instance.QueueChatMessageOrCommand($"An Ancient Dyson Node has spawnt on {spawnPlanet.Name}.", ChatType.LogToCentralChat, Context);
 
             // Spawn in our Ancient Node.
@@ -885,7 +891,7 @@ namespace PreceptsOfThePrecursors
             faction.SetMothershipData(MothershipData);
             MothershipData = faction.GetMothershipData();
 
-            if (ancientNode.Planet.IntelLevel != PlanetIntelLevel.Unexplored)
+            if (ancientNode.Planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
                 World_AIW2.Instance.QueueChatMessageOrCommand($"A Dyson Mothership has spawnt on {ancientNode.Planet.Name}.", ChatType.LogToCentralChat, Context);
         }
         private void MoveToNewPlanet(Faction faction, ArcenSimContext Context)
@@ -944,7 +950,8 @@ namespace PreceptsOfThePrecursors
                 Mothership.Planet.Mapgen_SeedEntity(Context, World_AIW2.Instance.GetNeutralFaction(),
                     GameEntityTypeDataTable.Instance.GetRowByName("MetalGenerator"), PlanetSeedingZone.MostAnywhere);
                 MothershipData.Mines--;
-                World_AIW2.Instance.QueueChatMessageOrCommand($"A Dyson Mothership has left behind a fully functional mine on {Mothership.Planet.Name}.", ChatType.LogToCentralChat, Context);
+                if (Mothership.Planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
+                    World_AIW2.Instance.QueueChatMessageOrCommand($"A Dyson Mothership has left behind a fully functional mine on {Mothership.Planet.Name}.", ChatType.LogToCentralChat, Context);
             }
 
             // Proto-Sphere logic. Create a Proto-Sphere if:
@@ -1590,7 +1597,8 @@ namespace PreceptsOfThePrecursors
 
             if (creator != string.Empty)
             {
-                World_AIW2.Instance.QueueChatMessageOrCommand($"{creator} on {planet.Name} has constructed a level {nodeMarkLevel} Dyson Node for {faction.StartFactionColourForLog()}{faction.GetDisplayName()}</color>.", ChatType.LogToCentralChat, Context);
+                if (planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
+                    World_AIW2.Instance.QueueChatMessageOrCommand($"{creator} on {planet.Name} has constructed a level {nodeMarkLevel} Dyson Node for {faction.StartFactionColourForLog()}{faction.GetDisplayName()}</color>.", ChatType.LogToCentralChat, Context);
             }
         }
         public override bool GetShouldAttackNormallyExcludedTarget(Faction faction, GameEntity_Squad Target)
@@ -1690,7 +1698,7 @@ namespace PreceptsOfThePrecursors
                            break;
                    }
                    for (int x = 0; x < mem.EffectiveSquadCap * 3; x++)
-                       GameEntity_Squad.CreateNew(pFaction, mem.TypeData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context);
+                       GameEntity_Squad.CreateNew(pFaction, spawnData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context);
                }
 
                return DelReturn.Continue;
@@ -1711,7 +1719,8 @@ namespace PreceptsOfThePrecursors
             planet.Mapgen_SeedEntity(Context, faction, protoSphereData, PlanetSeedingZone.OuterSystem);
             planet.GetProtoSphereData().Level = 1;
             planet.GetProtoSphereData().Type = DysonProtoSphereData.ProtoSphereType.Suppressor;
-            World_AIW2.Instance.QueueChatMessageOrCommand($"A Dyson Mothership on {planet.Name} has constructed a Proto Suppressor Sphere Golem.", ChatType.LogToCentralChat, Context);
+            if (planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
+                World_AIW2.Instance.QueueChatMessageOrCommand($"A Dyson Mothership on {planet.Name} has constructed a Proto Suppressor Sphere Golem.", ChatType.LogToCentralChat, Context);
         }
         public override void UpgradeProtoSphere(Faction faction, Planet planet, ArcenSimContext Context)
         {
@@ -1771,7 +1780,8 @@ namespace PreceptsOfThePrecursors
                 DysonPrecursors.DysonNodes[planet] = new GameEntity_Squad[7];
             DysonPrecursors.DysonNodes[planet][nodeMarkLevel - 1] = newNode;
             if (creator != string.Empty)
-                World_AIW2.Instance.QueueChatMessageOrCommand($"{creator} on {planet.Name} has constructed a level {nodeMarkLevel} Dyson Node.", ChatType.LogToCentralChat, Context);
+                if (planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
+                    World_AIW2.Instance.QueueChatMessageOrCommand($"{creator} on {planet.Name} has constructed a level {nodeMarkLevel} Dyson Node.", ChatType.LogToCentralChat, Context);
         }
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim(Faction faction, ArcenSimContext Context)
         {
@@ -1838,7 +1848,7 @@ namespace PreceptsOfThePrecursors
                     Planet effectivePlanet = entity.Planet;
                     if (entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index)
                         effectivePlanet = World_AIW2.Instance.GetPlanetByIndex(entity.LongRangePlanningData.FinalDestinationPlanetIndex);
-                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && (entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500 || entity.GetSecondsSinceEnteringThisPlanet() > 300))
+                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && (entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500))
                         packetsToMove.Add(entity);
                     if (packetsByPlanet.GetHasKey(effectivePlanet))
                         packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
@@ -1908,7 +1918,8 @@ namespace PreceptsOfThePrecursors
             planet.Mapgen_SeedEntity(Context, faction, protoSphereData, PlanetSeedingZone.OuterSystem);
             planet.GetProtoSphereData().Level = 1;
             planet.GetProtoSphereData().Type = DysonProtoSphereData.ProtoSphereType.Protecter;
-            World_AIW2.Instance.QueueChatMessageOrCommand($"A Dyson Mothership on {planet.Name} has constructed a Proto Protector Sphere Golem.", ChatType.LogToCentralChat, Context);
+            if (planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
+                World_AIW2.Instance.QueueChatMessageOrCommand($"A Dyson Mothership on {planet.Name} has constructed a Proto Protector Sphere Golem.", ChatType.LogToCentralChat, Context);
         }
         public override void UpgradeProtoSphere(Faction faction, Planet planet, ArcenSimContext Context)
         {
@@ -1968,7 +1979,8 @@ namespace PreceptsOfThePrecursors
                 DysonPrecursors.DysonNodes[planet] = new GameEntity_Squad[7];
             DysonPrecursors.DysonNodes[planet][nodeMarkLevel - 1] = newNode;
             if (creator != string.Empty)
-                World_AIW2.Instance.QueueChatMessageOrCommand($"{creator} on {planet.Name} has constructed a level {nodeMarkLevel} Dyson Node.", ChatType.LogToCentralChat, Context);
+                if (planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
+                    World_AIW2.Instance.QueueChatMessageOrCommand($"{creator} on {planet.Name} has constructed a level {nodeMarkLevel} Dyson Node.", ChatType.LogToCentralChat, Context);
         }
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim(Faction faction, ArcenSimContext Context)
         {
@@ -2000,7 +2012,7 @@ namespace PreceptsOfThePrecursors
                     Planet effectivePlanet = entity.Planet;
                     if (entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index)
                         effectivePlanet = World_AIW2.Instance.GetPlanetByIndex(entity.LongRangePlanningData.FinalDestinationPlanetIndex);
-                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && (entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500 || entity.GetSecondsSinceEnteringThisPlanet() > 300))
+                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && (entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500))
                         packetsToMove.Add(entity);
                     if (packetsByPlanet.GetHasKey(effectivePlanet))
                         packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
