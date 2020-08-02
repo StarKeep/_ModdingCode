@@ -5,7 +5,7 @@
     custom_int_RoamingEnclaves_WormCost="150"
     custom_int_RoamingEnclaves_YounglingCost="250"
     
-    custom_int_RoamingEnclaves_SecondsBetweenInfluxPeriod="900"
+    custom_int_RoamingEnclaves_SecondsBetweenInfluxPeriod="1200"
     custom_int_RoamingEnclaves_SecondsBetweenInfluxPeriodRandomizer="300"
     
     custom_int_RoamingEnclaves_SecondsUntilSubfactionRespawn="1800"
