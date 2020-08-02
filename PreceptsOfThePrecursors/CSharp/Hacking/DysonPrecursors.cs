@@ -261,9 +261,12 @@ namespace PreceptsOfThePrecursors
             GameEntityTypeData defenderData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelDecaying" );
             GameEntityTypeData bulwarkData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkDecaying" );
             List<GameEntity_Squad> spawntShips = new List<GameEntity_Squad>();
-            spawntShips.Add( planet.Mapgen_SeedEntity( Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem ) );
-            spawntShips.Add( planet.Mapgen_SeedEntity( Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem ) );
-            if ( Hacker.ActiveHack_DurationThusFar % 10 == 0 )
+            if (Hacker.ActiveHack_DurationThusFar % 5 == 0)
+            {
+                spawntShips.Add(planet.Mapgen_SeedEntity(Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem));
+                spawntShips.Add(planet.Mapgen_SeedEntity(Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem));
+            }
+            if ( Hacker.ActiveHack_DurationThusFar % 30 == 0 )
                 spawntShips.Add( planet.Mapgen_SeedEntity( Context, spawnFaction, bulwarkData, PlanetSeedingZone.OuterSystem ) );
 
             // Mark up our ships if needed, and set them to attack.
@@ -312,7 +315,7 @@ namespace PreceptsOfThePrecursors
             precursorFaction.HasBeenAwakenedByPlayer = true;
 
             // Give a notifiaction and science.
-            World_AIW2.Instance.QueueChatMessageOrCommand( "The Dyson Precursors have been awakened, and you have gained 20000 science from studying the process.", ChatType.ShowToEveryone, Context );
+            World_AIW2.Instance.QueueChatMessageOrCommand( "The Dyson Precursors have been awakened, and you have gained 20000 science from studying the process. Every commander is now requesting, urgently, that you withdrawl your ships.", ChatType.ShowToEveryone, Context );
             Hacker.PlanetFaction.Faction.StoredScience += 20000;
 
             // Spawn the mothership.
