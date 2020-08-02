@@ -383,7 +383,7 @@ namespace PreceptsOfThePrecursors
         private void GiveJournalsAsNeeded(Faction faction, ArcenSimContext Context)
         {
             MothershipLoreJournals(faction, Context);
-            GameGuides(faction, Context);
+            //GameGuides(faction, Context);
         }
         private void MothershipLoreJournals(Faction faction, ArcenSimContext Context)
         {
@@ -1031,7 +1031,7 @@ namespace PreceptsOfThePrecursors
             if (DysonNodes == null || DysonNodes.GetPairCount() < 1)
                 return;
 
-            int baseSecondsPer = 60;
+            int baseSecondsPer = 120;
 
             bool[] toSpawn = new bool[8];
             for (int x = 0; x < 8; x++)

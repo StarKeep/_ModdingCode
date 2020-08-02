@@ -3,7 +3,7 @@
 <root
     is_partial_record="true"
 	
-	custom_int_DysonPrecursors_MinesToMarkUpBase="20"
+	custom_int_DysonPrecursors_MinesToMarkUpBase="12"
 	custom_int_DysonPrecursors_MinesToMarkUpIncrease="12"
 	
 	custom_int_DysonPrecursors_MothershipResourcesToMarkUpBase="100000"
