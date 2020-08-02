@@ -1686,31 +1686,31 @@ namespace PreceptsOfThePrecursors
         {
             PlanetFaction pFaction = nodeOrPacket.Planet.GetPlanetFactionForFaction(faction);
             nodeOrPacket.FleetMembership.Fleet.DoForMemberGroups(mem =>
-           {
-               if (mem.TypeData.IsDrone)
-               {
-                   GameEntityTypeData spawnData;
-                   switch (mem.TypeData.InternalName)
-                   {
-                       case "DysonMothershipBastionDrone":
-                           spawnData = GameEntityTypeDataTable.Instance.GetRowByName("DysonBastionDecaying");
-                           break;
-                       case "DysonMothershipBulwarkDrone":
-                           spawnData = GameEntityTypeDataTable.Instance.GetRowByName("DysonBulwarkDecaying");
-                           break;
-                       case "DysonMothershipDefenderDrone":
-                           spawnData = GameEntityTypeDataTable.Instance.GetRowByName("DysonDefenderDecaying");
-                           break;
-                       default:
-                           spawnData = GameEntityTypeDataTable.Instance.GetRowByName("DysonSentinelDecaying");
-                           break;
-                   }
-                   for (int x = 0; x < mem.EffectiveSquadCap * 3; x++)
-                       GameEntity_Squad.CreateNew(pFaction, spawnData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context);
-               }
+            {
+                if (mem.TypeData.IsDrone)
+                {
+                    GameEntityTypeData spawnData;
+                    switch (mem.TypeData.InternalName)
+                    {
+                        case "DysonMothershipBastionDrone":
+                            spawnData = GameEntityTypeDataTable.Instance.GetRowByName("DysonBastionDecaying");
+                            break;
+                        case "DysonMothershipBulwarkDrone":
+                            spawnData = GameEntityTypeDataTable.Instance.GetRowByName("DysonBulwarkDecaying");
+                            break;
+                        case "DysonMothershipDefenderDrone":
+                            spawnData = GameEntityTypeDataTable.Instance.GetRowByName("DysonDefenderDecaying");
+                            break;
+                        default:
+                            spawnData = GameEntityTypeDataTable.Instance.GetRowByName("DysonSentinelDecaying");
+                            break;
+                    }
+                    for (int x = 0; x < mem.EffectiveSquadCap * 3; x++)
+                        GameEntity_Squad.CreateNew(pFaction, spawnData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context);
+                }
 
-               return DelReturn.Continue;
-           });
+                return DelReturn.Continue;
+            });
         }
     }
     public class DysonSuppressors : BaseDysonSubfaction
@@ -1854,9 +1854,10 @@ namespace PreceptsOfThePrecursors
                 else if (entity.TypeData.GetHasTag(DysonPrecursors.DYSON_PACKET_TAG))
                 {
                     Planet effectivePlanet = entity.Planet;
+                    int strength = entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength - entity.PlanetFaction.DataByStance[FactionStance.Hostile].CloakedStrength;
                     if (entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index)
                         effectivePlanet = World_AIW2.Instance.GetPlanetByIndex(entity.LongRangePlanningData.FinalDestinationPlanetIndex);
-                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && (entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500))
+                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && strength < 500)
                         packetsToMove.Add(entity);
                     if (packetsByPlanet.GetHasKey(effectivePlanet))
                         packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
@@ -2034,9 +2035,10 @@ namespace PreceptsOfThePrecursors
                 else if (entity.TypeData.GetHasTag(DysonPrecursors.DYSON_PACKET_TAG))
                 {
                     Planet effectivePlanet = entity.Planet;
+                    int strength = entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength - entity.PlanetFaction.DataByStance[FactionStance.Hostile].CloakedStrength;
                     if (entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index)
                         effectivePlanet = World_AIW2.Instance.GetPlanetByIndex(entity.LongRangePlanningData.FinalDestinationPlanetIndex);
-                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && (entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500))
+                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && strength < 500)
                         packetsToMove.Add(entity);
                     if (packetsByPlanet.GetHasKey(effectivePlanet))
                         packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
