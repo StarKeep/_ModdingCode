@@ -635,7 +635,7 @@
         display_name="Clanling Bear Hive" description="This Neinzul Hive is the home to a Clanling swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <!-- The Enclave itself. -->
-  <entity name="RoamingEnclave" cannot_be_stacked="true"
+  <entity name="RoamingEnclave" cannot_be_stacked="true" 
 			tags="ShowsOnNormalDisplayMode,RoamingEnclave" strength_multiplier="0.5"
 			gimbal_icon_size_multiplier="2.25"
 			visuals="Assets/_FinalGameMeshes/Specials/AstroTrain/AstroTrainCarrierStyle.prefab"
@@ -681,7 +681,7 @@
 					>
     <metal_flow purpose="SelfConstruction" throughput="50"/>
   </entity>
-  <entity name="PlayerRoamingEnclave" cannot_be_stacked="true" special_entity_type="MobileLoneWolfFleetFlagship" capturable_seed_weight="0" capturable_max_per_galaxy="0"
+  <entity name="PlayerRoamingEnclave" cannot_be_stacked="true"
 			tags="ShowsOnNormalDisplayMode,PlayerRoamingEnclave"
 			draw_in_galaxy_view="true"
 			gimbal_icon_size_multiplier="2.25"

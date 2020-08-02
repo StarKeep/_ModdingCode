@@ -374,7 +374,8 @@ namespace PreceptsOfThePrecursors
                     GameEntity_Squad ancientNode = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonSuppressors)).GetFirstMatching(DYSON_ANCIENT_NODE_NAME, true, true);
                     if (ancientNode == null)
                         ancientNode = SpawnAncientNode(faction, Context);
-                    SpawnMothership(ancientNode, faction, Context);
+                    if (ancientNode != null)
+                        SpawnMothership(ancientNode, faction, Context);
                 }
                 return;
             }
@@ -838,41 +839,48 @@ namespace PreceptsOfThePrecursors
         // Spawn an Ancient Node somewhere in the galaxy.
         private GameEntity_Squad SpawnAncientNode(Faction faction, ArcenSimContext Context)
         {
-            List<Planet> potentialPlanets = new List<Planet>();
-            short workingHops = (short)BadgerFactionUtilityMethods.findHumanKing().GetHopsTo(BadgerFactionUtilityMethods.findAIKing());
-            while (potentialPlanets.Count == 0)
+            try
             {
-                World_AIW2.Instance.DoForPlanets(false, planet =>
+                List<Planet> potentialPlanets = new List<Planet>();
+                short workingHops = (short)BadgerFactionUtilityMethods.findHumanKing().GetHopsTo(BadgerFactionUtilityMethods.findAIKing());
+                while (potentialPlanets.Count == 0)
                 {
-                    bool isValid = true;
-                    planet.DoForPlanetsWithinXHops(Context, workingHops, (workingPlanet, hops) =>
+                    World_AIW2.Instance.DoForPlanets(false, planet =>
                     {
-                        if (workingPlanet.GetControllingOrInfluencingFaction().Type == FactionType.Player)
-                            isValid = false;
-                        if (workingPlanet.GetCommandStationOrNull() != null && workingPlanet.GetCommandStationOrNull().TypeData.IsKingUnit)
-                            isValid = false;
+                        bool isValid = true;
+                        planet.DoForPlanetsWithinXHops(Context, workingHops, (workingPlanet, hops) =>
+                        {
+                            if (workingPlanet.GetControllingOrInfluencingFaction().Type == FactionType.Player)
+                                isValid = false;
+                            if (workingPlanet.GetCommandStationOrNull() != null && workingPlanet.GetCommandStationOrNull().TypeData.IsKingUnit)
+                                isValid = false;
 
+                            return DelReturn.Continue;
+                        });
+
+                        if (isValid)
+                        {
+                            potentialPlanets.Add(planet);
+                        }
                         return DelReturn.Continue;
                     });
+                    workingHops--;
+                }
 
-                    if (isValid)
-                    {
-                        potentialPlanets.Add(planet);
-                    }
-                    return DelReturn.Continue;
-                });
-                workingHops--;
+                Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next(potentialPlanets.Count)];
+
+                if (spawnPlanet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
+                    World_AIW2.Instance.QueueChatMessageOrCommand($"An Ancient Dyson Node has spawnt on {spawnPlanet.Name}.", ChatType.LogToCentralChat, Context);
+
+                // Spawn in our Ancient Node.
+                GameEntityTypeData mothershipEntityData = GameEntityTypeDataTable.Instance.GetRowByName(DYSON_ANCIENT_NODE_NAME);
+                Faction spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonSuppressors));
+                return spawnPlanet.Mapgen_SeedEntity(Context, spawnFaction, mothershipEntityData, PlanetSeedingZone.OuterSystem);
             }
-
-            Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next(potentialPlanets.Count)];
-
-            if (spawnPlanet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched)
-            World_AIW2.Instance.QueueChatMessageOrCommand($"An Ancient Dyson Node has spawnt on {spawnPlanet.Name}.", ChatType.LogToCentralChat, Context);
-
-            // Spawn in our Ancient Node.
-            GameEntityTypeData mothershipEntityData = GameEntityTypeDataTable.Instance.GetRowByName(DYSON_ANCIENT_NODE_NAME);
-            Faction spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonSuppressors));
-            return spawnPlanet.Mapgen_SeedEntity(Context, spawnFaction, mothershipEntityData, PlanetSeedingZone.OuterSystem);
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         // Spawn a Mothership on our Ancient Node.

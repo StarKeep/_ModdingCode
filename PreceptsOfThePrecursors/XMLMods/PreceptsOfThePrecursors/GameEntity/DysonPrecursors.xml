@@ -60,7 +60,7 @@
     <system name="TachyonArray" display_name="Tachyon Array"
 				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
     <incoming_damage_modifier based_on="MyTimeAtPlanet" comparison_type="LessThan" compared_to="10" multiplier="0.25" />
-    <metal_flow purpose="BuildingDronesInternally" throughput="500" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
   </entity>
   <entity
     name="DysonMothership2"
@@ -82,7 +82,7 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
   </entity>
   <entity
     name="DysonMothership3"
@@ -104,7 +104,7 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1500" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
   </entity>
   <entity
       name="DysonMothership4"
@@ -126,7 +126,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
   </entity>
   <entity
       name="DysonMothership5"
@@ -148,7 +148,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2500" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
   </entity>
   <entity
       name="DysonMothership6"
@@ -170,7 +170,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="3000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
   </entity>
   <entity
       name="DysonMothership7"
@@ -192,7 +192,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="3500" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
   </entity>
   <!-- 
   Drones
@@ -808,14 +808,14 @@
 	y_offset_of_icon="50"
 	collision_priority="810"
 	display_name="Level 1 Dyson Packet"
-	description="Built by a Dyson Node, this is a weak drone transporter that releases an additional swarm of drones on death."
+	description="Built by a Dyson Node, this is a weak drone transporter that explodes into a large number of short-lived drones on death."
     starting_mark_level="Mark1"
     fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
     drone_starting_behavior_type="Attacker_Full"
     cost_for_ai_to_purchase="10000"
     hull_points="50000"
     shield_points="50000"
-    speed="BelowAverage1"
+    speed="VeryVeryLittle2"
     metal_cost="250000"
     energy_consumption="2500"
     armor_mm="40"
