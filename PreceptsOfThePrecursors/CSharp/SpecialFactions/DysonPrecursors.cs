@@ -1024,6 +1024,31 @@ namespace PreceptsOfThePrecursors
                     MothershipData.LastWaveGameSecond = World_AIW2.Instance.GameSecond;
                 }
             }
+
+            // Handle the sending of exos towards Noded planets.
+            //List<GameEntity_Squad> highestMarkNodes = new List<GameEntity_Squad>();
+            //int highestMark = 0, totalNodeMarkCount = 0;
+            //if (DysonNodes != null)
+            //    for(int x = 0; x < DysonNodes.GetPairCount(); x++)
+            //        for(int y = 0; y < 7; y++)
+            //            if (DysonNodes.GetPairByIndex(x).Value[y] != null)
+            //            {
+            //                int mark = y + 1;
+            //                if (mark > highestMark)
+            //                    highestMark = mark;
+            //                if (mark == highestMark)
+            //                    highestMarkNodes.Add(DysonNodes.GetPairByIndex(x).Value[y]);
+            //                totalNodeMarkCount += mark;
+            //            }
+            //
+            //ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (highestMark * 1000)) + (MothershipData.Level * 5000);
+            //ExoData.CurrentExoStrength += 100 * totalNodeMarkCount;
+            //if (ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo)
+            //{
+            //    ExoGalacticAttackManager.SendExoGalacticAttack(ExoOptions.CreateWithDefaults(highestMarkNodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction), Context);
+            //    ExoData.CurrentExoStrength = FInt.Zero;
+            //    ExoData.NumExosSoFar++;
+            //}
         }
 
         private void SpawnPackets(Faction faction, ArcenSimContext Context)
