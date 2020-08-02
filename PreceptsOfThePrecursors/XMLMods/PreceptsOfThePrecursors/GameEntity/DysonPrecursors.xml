@@ -816,7 +816,7 @@
 	y_offset_of_icon="50"
 	collision_priority="810"
 	display_name="Level 1 Dyson Packet"
-	description="Built by a Dyson Node, this is a weak drone transporter that explodes into a large number of short-lived drones on death."
+	description="A weak Zenith unit, this comes with a weak long range weapon and a compliment of sleeping drones. While it can slowly activate them over time, its main power comes from its death, upon which it will immediately launch drones equal to 300% of its capacity."
     starting_mark_level="Mark1"
     fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
     drone_starting_behavior_type="Attacker_Full"
@@ -845,7 +845,7 @@
 				shot_type_data="ArmorPiercingShell" shots_per_salvo="5"
 				>
     </system>
-	  <metal_flow purpose="BuildingDronesInternally" throughput="200" />
+	  <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
   <entity
     name="DysonPacket2"
@@ -858,7 +858,7 @@
     metal_cost="500000"
     energy_consumption="50000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="400" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
   <entity
     name="DysonPacket3"
@@ -871,7 +871,7 @@
     metal_cost="750000"
     energy_consumption="75000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="600" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
   <entity
     name="DysonPacket4"
@@ -884,7 +884,7 @@
     metal_cost="1000000"
     energy_consumption="100000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="800" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
   <entity
     name="DysonPacket5"
@@ -897,7 +897,7 @@
     metal_cost="2000000"
     energy_consumption="200000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
   <entity
     name="DysonPacket6"
@@ -910,7 +910,7 @@
     metal_cost="3000000"
     energy_consumption="300000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
   <entity
     name="DysonPacket7"
@@ -923,7 +923,7 @@
     metal_cost="4000000"
     energy_consumption="400000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
   <entity
     name="DysonPacket8"
@@ -936,7 +936,7 @@
     metal_cost="6000000"
     energy_consumption="600000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
   <entity
     name="DysonPacket9"
@@ -949,7 +949,7 @@
     metal_cost="10000000"
     energy_consumption="1000000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1800" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
   <!-- Copies of the basic Dyson units that are set to decay over time. For on-death spawns.
    -->
