@@ -1871,6 +1871,7 @@ namespace PreceptsOfThePrecursors
             {
                 Planet bestPlanet = null;
                 int bestPlanetPackets = 9999;
+                bool bestPlanetHasHostiles = false;
                 GameEntity_Squad packet = packetsToMove[x];
                 if (packet == null)
                     continue;
@@ -1878,26 +1879,41 @@ namespace PreceptsOfThePrecursors
                 {
                     if (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter)
                         return DelReturn.Continue; // Do not path into Protector planets.
-                    int effectivePackets = packetsByPlanet.GetHasKey(planet) ? packetsByPlanet[planet] : 0;
+
+                    bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction(faction).DataByStance[FactionStance.Hostile].TotalStrength > 500;
+
+                    if (DysonPrecursors.Mothership != null && DysonPrecursors.Mothership.Planet == planet && workingPlanetHasHostiles)
+                    {
+                        // Our mothership is nearby and fighting, help her.
+                        bestPlanet = planet;
+                        return DelReturn.Break;
+                    }
+
+                    int workingPlanetPackets = packetsByPlanet.GetHasKey(planet) ? packetsByPlanet[planet] : 0;
+
                     if (bestPlanet == null)
                     {
                         bestPlanet = planet;
-                        bestPlanetPackets = effectivePackets;
+                        bestPlanetPackets = workingPlanetPackets;
                         if (packetsByPlanet.GetHasKey(planet))
                             packetsByPlanet[planet] += packet.CurrentMarkLevel;
                         else
                             packetsByPlanet.AddPair(planet, packet.CurrentMarkLevel);
+                        bestPlanetHasHostiles = workingPlanetHasHostiles;
                     }
                     else
                     {
-                        if (effectivePackets < bestPlanetPackets)
+                        if (workingPlanetHasHostiles && !bestPlanetHasHostiles ||
+                        (!workingPlanetHasHostiles && !bestPlanetHasHostiles && workingPlanetPackets < bestPlanetPackets) ||
+                        (workingPlanetHasHostiles && bestPlanetHasHostiles && workingPlanetPackets > bestPlanetPackets))
                         {
                             bestPlanet = planet;
-                            bestPlanetPackets = effectivePackets;
+                            bestPlanetPackets = workingPlanetPackets;
                             if (packetsByPlanet.GetHasKey(planet))
                                 packetsByPlanet[planet] += packet.CurrentMarkLevel;
                             else
                                 packetsByPlanet.AddPair(planet, packet.CurrentMarkLevel);
+                            bestPlanetHasHostiles = workingPlanetHasHostiles;
                         }
                     }
 
@@ -2034,28 +2050,54 @@ namespace PreceptsOfThePrecursors
             for (int x = 0; x < packetsToMove.Count; x++)
             {
                 Planet bestPlanet = null;
-                int bestPlanetPackets = 0;
+                int bestPlanetPackets = 9999;
+                bool bestPlanetHasHostiles = false;
                 GameEntity_Squad packet = packetsToMove[x];
                 if (packet == null)
                     continue;
                 packet.Planet.DoForLinkedNeighbors(false, planet =>
                 {
-                    if (bestPlanet == null)
+                    bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction(faction).DataByStance[FactionStance.Hostile].TotalStrength > 500;
+
+                    if (DysonPrecursors.Mothership != null && DysonPrecursors.Mothership.Planet == planet && workingPlanetHasHostiles)
+                    {
+                        // Our mothership is nearby and fighting, help her.
                         bestPlanet = planet;
+                        return DelReturn.Break;
+                    }
+
+                    int workingPlanetPackets = packetsByPlanet.GetHasKey(planet) ? packetsByPlanet[planet] : 0;
+
+                    if (bestPlanet == null)
+                    {
+                        bestPlanet = planet;
+                        bestPlanetPackets = workingPlanetPackets;
+                        if (packetsByPlanet.GetHasKey(planet))
+                            packetsByPlanet[planet] += packet.CurrentMarkLevel;
+                        else
+                            packetsByPlanet.AddPair(planet, packet.CurrentMarkLevel);
+                        bestPlanetHasHostiles = workingPlanetHasHostiles;
+                    }
                     else
                     {
-                        int effectivePackets = packetsByPlanet.GetHasKey(planet) ? packetsByPlanet[planet] : 0;
-                        if (effectivePackets > bestPlanetPackets)
+                        if (workingPlanetHasHostiles && !bestPlanetHasHostiles ||
+                        (!workingPlanetHasHostiles && !bestPlanetHasHostiles && workingPlanetPackets < bestPlanetPackets) ||
+                        (workingPlanetHasHostiles && bestPlanetHasHostiles && workingPlanetPackets > bestPlanetPackets))
                         {
                             bestPlanet = planet;
-                            bestPlanetPackets = effectivePackets;
+                            bestPlanetPackets = workingPlanetPackets;
+                            if (packetsByPlanet.GetHasKey(planet))
+                                packetsByPlanet[planet] += packet.CurrentMarkLevel;
+                            else
+                                packetsByPlanet.AddPair(planet, packet.CurrentMarkLevel);
+                            bestPlanetHasHostiles = workingPlanetHasHostiles;
                         }
                     }
 
                     return DelReturn.Continue;
                 });
-                if (bestPlanet != null)
-                    packet.QueueWormholeCommand(bestPlanet);
+
+                packet.QueueWormholeCommand(bestPlanet);
             }
 
             faction.ExecuteMovementCommands(Context);
