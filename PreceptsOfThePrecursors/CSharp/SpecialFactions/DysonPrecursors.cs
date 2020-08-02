@@ -31,7 +31,7 @@ namespace PreceptsOfThePrecursors
             if (faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode)
                 cost /= 10;
 
-            return (cost / 10) * (5 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2));
+            return (cost / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
         }
         public static int Resources(int currentMarkLevel, Faction faction)
         {
@@ -44,7 +44,7 @@ namespace PreceptsOfThePrecursors
             if (faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode)
                 cost /= 10;
 
-            return (cost / 10) * (5 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2));
+            return (cost / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
         }
     }
     public static class ProtoSphereCosts
@@ -78,7 +78,7 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             });
 
-            cost = (cost / 10) * (5 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2));
+            cost = (cost / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
 
             cost = Math.Max(MinCost, cost);
             cost = Math.Min(MaxCost, cost);
@@ -101,7 +101,7 @@ namespace PreceptsOfThePrecursors
             if (faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode)
                 cost /= 10;
 
-            return (cost / 10) * (5 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2));
+            return (cost / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
         }
     }
 
@@ -613,7 +613,7 @@ namespace PreceptsOfThePrecursors
                 if (Mothership != null && Mothership.Planet == planet)
                 {
                     // Increment Mothership resources based on mine and node count.
-                    int mothershipIncomeFromMines = MothershipData.Mines * (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2);
+                    int mothershipIncomeFromMines = MothershipData.Mines * ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2);
                     MothershipData.Resources += 1 + mothershipIncomeFromMines + income;
                     MothershipData.MetalGainedOrLostLastSecond = 1 + mothershipIncomeFromMines + income;
                 }
@@ -842,7 +842,7 @@ namespace PreceptsOfThePrecursors
             try
             {
                 List<Planet> potentialPlanets = new List<Planet>();
-                short workingHops = (short)BadgerFactionUtilityMethods.findHumanKing().GetHopsTo(BadgerFactionUtilityMethods.findAIKing());
+                short workingHops = 5;
                 while (potentialPlanets.Count == 0)
                 {
                     World_AIW2.Instance.DoForPlanets(false, planet =>
@@ -1035,7 +1035,7 @@ namespace PreceptsOfThePrecursors
 
             bool[] toSpawn = new bool[8];
             for (int x = 0; x < 8; x++)
-                toSpawn[x] = World_AIW2.Instance.GameSecond % (((baseSecondsPer * (x + 1)) / 10) * (5 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2))) == 0;
+                toSpawn[x] = World_AIW2.Instance.GameSecond % (((baseSecondsPer * (x + 1)) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2))) == 0;
 
             for (int x = 0; x < DysonNodes.GetPairCount(); x++)
                 for (int y = 0; y < 7 && toSpawn[y]; y++)
