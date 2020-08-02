@@ -29,7 +29,7 @@ namespace PreceptsOfThePrecursors
             if (currentMarkLevel > 1)
                 cost += MinesIncrease * (currentMarkLevel - 1);
             if (faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode)
-                cost = 5;
+                cost /= 10;
 
             return (cost / 10) * (5 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2));
         }
@@ -42,7 +42,7 @@ namespace PreceptsOfThePrecursors
             if (currentMarkLevel > 1)
                 cost += ResourcesIncrease * (currentMarkLevel - 1);
             if (faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode)
-                cost = 5000;
+                cost /= 10;
 
             return (cost / 10) * (5 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2));
         }
@@ -83,6 +83,9 @@ namespace PreceptsOfThePrecursors
             cost = Math.Max(MinCost, cost);
             cost = Math.Min(MaxCost, cost);
 
+            if (faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode)
+                cost /= 10;
+
             return cost;
         }
         public static int Resources(int currentMarkLevel, Faction faction)
@@ -94,6 +97,9 @@ namespace PreceptsOfThePrecursors
 
             if (currentMarkLevel > 1)
                 cost += MarkUpIncrease * (currentMarkLevel - 1);
+
+            if (faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode)
+                cost /= 10;
 
             return (cost / 10) * (5 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2));
         }
@@ -193,7 +199,7 @@ namespace PreceptsOfThePrecursors
 
         public static string MOTHERSHIP_NAME = "DysonMothership";
         public static string DYSON_NODE_NAME = "DysonNode";
-        public static string DYSON_PACKET_NAME = "DysonPacket";
+        public static string DYSON_PACKET_TAG = "DysonPacket";
         public static string DYSON_ANCIENT_NODE_NAME = "DysonNodeAncient";
 
         // Various things we need to keep track of.
@@ -831,32 +837,25 @@ namespace PreceptsOfThePrecursors
         private GameEntity_Squad SpawnAncientNode(Faction faction, ArcenSimContext Context)
         {
             List<Planet> potentialPlanets = new List<Planet>();
-            byte bestMark = 7;
             World_AIW2.Instance.DoForPlanets(false, planet =>
-           {
-               if (planet.MarkLevelForAIOnly.Ordinal > bestMark)
-                   return DelReturn.Continue;
+            {
+                bool isValid = true;
+                planet.DoForPlanetsWithinXHops(Context, 2, (workingPlanet, hops) =>
+                {
+                    if (workingPlanet.GetControllingOrInfluencingFaction().Type == FactionType.Player)
+                        isValid = false;
+                    if (workingPlanet.GetCommandStationOrNull() != null && workingPlanet.GetCommandStationOrNull().TypeData.IsKingUnit)
+                        isValid = false;
 
-               bool isValid = true;
-               World_AIW2.Instance.DoForEntities(EntityRollupType.KingUnitsOnly, (GameEntity_Squad king) =>
-               {
-                   if (planet.GetHopsTo(king.Planet) < 3)
-                       isValid = false;
+                    return DelReturn.Continue;
+                });
 
-                   return DelReturn.Continue;
-               });
-
-               if (isValid && BadgerFactionUtilityMethods.GetHopsToPlayerPlanet(planet, Context) > 1)
-               {
-                   if (planet.MarkLevelForAIOnly.Ordinal < bestMark)
-                   {
-                       potentialPlanets = new List<Planet>();
-                       bestMark = planet.MarkLevelForAIOnly.Ordinal;
-                   }
-                   potentialPlanets.Add(planet);
-               }
-               return DelReturn.Continue;
-           });
+                if (isValid)
+                {
+                    potentialPlanets.Add(planet);
+                }
+                return DelReturn.Continue;
+            });
 
             Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next(potentialPlanets.Count)];
 
@@ -1017,10 +1016,34 @@ namespace PreceptsOfThePrecursors
             if (DysonNodes == null || DysonNodes.GetPairCount() < 1)
                 return;
 
-            for (int x = 0; x < DysonNodes.GetPairCount(); x++)
-            {
+            int baseSecondsPer = 60;
 
-            }
+            bool[] toSpawn = new bool[8];
+            for (int x = 0; x < 8; x++)
+                toSpawn[x] = World_AIW2.Instance.GameSecond % (((baseSecondsPer * (x + 1)) / 10) * (5 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2))) == 0;
+
+            for (int x = 0; x < DysonNodes.GetPairCount(); x++)
+                for (int y = 0; y < 7 && toSpawn[y]; y++)
+                    if (DysonNodes.GetPairByIndex(x).Value[y] != null)
+                    {
+                        GameEntity_Squad node = DysonNodes.GetPairByIndex(x).Value[y];
+                        GameEntity_Squad.CreateNew(node.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName("DysonPacket" + (y + 1)), (byte)(y + 1), node.PlanetFaction.FleetUsedAtPlanet, 0, node.WorldLocation, Context).Orders.SetBehaviorDirectlyInSim(EntityBehaviorType.Attacker_Full, node.PlanetFaction.Faction.FactionIndex);
+                    }
+
+            if (toSpawn[7])
+                World_AIW2.Instance.DoForPlanets(false, planet =>
+               {
+                   if (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor)
+                   {
+                       GameEntity_Squad sphere = planet.GetFirstMatching(FactionType.SpecialFaction, "ProtoSphere", false, false);
+                       if (sphere == null)
+                           return DelReturn.Continue;
+
+                       GameEntity_Squad.CreateNew(sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName("DysonPacket" + (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter ? 8 : 9)), 7, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context).Orders.SetBehaviorDirectlyInSim(EntityBehaviorType.Attacker_Full, sphere.PlanetFaction.Faction.FactionIndex);
+                   }
+
+                   return DelReturn.Continue;
+               });
         }
 
         // Upgrade existing Noded planets, or expand our Node Network to new planets.
@@ -1542,11 +1565,13 @@ namespace PreceptsOfThePrecursors
             Buffer.Add("\n");
         }
     }
-    public abstract class BaseDysonSubfaction : BaseSpecialFaction
+    public abstract class BaseDysonSubfaction : BaseSpecialFaction, IBulkPathfinding
     {
         protected override bool EverNeedsToRunLongRangePlanning => false;
         // A list of Zenith factions that the Precursors, Suppressors, and Protectors should always be allied to.
         public static List<Faction> FactionsToAllyTo;
+        public ArcenSparseLookup<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>> WormholeCommands { get; set; }
+        public ArcenSparseLookup<Planet, ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>> MovementCommands { get; set; }
         public BaseDysonSubfaction()
         {
             FactionsToAllyTo = null;
@@ -1676,6 +1701,7 @@ namespace PreceptsOfThePrecursors
     {
         protected override string TracingName => "DysonSuppressors";
         protected override bool EverNeedsToRunLongRangePlanning => true;
+        protected override int MinimumSecondsBetweenLongRangePlannings => 5;
 
         public static readonly string SUPPRESSOR_SPHERE_NAME = "DysonProtoSuppressorSphere";
 
@@ -1775,7 +1801,7 @@ namespace PreceptsOfThePrecursors
                     });
                 SpawnDronesOnNodeOrPacketDeath(entity, entity.PlanetFaction.Faction, Context);
             }
-            else if (entity.TypeData.GetHasTag(DysonPrecursors.DYSON_PACKET_NAME))
+            else if (entity.TypeData.GetHasTag(DysonPrecursors.DYSON_PACKET_TAG))
                 SpawnDronesOnNodeOrPacketDeath(entity, entity.PlanetFaction.Faction, Context);
         }
 
@@ -1785,30 +1811,83 @@ namespace PreceptsOfThePrecursors
             if (precursorFaction == null)
                 return;
 
+            List<GameEntity_Squad> packetsToMove = new List<GameEntity_Squad>();
+            ArcenSparseLookup<Planet, int> packetsByPlanet = new ArcenSparseLookup<Planet, int>();
+
             faction.DoForEntities(delegate (GameEntity_Squad entity)
-           {
-               if (!entity.TypeData.IsDrone)
-                   return DelReturn.Continue;
+            {
+                if (entity.TypeData.IsDrone)
+                {
+                    // Keep our drones at or ahead of our carriers.
+                    GameEntity_Squad carrier = entity.FleetMembership.Fleet.Centerpiece;
+                    if (carrier == null)
+                        return DelReturn.Continue;
+                    if (entity.Planet.Index != carrier.Planet.Index)
+                        entity.QueueWormholeCommand(carrier.Planet, Context);
+                    else
+                    {
+                        // If our Carrier is healthy and we're on a player planet, stay near our carrier.
+                        if (carrier.Planet.GetControllingOrInfluencingFaction().Type == FactionType.Player && carrier.GetCurrentShieldPoints() > carrier.TypeData.GetForMark(carrier.CurrentMarkLevel).BaseShieldPoints * 0.75 &&
+                        (entity.GetDistanceTo_VeryCheapButExtremelyRough(carrier.WorldLocation, true) > 5000 || (entity.LongRangePlanningData.DestinationPoint != ArcenPoint.ZeroZeroPoint &&
+                        entity.LongRangePlanningData.DestinationPoint.GetExtremelyRoughDistanceTo(carrier.WorldLocation) > 5000)))
+                            entity.QueueMovementCommand(carrier.WorldLocation);
+                    }
+                }
+                else if (entity.TypeData.GetHasTag(DysonPrecursors.DYSON_PACKET_TAG))
+                {
+                    Planet effectivePlanet = entity.Planet;
+                    if (entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index)
+                        effectivePlanet = World_AIW2.Instance.GetPlanetByIndex(entity.LongRangePlanningData.FinalDestinationPlanetIndex);
+                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && (entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500 || entity.GetSecondsSinceEnteringThisPlanet() > 300))
+                        packetsToMove.Add(entity);
+                    if (packetsByPlanet.GetHasKey(effectivePlanet))
+                        packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
+                    else
+                        packetsByPlanet.AddPair(effectivePlanet, entity.CurrentMarkLevel);
+                }
 
-               // Keep our drones at or ahead of our carriers.
-               GameEntity_Squad carrier = entity.FleetMembership.Fleet.Centerpiece;
-               if (carrier == null)
-                   return DelReturn.Continue;
-               if (entity.Planet.Index != carrier.Planet.Index)
-                   entity.QueueWormholeCommand(carrier.Planet, Context);
-               else
-               {
-                   // If our Carrier is healthy and we're on a player planet, stay near our carrier.
-                   if (carrier.Planet.GetControllingOrInfluencingFaction().Type == FactionType.Player && carrier.GetCurrentShieldPoints() > carrier.TypeData.GetForMark(carrier.CurrentMarkLevel).BaseShieldPoints * 0.75 &&
-                  (entity.GetDistanceTo_VeryCheapButExtremelyRough(carrier.WorldLocation, true) > 5000 || (entity.LongRangePlanningData.DestinationPoint != ArcenPoint.ZeroZeroPoint &&
-                  entity.LongRangePlanningData.DestinationPoint.GetExtremelyRoughDistanceTo(carrier.WorldLocation) > 5000)))
-                       entity.QueueMovementCommand(carrier.WorldLocation);
-               }
+                return DelReturn.Continue;
+            });
 
-               return DelReturn.Continue;
-           });
+            for (int x = 0; x < packetsToMove.Count; x++)
+            {
+                Planet bestPlanet = null;
+                int bestPlanetPackets = 9999;
+                GameEntity_Squad packet = packetsToMove[x];
+                if (packet == null)
+                    continue;
+                packet.Planet.DoForLinkedNeighbors(false, planet =>
+                {
+                    if (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter)
+                        return DelReturn.Continue; // Do not path into Protector planets.
+                    int effectivePackets = packetsByPlanet.GetHasKey(planet) ? packetsByPlanet[planet] : 0;
+                    if (bestPlanet == null)
+                    {
+                        bestPlanet = planet;
+                        bestPlanetPackets = effectivePackets;
+                        if (packetsByPlanet.GetHasKey(planet))
+                            packetsByPlanet[planet] += packet.CurrentMarkLevel;
+                        else
+                            packetsByPlanet.AddPair(planet, packet.CurrentMarkLevel);
+                    }
+                    else
+                    {
+                        if (effectivePackets < bestPlanetPackets)
+                        {
+                            bestPlanet = planet;
+                            bestPlanetPackets = effectivePackets;
+                            if (packetsByPlanet.GetHasKey(planet))
+                                packetsByPlanet[planet] += packet.CurrentMarkLevel;
+                            else
+                                packetsByPlanet.AddPair(planet, packet.CurrentMarkLevel);
+                        }
+                    }
 
+                    return DelReturn.Continue;
+                });
 
+                packet.QueueWormholeCommand(bestPlanet);
+            }
 
             faction.ExecuteMovementCommands(Context);
             faction.ExecuteWormholeCommands(Context);
@@ -1818,7 +1897,8 @@ namespace PreceptsOfThePrecursors
     public class DysonProtectors : BaseDysonSubfaction
     {
         protected override string TracingName => "DysonProtectors";
-        protected override bool EverNeedsToRunLongRangePlanning => false;
+        protected override bool EverNeedsToRunLongRangePlanning => true;
+        protected override int MinimumSecondsBetweenLongRangePlannings => 5;
 
         public static readonly string PROTECTOR_SPHERE_NAME = "DysonProtoProtectorSphere";
 
@@ -1895,6 +1975,72 @@ namespace PreceptsOfThePrecursors
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim(faction, Context);
             allyThisFactionToHumans(faction);
         }
+        public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass(Faction faction, ArcenLongTermIntermittentPlanningContext Context)
+        {
+            Faction precursorFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonPrecursors));
+            if (precursorFaction == null)
+                return;
+
+            List<GameEntity_Squad> packetsToMove = new List<GameEntity_Squad>();
+            ArcenSparseLookup<Planet, int> packetsByPlanet = new ArcenSparseLookup<Planet, int>();
+
+            faction.DoForEntities(delegate (GameEntity_Squad entity)
+            {
+                if (entity.TypeData.IsDrone)
+                {
+                    // Keep our drones at or ahead of our carriers.
+                    GameEntity_Squad carrier = entity.FleetMembership.Fleet.Centerpiece;
+                    if (carrier == null)
+                        return DelReturn.Continue;
+                    if (entity.Planet.Index != carrier.Planet.Index)
+                        entity.QueueWormholeCommand(carrier.Planet, Context);
+                }
+                else if (entity.TypeData.GetHasTag(DysonPrecursors.DYSON_PACKET_TAG))
+                {
+                    Planet effectivePlanet = entity.Planet;
+                    if (entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index)
+                        effectivePlanet = World_AIW2.Instance.GetPlanetByIndex(entity.LongRangePlanningData.FinalDestinationPlanetIndex);
+                    else if (entity.GetSecondsSinceEnteringThisPlanet() > 60 && (entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength < 500 || entity.GetSecondsSinceEnteringThisPlanet() > 300))
+                        packetsToMove.Add(entity);
+                    if (packetsByPlanet.GetHasKey(effectivePlanet))
+                        packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
+                    else
+                        packetsByPlanet.AddPair(effectivePlanet, entity.CurrentMarkLevel);
+                }
+
+                return DelReturn.Continue;
+            });
+
+            for (int x = 0; x < packetsToMove.Count; x++)
+            {
+                Planet bestPlanet = null;
+                int bestPlanetPackets = 0;
+                GameEntity_Squad packet = packetsToMove[x];
+                if (packet == null)
+                    continue;
+                packet.Planet.DoForLinkedNeighbors(false, planet =>
+                {
+                    if (bestPlanet == null)
+                        bestPlanet = planet;
+                    else
+                    {
+                        int effectivePackets = packetsByPlanet.GetHasKey(planet) ? packetsByPlanet[planet] : 0;
+                        if (effectivePackets > bestPlanetPackets)
+                        {
+                            bestPlanet = planet;
+                            bestPlanetPackets = effectivePackets;
+                        }
+                    }
+
+                    return DelReturn.Continue;
+                });
+                if (bestPlanet != null)
+                    packet.QueueWormholeCommand(bestPlanet);
+            }
+
+            faction.ExecuteMovementCommands(Context);
+            faction.ExecuteWormholeCommands(Context);
+        }
         public override void DoOnAnyDeathLogic(GameEntity_Squad entity, DamageSource Damage, EntitySystem FiringSystemOrNull, ArcenSimContext Context)
         {
             if (entity.TypeData.GetHasTag("ProtoSphere"))
@@ -1919,7 +2065,7 @@ namespace PreceptsOfThePrecursors
                 Faction suppressorFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonSuppressors));
                 (suppressorFaction.Implementation as DysonSuppressors).SpawnDronesOnNodeOrPacketDeath(entity, suppressorFaction, Context);
             }
-            else if (entity.TypeData.GetHasTag(DysonPrecursors.DYSON_PACKET_NAME))
+            else if (entity.TypeData.GetHasTag(DysonPrecursors.DYSON_PACKET_TAG))
                 SpawnDronesOnNodeOrPacketDeath(entity, entity.PlanetFaction.Faction, Context);
         }
     }

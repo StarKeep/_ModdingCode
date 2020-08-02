@@ -60,7 +60,7 @@
     <system name="TachyonArray" display_name="Tachyon Array"
 				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
     <incoming_damage_modifier based_on="MyTimeAtPlanet" comparison_type="LessThan" compared_to="10" multiplier="0.25" />
-    <metal_flow purpose="BuildingDronesInternally" throughput="700" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="500" />
   </entity>
   <entity
     name="DysonMothership2"
@@ -82,7 +82,7 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
   </entity>
   <entity
     name="DysonMothership3"
@@ -104,7 +104,7 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2100" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1500" />
   </entity>
   <entity
       name="DysonMothership4"
@@ -126,7 +126,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2800" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
   </entity>
   <entity
       name="DysonMothership5"
@@ -148,7 +148,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="3500" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2500" />
   </entity>
   <entity
       name="DysonMothership6"
@@ -170,7 +170,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="4200" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="3000" />
   </entity>
   <entity
       name="DysonMothership7"
@@ -192,7 +192,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="4900" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="3500" />
   </entity>
   <!-- 
   Drones
@@ -335,7 +335,7 @@
     </system>
     <system name="TachyonArray" display_name="Tachyon Array"
 				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
-    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="400" />
   </entity>
   <entity
     name="DysonProtoProtectorSphere1"
@@ -355,7 +355,7 @@
     external_invulnerability_region="ThisPlanet"
     eligible_for_hacks="StealDysonUnits"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="400" />
   </entity>
   <entity
     name="DysonProtoSuppressorSphere2"
@@ -376,7 +376,7 @@
     external_invulnerability_unit_tag="DysonNode"
     external_invulnerability_region="ThisPlanet"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="800" />
   </entity>
   <entity
     name="DysonProtoProtectorSphere2"
@@ -399,7 +399,7 @@
     external_invulnerability_region="ThisPlanet"
     eligible_for_hacks="StealDysonUnits"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1500" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="800" />
   </entity>
   <entity
     name="DysonProtoSuppressorSphere3"
@@ -420,7 +420,7 @@
     external_invulnerability_unit_tag="DysonNode"
     external_invulnerability_region="ThisPlanet"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
   </entity>
   <entity
     name="DysonProtoProtectorSphere3"
@@ -443,7 +443,7 @@
     external_invulnerability_region="ThisPlanet"
     eligible_for_hacks="StealDysonUnits"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1800" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
   </entity>
   <entity
       name="DysonProtoSuppressorSphere4"
@@ -464,7 +464,7 @@
       external_invulnerability_unit_tag="DysonNode"
     external_invulnerability_region="ThisPlanet"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2400" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
   </entity>
   <entity
     name="DysonProtoProtectorSphere4"
@@ -487,7 +487,7 @@
     external_invulnerability_region="ThisPlanet"
     eligible_for_hacks="StealDysonUnits"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2100" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
   </entity>
   <entity
       name="DysonProtoSuppressorSphere5"
@@ -508,7 +508,7 @@
       external_invulnerability_unit_tag="DysonNode"
     external_invulnerability_region="ThisPlanet"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2800" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
   </entity>
   <entity
     name="DysonProtoProtectorSphere5"
@@ -531,7 +531,7 @@
     external_invulnerability_region="ThisPlanet"
     eligible_for_hacks="StealDysonUnits"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2400" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
   </entity>
   <entity
       name="DysonProtoSuppressorSphere6"
@@ -552,7 +552,7 @@
       external_invulnerability_unit_tag="DysonNode"
     external_invulnerability_region="ThisPlanet"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="3200" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2400" />
   </entity>
   <entity
     name="DysonProtoProtectorSphere6"
@@ -575,7 +575,7 @@
     external_invulnerability_region="ThisPlanet"
     eligible_for_hacks="StealDysonUnits"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2700" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2400" />
   </entity>
   <entity
       name="DysonProtoSuppressorSphere7"
@@ -596,7 +596,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       immune_to_all_damage="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="3600" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2800" />
   </entity>
   <entity
     name="DysonProtoProtectorSphere7"
@@ -618,7 +618,7 @@
     immune_to_all_damage="true"
     eligible_for_hacks="StealDysonUnits"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="3000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2800" />
   </entity>
   <!-- Dyson Nodes
        Built by the Mothership on trusted planets, and by Proto Spheres over time.
@@ -675,7 +675,7 @@
     </system>
     <system name="TachyonArray" display_name="Tachyon Array"
 				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
-    <metal_flow purpose="BuildingDronesInternally" throughput="600" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="200" />
   </entity>
   <entity
     name="DysonNode2"
@@ -691,7 +691,7 @@
     eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
     metal_cost="400000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="800" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="400" />
   </entity>
   <entity
     name="DysonNode3"
@@ -707,7 +707,7 @@
     eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
     metal_cost="600000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="600" />
   </entity>
   <entity
     name="DysonNode4"
@@ -723,7 +723,7 @@
     eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
     metal_cost="800000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="800" />
   </entity>
   <entity
     name="DysonNode5"
@@ -739,7 +739,7 @@
     eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
     metal_cost="1000000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
   </entity>
   <entity
     name="DysonNode6"
@@ -755,7 +755,7 @@
     eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
     metal_cost="1250000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
   </entity>
   <entity
     name="DysonNode7"
@@ -771,7 +771,7 @@
     eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
     metal_cost="1500000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1800" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
   </entity>
   <entity
     name="DysonNodeAncient"
@@ -790,7 +790,7 @@
     science_to_grant_on_death="3000"
     shows_on_galaxy_map_for_explored_planets="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
   </entity>
   <!--  Dyson Packets
         Built by Dyson Nodes, these release swarms of drones when killed.
@@ -804,17 +804,17 @@
 		icon_name="Ships1/ColonyShip"
     category="Ship"
     size_scale="2.4"
-		visuals_scale_multiplier="2"
-		y_offset_of_icon="50"
-		collision_priority="810"
-		display_name="Level 1 Dyson Packet"
-		description="Built by a Dyson Node, this is a weaponless drone transporter that releases an additional swarm of drones on death."
+	visuals_scale_multiplier="2"
+	y_offset_of_icon="50"
+	collision_priority="810"
+	display_name="Level 1 Dyson Packet"
+	description="Built by a Dyson Node, this is a weak drone transporter that releases an additional swarm of drones on death."
     starting_mark_level="Mark1"
     fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
     drone_starting_behavior_type="Attacker_Full"
     cost_for_ai_to_purchase="10000"
-    hull_points="10000"
-    shield_points="20000"
+    hull_points="50000"
+    shield_points="50000"
     speed="BelowAverage1"
     metal_cost="250000"
     energy_consumption="2500"
@@ -822,9 +822,9 @@
     albedo="0.3"
     mass_tx="1.5"
     engine_gx="8"
-		ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
-		ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
-		ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+	ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+	ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+	ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
     priority_as_ai_target="NotDangerous"
     priority_as_frd_target="NotDangerous"
     priority_to_protect="Expendable"
@@ -837,6 +837,7 @@
 				shot_type_data="ArmorPiercingShell" shots_per_salvo="5"
 				>
     </system>
+	  <metal_flow purpose="BuildingDronesInternally" throughput="200" />
   </entity>
   <entity
     name="DysonPacket2"
@@ -849,7 +850,7 @@
     metal_cost="500000"
     energy_consumption="5000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="800" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="400" />
   </entity>
   <entity
     name="DysonPacket3"
@@ -862,7 +863,7 @@
     metal_cost="750000"
     energy_consumption="7500"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="600" />
   </entity>
   <entity
     name="DysonPacket4"
@@ -875,7 +876,7 @@
     metal_cost="1000000"
     energy_consumption="10000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="800" />
   </entity>
   <entity
     name="DysonPacket5"
@@ -888,7 +889,7 @@
     metal_cost="2000000"
     energy_consumption="20000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
   </entity>
   <entity
     name="DysonPacket6"
@@ -901,7 +902,7 @@
     metal_cost="3000000"
     energy_consumption="30000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
   </entity>
   <entity
     name="DysonPacket7"
@@ -914,7 +915,7 @@
     metal_cost="4000000"
     energy_consumption="40000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="1800" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
   </entity>
   <entity
     name="DysonPacket8"
@@ -927,7 +928,7 @@
     metal_cost="6000000"
     energy_consumption="60000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
   </entity>
   <entity
     name="DysonPacket9"
@@ -940,7 +941,7 @@
     metal_cost="10000000"
     energy_consumption="100000"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2200" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="1800" />
   </entity>
   <!-- Copies of the basic Dyson units that are set to decay over time. For on-death spawns.
    -->
@@ -948,7 +949,7 @@
     name="DysonSentinelDecaying"
     copy_from="DysonSentinel"
     display_name="Dyson Sentinel"
-    self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+    self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
 		  always_self_attritions="true"
   >
   </entity>
@@ -956,7 +957,7 @@
       name="DysonDefenderDecaying"
       copy_from="DysonDefender"
       display_name="Dyson Defender"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
 		  always_self_attritions="true"
   >
   </entity>
@@ -964,7 +965,7 @@
       name="DysonBulwarkDecaying"
       copy_from="DysonBulwark"
       display_name="Dyson Bulwark"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
 		  always_self_attritions="true"
   >
   </entity>
@@ -972,7 +973,7 @@
       name="DysonBastionDecaying"
       copy_from="DysonBastion"
       display_name="Dyson Bastion"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
 		  always_self_attritions="true"
   >
   </entity>
