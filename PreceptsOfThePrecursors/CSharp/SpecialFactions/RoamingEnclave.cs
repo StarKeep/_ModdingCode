@@ -120,7 +120,7 @@ namespace PreceptsOfThePrecursors
         {
             faction.OverallPowerLevel = FInt.Zero;
             if (Hives.Count >= 10)
-                faction.OverallPowerLevel = FInt.FromParts(1, 000) + (FInt.FromParts(0, 025) * (Hives.Count - 10));
+                faction.OverallPowerLevel = FInt.FromParts(1, 000) + ((FInt.FromParts(0, 025) * (Hives.Count - 10)));
             else
                 faction.OverallPowerLevel = FInt.FromParts(0, 010) * Hives.Count;
         }

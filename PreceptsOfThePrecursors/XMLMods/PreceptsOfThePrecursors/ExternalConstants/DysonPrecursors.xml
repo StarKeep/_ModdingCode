@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Value listed here are their effective Intensity 1 values. Their Intensity 10 values are half of these. -->
+<root
+    is_partial_record="true"
+	
+	custom_int_DysonPrecursors_MinesToMarkUpBase="20"
+	custom_int_DysonPrecursors_MinesToMarkUpIncrease="12"
+	
+	custom_int_DysonPrecursors_MothershipResourcesToMarkUpBase="100000"
+	custom_int_DysonPrecursors_MothershipResourcesToMarkUpIncrease="75000"
+	
+	custom_int_DysonPrecursors_ProtoSphereBaseCost="200000"
+	custom_int_DysonPrecursors_ProtoSphereCostIncreasePerExistingSphere="50000"
+	custom_int_DysonPrecursors_ProtoSphereMinCost="125000"
+	custom_int_DysonPrecursors_ProtoSphereMaxCost="500000"
+	
+	custom_int_DysonPrecursors_ProtoSphereResourcesToMarkUpBase="75000"
+	custom_int_DysonPrecursors_ProtoSphereResourcesToMarkUpIncrease="75000"
+>
+</root>
