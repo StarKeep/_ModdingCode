@@ -1056,7 +1056,7 @@ namespace PreceptsOfThePrecursors
             if (DysonNodes == null || DysonNodes.GetPairCount() < 1)
                 return;
 
-            int baseSecondsPer = 120;
+            int baseSecondsPer = 300;
 
             bool[] toSpawn = new bool[8];
             for (int x = 0; x < 8; x++)
