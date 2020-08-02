@@ -135,6 +135,9 @@ namespace PreceptsOfThePrecursors
             if (FactionData == null)
                 FactionData = faction.GetEnclaveFactionData();
 
+            if (faction.MustBeAwakenedByPlayer)
+                faction.HasBeenAwakenedByPlayer = EnclaveSettings.GetIsEnabled(faction);
+
             HandleEnclaveRegeneration();
 
             HandleYounglingCombining(Context);
@@ -697,7 +700,7 @@ namespace PreceptsOfThePrecursors
                    BaseRoamingEnclave REFaction = otherFaction.Implementation as BaseRoamingEnclave;
                    if (REFaction.FactionData == null)
                        REFaction.FactionData = otherFaction.GetEnclaveFactionData();
-                   if (REFaction.Hives.Count == 0 && REFaction.Enclaves.Count == 0)
+                   if (REFaction.Hives.Count == 0)
                    {
                        if (REFaction.FactionData.SecondsUntilNextRespawn == -1)
                        {

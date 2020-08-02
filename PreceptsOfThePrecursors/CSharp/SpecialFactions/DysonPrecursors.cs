@@ -1664,6 +1664,10 @@ namespace PreceptsOfThePrecursors
         }
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim(Faction faction, ArcenSimContext Context)
         {
+            Faction precFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonPrecursors));
+            if (faction.MustBeAwakenedByPlayer)
+                faction.HasBeenAwakenedByPlayer = precFaction != null && (!precFaction.MustBeAwakenedByPlayer || precFaction.HasBeenAwakenedByPlayer);
+
             UpdateDysonAllegiance(faction, Context);
         }
         private void UpdateDysonAllegiance(Faction faction, ArcenSimContext Context)
