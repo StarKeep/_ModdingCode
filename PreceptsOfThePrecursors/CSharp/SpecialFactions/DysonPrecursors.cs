@@ -295,6 +295,8 @@ namespace PreceptsOfThePrecursors
             if (faction.MustBeAwakenedByPlayer && !faction.HasBeenAwakenedByPlayer)
                 return;
 
+            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Zenith Precursors";
+
             Initialize(faction, Context);
 
             GiveJournalsAsNeeded(faction, Context);
@@ -1600,7 +1602,6 @@ namespace PreceptsOfThePrecursors
             Buffer.Add($"\nThis Sphere is level {protoSphereData.Level}. ");
             if (protoSphereData.Level < 7)
                 Buffer.Add($"\nThis Sphere Golem has acquired {protoSphereData.Resources}/{ProtoSphereCosts.Resources(protoSphereData.Level, World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonPrecursors)))} of the resources required to level up. ");
-            Buffer.Add($"\nThis Sphere Golem will attempt to construct a new Node of mark {RelatedEntityOrNull.CurrentMarkLevel} or lower in {600 - (RelatedEntityOrNull.GetSecondsSinceCreation() % 600)} seconds, if a free slot is available at the time.");
 
             Buffer.Add("\n");
         }
@@ -1667,7 +1668,7 @@ namespace PreceptsOfThePrecursors
             Faction precFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonPrecursors));
             if (faction.MustBeAwakenedByPlayer)
                 faction.HasBeenAwakenedByPlayer = precFaction != null && (!precFaction.MustBeAwakenedByPlayer || precFaction.HasBeenAwakenedByPlayer);
-
+            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Zenith Precursors";
             UpdateDysonAllegiance(faction, Context);
         }
         private void UpdateDysonAllegiance(Faction faction, ArcenSimContext Context)
@@ -1749,6 +1750,29 @@ namespace PreceptsOfThePrecursors
         protected override int MinimumSecondsBetweenLongRangePlannings => 5;
 
         public static readonly string SUPPRESSOR_SPHERE_NAME = "DysonProtoSuppressorSphere";
+        public override void UpdatePowerLevel(Faction faction)
+        {
+            faction.OverallPowerLevel = FInt.Zero;
+            if (DysonPrecursors.MothershipData == null || DysonPrecursors.DysonNodes == null || DysonPrecursors.DysonNodes.GetPairCount() == 0)
+                return;
+
+            World_AIW2.Instance.DoForPlanets(false, planet =>
+            {
+                if (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor)
+                    faction.OverallPowerLevel += FInt.FromParts(0, 250);
+
+                if (DysonPrecursors.MothershipData.Trust.GetTrust(planet) < 0)
+                    if (DysonPrecursors.DysonNodes != null && DysonPrecursors.DysonNodes.GetHasKey(planet))
+                        for (int x = 0; x < 7; x++)
+                            if (DysonPrecursors.DysonNodes[planet][x] != null)
+                                faction.OverallPowerLevel += FInt.FromParts(0, 005) * x;
+
+                return DelReturn.Continue;
+            });
+
+            if (faction.OverallPowerLevel > 2)
+                faction.OverallPowerLevel = FInt.One * 2;
+        }
 
         public override void CreateProtoSphere(Faction faction, Planet planet, ArcenSimContext Context)
         {
@@ -1965,7 +1989,29 @@ namespace PreceptsOfThePrecursors
         protected override int MinimumSecondsBetweenLongRangePlannings => 5;
 
         public static readonly string PROTECTOR_SPHERE_NAME = "DysonProtoProtectorSphere";
+        public override void UpdatePowerLevel(Faction faction)
+        {
+            faction.OverallPowerLevel = FInt.Zero;
+            if (DysonPrecursors.MothershipData == null || DysonPrecursors.DysonNodes == null || DysonPrecursors.DysonNodes.GetPairCount() == 0)
+                return;
 
+            World_AIW2.Instance.DoForPlanets(false, planet =>
+            {
+                if (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter)
+                    faction.OverallPowerLevel += FInt.FromParts(0, 250);
+
+                if (DysonPrecursors.MothershipData.Trust.GetTrust(planet) > 0)
+                    if (DysonPrecursors.DysonNodes != null && DysonPrecursors.DysonNodes.GetHasKey(planet))
+                        for (int x = 0; x < 7; x++)
+                            if (DysonPrecursors.DysonNodes[planet][x] != null)
+                                faction.OverallPowerLevel += FInt.FromParts(0, 005) * x;
+
+                return DelReturn.Continue;
+            });
+
+            if (faction.OverallPowerLevel > 2)
+                faction.OverallPowerLevel = FInt.One * 2;
+        }
         public override void CreateProtoSphere(Faction faction, Planet planet, ArcenSimContext Context)
         {
             GameEntityTypeData protoSphereData = GameEntityTypeDataTable.Instance.GetRowByName(PROTECTOR_SPHERE_NAME + "1");
