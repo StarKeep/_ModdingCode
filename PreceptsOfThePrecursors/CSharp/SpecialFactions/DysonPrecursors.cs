@@ -613,7 +613,7 @@ namespace PreceptsOfThePrecursors
                 if (Mothership != null && Mothership.Planet == planet)
                 {
                     // Increment Mothership resources based on mine and node count.
-                    int mothershipIncomeFromMines = MothershipData.Mines * ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2);
+                    int mothershipIncomeFromMines = MothershipData.Mines * (1 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2));
                     MothershipData.Resources += 1 + mothershipIncomeFromMines + income;
                     MothershipData.MetalGainedOrLostLastSecond = 1 + mothershipIncomeFromMines + income;
                 }
@@ -1079,7 +1079,7 @@ namespace PreceptsOfThePrecursors
                        if (sphere == null)
                            return DelReturn.Continue;
 
-                       GameEntity_Squad.CreateNew(sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName("DysonPacket" + (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter ? 8 : 9)), 7, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context).Orders.SetBehaviorDirectlyInSim(EntityBehaviorType.Attacker_Full, sphere.PlanetFaction.Faction.FactionIndex);
+                       GameEntity_Squad.CreateNew(sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName("DysonPacket" + (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter ? 8 : 9)), sphere.CurrentMarkLevel, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context).Orders.SetBehaviorDirectlyInSim(EntityBehaviorType.Attacker_Full, sphere.PlanetFaction.Faction.FactionIndex);
                    }
 
                    return DelReturn.Continue;
@@ -2040,6 +2040,20 @@ namespace PreceptsOfThePrecursors
         {
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim(faction, Context);
             allyThisFactionToHumans(faction);
+            World_AIW2.Instance.DoForPlanets(false, planet =>
+            {
+                if (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter && planet.GetControllingOrInfluencingFaction().Type == FactionType.Player)
+                {
+                    GameEntity_Squad command = planet.GetCommandStationOrNull();
+                    if (command != null)
+                    {
+                        for (int x = 1; x <= planet.GetProtoSphereData().Level; x++)
+                            command.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates(GameEntityTypeDataTable.Instance.GetRowByName(DysonPrecursors.DYSON_PACKET_TAG + x)).ExplicitBaseSquadCap = 2;
+                    }
+                }
+
+                return DelReturn.Continue;
+            });
         }
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass(Faction faction, ArcenLongTermIntermittentPlanningContext Context)
         {

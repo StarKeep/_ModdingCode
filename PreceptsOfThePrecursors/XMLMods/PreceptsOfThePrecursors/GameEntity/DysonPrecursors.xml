@@ -204,6 +204,8 @@
     display_name="Dyson Sentinel Drone"
     special_entity_type="DroneGeneral"
     speed="Normal3"
+	damage_multiplier_to_all_weapons="0.1"
+	energy_consumption="0"
   >
     <fleet_membership name="DysonMothershipDronesLow" ship_cap_group="Strike" weight="100" min="300" max="300"/>
     <fleet_membership name="DysonMothershipDronesMed" ship_cap_group="Strike" weight="100" min="300" max="300"/>
@@ -226,6 +228,8 @@
       display_name="Dyson Defender Drone"
       special_entity_type="DroneGeneral"
       speed="Normal3"
+	  damage_multiplier_to_all_weapons="0.1"
+	  energy_consumption="0"
   >
     <fleet_membership name="DysonMothershipDronesLow" ship_cap_group="Strike" weight="100" min="300" max="300"/>
     <fleet_membership name="DysonMothershipDronesMed" ship_cap_group="Strike" weight="100" min="300" max="300"/>
@@ -248,6 +252,8 @@
       display_name="Dyson Bulwark Drone"
       special_entity_type="DroneGeneral"
       speed="Normal2"
+	  damage_multiplier_to_all_weapons="0.1"
+	  energy_consumption="0"
   >
     <fleet_membership name="DysonMothershipDronesMed" ship_cap_group="Strike" weight="100" min="15" max="15"/>
     <fleet_membership name="DysonMothershipDronesHig" ship_cap_group="Strike" weight="100" min="30" max="30"/>
@@ -266,6 +272,8 @@
       display_name="Dyson Bastion Drone"
       special_entity_type="DroneGeneral"
       speed="Normal1"
+	  damage_multiplier_to_all_weapons="0.1"
+	  energy_consumption="0"
   >
     <fleet_membership name="DysonMothershipDronesHig" ship_cap_group="Strike" weight="100" min="3" max="3"/>
 
@@ -815,9 +823,9 @@
     cost_for_ai_to_purchase="10000"
     hull_points="50000"
     shield_points="50000"
-    speed="VeryVeryLittle2"
+    speed="BelowAverage1"
     metal_cost="250000"
-    energy_consumption="2500"
+    energy_consumption="25000"
     armor_mm="40"
     albedo="0.3"
     mass_tx="1.5"
@@ -848,7 +856,7 @@
     starting_mark_level="Mark2"
     fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
     metal_cost="500000"
-    energy_consumption="5000"
+    energy_consumption="50000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="400" />
   </entity>
@@ -861,7 +869,7 @@
     starting_mark_level="Mark3"
     fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
     metal_cost="750000"
-    energy_consumption="7500"
+    energy_consumption="75000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="600" />
   </entity>
@@ -874,7 +882,7 @@
     starting_mark_level="Mark4"
     fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
     metal_cost="1000000"
-    energy_consumption="10000"
+    energy_consumption="100000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="800" />
   </entity>
@@ -887,7 +895,7 @@
     starting_mark_level="Mark5"
     fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
     metal_cost="2000000"
-    energy_consumption="20000"
+    energy_consumption="200000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
   </entity>
@@ -900,7 +908,7 @@
     starting_mark_level="Mark6"
     fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
     metal_cost="3000000"
-    energy_consumption="30000"
+    energy_consumption="300000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
   </entity>
@@ -913,7 +921,7 @@
     starting_mark_level="Mark7"
     fleet_design_template_i_use_for_drones="DysonNodeDronesMed"
     metal_cost="4000000"
-    energy_consumption="40000"
+    energy_consumption="400000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
   </entity>
@@ -926,7 +934,7 @@
     starting_mark_level="Mark7"
     fleet_design_template_i_use_for_drones="DysonProtectorDronesHig"
     metal_cost="6000000"
-    energy_consumption="60000"
+    energy_consumption="600000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="1600" />
   </entity>
@@ -939,7 +947,7 @@
     starting_mark_level="Mark7"
     fleet_design_template_i_use_for_drones="DysonSuppressorDronesHig"
     metal_cost="10000000"
-    energy_consumption="100000"
+    energy_consumption="1000000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="1800" />
   </entity>
@@ -950,7 +958,9 @@
     copy_from="DysonSentinel"
     display_name="Dyson Sentinel"
     self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
-		  always_self_attritions="true"
+    always_self_attritions="true"
+	damage_multiplier_to_all_weapons="0.1"
+	energy_consumption="0"
   >
   </entity>
   <entity
@@ -958,7 +968,9 @@
       copy_from="DysonDefender"
       display_name="Dyson Defender"
       self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
-		  always_self_attritions="true"
+	    always_self_attritions="true"
+	  damage_multiplier_to_all_weapons="0.1"
+	  energy_consumption="0"
   >
   </entity>
   <entity
@@ -966,7 +978,9 @@
       copy_from="DysonBulwark"
       display_name="Dyson Bulwark"
       self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
-		  always_self_attritions="true"
+		always_self_attritions="true"
+	  damage_multiplier_to_all_weapons="0.1"
+	  energy_consumption="0"
   >
   </entity>
   <entity
@@ -975,6 +989,8 @@
       display_name="Dyson Bastion"
       self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
 		  always_self_attritions="true"
+	  damage_multiplier_to_all_weapons="0.1"
+	  energy_consumption="0"
   >
   </entity>
 </root>
