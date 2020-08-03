@@ -305,7 +305,7 @@ namespace PreceptsOfThePrecursors
             {
                 if ( collection.UnitsByMark.GetHasKey( x ) )
                 {
-                    if ( collection.UnitsByMark[x] > 2 )
+                    if ( collection.UnitsByMark[x] > 100 )
                     {
                         collection.SubtractStrength( unitData.GetForMark( x ).GetCalculatedStrengthPerSquadForFleetOrNull( null ) * 2 );
                         collection.AddStrength( unitData.GetForMark( (byte)(x + 1) ).GetCalculatedStrengthPerSquadForFleetOrNull( null ) );
