@@ -216,7 +216,6 @@ namespace PreceptsOfThePrecursors
         private int AttackHops;
         private int FireteamsPerDefense;
         private int RetreatPercentage;
-        private int MaxDefensiveEnclave;
 
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass(Faction faction, ArcenLongTermIntermittentPlanningContext Context)
         {
@@ -229,7 +228,6 @@ namespace PreceptsOfThePrecursors
             AttackHops = EnclaveSettings.GetInt(faction, EnclaveSettings.GalaxyIntegers.EnclaveMaxHopsFromHiveToAttack);
             FireteamsPerDefense = EnclaveSettings.GetInt(faction, EnclaveSettings.GalaxyIntegers.MakeEveryXFireteamDefensive);
             RetreatPercentage = EnclaveSettings.GetInt(faction, EnclaveSettings.GalaxyIntegers.RetreatAtXHull);
-            MaxDefensiveEnclave = EnclaveSettings.GetInt(faction, EnclaveSettings.GalaxyIntegers.MaxDefensiveEnclave);
 
             FactionData.TeamsAimedAtPlanet.Clear();
 
@@ -263,7 +261,7 @@ namespace PreceptsOfThePrecursors
                    return DelReturn.Continue;
                }
 
-               if (FireteamsPerDefense > 0 && (MaxDefensiveEnclave == 0 || team.id / FireteamsPerDefense <= MaxDefensiveEnclave))
+               if (FireteamsPerDefense > 0 )
                    team.DefenseMode = team.id % FireteamsPerDefense == 0;
                else
                    team.DefenseMode = false;
@@ -340,7 +338,7 @@ namespace PreceptsOfThePrecursors
                                team.MyStrengthMultiplierForStrengthCalculation = FInt.One;
                                team.EnemyStrengthMultiplierForStrengthCalculation = FInt.One;
                                team.id = FireteamUtility.GetNextFireteamId(FactionData.Teams);
-                               if (FireteamsPerDefense > 0 && (MaxDefensiveEnclave == 0 || team.id / FireteamsPerDefense <= MaxDefensiveEnclave))
+                               if (FireteamsPerDefense > 0)
                                    team.DefenseMode = team.id % FireteamsPerDefense == 0;
                                else
                                    team.DefenseMode = false;
@@ -359,21 +357,7 @@ namespace PreceptsOfThePrecursors
                    {
                        Fireteam team = this.GetFireteamById(faction, enclave.FireteamId);
                        if (team != null)
-                       {
                            team.AddUnit(enclave);
-                           switch (team.status)
-                           {
-                               case FireteamStatus.Assembling:
-                               case FireteamStatus.Staging:
-                               case FireteamStatus.ReadyToAttack:
-                                   if ((hostileStrength < 500 || alliedStrength < hostileStrength * 2) && enclave.LongRangePlanningData.FinalDestinationPlanetIndex == -1
-                                   && enclave.Planet.GetHopsTo(GetNearestHivePlanetBackgroundThreadOnly(faction, enclave.Planet, Context)) > 0)
-                                       enclave.QueueWormholeCommand(GetNearestHivePlanetBackgroundThreadOnly(faction, enclave.Planet, Context));
-                                   break;
-                               default:
-                                   break;
-                           }
-                       }
                        else
                            enclave.FireteamId = -1; //something happened to the fireteam, so lets find a new one next LRP stage
                    }
