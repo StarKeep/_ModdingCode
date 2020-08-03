@@ -682,7 +682,7 @@
     <metal_flow purpose="SelfConstruction" throughput="50"/>
   </entity>
   <entity name="PlayerRoamingEnclave" cannot_be_stacked="true" special_entity_type="MobileLoneWolfFleetFlagship" capturable_can_seed_at_all="false"
-			tags="ShowsOnNormalDisplayMode,PlayerRoamingEnclave"
+			tags="ShowsOnNormalDisplayMode,PlayerRoamingEnclave" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_ArkGeneral"
 			draw_in_galaxy_view="true"
 			gimbal_icon_size_multiplier="2.25"
 			visuals="Assets/_FinalGameMeshes/Specials/AstroTrain/AstroTrainCarrierStyle.prefab"
