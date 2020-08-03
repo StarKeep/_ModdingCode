@@ -1,6 +1,7 @@
 ﻿using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
+using System;
 using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
@@ -259,26 +260,21 @@ namespace PreceptsOfThePrecursors
                     return DelReturn.Continue;
                 }
 
-                team.NoDeathballing = true;
-
                 switch ( team.status )
                 {
-                    case FireteamStatus.Attacking:
+                    case FireteamStatus.ReadyToAttack:
+                        int idleSince = -1;
+                        if ( team.History.Count > 0 )
+                            for ( int x = 0; x < team.History.Count; x++ )
+                                idleSince = Math.Max( idleSince, team.History[x].GameSecond );
+                        if ( idleSince > 0 && World_AIW2.Instance.GameSecond - idleSince > 15 )
+                            team.DiscardCurrentObjectives();
                         break;
                     default:
-                        if ( team.TargetPlanet != null )
-                        {
-                            List<FireteamTarget> targets = new List<FireteamTarget>(), _ = new List<FireteamTarget>();
-                            GetFireteamPreferredAndFallbackTargets_OnBackgroundNonSimThread_Subclass( faction, team.DefenseMode, team.CurrentPlanet, Context, ref targets, ref _, team );
-                            bool isValid = false;
-                            for ( int x = 0; x < targets.Count && !isValid; x++ )
-                                if ( team.TargetPlanet == targets[x].planet )
-                                    isValid = true;
-                            if ( !isValid )
-                                team.DiscardCurrentObjectives();
-                        }
                         break;
                 }
+
+                team.NoDeathballing = true;
 
                 return DelReturn.Continue;
             } );
@@ -486,11 +482,6 @@ namespace PreceptsOfThePrecursors
         #region Fireteams
         private List<Planet> HivePlanetsForBackgroundThreadOnly = new List<Planet>();
 
-        int alliedAssaultFriendlyThreshold = 5000;
-        int alliedAssaultHostileThresholdMult = 2;
-        int hivesInDangerThreshold = 2500;
-        int hivesThreatenedThreshold = 5000;
-
         public override Fireteam GetFireteamById( Faction faction, int id )
         {
             return FireteamUtility.GetFireteamById( FactionData.Teams, id );
@@ -517,10 +508,8 @@ namespace PreceptsOfThePrecursors
                 int hops = planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, planet, Context ) );
 
                 int hostileStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength;
-                int friendlyStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Friendly].TotalStrength;
 
-                if ( friendlyStrength > alliedAssaultFriendlyThreshold
-                  && hostileStrength * alliedAssaultHostileThresholdMult > friendlyStrength )
+                if ( hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 3, false ) )
                 {
                     if ( hops > 1 )
                         alliedAssaults.Add( planet );
@@ -529,7 +518,7 @@ namespace PreceptsOfThePrecursors
                 }
                 if ( hops == 0 )
                 {
-                    if ( hostileStrength > hivesInDangerThreshold )
+                    if ( hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 3, false ) )
                         hivesInDanger.Add( planet );
 
                     int enclaveOnPlanet = 0;
@@ -547,11 +536,11 @@ namespace PreceptsOfThePrecursors
                     else
                         planetsByEnclaveCount.AddPair( enclaveOnPlanet, new List<Planet>() { planet } );
                 }
-                else if ( hops == 1 && hostileStrength > hivesThreatenedThreshold )
+                else if ( hops == 1 && hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 3, false ) )
                 {
                     hivesThreatened.Add( planet );
                 }
-                else if ( hops <= AttackHops && hostileStrength > 500 && Fireteam.GetDangerOfPath( faction, Context, CurrentPlanetForFireteam, planet, false, out short _ ) < 500 )
+                else if ( hops <= AttackHops && hostileStrength > 2500 && Fireteam.GetDangerOfPath( faction, Context, CurrentPlanetForFireteam, planet, false, out short _ ) < 500 )
                 {
                     planetsToAttack.Add( planet );
                 }
