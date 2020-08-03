@@ -257,7 +257,7 @@ namespace PreceptsOfThePrecursors
 
             Fireteam.DoFor(FactionData.Teams, delegate (Fireteam team)
            {
-               if (team.DefenseMode && team.TargetPlanet != null && team.TargetPlanet.GetHopsTo(GetNearestHivePlanetBackgroundThreadOnly(faction, team.TargetPlanet, Context)) > 0)
+               if (team.DefenseMode && team.TargetPlanet != null && team.TargetPlanet.GetHopsTo(GetNearestHivePlanetBackgroundThreadOnly(faction, team.TargetPlanet, Context)) > 1)
                {
                    team.DiscardCurrentObjectives();
                    return DelReturn.Continue;
@@ -268,21 +268,29 @@ namespace PreceptsOfThePrecursors
                else
                    team.DefenseMode = false;
 
+               int timeout = -1;
+
                switch (team.status)
                {
+                   case FireteamStatus.Assembling:
+                   case FireteamStatus.Staging:
+                       timeout = 15;
+                       break;
                    case FireteamStatus.ReadyToAttack:
-                       if (team.History.Count > 0)
-                       {
-                           int latestSecond = 0;
-                           for (int x = 0; x < team.History.Count; x++)
-                               latestSecond = Math.Max(latestSecond, team.History[x].GameSecond);
-                           if (World_AIW2.Instance.GameSecond - latestSecond > 60)
-                               team.DiscardCurrentObjectives();
-                       }
-
+                       timeout = 30;
                        break;
                    default:
                        break;
+               }
+
+               if (timeout > 0)
+               if (team.History.Count > 0)
+               {
+                   int latestSecond = 0;
+                   for (int x = 0; x < team.History.Count; x++)
+                       latestSecond = Math.Max(latestSecond, team.History[x].GameSecond);
+                   if (World_AIW2.Instance.GameSecond - latestSecond > timeout)
+                       team.DiscardCurrentObjectives();
                }
 
                return DelReturn.Continue;
@@ -526,7 +534,7 @@ namespace PreceptsOfThePrecursors
             List<Planet> hivesInDanger = new List<Planet>();
             List<Planet> alliedAssaults = new List<Planet>();
             List<Planet> hivesThreatened = new List<Planet>();
-            List<Planet> fallbackAttackPlanets = new List<Planet>();
+            List<Planet> planetsToAttack = new List<Planet>();
             ArcenSparseLookup<int, List<Planet>> planetsByEnclaveCount = new ArcenSparseLookup<int, List<Planet>>();
 
             World_AIW2.Instance.DoForPlanets(false, planet =>
@@ -540,12 +548,16 @@ namespace PreceptsOfThePrecursors
                  && hostileStrength * alliedAssaultHostileThresholdMult > friendlyStrength)
                {
                    alliedAssaults.Add(planet);
+                   if (this is RoamingEnclavePlayerTeam)
+                       ArcenDebugging.SingleLineQuickDebug($"{planet.Name} is an allied assault.");
                }
-               else if (hops == 0)
+               if (hops == 0)
                {
                    if (hostileStrength > hivesInDangerThreshold)
                    {
                        hivesInDanger.Add(planet);
+                       if (this is RoamingEnclavePlayerTeam)
+                           ArcenDebugging.SingleLineQuickDebug($"{planet.Name} is an in danger hive.");
                    }
 
                    int enclaveOnPlanet = 0;
@@ -566,10 +578,14 @@ namespace PreceptsOfThePrecursors
                else if (hops == 1 && hostileStrength > hivesThreatenedThreshold)
                {
                    hivesThreatened.Add(planet);
+                   if (this is RoamingEnclavePlayerTeam)
+                       ArcenDebugging.SingleLineQuickDebug($"{planet.Name} is threatening a hive.");
                }
                else if (hops <= AttackHops && hostileStrength > 500 && Fireteam.GetDangerOfPath(faction, Context, CurrentPlanetForFireteam, planet, false, out short _) < 500)
                {
-                   fallbackAttackPlanets.Add(planet);
+                   planetsToAttack.Add(planet);
+                   if (this is RoamingEnclavePlayerTeam)
+                       ArcenDebugging.SingleLineQuickDebug($"{planet.Name} is a fallback attack target.");
                }
 
                return DelReturn.Continue;
@@ -580,35 +596,34 @@ namespace PreceptsOfThePrecursors
             if (DefenseMode)
             {
                 if (hivesInDanger.Count > 0)
-                {
                     for (int x = 0; x < hivesInDanger.Count; x++)
                         PreferredTargets.Add(new FireteamTarget(hivesInDanger[x]));
-                }
-                else if (planetsByEnclaveCount.GetPairCount() > 0)
-                {
+                else if (hivesThreatened.Count > 0)
+                    for (int x = 0; x < hivesThreatened.Count; x++)
+                        PreferredTargets.Add(new FireteamTarget(hivesThreatened[x]));
+
+                if (PreferredTargets.Count == 0 && planetsByEnclaveCount.GetPairCount() > 0)
                     for (int x = 0; x < planetsByEnclaveCount.GetPairByIndex(0).Value.Count; x++)
-                        PreferredTargets.Add(new FireteamTarget(planetsByEnclaveCount.GetPairByIndex(0).Value[x]));
-                }
-                for (int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++)
-                    FallbackTargets.Add(new FireteamTarget(HivePlanetsForBackgroundThreadOnly[x]));
+                        FallbackTargets.Add(new FireteamTarget(planetsByEnclaveCount.GetPairByIndex(0).Value[x]));
             }
             else
             {
                 if (hivesInDanger.Count > 0)
                     for (int x = 0; x < hivesInDanger.Count; x++)
                         PreferredTargets.Add(new FireteamTarget(hivesInDanger[x]));
-                else
-                {
-                    if (alliedAssaults.Count > 0)
-                        for (int x = 0; x < alliedAssaults.Count; x++)
-                            PreferredTargets.Add(new FireteamTarget(alliedAssaults[x]));
-                    if (hivesThreatened.Count > 0)
-                        for (int x = 0; x < hivesThreatened.Count; x++)
-                            PreferredTargets.Add(new FireteamTarget(hivesThreatened[x]));
-                }
-                if (fallbackAttackPlanets.Count > 0)
-                    for (int x = 0; x < fallbackAttackPlanets.Count; x++)
-                        FallbackTargets.Add(new FireteamTarget(fallbackAttackPlanets[x]));
+                else if (hivesThreatened.Count > 0)
+                    for (int x = 0; x < hivesThreatened.Count; x++)
+                        PreferredTargets.Add(new FireteamTarget(hivesThreatened[x]));
+                else if (alliedAssaults.Count > 0)
+                    for (int x = 0; x < alliedAssaults.Count; x++)
+                        PreferredTargets.Add(new FireteamTarget(alliedAssaults[x]));
+                else if (planetsToAttack.Count > 0)
+                    for (int x = 0; x < planetsToAttack.Count; x++)
+                        PreferredTargets.Add(new FireteamTarget(planetsToAttack[x]));
+
+                if (PreferredTargets.Count == 0 && planetsByEnclaveCount.GetPairCount() > 0)
+                    for (int x = 0; x < planetsByEnclaveCount.GetPairByIndex(0).Value.Count; x++)
+                        FallbackTargets.Add(new FireteamTarget(planetsByEnclaveCount.GetPairByIndex(0).Value[x]));
             }
         }
 
