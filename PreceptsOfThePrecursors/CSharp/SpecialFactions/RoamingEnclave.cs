@@ -511,10 +511,10 @@ namespace PreceptsOfThePrecursors
 
                 if ( hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 3, false ) )
                 {
-                    if ( hops > 1 )
-                        alliedAssaults.Add( planet );
-                    else
+                    if ( hops <= 1 )
                         alliedDefense.Add( planet );
+                    else if ( hops <= AttackHops )
+                        alliedAssaults.Add( planet );
                 }
                 if ( hops == 0 )
                 {
