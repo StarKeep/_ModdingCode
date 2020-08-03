@@ -304,16 +304,16 @@ namespace PreceptsOfThePrecursors
 
             GameEntityTypeData unitData = GameEntityTypeDataTable.Instance.GetRowByName( unit.ToString() );
 
-            for ( byte x = 1, y = 7; x < 7; x++, y-- )
+            for ( byte x = 1; x < 7; x++ )
             {
                 if ( collection.UnitsByMark.GetHasKey( x ) )
                 {
-                    if ( collection.UnitsByMark[x] > y * 2 )
+                    if ( collection.UnitsByMark[x] > 2 )
                     {
-                        collection.SubtractStrength( unitData.GetForMark( x ).GetCalculatedStrengthPerSquadForFleetOrNull( null ) * y );
+                        collection.SubtractStrength( unitData.GetForMark( x ).GetCalculatedStrengthPerSquadForFleetOrNull( null ) * 2 );
                         collection.AddStrength( unitData.GetForMark( (byte)(x + 1) ).GetCalculatedStrengthPerSquadForFleetOrNull( null ) );
 
-                        collection.UnitsByMark[x] -= y;
+                        collection.UnitsByMark[x] -= 2;
                         if ( collection.UnitsByMark.GetHasKey( (byte)(x + 1) ) )
                             collection.UnitsByMark[(byte)(x + 1)]++;
                         else
