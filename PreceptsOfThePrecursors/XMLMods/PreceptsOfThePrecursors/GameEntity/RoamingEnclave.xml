@@ -22,7 +22,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="Plink" display_name="Plink"
@@ -52,7 +52,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="PeckerEnergyWave" display_name="Pecker Energy Wave"
@@ -83,7 +83,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
       amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="GrapplingBolt" display_name="Grappling Bolt"
@@ -117,7 +117,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="TeslaCoil" display_name="Tesla Coil"
@@ -152,7 +152,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="AmbushCannon" display_name="Ambush Cannon"
@@ -184,7 +184,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
 
@@ -216,7 +216,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="10" max_amount_added_to_damage_per_ship_of_this_type_on_planet="100"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
 
@@ -251,7 +251,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="BananaBomb" display_name="Banana Bomb"
@@ -288,7 +288,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="ShockingSting" display_name="Shocking Sting"
@@ -320,7 +320,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+      self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="PeckerMissile" display_name="Pecker Missiles"
@@ -351,7 +351,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="10" max_amount_added_to_damage_per_ship_of_this_type_on_planet="100"
       priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="HuntingLaser" display_name="Hunting Laser"
@@ -385,7 +385,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
 			priority_as_ai_target="NormalFleetship" priority_as_frd_target="NormalFleetship" priority_to_protect="Expendable"
-			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
 		  always_self_attritions="true"
       >
     <system name="AcidicSiphon" display_name="Acidic Siphon"
@@ -417,7 +417,7 @@
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
 			amount_added_to_damage_per_ship_of_this_type_on_planet="5" max_amount_added_to_damage_per_ship_of_this_type_on_planet="50"
 			priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
-			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.1"
+			self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="0.4"
       >
     <system name="Yawn" display_name="Yawn"
 				category="Weapon" firing_timing="OnlyInRange"
