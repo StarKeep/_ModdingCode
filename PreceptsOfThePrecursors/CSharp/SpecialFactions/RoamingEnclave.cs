@@ -263,25 +263,10 @@ namespace PreceptsOfThePrecursors
                    return DelReturn.Continue;
                }
 
-               switch (team.status)
-               {
-                   case FireteamStatus.Disbanded:
-                   case FireteamStatus.Assembling:
-                   case FireteamStatus.Staging:
-                   case FireteamStatus.ReadyToAttack:
-                       if (team.History.Count > 0)
-                       {
-                           int latestSecond = 0;
-                           for (int x = 0; x < team.History.Count; x++)
-                               latestSecond = Math.Max(latestSecond, team.History[x].GameSecond);
-                           if (World_AIW2.Instance.GameSecond - latestSecond > 60)
-                               team.DiscardCurrentObjectives();
-                       }
-
-                       break;
-                   default:
-                       break;
-               }
+               if (FireteamsPerDefense > 0 && (MaxDefensiveEnclave == 0 || team.id / FireteamsPerDefense <= MaxDefensiveEnclave))
+                   team.DefenseMode = team.id % FireteamsPerDefense == 0;
+               else
+                   team.DefenseMode = false;
 
                return DelReturn.Continue;
            });
