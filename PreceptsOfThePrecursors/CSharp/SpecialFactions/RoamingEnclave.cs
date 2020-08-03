@@ -268,6 +268,23 @@ namespace PreceptsOfThePrecursors
                else
                    team.DefenseMode = false;
 
+               switch (team.status)
+               {
+                   case FireteamStatus.ReadyToAttack:
+                       if (team.History.Count > 0)
+                       {
+                           int latestSecond = 0;
+                           for (int x = 0; x < team.History.Count; x++)
+                               latestSecond = Math.Max(latestSecond, team.History[x].GameSecond);
+                           if (World_AIW2.Instance.GameSecond - latestSecond > 60)
+                               team.DiscardCurrentObjectives();
+                       }
+
+                       break;
+                   default:
+                       break;
+               }
+
                return DelReturn.Continue;
            });
 
