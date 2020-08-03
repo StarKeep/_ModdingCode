@@ -1271,6 +1271,10 @@ namespace PreceptsOfThePrecursors
             if (!EnclaveSettings.GetIsEnabled(faction))
                 return;
 
+            if (PlayerEnclaves != null && PlayerEnclaves.Count > 0)
+                for (int x = 0; x < PlayerEnclaves.Count; x++)
+                    PlayerEnclaves[x].CombineYounglingsIfAble(Context);
+
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim(faction, Context);
         }
 
@@ -1281,7 +1285,8 @@ namespace PreceptsOfThePrecursors
             {
                 GameEntity_Squad enclave = PlayerEnclaves[x];
                 PlanetFaction pFaction = hive != null ? hive.PlanetFaction : enclave.Planet.GetPlanetFactionForFaction(spawnFaction);
-                GameEntity_Squad unit = GameEntity_Squad.CreateNew(pFaction, GameEntityTypeDataTable.Instance.GetRowByName("YounglingWorm"), enclave.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, hive != null ? hive.WorldLocation : enclave.WorldLocation, Context);
+                GameEntityTypeData entityData = hive != null ? YounglingTypeByHive[hive.TypeData] : GameEntityTypeDataTable.Instance.GetRowByName("YounglingWorm");
+                GameEntity_Squad unit = GameEntity_Squad.CreateNew(pFaction, entityData, enclave.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, hive != null ? hive.WorldLocation : enclave.WorldLocation, Context);
                 if (hive == null)
                     enclave.StoreYoungling(unit, Context);
                 else

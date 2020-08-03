@@ -3,6 +3,9 @@ using Arcen.AIW2.External;
 using Arcen.Universal;
 using System;
 
+// Player Enclaves split into 2 when built.
+// Player Enclaves only mark up to 4.
+
 namespace PreceptsOfThePrecursors
 {
     public class EnclaveFactionData

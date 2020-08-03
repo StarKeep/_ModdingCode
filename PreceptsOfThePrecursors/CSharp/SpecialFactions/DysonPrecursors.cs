@@ -130,7 +130,7 @@ namespace PreceptsOfThePrecursors
                 Buffer.Add($"\nThis Mothership has reached its final form. It has stockpiled {MothershipData.Resources} metal and {MothershipData.Mines} mines. ");
             else
                 Buffer.Add($"\nThis Mothership is currently level {MothershipData.Level} and has {MothershipData.Resources}/{PrecursorCosts.Resources(MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction)} of the metal and {MothershipData.Mines}/{PrecursorCosts.Mines(MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction)} of the consumed mines required to level up. ");
-            if (MothershipData.Resources >= PrecursorCosts.Resources(MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction))
+            if (MothershipData.Level < 7 && MothershipData.Resources >= PrecursorCosts.Resources(MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction))
                 Buffer.Add($"\nIt is ready to upgrade, and will attempt to do so over time on a friendly Noded planet.");
 
             Buffer.Add($"\nIt can build another Proto Sphere after stockpiling {ProtoSphereCosts.BuildCost(RelatedEntityOrNull.PlanetFaction.Faction)} resources. ");
@@ -172,9 +172,9 @@ namespace PreceptsOfThePrecursors
 
             Buffer.Add($"\nIt is currently {mood} ({trust}) towards us on this planet. ");
             if (MothershipData.IsGainingTrust)
-                Buffer.Add(" Its trust towards nearby planets is currently increasing. ");
+                Buffer.Add(" Its trust towards this planet is currently increasing. ");
             else if (MothershipData.IsLosingTrust)
-                Buffer.Add(" Its trust towards nearby planets is currently decreasing. ");
+                Buffer.Add(" Its trust towards this planet is currently decreasing. ");
 
             if (RelatedEntityOrNull.Planet.GetIsControlledByFactionType(FactionType.Player) && trust > -1000 && trust <= 1000)
                 Buffer.Add(" It has recognized that we consider this planet our home and has ceased aggression... for now. ");
@@ -258,11 +258,11 @@ namespace PreceptsOfThePrecursors
             if (MothershipData.Level < 6)
             {
                 for (int x = 0; x < MothershipData.Level; x++)
-                    faction.OverallPowerLevel += FInt.FromParts(0, 500);
+                    faction.OverallPowerLevel += FInt.FromParts(0, 334);
                 return;
             }
             else
-                faction.OverallPowerLevel = FInt.FromParts(3, 000);
+                faction.OverallPowerLevel = FInt.FromParts(2, 000);
         }
         public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim(Faction faction, ArcenSimContext Context)
         {
@@ -295,7 +295,7 @@ namespace PreceptsOfThePrecursors
             if (faction.MustBeAwakenedByPlayer && !faction.HasBeenAwakenedByPlayer)
                 return;
 
-            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Zenith Precursors";
+            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Dyson Precursors";
 
             Initialize(faction, Context);
 
@@ -716,34 +716,27 @@ namespace PreceptsOfThePrecursors
 
             if (MothershipUndamaged(hullForTrustGain, shieldForTrustGain) && HumanStrengthAdvantage(humanStrength, hostileStrength))
             {
-                Mothership.Planet.DoForLinkedNeighborsAndSelf(false, planet =>
-               {
-                   if (trust < MothershipData.Trust.MaxTrust(Mothership.Planet))
-                   {
-                       short potentialChange = (short)(baseChange + nodeBonus);
-                       short change = Math.Max(baseChange, potentialChange);
+                if (trust < MothershipData.Trust.MaxTrust(Mothership.Planet))
+                {
+                    short potentialChange = (short)(baseChange + nodeBonus);
+                    short change = Math.Max(baseChange, potentialChange);
 
-                       MothershipData.Trust.AddOrSubtractTrust(planet, change);
-                       MothershipData.IsGainingTrust = true;
-                   }
-                   return DelReturn.Continue;
-               });
+                    MothershipData.Trust.AddOrSubtractTrust(Mothership.Planet, change);
+                    MothershipData.IsGainingTrust = true;
+                }
 
             }
             else if (MothershipDamaged(hullForTrustLoss, shieldForTrustLoss) || !HumanStrengthAdvantage(humanStrength, hostileStrength))
             {
-                Mothership.Planet.DoForLinkedNeighborsAndSelf(false, planet =>
-               {
-                   if (trust > MothershipData.Trust.MinTrust(Mothership.Planet))
-                   {
-                       short potentialChange = (short)((-baseChange) + nodeBonus);
-                       short change = Math.Min(baseChange, potentialChange);
 
-                       MothershipData.Trust.AddOrSubtractTrust(planet, change);
-                       MothershipData.IsLosingTrust = true;
-                   }
-                   return DelReturn.Continue;
-               });
+                if (trust > MothershipData.Trust.MinTrust(Mothership.Planet))
+                {
+                    short potentialChange = (short)((-baseChange) + nodeBonus);
+                    short change = Math.Min(baseChange, potentialChange);
+
+                    MothershipData.Trust.AddOrSubtractTrust(Mothership.Planet, change);
+                    MothershipData.IsLosingTrust = true;
+                }
             }
         }
         private bool MothershipDamaged(int hullForTrustLoss, int shieldForTrustLoss)
@@ -1058,7 +1051,7 @@ namespace PreceptsOfThePrecursors
             if (DysonNodes == null || DysonNodes.GetPairCount() < 1)
                 return;
 
-            int baseSecondsPer = 150;
+            int baseSecondsPer = 300;
 
             bool[] toSpawn = new bool[8];
             for (int x = 0; x < 8; x++)
@@ -1668,7 +1661,7 @@ namespace PreceptsOfThePrecursors
             Faction precFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonPrecursors));
             if (faction.MustBeAwakenedByPlayer)
                 faction.HasBeenAwakenedByPlayer = precFaction != null && (!precFaction.MustBeAwakenedByPlayer || precFaction.HasBeenAwakenedByPlayer);
-            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Zenith Precursors";
+            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Dyson Precursors";
             UpdateDysonAllegiance(faction, Context);
         }
         private void UpdateDysonAllegiance(Faction faction, ArcenSimContext Context)
@@ -1759,7 +1752,7 @@ namespace PreceptsOfThePrecursors
             World_AIW2.Instance.DoForPlanets(false, planet =>
             {
                 if (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor)
-                    faction.OverallPowerLevel += FInt.FromParts(0, 250);
+                    faction.OverallPowerLevel += FInt.FromParts(0, 150);
 
                 if (DysonPrecursors.MothershipData.Trust.GetTrust(planet) < 0)
                     if (DysonPrecursors.DysonNodes != null && DysonPrecursors.DysonNodes.GetHasKey(planet))
@@ -1771,7 +1764,7 @@ namespace PreceptsOfThePrecursors
             });
 
             if (faction.OverallPowerLevel > 2)
-                faction.OverallPowerLevel = FInt.One * 2;
+                faction.OverallPowerLevel = FInt.FromParts(2, 000);
         }
 
         public override void CreateProtoSphere(Faction faction, Planet planet, ArcenSimContext Context)
@@ -1998,19 +1991,13 @@ namespace PreceptsOfThePrecursors
             World_AIW2.Instance.DoForPlanets(false, planet =>
             {
                 if (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter)
-                    faction.OverallPowerLevel += FInt.FromParts(0, 250);
-
-                if (DysonPrecursors.MothershipData.Trust.GetTrust(planet) > 0)
-                    if (DysonPrecursors.DysonNodes != null && DysonPrecursors.DysonNodes.GetHasKey(planet))
-                        for (int x = 0; x < 7; x++)
-                            if (DysonPrecursors.DysonNodes[planet][x] != null)
-                                faction.OverallPowerLevel += FInt.FromParts(0, 005) * x;
+                    faction.OverallPowerLevel += FInt.FromParts(0, 150);
 
                 return DelReturn.Continue;
             });
 
-            if (faction.OverallPowerLevel > 2)
-                faction.OverallPowerLevel = FInt.One * 2;
+            if (faction.OverallPowerLevel > 1)
+                faction.OverallPowerLevel = FInt.FromParts(1, 000);
         }
         public override void CreateProtoSphere(Faction faction, Planet planet, ArcenSimContext Context)
         {

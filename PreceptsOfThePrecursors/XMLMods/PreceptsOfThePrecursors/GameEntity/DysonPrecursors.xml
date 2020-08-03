@@ -48,13 +48,13 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <system name="ZenithSuppressionCannon" display_name="Zenith Suppression Cannon"
+    <system name="DysonImmurementCannon" display_name="Zenith Immurement Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="1400" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
-				shot_type_data="ArmorPiercingShell" shots_per_salvo="14" added_shots_per_salvo_per_mark="14"
-				base_engine_stun_per_shot="7" engine_stun_to_engine_gx_less_than="18"	max_engine_stun_seconds="21"
-        base_enemy_weapon_reload_slowing_seconds_per_shot="7" enemy_weapon_reload_slowing_to_armor_mm_less_than="180"
-				max_enemy_weapon_reload_slowing_seconds="21"
+				damage_per_shot="7000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" shots_per_salvo="1" added_shots_per_salvo_per_mark="1"
+				base_engine_stun_per_shot="3" engine_stun_to_engine_gx_less_than="30"	max_engine_stun_seconds="7"
+                base_enemy_weapon_reload_slowing_seconds_per_shot="3" enemy_weapon_reload_slowing_to_armor_mm_less_than="300"
+				max_enemy_weapon_reload_slowing_seconds="30"
 				>
     </system>
     <system name="TachyonArray" display_name="Tachyon Array"
@@ -204,7 +204,7 @@
     display_name="Dyson Sentinel Drone"
     special_entity_type="DroneGeneral"
     speed="Normal3"
-	damage_multiplier_to_all_weapons="0.1"
+	damage_multiplier_to_all_weapons="0.25"
 	energy_consumption="0"
   >
     <fleet_membership name="DysonMothershipDronesLow" ship_cap_group="Strike" weight="100" min="300" max="300"/>
@@ -228,7 +228,7 @@
       display_name="Dyson Defender Drone"
       special_entity_type="DroneGeneral"
       speed="Normal3"
-	  damage_multiplier_to_all_weapons="0.1"
+	  damage_multiplier_to_all_weapons="0.25"
 	  energy_consumption="0"
   >
     <fleet_membership name="DysonMothershipDronesLow" ship_cap_group="Strike" weight="100" min="300" max="300"/>
@@ -252,7 +252,7 @@
       display_name="Dyson Bulwark Drone"
       special_entity_type="DroneGeneral"
       speed="Normal2"
-	  damage_multiplier_to_all_weapons="0.1"
+	  damage_multiplier_to_all_weapons="0.25"
 	  energy_consumption="0"
   >
     <fleet_membership name="DysonMothershipDronesMed" ship_cap_group="Strike" weight="100" min="15" max="15"/>
@@ -272,7 +272,7 @@
       display_name="Dyson Bastion Drone"
       special_entity_type="DroneGeneral"
       speed="Normal1"
-	  damage_multiplier_to_all_weapons="0.1"
+	  damage_multiplier_to_all_weapons="0.25"
 	  energy_consumption="0"
   >
     <fleet_membership name="DysonMothershipDronesHig" ship_cap_group="Strike" weight="100" min="3" max="3"/>
@@ -816,7 +816,7 @@
 	y_offset_of_icon="50"
 	collision_priority="810"
 	display_name="Level 1 Dyson Packet"
-	description="A weak Zenith unit, this comes with a weak long range weapon and a compliment of sleeping drones. While it can slowly activate them over time, its main power comes from its death, upon which it will immediately launch drones equal to 300% of its capacity."
+	description="The Precursor workhorse, the Dyson Packet will attempt to incite hostile targets to destroy it and unleash the swarms of sleeping drones that lie within, spawning 300% of its listed drone capacity on death."
     starting_mark_level="Mark1"
     fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
     drone_starting_behavior_type="Attacker_Full"
@@ -839,9 +839,9 @@
     strength_multiplier="5.0"
     should_never_be_captured_by_another_faction="true"
 			>
-    <system name="ZenithProbingCannon" display_name="Zenith Probing Cannon"
+    <system name="ZenithProbe" display_name="Zenith Probe"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="100" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				damage_per_shot="100" range="AlmostNone" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
 				shot_type_data="ArmorPiercingShell" shots_per_salvo="5"
 				>
     </system>
@@ -932,7 +932,7 @@
     display_name="Level 8 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark7"
-    fleet_design_template_i_use_for_drones="DysonProtectorDronesHig"
+    fleet_design_template_i_use_for_drones="DysonProtectorDronesMed"
     metal_cost="6000000"
     energy_consumption="600000"
     >
@@ -945,7 +945,7 @@
     display_name="Level 9 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark7"
-    fleet_design_template_i_use_for_drones="DysonSuppressorDronesHig"
+    fleet_design_template_i_use_for_drones="DysonSuppressorDronesMed"
     metal_cost="10000000"
     energy_consumption="1000000"
     >
@@ -959,7 +959,7 @@
     display_name="Dyson Sentinel"
     self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
     always_self_attritions="true"
-	damage_multiplier_to_all_weapons="0.1"
+	damage_multiplier_to_all_weapons="0.25"
 	energy_consumption="0"
   >
   </entity>
@@ -969,7 +969,7 @@
       display_name="Dyson Defender"
       self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
 	    always_self_attritions="true"
-	  damage_multiplier_to_all_weapons="0.1"
+	  damage_multiplier_to_all_weapons="0.25"
 	  energy_consumption="0"
   >
   </entity>
@@ -979,7 +979,7 @@
       display_name="Dyson Bulwark"
       self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
 		always_self_attritions="true"
-	  damage_multiplier_to_all_weapons="0.1"
+	  damage_multiplier_to_all_weapons="0.25"
 	  energy_consumption="0"
   >
   </entity>
@@ -989,7 +989,7 @@
       display_name="Dyson Bastion"
       self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
 		  always_self_attritions="true"
-	  damage_multiplier_to_all_weapons="0.1"
+	  damage_multiplier_to_all_weapons="0.25"
 	  energy_consumption="0"
   >
   </entity>
