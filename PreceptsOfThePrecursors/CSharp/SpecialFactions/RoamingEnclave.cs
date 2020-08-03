@@ -259,6 +259,8 @@ namespace PreceptsOfThePrecursors
                     return DelReturn.Continue;
                 }
 
+                team.NoDeathballing = true;
+
                 switch ( team.status )
                 {
                     case FireteamStatus.Attacking:
@@ -504,6 +506,7 @@ namespace PreceptsOfThePrecursors
             FallbackTargets.Clear();
 
             List<Planet> hivesInDanger = new List<Planet>();
+            List<Planet> alliedDefense = new List<Planet>();
             List<Planet> alliedAssaults = new List<Planet>();
             List<Planet> hivesThreatened = new List<Planet>();
             List<Planet> planetsToAttack = new List<Planet>();
@@ -519,18 +522,15 @@ namespace PreceptsOfThePrecursors
                 if ( friendlyStrength > alliedAssaultFriendlyThreshold
                   && hostileStrength * alliedAssaultHostileThresholdMult > friendlyStrength )
                 {
-                    alliedAssaults.Add( planet );
-                    if ( this is RoamingEnclavePlayerTeam )
-                        ArcenDebugging.SingleLineQuickDebug( $"{planet.Name} is an allied assault." );
+                    if ( hops > 1 )
+                        alliedAssaults.Add( planet );
+                    else
+                        alliedDefense.Add( planet );
                 }
                 if ( hops == 0 )
                 {
                     if ( hostileStrength > hivesInDangerThreshold )
-                    {
                         hivesInDanger.Add( planet );
-                        if ( this is RoamingEnclavePlayerTeam )
-                            ArcenDebugging.SingleLineQuickDebug( $"{planet.Name} is an in danger hive." );
-                    }
 
                     int enclaveOnPlanet = 0;
 
@@ -550,14 +550,10 @@ namespace PreceptsOfThePrecursors
                 else if ( hops == 1 && hostileStrength > hivesThreatenedThreshold )
                 {
                     hivesThreatened.Add( planet );
-                    if ( this is RoamingEnclavePlayerTeam )
-                        ArcenDebugging.SingleLineQuickDebug( $"{planet.Name} is threatening a hive." );
                 }
                 else if ( hops <= AttackHops && hostileStrength > 500 && Fireteam.GetDangerOfPath( faction, Context, CurrentPlanetForFireteam, planet, false, out short _ ) < 500 )
                 {
                     planetsToAttack.Add( planet );
-                    if ( this is RoamingEnclavePlayerTeam )
-                        ArcenDebugging.SingleLineQuickDebug( $"{planet.Name} is a fallback attack target." );
                 }
 
                 return DelReturn.Continue;
@@ -568,33 +564,71 @@ namespace PreceptsOfThePrecursors
             if ( DefenseMode )
             {
                 if ( hivesInDanger.Count > 0 )
+                {
                     for ( int x = 0; x < hivesInDanger.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesInDanger[x] ) );
-                else if ( hivesThreatened.Count > 0 )
+                    if ( HaveValidPlanet( (Fireteam)TeamObj, faction, Context, ref PreferredTargets, FactionData.TeamsAimedAtPlanet, CurrentPlanetForFireteam ) )
+                        return;
+                }
+                if ( hivesThreatened.Count > 0 )
+                {
                     for ( int x = 0; x < hivesThreatened.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
-                else if ( planetsByEnclaveCount.GetPairCount() > 0 )
+                    if ( HaveValidPlanet( (Fireteam)TeamObj, faction, Context, ref PreferredTargets, FactionData.TeamsAimedAtPlanet, CurrentPlanetForFireteam ) )
+                        return;
+                }
+                if ( planetsByEnclaveCount.GetPairCount() > 0 )
+                {
                     for ( int x = 0; x < planetsByEnclaveCount.GetPairByIndex( 0 ).Value.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( planetsByEnclaveCount.GetPairByIndex( 0 ).Value[x] ) );
+                    if ( HaveValidPlanet( (Fireteam)TeamObj, faction, Context, ref PreferredTargets, FactionData.TeamsAimedAtPlanet, CurrentPlanetForFireteam ) )
+                        return;
+                }
             }
             else
             {
                 if ( hivesInDanger.Count > 0 )
+                {
                     for ( int x = 0; x < hivesInDanger.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesInDanger[x] ) );
+                    if ( HaveValidPlanet( (Fireteam)TeamObj, faction, Context, ref PreferredTargets, FactionData.TeamsAimedAtPlanet, CurrentPlanetForFireteam ) )
+                        return;
+                }
                 else if ( hivesThreatened.Count > 0 )
+                {
                     for ( int x = 0; x < hivesThreatened.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( hivesThreatened[x] ) );
+                    if ( HaveValidPlanet( (Fireteam)TeamObj, faction, Context, ref PreferredTargets, FactionData.TeamsAimedAtPlanet, CurrentPlanetForFireteam ) )
+                        return;
+                }
                 else if ( alliedAssaults.Count > 0 )
+                {
                     for ( int x = 0; x < alliedAssaults.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( alliedAssaults[x] ) );
+                    if ( HaveValidPlanet( (Fireteam)TeamObj, faction, Context, ref PreferredTargets, FactionData.TeamsAimedAtPlanet, CurrentPlanetForFireteam ) )
+                        return;
+                }
                 else if ( planetsToAttack.Count > 0 )
+                {
                     for ( int x = 0; x < planetsToAttack.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( planetsToAttack[x] ) );
+                    if ( HaveValidPlanet( (Fireteam)TeamObj, faction, Context, ref PreferredTargets, FactionData.TeamsAimedAtPlanet, CurrentPlanetForFireteam ) )
+                        return;
+                }
                 else if ( planetsByEnclaveCount.GetPairCount() > 0 )
+                {
                     for ( int x = 0; x < planetsByEnclaveCount.GetPairByIndex( 0 ).Value.Count; x++ )
                         PreferredTargets.Add( new FireteamTarget( planetsByEnclaveCount.GetPairByIndex( 0 ).Value[x] ) );
+                    if ( HaveValidPlanet( (Fireteam)TeamObj, faction, Context, ref PreferredTargets, FactionData.TeamsAimedAtPlanet, CurrentPlanetForFireteam ) )
+                        return;
+                }
             }
+        }
+
+        public bool HaveValidPlanet( Fireteam fireteam, Faction faction, ArcenLongTermIntermittentPlanningContext Context, ref List<FireteamTarget> targets, ArcenSparseLookup<Planet, FireteamRegiment> TeamsAimedAtPlanet, Planet CurrentPlanetForFireteam )
+        {
+            FireteamUtility.SortTargets( fireteam, faction, Context, ref targets, FactionData.TeamsAimedAtPlanet, CurrentPlanetForFireteam, new ArcenCharacterBuffer() );
+            return targets.Count > 0;
         }
 
         public override Planet GetFireteamLurkPlanet_OnBackgroundNonSimThread_Subclass( Faction faction, Planet TargetPlanet, int TeamStrength, Planet CurrentPlanetForFireteam, ArcenLongTermIntermittentPlanningContext Context )
