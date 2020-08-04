@@ -312,6 +312,14 @@ namespace PreceptsOfThePrecursors
                     for ( int x = 0; x < pair.Value.Count; x++ )
                         pair.Value[x].DisbandAndRetreat( faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Value[x].CurrentPlanet, Context ) );
 
+                // Bleed off Enclaves from winning fights.
+                while (ourStrength + friendlyStrength > hostileStrength * 3 && pair.Value.Count > 0)
+                {
+                    ourStrength -= pair.Value[0].TeamStrength;
+                    pair.Value[0].DisbandAndRetreat(faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass(faction, pair.Value[0].CurrentPlanet, Context));
+                    pair.Value.RemoveAt(0);
+                }
+
                 return DelReturn.Continue;
             } );
             FireteamUtility.CleanUpDisbandedFireteams( FactionData.Teams );
@@ -588,7 +596,7 @@ namespace PreceptsOfThePrecursors
                 {
                     hivesThreatened.Add( planet );
                 }
-                else if ( hops <= AttackHops && hostileStrength > 2500 && Fireteam.GetDangerOfPath( faction, Context, CurrentPlanetForFireteam, planet, false, out short _ ) < 500 )
+                else if ( hops <= AttackHops && hostileStrength > 2500 && Fireteam.GetDangerOfPath( faction, Context, CurrentPlanetForFireteam, planet, false, out short _ ) < 500 && !Fireteam.IsThisAWinningBattle(faction, Context, planet, 3, false))
                 {
                     planetsToAttack.Add( planet );
                 }

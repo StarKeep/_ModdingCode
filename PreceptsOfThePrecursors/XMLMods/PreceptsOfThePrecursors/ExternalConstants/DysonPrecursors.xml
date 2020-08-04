@@ -9,9 +9,9 @@
 	custom_int_DysonPrecursors_MothershipResourcesToMarkUpBase="100000"
 	custom_int_DysonPrecursors_MothershipResourcesToMarkUpIncrease="75000"
 	
-	custom_int_DysonPrecursors_ProtoSphereBaseCost="200000"
+	custom_int_DysonPrecursors_ProtoSphereBaseCost="150000"
 	custom_int_DysonPrecursors_ProtoSphereCostIncreasePerExistingSphere="50000"
-	custom_int_DysonPrecursors_ProtoSphereMinCost="125000"
+	custom_int_DysonPrecursors_ProtoSphereMinCost="75000"
 	custom_int_DysonPrecursors_ProtoSphereMaxCost="500000"
 	
 	custom_int_DysonPrecursors_ProtoSphereResourcesToMarkUpBase="75000"

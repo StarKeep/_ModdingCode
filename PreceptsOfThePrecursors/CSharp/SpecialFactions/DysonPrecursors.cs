@@ -579,27 +579,16 @@ namespace PreceptsOfThePrecursors
         }
         private void HandleFriendlyNPCPlanet(DysonProtoSphereData protoSphereData, Planet planet)
         {
-            if (BaseDysonSubfaction.FactionsToAllyTo == null)
-                return;
-            bool hasFriendlyFaction = false;
-            if (BaseDysonSubfaction.FactionsToAllyTo.Contains(planet.GetControllingOrInfluencingFaction()))
-                hasFriendlyFaction = true; // Zenith owned planets.
-            if (!hasFriendlyFaction)
-            {
-                List<GameEntity_Squad> dysonSpheres = SpecialFaction_DysonSphere.DysonSpheres_AllFactions;
-                if (dysonSpheres != null && dysonSpheres.Count > 0)
-                    for (int y = 0; y < dysonSpheres.Count; y++)
-                        if (dysonSpheres[y].Planet.Index == planet.Index)
-                        {
-                            hasFriendlyFaction = true; // Planet with a Dyson Sphere on it.
-                            break;
-                        }
-            }
-            if (hasFriendlyFaction)
-            {
-                protoSphereData.Type = DysonProtoSphereData.ProtoSphereType.Other;
-                protoSphereData.Level = 7;
-            }
+            List<GameEntity_Squad> dysonSpheres = SpecialFaction_DysonSphere.DysonSpheres_AllFactions;
+            if (dysonSpheres != null && dysonSpheres.Count > 0)
+                for (int y = 0; y < dysonSpheres.Count; y++)
+                    if (dysonSpheres[y].Planet.Index == planet.Index)
+                    {
+                        protoSphereData.Type = DysonProtoSphereData.ProtoSphereType.Other;
+                        protoSphereData.Level = 7;
+                        break;
+                    }
+
         }
         private void ApplyCalculatedIncome(ArcenSparseLookup<Planet, int> incomePerPlanet, Faction faction)
         {
