@@ -1,8 +1,8 @@
-﻿using Arcen.AIW2.Core;
+﻿using System;
+using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using System;
-using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -313,11 +313,11 @@ namespace PreceptsOfThePrecursors
                         pair.Value[x].DisbandAndRetreat( faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Value[x].CurrentPlanet, Context ) );
 
                 // Bleed off Enclaves from winning fights.
-                while (ourStrength + friendlyStrength > hostileStrength * 3 && pair.Value.Count > 0)
+                while ( ourStrength + friendlyStrength > hostileStrength * 3 && pair.Value.Count > 0 )
                 {
                     ourStrength -= pair.Value[0].TeamStrength;
-                    pair.Value[0].DisbandAndRetreat(faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass(faction, pair.Value[0].CurrentPlanet, Context));
-                    pair.Value.RemoveAt(0);
+                    pair.Value[0].DisbandAndRetreat( faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Value[0].CurrentPlanet, Context ) );
+                    pair.Value.RemoveAt( 0 );
                 }
 
                 return DelReturn.Continue;
@@ -369,7 +369,7 @@ namespace PreceptsOfThePrecursors
                         {
                             if ( enclave.GetCurrentHullPoints() >= (enclave.GetMaxHullPoints() / 100) * 90 )
                             {
-                                enclavesThatNeedFireteam.Add(enclave);
+                                enclavesThatNeedFireteam.Add( enclave );
                             }
                         }
                         else
@@ -394,30 +394,30 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
-            if (enclavesThatNeedFireteam.Count > 0)
+            if ( enclavesThatNeedFireteam.Count > 0 )
             {
                 List<int> takenID = new List<int>();
-                Fireteam.DoFor(FactionData.Teams, workingTeam =>
-                {
-                    if (workingTeam.ships.Count > 0)
-                        takenID.Add(workingTeam.id);
+                Fireteam.DoFor( FactionData.Teams, workingTeam =>
+                 {
+                     if ( workingTeam.ships.Count > 0 )
+                         takenID.Add( workingTeam.id );
 
-                    return DelReturn.Continue;
-                });
-                for(int x = 0; x < enclavesThatNeedFireteam.Count; x++)
+                     return DelReturn.Continue;
+                 } );
+                for ( int x = 0; x < enclavesThatNeedFireteam.Count; x++ )
                 {
                     GameEntity_Squad enclave = enclavesThatNeedFireteam[x];
                     Fireteam team = new Fireteam();
                     team.MyStrengthMultiplierForStrengthCalculation = FInt.One;
                     team.EnemyStrengthMultiplierForStrengthCalculation = FInt.One;
                     team.id = 1;
-                    while (takenID.Contains(team.id))
+                    while ( takenID.Contains( team.id ) )
                         team.id++;
-                    takenID.Add(team.id);
+                    takenID.Add( team.id );
                     team.StrengthToBringOnline = 0;
                     team.NoDeathballing = true;
-                    team.AddUnit(enclave);
-                    FactionData.Teams.AddIfNotAlreadyIn(team);
+                    team.AddUnit( enclave );
+                    FactionData.Teams.AddIfNotAlreadyIn( team );
                     team.DefenseMode = FireteamsPerDefense > 0 ? (team.id % FireteamsPerDefense == 0) : false;
                 }
             }
@@ -608,7 +608,7 @@ namespace PreceptsOfThePrecursors
                 {
                     hivesThreatened.Add( planet );
                 }
-                else if ( hops <= AttackHops && hostileStrength > 2500 && Fireteam.GetDangerOfPath( faction, Context, CurrentPlanetForFireteam, planet, false, out short _ ) < 500 && !Fireteam.IsThisAWinningBattle(faction, Context, planet, 3, false))
+                else if ( hops <= AttackHops && hostileStrength > 2500 && Fireteam.GetDangerOfPath( faction, Context, CurrentPlanetForFireteam, planet, false, out short _ ) < 500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 3, false ) )
                 {
                     planetsToAttack.Add( planet );
                 }
@@ -847,9 +847,7 @@ namespace PreceptsOfThePrecursors
             if ( HivePlanets.Count == 0 )
                 return;
 
-            int toSpawn = 1;
-            if ( Intensity >= 4 )
-                toSpawn += Intensity / 4;
+            int toSpawn = 2 + Intensity / 4;
             if ( Intensity == 10 )
                 toSpawn++;
 
@@ -857,13 +855,16 @@ namespace PreceptsOfThePrecursors
             {
                 HivePlanets[x].DoForLinkedNeighbors( false, planet =>
                 {
+                    if ( planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 2500 )
+                        return DelReturn.Continue;
+
                     if ( !HivePlanets.Contains( planet ) )
                     {
                         planet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                         toSpawn--;
                     }
 
-                    if ( toSpawn == 0 )
+                    if ( toSpawn == 1 )
                         return DelReturn.Break;
 
                     return DelReturn.Continue;
@@ -929,15 +930,7 @@ namespace PreceptsOfThePrecursors
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = 2;
-            if ( Intensity > 1 )
-                toSpawn += Intensity * 2;
-            if ( Intensity > 5 )
-                toSpawn += (Intensity - 5) * 2;
-            if ( Intensity > 7 )
-                toSpawn += (Intensity - 7) * 2;
-            if ( Intensity == 10 )
-                toSpawn += 5;
+            int toSpawn = Intensity * 2;
 
             List<Planet> potentialPlanets = new List<Planet>();
             byte bestMark = 7;
@@ -1062,15 +1055,7 @@ namespace PreceptsOfThePrecursors
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = 1;
-            if ( Intensity >= 3 )
-                toSpawn += Intensity / 3;
-            if ( Intensity >= 4 )
-                toSpawn += Intensity / 4;
-            if ( Intensity >= 7 )
-                toSpawn++;
-            if ( Intensity == 10 )
-                toSpawn++;
+            int toSpawn = Intensity;
 
             List<Planet> potentialPlanets = new List<Planet>();
             World_AIW2.Instance.DoForFactions( otherFaction =>
@@ -1122,15 +1107,7 @@ namespace PreceptsOfThePrecursors
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = 1;
-            if ( Intensity >= 3 )
-                toSpawn += Intensity / 3;
-            if ( Intensity >= 4 )
-                toSpawn += Intensity / 4;
-            if ( Intensity >= 7 )
-                toSpawn++;
-            if ( Intensity == 10 )
-                toSpawn++;
+            int toSpawn = Intensity;
 
             List<Planet> potentialPlanets = new List<Planet>();
             World_AIW2.Instance.DoForFactions( otherFaction =>
@@ -1182,15 +1159,7 @@ namespace PreceptsOfThePrecursors
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = 1;
-            if ( Intensity >= 3 )
-                toSpawn += Intensity / 3;
-            if ( Intensity >= 4 )
-                toSpawn += Intensity / 4;
-            if ( Intensity >= 7 )
-                toSpawn++;
-            if ( Intensity == 10 )
-                toSpawn++;
+            int toSpawn = Intensity;
 
             List<Planet> potentialPlanets = new List<Planet>();
             World_AIW2.Instance.DoForFactions( otherFaction =>
@@ -1242,15 +1211,7 @@ namespace PreceptsOfThePrecursors
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = 1;
-            if ( Intensity >= 3 )
-                toSpawn += Intensity / 3;
-            if ( Intensity >= 4 )
-                toSpawn += Intensity / 4;
-            if ( Intensity >= 7 )
-                toSpawn++;
-            if ( Intensity == 10 )
-                toSpawn++;
+            int toSpawn = Intensity;
 
             List<Planet> potentialPlanets = new List<Planet>();
             Faction darkFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( SpecialFaction_DarkZenith ) );
@@ -1311,15 +1272,7 @@ namespace PreceptsOfThePrecursors
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = 1;
-            if ( Intensity >= 3 )
-                toSpawn += Intensity / 3;
-            if ( Intensity >= 4 )
-                toSpawn += Intensity / 4;
-            if ( Intensity >= 7 )
-                toSpawn++;
-            if ( Intensity == 10 )
-                toSpawn++;
+            int toSpawn = Intensity;
 
             // Spawn in a single hive to start with.
             Planet spawnPlanet = BadgerFactionUtilityMethods.findAIKing();
@@ -1380,15 +1333,7 @@ namespace PreceptsOfThePrecursors
         public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
         {
             // Spawn in a bunch of enclaves based on intensity and a couple hives.
-            int toSpawn = 1;
-            if ( Intensity >= 3 )
-                toSpawn += Intensity / 3;
-            if ( Intensity >= 4 )
-                toSpawn += Intensity / 4;
-            if ( Intensity >= 7 )
-                toSpawn++;
-            if ( Intensity == 10 )
-                toSpawn++;
+            int toSpawn = 1 + Intensity / 2;
 
             Planet spawnPlanet = BadgerFactionUtilityMethods.findHumanKing();
             if ( spawnPlanet == null )
