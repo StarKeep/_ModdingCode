@@ -1042,9 +1042,8 @@ namespace PreceptsOfThePrecursors
                 waveData.timeForNextWave--;
             else
             {
-                AntiMinorFactionWaveData.QueueWave( faction, Context, waveData.currentWaveBudget.GetNearestIntPreferringHigher() );
+                waveData.currentWaveBudget -= AntiMinorFactionWaveData.QueueWave( faction, Context, waveData.currentWaveBudget.GetNearestIntPreferringHigher() );
                 waveData.timeForNextWave = 600;
-                waveData.currentWaveBudget = FInt.Zero;
             }
         }
     }

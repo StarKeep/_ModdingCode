@@ -632,6 +632,7 @@
        Built by the Mothership on trusted planets, and by Proto Spheres over time.
        Each comes with a small compliment of drones.
        Passively grants resources to nearby Proto Spheres, can be destroyed/hacked by players for resoruces.
+       In addition, they will occasionally spawn Packets to exert pressure on nearby planets.
        -->
   <entity
     name="DysonNode1"
@@ -668,7 +669,6 @@
     priority_as_frd_target="NotDangerous"
     priority_to_protect="Expendable"
     uses_large_health_bar="true"
-    strength_multiplier="0.1"
     should_never_be_captured_by_another_faction="true"
     eligible_for_hacks="DestroyDysonNodeWeakest,DestroyDysonNodeStrongest"
 			>
@@ -836,7 +836,6 @@
     priority_as_ai_target="NotDangerous"
     priority_as_frd_target="NotDangerous"
     priority_to_protect="Expendable"
-    strength_multiplier="5.0"
     should_never_be_captured_by_another_faction="true"
 			>
     <system name="ZenithProbe" display_name="Zenith Probe"
