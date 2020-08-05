@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Arcen.AIW2.Core;
+﻿using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
+using System;
+using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -58,6 +58,9 @@ namespace PreceptsOfThePrecursors
     {
         protected override string TracingName => "RoamingEnclave";
         protected override bool EverNeedsToRunLongRangePlanning => true;
+
+        protected virtual int EnclavesToSpawn( Faction faction ) => 1 + faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
+        protected virtual int HivesToSpawn( Faction faction ) => 1 + faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2;
 
         public ArcenSparseLookup<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>> WormholeCommands { get; set; }
         public ArcenSparseLookup<Planet, ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>> MovementCommands { get; set; }
@@ -207,7 +210,9 @@ namespace PreceptsOfThePrecursors
                 (this as RoamingEnclavePlayerTeam).SpawnYounglingsForPlayerEnclaves( null, Context );
         }
 
-        public abstract Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context );
+        public abstract Planet BulkSpawn( Faction faction, ArcenSimContext Context );
+
+        public abstract Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context );
 
         public abstract void HandleEnclaveSpawning( Faction faction, ArcenSimContext Context );
 
@@ -792,7 +797,7 @@ namespace PreceptsOfThePrecursors
                             REFaction.FactionData.SecondsUntilNextRespawn--;
                         if ( REFaction.FactionData.SecondsUntilNextRespawn == 0 )
                         {
-                            Planet spawnPlanet = REFaction.BulkSpawn( otherFaction, World_AIW2.Instance.CurrentGalaxy, Context );
+                            Planet spawnPlanet = REFaction.BulkSpawn( otherFaction, Context );
                             REFaction.FactionData.SecondsUntilNextRespawn = -1;
                             if ( spawnPlanet != null && spawnPlanet.IntelLevel > PlanetIntelLevel.Unexplored )
                             {
@@ -825,7 +830,7 @@ namespace PreceptsOfThePrecursors
             if ( HivePlanets.Count == 0 )
                 return;
 
-            int toSpawn = 1 + Intensity / 2;
+            int toSpawn = EnclavesToSpawn( faction );
 
             for ( int x = 0; x < HivePlanets.Count && toSpawn > 0; x++ )
             {
@@ -849,9 +854,7 @@ namespace PreceptsOfThePrecursors
             if ( HivePlanets.Count == 0 )
                 return;
 
-            int toSpawn = 2 + Intensity / 4;
-            if ( Intensity == 10 )
-                toSpawn++;
+            int toSpawn = HivesToSpawn( faction );
 
             for ( int x = 0; x < HivePlanets.Count; x++ )
             {
@@ -908,6 +911,22 @@ namespace PreceptsOfThePrecursors
                     return DelReturn.Continue;
                 } );
         }
+
+        public override Planet BulkSpawn( Faction faction, ArcenSimContext Context )
+        {
+            Planet spawnPlanet = GetPlanetForBulkSpawn( faction, Context );
+
+            GameEntityTypeData hiveData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG );
+            GameEntityTypeData enclaveData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG );
+
+            for ( int x = 0; x < HivesToSpawn( faction ); x++ )
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, hiveData, PlanetSeedingZone.OuterSystem );
+
+            for ( int x = 0; x < EnclavesToSpawn( faction ); x++ )
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, enclaveData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
+
+            return spawnPlanet;
+        }
     }
 
     public class RoamingEnclaveHostileTeam : RoamingEnclaveNPC
@@ -929,11 +948,8 @@ namespace PreceptsOfThePrecursors
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
 
-        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
         {
-            // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = Intensity * 2;
-
             List<Planet> potentialPlanets = new List<Planet>();
             byte bestMark = 7;
             World_AIW2.Instance.DoForPlanets( false, planet =>
@@ -965,16 +981,7 @@ namespace PreceptsOfThePrecursors
             if ( potentialPlanets.Count == 0 )
                 return null;
 
-            Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
-
-            for ( int x = 0; x < toSpawn; x++ )
-            {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
-                GameEntity_Squad enclave = spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem );
-                enclave.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
-            }
-
-            return spawnPlanet;
+            return potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
         }
 
         private FInt CalculateFactionOwnership( Faction faction )
@@ -987,7 +994,7 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
-            FInt pseudoAIP = FInt.Zero + Hives.Count * 5;
+            FInt pseudoAIP = FInt.Zero + (Hives.Count + Enclaves.Count) * 5;
 
             for ( int x = 0; x < HivePlanets.Count; x++ )
             {
@@ -1032,7 +1039,7 @@ namespace PreceptsOfThePrecursors
                 waveData.timeForNextWave--;
             else
             {
-                AntiMinorFactionWaveData.QueueWave( faction, Context, waveData.currentWaveBudget.GetNearestIntPreferringHigher(), true );
+                AntiMinorFactionWaveData.QueueWave( faction, Context, waveData.currentWaveBudget.GetNearestIntPreferringHigher() );
                 waveData.timeForNextWave = 600;
                 waveData.currentWaveBudget = FInt.Zero;
             }
@@ -1054,7 +1061,7 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
         {
             // Spawn in a bunch of hives and enclaves based on intensity.
             int toSpawn = Intensity;
@@ -1079,15 +1086,7 @@ namespace PreceptsOfThePrecursors
             if ( potentialPlanets.Count == 0 )
                 return null;
 
-            Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
-
-            for ( int x = 0; x < toSpawn; x++ )
-            {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
-            }
-
-            return spawnPlanet;
+            return potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
         }
     }
 
@@ -1106,11 +1105,8 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
         {
-            // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = Intensity;
-
             List<Planet> potentialPlanets = new List<Planet>();
             World_AIW2.Instance.DoForFactions( otherFaction =>
             {
@@ -1131,15 +1127,7 @@ namespace PreceptsOfThePrecursors
             if ( potentialPlanets.Count == 0 )
                 return null;
 
-            Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
-
-            for ( int x = 0; x < toSpawn; x++ )
-            {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
-            }
-
-            return spawnPlanet;
+            return potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
         }
     }
 
@@ -1158,11 +1146,8 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
         {
-            // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = Intensity;
-
             List<Planet> potentialPlanets = new List<Planet>();
             World_AIW2.Instance.DoForFactions( otherFaction =>
             {
@@ -1183,15 +1168,7 @@ namespace PreceptsOfThePrecursors
             if ( potentialPlanets.Count == 0 )
                 return null;
 
-            Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
-
-            for ( int x = 0; x < toSpawn; x++ )
-            {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
-            }
-
-            return spawnPlanet;
+            return potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
         }
     }
 
@@ -1210,11 +1187,8 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
         {
-            // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = Intensity;
-
             List<Planet> potentialPlanets = new List<Planet>();
             Faction darkFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( SpecialFaction_DarkZenith ) );
             if ( darkFaction != null )
@@ -1245,15 +1219,7 @@ namespace PreceptsOfThePrecursors
             if ( potentialPlanets.Count == 0 )
                 return null;
 
-            Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
-
-            for ( int x = 0; x < toSpawn; x++ )
-            {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
-            }
-
-            return spawnPlanet;
+            return potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
         }
     }
 
@@ -1271,24 +1237,10 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
         {
-            // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = Intensity;
-
             // Spawn in a single hive to start with.
-            Planet spawnPlanet = BadgerFactionUtilityMethods.findAIKing();
-
-            if ( spawnPlanet == null )
-                return null;
-
-            for ( int x = 0; x < toSpawn; x++ )
-            {
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
-            }
-
-            return spawnPlanet;
+            return BadgerFactionUtilityMethods.findAIKing();
         }
     }
 
@@ -1332,27 +1284,30 @@ namespace PreceptsOfThePrecursors
             }
         }
 
-        public override Planet BulkSpawn( Faction faction, Galaxy galaxy, ArcenSimContext Context )
+        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
         {
-            // Spawn in a bunch of enclaves based on intensity and a couple hives.
-            int toSpawn = 1 + Intensity / 2;
+            return BadgerFactionUtilityMethods.findHumanKing();
+        }
 
-            Planet spawnPlanet = BadgerFactionUtilityMethods.findHumanKing();
+        public override Planet BulkSpawn( Faction faction, ArcenSimContext Context )
+        {
+            Planet spawnPlanet = GetPlanetForBulkSpawn( faction, Context );
+
             if ( spawnPlanet == null )
                 return null;
-            for ( int x = 0; x < toSpawn; x++ )
+
+            for ( int x = 0; x < EnclavesToSpawn(faction); x++ )
             {
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
                 if ( x < 3 )
                     spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
             }
+
             return spawnPlanet;
         }
 
         public override void HandleEnclaveSpawning( Faction faction, ArcenSimContext Context )
         {
-            int toSpawn = 1 + Intensity / 2;
-
             List<Planet> validPlanets = new List<Planet>();
 
             World_AIW2.Instance.DoForFactions( otherFaction =>
@@ -1372,7 +1327,7 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
-            for ( int x = 0; x < toSpawn; x++ )
+            for ( int x = 0; x < EnclavesToSpawn(faction); x++ )
             {
                 Planet spawnPlanet = validPlanets[Context.RandomToUse.Next( validPlanets.Count )];
 
