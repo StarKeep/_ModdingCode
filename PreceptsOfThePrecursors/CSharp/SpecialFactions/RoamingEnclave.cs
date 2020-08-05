@@ -338,6 +338,8 @@ namespace PreceptsOfThePrecursors
             GameCommand enclavePlanetsPopulateCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.PopulateEnclavePlanetList.ToString() ), GameCommandSource.AnythingElse, faction );
             GameCommand enclaveUnloadCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.UnloadYounglingsFromEnclaves.ToString() ), GameCommandSource.AnythingElse, faction );
 
+            List<GameEntity_Squad> enclavesThatNeedFireteam = new List<GameEntity_Squad>();
+
             faction.DoForEntities( ENCLAVE_TAG, enclave =>
             {
                 enclavePopulateCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
@@ -367,25 +369,7 @@ namespace PreceptsOfThePrecursors
                         {
                             if ( enclave.GetCurrentHullPoints() >= (enclave.GetMaxHullPoints() / 100) * 90 )
                             {
-                                Fireteam team = new Fireteam();
-                                team.MyStrengthMultiplierForStrengthCalculation = FInt.One;
-                                team.EnemyStrengthMultiplierForStrengthCalculation = FInt.One;
-                                team.id = 1;
-                                List<int> taken = new List<int>();
-                                Fireteam.DoFor( FactionData.Teams, workingTeam =>
-                                {
-                                    if ( workingTeam.ships.Count > 0 )
-                                        taken.Add( workingTeam.id );
-
-                                    return DelReturn.Continue;
-                                } );
-                                while ( taken.Contains( team.id ) )
-                                    team.id++;
-                                team.StrengthToBringOnline = 0;
-                                team.NoDeathballing = true;
-                                team.AddUnit( enclave );
-                                FactionData.Teams.AddIfNotAlreadyIn( team );
-                                team.DefenseMode = FireteamsPerDefense > 0 ? (team.id % FireteamsPerDefense == 0) : false;
+                                enclavesThatNeedFireteam.Add(enclave);
                             }
                         }
                         else
@@ -409,6 +393,34 @@ namespace PreceptsOfThePrecursors
 
                 return DelReturn.Continue;
             } );
+
+            if (enclavesThatNeedFireteam.Count > 0)
+            {
+                List<int> takenID = new List<int>();
+                Fireteam.DoFor(FactionData.Teams, workingTeam =>
+                {
+                    if (workingTeam.ships.Count > 0)
+                        takenID.Add(workingTeam.id);
+
+                    return DelReturn.Continue;
+                });
+                for(int x = 0; x < enclavesThatNeedFireteam.Count; x++)
+                {
+                    GameEntity_Squad enclave = enclavesThatNeedFireteam[x];
+                    Fireteam team = new Fireteam();
+                    team.MyStrengthMultiplierForStrengthCalculation = FInt.One;
+                    team.EnemyStrengthMultiplierForStrengthCalculation = FInt.One;
+                    team.id = 1;
+                    while (takenID.Contains(team.id))
+                        team.id++;
+                    takenID.Add(team.id);
+                    team.StrengthToBringOnline = 0;
+                    team.NoDeathballing = true;
+                    team.AddUnit(enclave);
+                    FactionData.Teams.AddIfNotAlreadyIn(team);
+                    team.DefenseMode = FireteamsPerDefense > 0 ? (team.id % FireteamsPerDefense == 0) : false;
+                }
+            }
 
             if ( markUpCommand.RelatedEntityIDs.Count > 0 )
                 Context.QueueCommandForSendingAtEndOfContext( markUpCommand );
