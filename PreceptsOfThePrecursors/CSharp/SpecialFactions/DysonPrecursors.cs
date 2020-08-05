@@ -2076,7 +2076,7 @@ namespace PreceptsOfThePrecursors
                     if (command != null)
                     {
                         for (int x = 1; x <= planet.GetProtoSphereData().Level; x++)
-                            command.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates(GameEntityTypeDataTable.Instance.GetRowByName(DysonPrecursors.DYSON_PACKET_TAG + x)).ExplicitBaseSquadCap = 2;
+                            command.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates(GameEntityTypeDataTable.Instance.GetRowByName(DysonPrecursors.DYSON_PACKET_TAG + x)).ExplicitBaseSquadCap = 1 + planet.GetProtoSphereData().Level - x;
                     }
                 }
 
@@ -2181,6 +2181,17 @@ namespace PreceptsOfThePrecursors
             if (entity.TypeData.GetHasTag("ProtoSphere"))
             {
                 DysonProtoSphereData data = entity.Planet.GetProtoSphereData();
+
+                if ( entity.Planet.GetControllingOrInfluencingFaction().Type == FactionType.Player )
+                {
+                    GameEntity_Squad command = entity.Planet.GetCommandStationOrNull();
+                    if ( command != null )
+                    {
+                        for ( int x = 1; x <= data.Level; x++ )
+                            command.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( DysonPrecursors.DYSON_PACKET_TAG + x ) ).ExplicitBaseSquadCap = 0;
+                    }
+                }
+
                 data.Level = 0;
                 data.Resources = 0;
                 data.Type = DysonProtoSphereData.ProtoSphereType.None;
