@@ -59,8 +59,8 @@ namespace PreceptsOfThePrecursors
         protected override string TracingName => "RoamingEnclave";
         protected override bool EverNeedsToRunLongRangePlanning => true;
 
-        protected virtual int EnclavesToSpawn( Faction faction ) => 1 + faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
-        protected virtual int HivesToSpawn( Faction faction ) => 1 + faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2;
+        protected virtual int EnclavesToSpawn => 1 + Intensity;
+        protected virtual int HivesToSpawn => 1 + Intensity / 2;
 
         public ArcenSparseLookup<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>> WormholeCommands { get; set; }
         public ArcenSparseLookup<Planet, ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>> MovementCommands { get; set; }
@@ -830,7 +830,7 @@ namespace PreceptsOfThePrecursors
             if ( HivePlanets.Count == 0 )
                 return;
 
-            int toSpawn = EnclavesToSpawn( faction );
+            int toSpawn = EnclavesToSpawn;
 
             for ( int x = 0; x < HivePlanets.Count && toSpawn > 0; x++ )
             {
@@ -854,7 +854,7 @@ namespace PreceptsOfThePrecursors
             if ( HivePlanets.Count == 0 )
                 return;
 
-            int toSpawn = HivesToSpawn( faction );
+            int toSpawn = HivesToSpawn;
 
             for ( int x = 0; x < HivePlanets.Count; x++ )
             {
@@ -916,13 +916,16 @@ namespace PreceptsOfThePrecursors
         {
             Planet spawnPlanet = GetPlanetForBulkSpawn( faction, Context );
 
+            if ( spawnPlanet == null )
+                return null;
+
             GameEntityTypeData hiveData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG );
             GameEntityTypeData enclaveData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG );
 
-            for ( int x = 0; x < HivesToSpawn( faction ); x++ )
+            for ( int x = 0; x < HivesToSpawn; x++ )
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, hiveData, PlanetSeedingZone.OuterSystem );
 
-            for ( int x = 0; x < EnclavesToSpawn( faction ); x++ )
+            for ( int x = 0; x < EnclavesToSpawn; x++ )
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, enclaveData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
 
             return spawnPlanet;
@@ -1296,7 +1299,7 @@ namespace PreceptsOfThePrecursors
             if ( spawnPlanet == null )
                 return null;
 
-            for ( int x = 0; x < EnclavesToSpawn(faction); x++ )
+            for ( int x = 0; x < EnclavesToSpawn; x++ )
             {
                 spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, ENCLAVE_TAG ), PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
                 if ( x < 3 )
@@ -1327,7 +1330,7 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
-            for ( int x = 0; x < EnclavesToSpawn(faction); x++ )
+            for ( int x = 0; x < EnclavesToSpawn; x++ )
             {
                 Planet spawnPlanet = validPlanets[Context.RandomToUse.Next( validPlanets.Count )];
 

@@ -193,9 +193,8 @@ namespace PreceptsOfThePrecursors
         // Type of Protosphere.
         public ProtoSphereType Type;
 
-        // When did the BigUnit die?
+        // When did the BigUnit die? - Purged
         public int GameSecondBigUnitDied;
-        public int GameSecondsSinceBigUnitDeath { get { if ( GameSecondBigUnitDied == -1 ) return 0; else return World_AIW2.Instance.GameSecond - GameSecondBigUnitDied; } }
 
         // Have we been hacked?
         public bool HasBeenHacked;

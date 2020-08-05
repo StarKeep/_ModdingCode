@@ -1063,7 +1063,13 @@ namespace PreceptsOfThePrecursors
                        if (sphere == null)
                            return DelReturn.Continue;
 
-                       GameEntity_Squad.CreateNew(sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName("DysonPacket" + (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter ? 8 : 9)), sphere.CurrentMarkLevel, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context).Orders.SetBehaviorDirectlyInSim(EntityBehaviorType.Attacker_Full, sphere.PlanetFaction.Faction.FactionIndex);
+                       int levelToSpawn = 0;
+                       if ( planet.GetProtoSphereData().Level < 7 )
+                           levelToSpawn = planet.GetProtoSphereData().Level;
+                       else
+                           levelToSpawn = (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter ? 8 : 9);
+
+                       GameEntity_Squad.CreateNew(sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName("DysonPacket" + levelToSpawn), sphere.CurrentMarkLevel, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context).Orders.SetBehaviorDirectlyInSim(EntityBehaviorType.Attacker_Full, sphere.PlanetFaction.Faction.FactionIndex);
                    }
 
                    return DelReturn.Continue;
