@@ -357,8 +357,8 @@ namespace PreceptsOfThePrecursors
 
                 if ( RetreatPercentage > 0 && enclave.GetCurrentHullPoints() < (enclave.GetMaxHullPoints() / 100) * RetreatPercentage )
                 {
-                    if ( enclave.Planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) ) > 0 )
-                        enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context ) );
+                    if ( enclave.Planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context, true ) ) > 0 )
+                        enclave.QueueWormholeCommand( GetNearestHivePlanetBackgroundThreadOnly( faction, enclave.Planet, Context, true ) );
                     enclave.FireteamId = -1;
                 }
                 else
@@ -430,12 +430,14 @@ namespace PreceptsOfThePrecursors
                 Context.QueueCommandForSendingAtEndOfContext( enclaveUnloadCommand );
         }
 
-        private Planet GetNearestHivePlanetBackgroundThreadOnly( Faction faction, Planet planet, ArcenLongTermIntermittentPlanningContext Context )
+        private Planet GetNearestHivePlanetBackgroundThreadOnly( Faction faction, Planet planet, ArcenLongTermIntermittentPlanningContext Context, bool ignoreSelf = false )
         {
             Planet bestPlanet = null;
             for ( int x = 0; x < HivePlanetsForBackgroundThreadOnly.Count; x++ )
             {
                 Planet hivePlanet = HivePlanetsForBackgroundThreadOnly[x];
+                if ( planet == hivePlanet && ignoreSelf )
+                    continue;
                 int hops = planet.GetHopsTo( hivePlanet );
 
                 if ( bestPlanet == null )
