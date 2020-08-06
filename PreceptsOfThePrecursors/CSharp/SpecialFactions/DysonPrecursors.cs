@@ -670,7 +670,7 @@ namespace PreceptsOfThePrecursors
             if ( Mothership == null )
                 return;
 
-            if ( Mothership.GetSecondsSinceEnteringThisPlanet() < 2 )
+            if ( Mothership.GetSecondsSinceEnteringThisPlanet() <= 2 )
             {
                 // Reset our hull check.
                 MothershipData.HullWhenEnteredPlanet = Mothership.GetCurrentHullPoints();
