@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Arcen.AIW2.Core;
+﻿using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
+using System;
+using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -343,7 +343,7 @@ namespace PreceptsOfThePrecursors
 
             GenerateResource( faction, Context );
 
-            HandleMovedToNewPlanetLogicIfNeeded();
+            HandleMovedToNewPlanetLogicIfNeeded( Context );
 
             HandleTrust( faction );
 
@@ -665,7 +665,7 @@ namespace PreceptsOfThePrecursors
                     World_AIW2.Instance.QueueChatMessageOrCommand( "The Dyson Mothership on " + Mothership.Planet.Name + " has leveled up to level " + MothershipData.Level + ".", ChatType.LogToCentralChat, Context );
             }
         }
-        private void HandleMovedToNewPlanetLogicIfNeeded()
+        private void HandleMovedToNewPlanetLogicIfNeeded( ArcenSimContext Context )
         {
             if ( Mothership == null )
                 return;
@@ -677,6 +677,37 @@ namespace PreceptsOfThePrecursors
 
                 // Reset some movement boolean(s).
                 MothershipData.ReadyToMoveOn = false;
+
+                // Spawn a node if our absolute trust on the planet is above 1k.
+                if ( Math.Abs( MothershipData.Trust.GetTrust( Mothership.Planet ) ) >= 1000 )
+                {
+                    for ( int x = 0; x < MothershipData.Level; x++ )
+                    {
+                        if ( DysonNodes[Mothership.Planet] == null || DysonNodes[Mothership.Planet][x] == null )
+                        {
+                            // Found a free slot. Spawn a new node.
+                            Faction spawnFaction = null;
+                            if ( MothershipData.Trust.GetTrust( Mothership.Planet ) >= 1000 )
+                            {
+                                spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) );
+                            }
+                            else if ( MothershipData.Trust.GetTrust( Mothership.Planet ) <= -1000 )
+                            {
+                                spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
+                            }
+                            // Support for non-protector, non-suppresor dyson factions.
+                            if ( spawnFaction == null && Mothership.Planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Other )
+                            {
+                                spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
+                            }
+                            if ( spawnFaction != null )
+                            {
+                                (spawnFaction.Implementation as BaseDysonSubfaction).CreateDysonNode( spawnFaction, Mothership.Planet, x + 1, Context );
+                                break;
+                            }
+                        }
+                    }
+                }
             }
             // If we recently entered a new planet, regenerate our shields.
             if ( Mothership.GetSecondsSinceEnteringThisPlanet() < 30 )
@@ -930,35 +961,36 @@ namespace PreceptsOfThePrecursors
                 return;
             // Node logic.
             // Upon leaving a planet, if the absolute trust of the planet is over 1k, drop down a Node on the planet if there are free Node slots left.
-            if ( Math.Abs( MothershipData.Trust.GetTrust( Mothership.Planet ) ) >= 1000 )
-            {
-                for ( int x = 0; x < MothershipData.Level; x++ )
+            for ( int i = 0; i < 2; i++ )
+                if ( Math.Abs( MothershipData.Trust.GetTrust( Mothership.Planet ) ) >= 1000 )
                 {
-                    if ( DysonNodes[Mothership.Planet] == null || DysonNodes[Mothership.Planet][x] == null )
+                    for ( int x = 0; x < MothershipData.Level; x++ )
                     {
-                        // Found a free slot. Spawn a new node.
-                        Faction spawnFaction = null;
-                        if ( MothershipData.Trust.GetTrust( Mothership.Planet ) >= 1000 )
+                        if ( DysonNodes[Mothership.Planet] == null || DysonNodes[Mothership.Planet][x] == null )
                         {
-                            spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) );
-                        }
-                        else if ( MothershipData.Trust.GetTrust( Mothership.Planet ) <= -1000 )
-                        {
-                            spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
-                        }
-                        // Support for non-protector, non-suppresor dyson factions.
-                        if ( spawnFaction == null && Mothership.Planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Other )
-                        {
-                            spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
-                        }
-                        if ( spawnFaction != null )
-                        {
-                            (spawnFaction.Implementation as BaseDysonSubfaction).CreateDysonNode( spawnFaction, Mothership.Planet, x + 1, Context );
-                            break;
+                            // Found a free slot. Spawn a new node.
+                            Faction spawnFaction = null;
+                            if ( MothershipData.Trust.GetTrust( Mothership.Planet ) >= 1000 )
+                            {
+                                spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) );
+                            }
+                            else if ( MothershipData.Trust.GetTrust( Mothership.Planet ) <= -1000 )
+                            {
+                                spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
+                            }
+                            // Support for non-protector, non-suppresor dyson factions.
+                            if ( spawnFaction == null && Mothership.Planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Other )
+                            {
+                                spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
+                            }
+                            if ( spawnFaction != null )
+                            {
+                                (spawnFaction.Implementation as BaseDysonSubfaction).CreateDysonNode( spawnFaction, Mothership.Planet, x + 1, Context );
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
             // Gift logic
             // If the following are true, roll to see if we should gift a mine to the planet.
