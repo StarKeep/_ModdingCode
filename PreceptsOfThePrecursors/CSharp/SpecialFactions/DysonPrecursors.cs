@@ -1,8 +1,8 @@
-﻿using Arcen.AIW2.Core;
+﻿using System;
+using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using System;
-using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -102,6 +102,44 @@ namespace PreceptsOfThePrecursors
                 cost /= 10;
 
             return (cost / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+        }
+    }
+    public static class PacketTimers
+    {
+        private static bool Initialized;
+        private static int NodeBase, NodeIncrease, SphereBase, SphereIncrease;
+
+        private static void Initialize( Faction faction )
+        {
+            NodeBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalBase" );
+            NodeIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalIncreasePerNodeLevel" );
+            SphereBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereBase" );
+            SphereIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereIncreasePerLevel" );
+            Initialized = true;
+        }
+
+        public static bool[] GetShouldSpawnNodeArray( Faction faction )
+        {
+            if ( !Initialized )
+                Initialize( faction );
+
+            bool[] shouldSpawn = new bool[7];
+            for ( int x = 0; x < 7; x++ )
+                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (NodeBase + (NodeIncrease * x)) == 0;
+
+            return shouldSpawn;
+        }
+
+        public static bool[] GetShouldSpawnSphereArray( Faction faction )
+        {
+            if ( !Initialized )
+                Initialize( faction );
+
+            bool[] shouldSpawn = new bool[7];
+            for ( int x = 0; x < 7; x++ )
+                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (SphereBase + (SphereBase * x)) == 0;
+
+            return shouldSpawn;
         }
     }
 
@@ -531,9 +569,9 @@ namespace PreceptsOfThePrecursors
                 else if ( protoSphereData.Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
                     sphereFaction = suppressorSphereFaction;
 
-               // Reset ownership if we own it.
-               if ( mainPlanet.UnderInfluenceOfFactionIndex == faction.FactionIndex || mainPlanet.UnderInfluenceOfFactionIndex == protectorSphereFaction.FactionIndex ||
-               mainPlanet.UnderInfluenceOfFactionIndex == suppressorSphereFaction.FactionIndex )
+                // Reset ownership if we own it.
+                if ( mainPlanet.UnderInfluenceOfFactionIndex == faction.FactionIndex || mainPlanet.UnderInfluenceOfFactionIndex == protectorSphereFaction.FactionIndex ||
+                mainPlanet.UnderInfluenceOfFactionIndex == suppressorSphereFaction.FactionIndex )
                     mainPlanet.UnderInfluenceOfFactionIndex = -1;
 
                 HandleFriendlyNPCPlanet( sphereData, mainPlanet );
@@ -541,18 +579,18 @@ namespace PreceptsOfThePrecursors
                 if ( sphereFaction == null )
                     return DelReturn.Continue;
 
-               // Deleveling logic. Make sure aren't a different level or type that we should be.
-               (sphereFaction.Implementation as BaseDysonSubfaction).FixProtoSphereLevelIfNeeded( sphereFaction, mainPlanet );
+                // Deleveling logic. Make sure aren't a different level or type that we should be.
+                (sphereFaction.Implementation as BaseDysonSubfaction).FixProtoSphereLevelIfNeeded( sphereFaction, mainPlanet );
 
-               // Node Logic.
-               (sphereFaction.Implementation as BaseDysonSubfaction).HandleDysonNodeLogic( sphereFaction, mainPlanet, Context );
+                // Node Logic.
+                (sphereFaction.Implementation as BaseDysonSubfaction).HandleDysonNodeLogic( sphereFaction, mainPlanet, Context );
 
-               // Leveling Logic.
-               if ( protoSphereData.Level < 7 && protoSphereData.Resources > ProtoSphereCosts.Resources( protoSphereData.Level, faction ) )
+                // Leveling Logic.
+                if ( protoSphereData.Level < 7 && protoSphereData.Resources > ProtoSphereCosts.Resources( protoSphereData.Level, faction ) )
                     (sphereFaction.Implementation as BaseDysonSubfaction).UpgradeProtoSphere( sphereFaction, mainPlanet, Context );
 
-               // Ownership logic.
-               if ( protoSphereData.Level > 0 && !mainPlanet.GetControllingOrInfluencingFaction().GetIsFriendlyTowards( sphereFaction ) )
+                // Ownership logic.
+                if ( protoSphereData.Level > 0 && !mainPlanet.GetControllingOrInfluencingFaction().GetIsFriendlyTowards( sphereFaction ) )
                     mainPlanet.UnderInfluenceOfFactionIndex = sphereFaction.FactionIndex;
 
                 return DelReturn.Continue;
@@ -697,7 +735,7 @@ namespace PreceptsOfThePrecursors
 
                 humanStrength += Mothership.Planet.GetPlanetFactionForFaction( playerFaction ).DataByStance[FactionStance.Self].TotalStrength;
                 if ( faction.GetIsHostileTowards( playerFaction ) ) // Factor out humans so they aren't considered hostile.
-                   hostileStrength -= Mothership.Planet.GetPlanetFactionForFaction( playerFaction ).DataByStance[FactionStance.Self].TotalStrength;
+                    hostileStrength -= Mothership.Planet.GetPlanetFactionForFaction( playerFaction ).DataByStance[FactionStance.Self].TotalStrength;
                 return DelReturn.Continue;
             } );
             hostileStrength += Mothership.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength;
@@ -764,13 +802,13 @@ namespace PreceptsOfThePrecursors
 
                 if ( MothershipIsNearMine( mine ) )
                 {
-                   // See if we should consume this mine.
-                   // Chance is base 20%, scales with Trust.
-                   int baseChance = 10;
+                    // See if we should consume this mine.
+                    // Chance is base 20%, scales with Trust.
+                    int baseChance = 10;
                     int trustMod = -MothershipData.Trust.GetTrust( Mothership.Planet ) / 100;
 
-                   // Don't let her eat all of the player's economy.
-                   int allyMod = 0;
+                    // Don't let her eat all of the player's economy.
+                    int allyMod = 0;
                     if ( Mothership.Planet.GetControllingOrInfluencingFaction().GetIsFriendlyTowards( faction ) && mineCount <= 5 )
                     {
                         GameEntity_Squad king = BadgerFactionUtilityMethods.findKing( Mothership.Planet.GetControllingOrInfluencingFaction() );
@@ -794,8 +832,8 @@ namespace PreceptsOfThePrecursors
                     {
                         Mothership.TakeHullRepair( Mothership.TypeData.GetForMark( Mothership.CurrentMarkLevel ).BaseHullPoints / 1000 );
                         MothershipData.Resources += 1;
-                       // Update the description.
-                       MothershipData.IsNearMine = true;
+                        // Update the description.
+                        MothershipData.IsNearMine = true;
                     }
                 }
 
@@ -1042,14 +1080,10 @@ namespace PreceptsOfThePrecursors
             if ( DysonNodes == null || DysonNodes.GetPairCount() < 1 )
                 return;
 
-            int baseSecondsPer = 150;
-
-            bool[] toSpawn = new bool[8];
-            for ( int x = 0; x < 8; x++ )
-                toSpawn[x] = World_AIW2.Instance.GameSecond % (((baseSecondsPer * (x + 1)) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2))) == 0;
+            bool[] shouldSpawnForNodes = PacketTimers.GetShouldSpawnNodeArray( faction ), shouldSpawnForSpheres = PacketTimers.GetShouldSpawnSphereArray( faction );
 
             for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
-                for ( int y = 0; y < 7 && toSpawn[y]; y++ )
+                for ( int y = 0; y < 7 && shouldSpawnForNodes[y]; y++ )
                     if ( DysonNodes.GetPairByIndex( x ).Value[y] != null )
                     {
                         GameEntity_Squad node = DysonNodes.GetPairByIndex( x ).Value[y];
@@ -1058,27 +1092,27 @@ namespace PreceptsOfThePrecursors
                         packet.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, node.PlanetFaction.Faction.FactionIndex );
                     }
 
-            if ( toSpawn[7] )
-                World_AIW2.Instance.DoForPlanets( false, planet =>
+            World_AIW2.Instance.DoForPlanets( false, planet =>
+            {
+                if ( (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor)
+                   && shouldSpawnForSpheres[planet.GetProtoSphereData().Level - 1] )
                 {
-                    if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
-                    {
-                        GameEntity_Squad sphere = planet.GetFirstMatching( FactionType.SpecialFaction, "ProtoSphere", false, false );
-                        if ( sphere == null )
-                            return DelReturn.Continue;
+                    GameEntity_Squad sphere = planet.GetFirstMatching( FactionType.SpecialFaction, "ProtoSphere", false, false );
+                    if ( sphere == null )
+                        return DelReturn.Continue;
 
-                        int levelToSpawn = 0;
-                        if ( planet.GetProtoSphereData().Level < 7 )
-                            levelToSpawn = planet.GetProtoSphereData().Level;
-                        else
-                            levelToSpawn = (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter ? 8 : 9);
+                    int levelToSpawn = 0;
+                    if ( planet.GetProtoSphereData().Level < 7 )
+                        levelToSpawn = planet.GetProtoSphereData().Level;
+                    else
+                        levelToSpawn = (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter ? 8 : 9);
 
-                        GameEntity_Squad packet = GameEntity_Squad.CreateNew( sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "DysonPacket" + levelToSpawn ), sphere.CurrentMarkLevel, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context );
-                        packet.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, sphere.PlanetFaction.Faction.FactionIndex );
-                    }
+                    GameEntity_Squad packet = GameEntity_Squad.CreateNew( sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "DysonPacket" + levelToSpawn ), sphere.CurrentMarkLevel, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context );
+                    packet.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, sphere.PlanetFaction.Faction.FactionIndex );
+                }
 
-                    return DelReturn.Continue;
-                } );
+                return DelReturn.Continue;
+            } );
         }
 
         // Upgrade existing Noded planets, or expand our Node Network to new planets.
@@ -1099,21 +1133,21 @@ namespace PreceptsOfThePrecursors
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-               // Skip if no nodes.
-               if ( DysonNodes[planet] == null )
+                // Skip if no nodes.
+                if ( DysonNodes[planet] == null )
                     return DelReturn.Continue;
 
                 int hops = Mothership.Planet.GetHopsTo( planet );
 
-               // Search through node slots that are valid to be upgraded, so long as this planet isn't farther away than our current list.
-               if ( hops <= upgradeHops )
+                // Search through node slots that are valid to be upgraded, so long as this planet isn't farther away than our current list.
+                if ( hops <= upgradeHops )
                     for ( int x = 0; x < maxNodeSlot; x++ )
                     {
-                       // If we have a slot free, add it to our upgrade list.
-                       if ( DysonNodes[planet][x] == null )
+                        // If we have a slot free, add it to our upgrade list.
+                        if ( DysonNodes[planet][x] == null )
                         {
-                           // If this is the closest planet so far, clear all older planets.
-                           if ( hops < upgradeHops )
+                            // If this is the closest planet so far, clear all older planets.
+                            if ( hops < upgradeHops )
                             {
                                 planetsToUpgrade = new List<Planet>();
                                 upgradeHops = hops;
@@ -1123,32 +1157,32 @@ namespace PreceptsOfThePrecursors
                         }
                     }
 
-               // If we have some planets to upgrade, don't search for expansion planets.
-               if ( planetsToUpgrade.Count > 0 )
+                // If we have some planets to upgrade, don't search for expansion planets.
+                if ( planetsToUpgrade.Count > 0 )
                     return DelReturn.Continue;
 
-               // Add any non-noded adjacent planets to our expand list.
-               planet.DoForLinkedNeighbors( false, adjPlanet =>
-               {
-                   hops = Mothership.Planet.GetHopsTo( adjPlanet );
+                // Add any non-noded adjacent planets to our expand list.
+                planet.DoForLinkedNeighbors( false, adjPlanet =>
+                {
+                    hops = Mothership.Planet.GetHopsTo( adjPlanet );
 
-                  // Skip if further away than our current list.
-                  if ( hops > expandHops )
-                       return DelReturn.Continue;
+                    // Skip if further away than our current list.
+                    if ( hops > expandHops )
+                        return DelReturn.Continue;
 
-                   if ( DysonNodes[adjPlanet] == null && !planetsToExpandTo.Contains( adjPlanet ) )
-                   {
-                      // If this is the closest planet so far, clear all older planets.
-                      if ( hops < expandHops )
-                       {
-                           planetsToExpandTo = new List<Planet>();
-                           expandHops = hops;
-                       }
-                       planetsToExpandTo.Add( adjPlanet );
-                   }
+                    if ( DysonNodes[adjPlanet] == null && !planetsToExpandTo.Contains( adjPlanet ) )
+                    {
+                        // If this is the closest planet so far, clear all older planets.
+                        if ( hops < expandHops )
+                        {
+                            planetsToExpandTo = new List<Planet>();
+                            expandHops = hops;
+                        }
+                        planetsToExpandTo.Add( adjPlanet );
+                    }
 
-                   return DelReturn.Continue;
-               } );
+                    return DelReturn.Continue;
+                } );
 
                 return DelReturn.Continue;
             } );
@@ -1285,8 +1319,8 @@ namespace PreceptsOfThePrecursors
                         return DelReturn.Continue;
 
                     int hops = planet.GetHopsTo( Mothership.Planet );
-                   // Skip if its farther away than our current best hop, or we trust it too much.
-                   if ( hops > minHops || MothershipData.Trust.GetTrust( planet ) > 1000 )
+                    // Skip if its farther away than our current best hop, or we trust it too much.
+                    if ( hops > minHops || MothershipData.Trust.GetTrust( planet ) > 1000 )
                         return DelReturn.Continue;
 
                     int mines = 0;
@@ -1297,19 +1331,19 @@ namespace PreceptsOfThePrecursors
                         return DelReturn.Continue;
                     } );
 
-                   // Skip if no mines.
-                   if ( mines == 0 )
+                    // Skip if no mines.
+                    if ( mines == 0 )
                         return DelReturn.Continue;
 
-                   // If its closer than our current target(s), clear our list and update our hops and mines.
-                   if ( hops < minHops )
+                    // If its closer than our current target(s), clear our list and update our hops and mines.
+                    if ( hops < minHops )
                     {
                         validPlanets = new List<Planet>();
                         minHops = hops;
                         maxMines = mines;
                     }
-                   // If its more mines than our current target(s), clear our list and update our mines.
-                   else if ( mines > maxMines )
+                    // If its more mines than our current target(s), clear our list and update our mines.
+                    else if ( mines > maxMines )
                     {
                         validPlanets = new List<Planet>();
                         maxMines = mines;
@@ -1360,8 +1394,8 @@ namespace PreceptsOfThePrecursors
                     World_AIW2.Instance.DoForPlanets( false, planet =>
                      {
                          int absTrust = Math.Abs( MothershipData.Trust.GetTrust( planet ) );
-                        // Care about positive trust slightly more.
-                        if ( MothershipData.Trust.GetTrust( planet ) >= 2000 )
+                         // Care about positive trust slightly more.
+                         if ( MothershipData.Trust.GetTrust( planet ) >= 2000 )
                              absTrust += 100;
                          switch ( planet.GetProtoSphereData().Type )
                          {
@@ -1489,9 +1523,9 @@ namespace PreceptsOfThePrecursors
                     workingEntity.QueueWormholeCommand( Mothership.Planet, Context );
                 else if ( beDefensive )
                 {
-                   // Keep our drones near our mothership as requested.
-                   if ( Mothership.GetCurrentShieldPoints() > Mothership.TypeData.GetForMark( Mothership.CurrentMarkLevel ).BaseShieldPoints * 0.75 && (workingEntity.GetDistanceTo_VeryCheapButExtremelyRough( Mothership.WorldLocation, true ) > 5000 ||
-                   (workingEntity.LongRangePlanningData.DestinationPoint != ArcenPoint.ZeroZeroPoint && workingEntity.LongRangePlanningData.DestinationPoint.GetExtremelyRoughDistanceTo( Mothership.WorldLocation ) > 5000)) )
+                    // Keep our drones near our mothership as requested.
+                    if ( Mothership.GetCurrentShieldPoints() > Mothership.TypeData.GetForMark( Mothership.CurrentMarkLevel ).BaseShieldPoints * 0.75 && (workingEntity.GetDistanceTo_VeryCheapButExtremelyRough( Mothership.WorldLocation, true ) > 5000 ||
+                    (workingEntity.LongRangePlanningData.DestinationPoint != ArcenPoint.ZeroZeroPoint && workingEntity.LongRangePlanningData.DestinationPoint.GetExtremelyRoughDistanceTo( Mothership.WorldLocation ) > 5000)) )
                         workingEntity.QueueMovementCommand( Mothership.WorldLocation );
                 }
                 return DelReturn.Continue;
@@ -1883,18 +1917,18 @@ namespace PreceptsOfThePrecursors
              {
                  if ( entity.TypeData.IsDrone )
                  {
-                    // Keep our drones at or ahead of our carriers.
-                    GameEntity_Squad carrier = entity.FleetMembership.Fleet.Centerpiece;
+                     // Keep our drones at or ahead of our carriers.
+                     GameEntity_Squad carrier = entity.FleetMembership.Fleet.Centerpiece;
                      if ( carrier == null )
                          return DelReturn.Continue;
                      if ( entity.Planet.Index != carrier.Planet.Index )
                          entity.QueueWormholeCommand( carrier.Planet, Context );
                      else
                      {
-                        // If our Carrier is healthy and we're on a player planet, stay near our carrier.
-                        if ( carrier.Planet.GetControllingOrInfluencingFaction().Type == FactionType.Player && carrier.GetCurrentShieldPoints() > carrier.TypeData.GetForMark( carrier.CurrentMarkLevel ).BaseShieldPoints * 0.75 &&
-                         (entity.GetDistanceTo_VeryCheapButExtremelyRough( carrier.WorldLocation, true ) > 5000 || (entity.LongRangePlanningData.DestinationPoint != ArcenPoint.ZeroZeroPoint &&
-                         entity.LongRangePlanningData.DestinationPoint.GetExtremelyRoughDistanceTo( carrier.WorldLocation ) > 5000)) )
+                         // If our Carrier is healthy and we're on a player planet, stay near our carrier.
+                         if ( carrier.Planet.GetControllingOrInfluencingFaction().Type == FactionType.Player && carrier.GetCurrentShieldPoints() > carrier.TypeData.GetForMark( carrier.CurrentMarkLevel ).BaseShieldPoints * 0.75 &&
+                          (entity.GetDistanceTo_VeryCheapButExtremelyRough( carrier.WorldLocation, true ) > 5000 || (entity.LongRangePlanningData.DestinationPoint != ArcenPoint.ZeroZeroPoint &&
+                          entity.LongRangePlanningData.DestinationPoint.GetExtremelyRoughDistanceTo( carrier.WorldLocation ) > 5000)) )
                              entity.QueueMovementCommand( carrier.WorldLocation );
                      }
                  }
@@ -1928,12 +1962,12 @@ namespace PreceptsOfThePrecursors
                      if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
                          return DelReturn.Continue; // Do not path into Protector planets.
 
-                    bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 500;
+                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 500;
 
                      if ( DysonPrecursors.Mothership != null && DysonPrecursors.Mothership.Planet == planet && workingPlanetHasHostiles )
                      {
-                        // Our mothership is nearby and fighting, help her.
-                        bestPlanet = planet;
+                         // Our mothership is nearby and fighting, help her.
+                         bestPlanet = planet;
                          return DelReturn.Break;
                      }
 
@@ -2102,8 +2136,8 @@ namespace PreceptsOfThePrecursors
              {
                  if ( entity.TypeData.IsDrone )
                  {
-                    // Keep our drones at or ahead of our carriers.
-                    GameEntity_Squad carrier = entity.FleetMembership.Fleet.Centerpiece;
+                     // Keep our drones at or ahead of our carriers.
+                     GameEntity_Squad carrier = entity.FleetMembership.Fleet.Centerpiece;
                      if ( carrier == null )
                          return DelReturn.Continue;
                      if ( entity.Planet.Index != carrier.Planet.Index )
@@ -2140,8 +2174,8 @@ namespace PreceptsOfThePrecursors
 
                      if ( DysonPrecursors.Mothership != null && DysonPrecursors.Mothership.Planet == planet && workingPlanetHasHostiles )
                      {
-                        // Our mothership is nearby and fighting, help her.
-                        bestPlanet = planet;
+                         // Our mothership is nearby and fighting, help her.
+                         bestPlanet = planet;
                          return DelReturn.Break;
                      }
 
