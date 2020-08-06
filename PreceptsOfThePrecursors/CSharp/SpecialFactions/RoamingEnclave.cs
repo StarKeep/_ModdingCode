@@ -1431,7 +1431,11 @@ namespace PreceptsOfThePrecursors
                     otherFaction.DoForEntities( ( GameEntity_Squad entity ) =>
                     {
                         if ( entity.TypeData.IsCommandStation )
-                            addHiveToBuildListsCommand.RelatedEntityIDs.Add( entity.PrimaryKeyID );
+                        {
+                            Fleet.Membership mem = entity.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( HUMAN_HIVE_NAME ) );
+                            if ( mem == null || mem.ExplicitBaseSquadCap < 1 )
+                                addHiveToBuildListsCommand.RelatedEntityIDs.Add( entity.PrimaryKeyID );
+                        }
 
                         if ( entity.TypeData.InternalName == HUMAN_HIVE_NAME
                          && entity.SecondsSpentAsRemains <= 0 && entity.SelfBuildingMetalRemaining <= 0 )
