@@ -650,7 +650,7 @@
 			description="A focus point for a Youngling Swarm, this Enclave roams the galaxy, attempting to protect its territory. Peppers nearby targets in very powerful pheremones that greatly increasing the potency of its Younglings. Rapidly regenerats Hull while out of combat."
 			starting_mark_level="Mark1"
 			cost_for_ai_to_purchase="500000"
-			hull_points="1000000" shield_points="1000000" speed="BelowAverage2"
+			hull_points="750000" shield_points="750000" speed="BelowAverage2"
 			metal_cost="250000" energy_consumption="25000"
 			armor_mm="210" albedo="0.8" engine_gx="31" mass_tx="6"
 			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
@@ -659,7 +659,6 @@
 			voice_group="Zenith"
       
       priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
-			pushes_enemy_shields="true"
 			should_never_be_captured_by_another_faction="true"
       description_appender_dll="PreceptsOfThePrecursors"
 			description_appender_type="PreceptsOfThePrecursors.EnclaveYounglingsStorageDescriptionAppender"
@@ -676,7 +675,7 @@
   </entity>
   <!-- Player-controlled Enclave. Can build your first one at 5 hives, than every double hives later. (5,10,20,40...) -->
   <entity name="PlayerRoamingEnclaveConstructor" copy_from="NeinzulHiveBase" skip_export="true" metal_cost="5000000" energy_consumption="50000" strength_multiplier="0.01"
-						display_name="Roaming Enclave Constructor" build_sidebar_categories_i_am_part_of="NeinzulEnclaveStructures"
+						display_name="Roaming Enclave Constructor" build_sidebar_categories_i_am_part_of="NeinzulEnclaveStructures" absolute_max_cap_when_in_fleets="1"
 					description="A gift from the Pearl Enclave, this can be built to gain a controllable Roaming Enclave."
 					>
     <metal_flow purpose="SelfConstruction" throughput="50"/>
@@ -698,7 +697,7 @@
 			description="A focus point for a Neinzul Swarm, this Enclave has accepted a human commander on board. Peppers nearby targets in very powerful pheremones that greatly increasing the potency of its Younglings. Rapidly regenerats Hull while out of combat."
 			starting_mark_level="Mark1"
 			cost_for_ai_to_purchase="500000"
-			hull_points="1000000" shield_points="1000000" speed="BelowAverage2"
+			hull_points="750000" shield_points="750000" speed="BelowAverage2"
 			metal_cost="250000" energy_consumption="25000"
 			armor_mm="210" albedo="0.8" engine_gx="31" mass_tx="6"
 			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
@@ -707,7 +706,6 @@
 			voice_group="Zenith"
       build_sidebar_categories_i_am_part_of="NeinzulEnclaveStructures"
       priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
-			pushes_enemy_shields="true"
 			should_never_be_captured_by_another_faction="true"
       description_appender_dll="PreceptsOfThePrecursors"
 			description_appender_type="PreceptsOfThePrecursors.EnclaveYounglingsStorageDescriptionAppender"
