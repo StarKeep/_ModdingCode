@@ -125,7 +125,7 @@ namespace PreceptsOfThePrecursors
 
             bool[] shouldSpawn = new bool[7];
             for ( int x = 0; x < 7; x++ )
-                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (NodeBase + (NodeIncrease * x)) == 0;
+                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (((NodeBase + (NodeIncrease * x)) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2))) == 0;
 
             return shouldSpawn;
         }
@@ -137,7 +137,7 @@ namespace PreceptsOfThePrecursors
 
             bool[] shouldSpawn = new bool[7];
             for ( int x = 0; x < 7; x++ )
-                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (SphereBase + (SphereBase * x)) == 0;
+                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (((SphereBase + (SphereBase * x)) / 10) *(5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2))) == 0;
 
             return shouldSpawn;
         }
@@ -1938,7 +1938,7 @@ namespace PreceptsOfThePrecursors
                      int strength = entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength - entity.PlanetFaction.DataByStance[FactionStance.Hostile].CloakedStrength;
                      if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index )
                          effectivePlanet = World_AIW2.Instance.GetPlanetByIndex( entity.LongRangePlanningData.FinalDestinationPlanetIndex );
-                     else if ( entity.GetSecondsSinceEnteringThisPlanet() > 60 && strength < 500 )
+                     else if ( entity.GetSecondsSinceEnteringThisPlanet() >= 15 && strength < 500 )
                          packetsToMove.Add( entity );
                      if ( packetsByPlanet.GetHasKey( effectivePlanet ) )
                          packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
@@ -2149,7 +2149,7 @@ namespace PreceptsOfThePrecursors
                      int strength = entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength - entity.PlanetFaction.DataByStance[FactionStance.Hostile].CloakedStrength;
                      if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index )
                          effectivePlanet = World_AIW2.Instance.GetPlanetByIndex( entity.LongRangePlanningData.FinalDestinationPlanetIndex );
-                     else if ( entity.GetSecondsSinceEnteringThisPlanet() > 60 && strength < 500 )
+                     else if ( entity.GetSecondsSinceEnteringThisPlanet() >= 15 && strength < 500 )
                          packetsToMove.Add( entity );
                      if ( packetsByPlanet.GetHasKey( effectivePlanet ) )
                          packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
