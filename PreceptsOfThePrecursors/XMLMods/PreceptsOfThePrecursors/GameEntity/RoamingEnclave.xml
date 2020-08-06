@@ -629,10 +629,10 @@
 	</entity>
   <!-- Clanling Hives -->
   <entity name="HiveClanlingMammoth" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-        display_name="Clanling Mammoth Hive" description="This Neinzul Hive is the home to a Mammoth swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+        display_name="Clanling Mammoth Hive" description="This Neinzul Hive is the home to a Mammoth swarm." tags="EnclaveHive,ClanlingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <entity name="HiveClanlingBear" copy_from="NeinzulHiveBase" skip_export="true" strength_multiplier="0.01"
-        display_name="Clanling Bear Hive" description="This Neinzul Hive is the home to a Clanling swarm." tags="EnclaveHive" special_entity_type="NPCFactionCenterpiece">
+        display_name="Clanling Bear Hive" description="This Neinzul Hive is the home to a Clanling swarm." tags="EnclaveHive,ClanlingHive" special_entity_type="NPCFactionCenterpiece">
   </entity>
   <!-- The Enclave itself. -->
   <entity name="RoamingEnclave" cannot_be_stacked="true" 

@@ -165,7 +165,7 @@ namespace PreceptsOfThePrecursors.GameCommands
             {
                 GameEntity_Squad hive = World_AIW2.Instance.GetEntityByID_Squad(command.RelatedEntityIDs[x]);
 
-                GameEntity_Squad.CreateNew(hive.Planet.GetPlanetFactionForFaction(faction), GameEntityTypeDataTable.Instance.GetRandomRowWithTag(context, BaseRoamingEnclave.HIVE_TAG), 1,
+                GameEntity_Squad.CreateNew(hive.Planet.GetPlanetFactionForFaction(faction), GameEntityTypeDataTable.Instance.GetRandomRowWithTag(context, BaseRoamingEnclave.YOUNGLING_HIVE_TAG), 1,
                     hive.Planet.GetPlanetFactionForFaction(faction).FleetUsedAtPlanet, 0, hive.WorldLocation, context);
 
                 hive.Despawn(context, true, InstancedRendererDeactivationReason.IAmTransforming);

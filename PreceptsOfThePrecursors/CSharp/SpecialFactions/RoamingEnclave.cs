@@ -1372,6 +1372,34 @@ namespace PreceptsOfThePrecursors
             {
                 forceSpawn[x].Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
             }
+
+            if ( faction.HasObtainedSpireDebris )
+                World_AIW2.Instance.DoForPlanets( false, planet =>
+                {
+                    int clanlingHives = 0, younglingHives = 0;
+                    planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( HIVE_TAG, ( GameEntity_Squad entity ) =>
+                    {
+                        if ( entity.TypeData.GetHasTag( YOUNGLING_HIVE_TAG ) )
+                            younglingHives++;
+                        else
+                            clanlingHives++;
+
+                        return DelReturn.Continue;
+                    } );
+
+                    for ( int x = younglingHives; x >= 3; x -= 3 )
+                        if ( clanlingHives > 0 )
+                        {
+                            clanlingHives--;
+                            continue;
+                        }
+                        else
+                        {
+                            planet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, CLANLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                        }
+
+                    return DelReturn.Continue;
+                } );
         }
 
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
