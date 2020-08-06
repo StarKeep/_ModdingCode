@@ -31,7 +31,7 @@ namespace PreceptsOfThePrecursors
             if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
                 cost /= 10;
 
-            return (cost / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            return (cost / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
         }
         public static int Resources( int currentMarkLevel, Faction faction )
         {
@@ -44,7 +44,7 @@ namespace PreceptsOfThePrecursors
             if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
                 cost /= 10;
 
-            return (cost / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            return (cost / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
         }
     }
     public static class ProtoSphereCosts
@@ -78,7 +78,7 @@ namespace PreceptsOfThePrecursors
                  return DelReturn.Continue;
              } );
 
-            cost = (cost / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            cost = (cost / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
 
             cost = Math.Max( MinCost, cost );
             cost = Math.Min( MaxCost, cost );
@@ -101,7 +101,7 @@ namespace PreceptsOfThePrecursors
             if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
                 cost /= 10;
 
-            return (cost / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            return (cost / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
         }
     }
     public static class PacketTimers
@@ -125,7 +125,7 @@ namespace PreceptsOfThePrecursors
 
             bool[] shouldSpawn = new bool[7];
             for ( int x = 0; x < 7; x++ )
-                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (((NodeBase + (NodeIncrease * x)) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2))) == 0;
+                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (((NodeBase + (NodeIncrease * x)) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity)) == 0;
 
             return shouldSpawn;
         }
@@ -137,7 +137,7 @@ namespace PreceptsOfThePrecursors
 
             bool[] shouldSpawn = new bool[7];
             for ( int x = 0; x < 7; x++ )
-                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (((SphereBase + (SphereBase * x)) / 10) *(5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2))) == 0;
+                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (((SphereBase + (SphereBase * x)) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity)) == 0;
 
             return shouldSpawn;
         }
