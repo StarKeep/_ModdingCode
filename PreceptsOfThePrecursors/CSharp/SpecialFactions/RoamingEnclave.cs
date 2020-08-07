@@ -105,9 +105,7 @@ namespace PreceptsOfThePrecursors
             ClaimHivesFromHumanAllies,
             LoadYounglingsIntoEnclaves,
             UnloadYounglingsFromEnclaves,
-            AddPlayerRoamingYounglingToBuildList,
-            ActivatePlayerRoamingYoungling,
-            PopulatePlayerEnclavesList
+            StackYounglings
         }
         public BaseRoamingEnclave()
         {
@@ -505,6 +503,9 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
+            ArcenSparseLookup<Planet, ArcenSparseLookup<int, ArcenSparseLookup<byte, List<GameEntity_Squad>>>> younglingGroups = new ArcenSparseLookup<Planet, ArcenSparseLookup<int, ArcenSparseLookup<byte, List<GameEntity_Squad>>>>();
+            int totalCount = 0;
+
             faction.DoForEntities( YOUNGLING_TAG, youngling =>
             {
                 if ( youngling.CurrentMarkLevel < 7 && youngling.GetSecondsSinceCreation() > youngling.CurrentMarkLevel * Context.RandomToUse.Next( 600, 1200 ) )
@@ -554,6 +555,51 @@ namespace PreceptsOfThePrecursors
                             youngling.FireteamId = -1;
                     }
                 }
+
+                totalCount++;
+
+                if ( !younglingGroups.GetHasKey( youngling.Planet ) )
+                    younglingGroups.AddPair( youngling.Planet, new ArcenSparseLookup<int, ArcenSparseLookup<byte, List<GameEntity_Squad>>>() );
+                if ( !younglingGroups[youngling.Planet].GetHasKey( youngling.TypeData.RowIndexNonSim ) )
+                    younglingGroups[youngling.Planet].AddPair( youngling.TypeData.RowIndexNonSim, new ArcenSparseLookup<byte, List<GameEntity_Squad>>() );
+                if ( !younglingGroups[youngling.Planet][youngling.TypeData.RowIndexNonSim].GetHasKey( youngling.CurrentMarkLevel ) )
+                    younglingGroups[youngling.Planet][youngling.TypeData.RowIndexNonSim].AddPair( youngling.CurrentMarkLevel, new List<GameEntity_Squad>() );
+
+                younglingGroups[youngling.Planet][youngling.TypeData.RowIndexNonSim][youngling.CurrentMarkLevel].Add( youngling );
+
+                return DelReturn.Continue;
+            } );
+
+            younglingGroups.DoFor( mainPair =>
+            {
+                int onPlanet = 0;
+                mainPair.Value.DoFor( subPair =>
+                {
+                    subPair.Value.DoFor( pair =>
+                    {
+                        onPlanet += pair.Value.Count;
+
+                        return DelReturn.Continue;
+                    } );
+                    return DelReturn.Continue;
+                } );
+
+                if ( onPlanet > 100 )
+                    mainPair.Value.DoFor( subPair =>
+                    {
+                        subPair.Value.DoFor( pair =>
+                        {
+                            if ( pair.Value.Count < 2 )
+                                return DelReturn.Continue;
+                            GameCommand stackYounglingsCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.StackYounglings.ToString() ), GameCommandSource.AnythingElse, faction );
+                            for ( int x = 0; x < pair.Value.Count; x++ )
+                                stackYounglingsCommand.RelatedEntityIDs.Add( pair.Value[x].PrimaryKeyID );
+
+                            Context.QueueCommandForSendingAtEndOfContext( stackYounglingsCommand );
+                            return DelReturn.Continue;
+                        } );
+                        return DelReturn.Continue;
+                    } );
                 return DelReturn.Continue;
             } );
 
@@ -875,7 +921,7 @@ namespace PreceptsOfThePrecursors
                     if ( planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 2500 )
                         return DelReturn.Continue;
 
-                    if (HivePlanets.Contains(planet))
+                    if ( HivePlanets.Contains( planet ) )
                     {
                         int hivesOnPlanet = 0;
                         for ( int y = 0; y < Hives.Count; y++ )
@@ -900,7 +946,7 @@ namespace PreceptsOfThePrecursors
                 } );
             }
 
-            while (toSpawn > 0 )
+            while ( toSpawn > 0 )
             {
                 validPlanets.DoFor( pair =>
                 {

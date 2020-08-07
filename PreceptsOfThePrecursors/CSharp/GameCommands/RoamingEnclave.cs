@@ -1,5 +1,6 @@
 ﻿using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
+using System;
 using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors.GameCommands
@@ -169,6 +170,30 @@ namespace PreceptsOfThePrecursors.GameCommands
                     hive.Planet.GetPlanetFactionForFaction( faction ).FleetUsedAtPlanet, 0, hive.WorldLocation, context );
 
                 hive.Despawn( context, true, InstancedRendererDeactivationReason.IAmTransforming );
+            }
+        }
+    }
+
+    public class StackYounglings : BaseGameCommand
+    {
+        public override void Execute( GameCommand command, ArcenSimContext context )
+        {
+            if ( command.RelatedEntityIDs.Count < 2 )
+                return;
+
+            GameEntity_Squad mainEntity = null;
+
+            for ( int x = 0; x < command.RelatedEntityIDs.Count; x++ )
+            {
+                GameEntity_Squad entity = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[x] );
+                if ( entity != null )
+                    if ( mainEntity == null )
+                        mainEntity = entity;
+                    else
+                    {
+                        mainEntity.AddOrSetExtraStackedSquadsInThis( (short)(1 + entity.ExtraStackedSquadsInThis), false );
+                        entity.Despawn( context, true, InstancedRendererDeactivationReason.ThereWereTooManyOfMe );
+                    }
             }
         }
     }

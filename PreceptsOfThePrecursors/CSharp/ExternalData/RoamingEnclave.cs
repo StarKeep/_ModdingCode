@@ -277,10 +277,11 @@ namespace PreceptsOfThePrecursors
                 {
                     byte markLevel = collection.UnitsByMark.GetPairByIndex( i ).Key;
                     int toSpawnInTotal = collection.UnitsByMark[markLevel];
-                    int StackingCutoff = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "StackingCutoffNPCs" );
+                    int stackingCutoff = 3;
+                    int stackSize = Math.Max( 1, toSpawnInTotal / stackingCutoff );
                     while ( toSpawnInTotal > 0 )
                     {
-                        short toSpawn = (short)Math.Min( toSpawnInTotal, StackingCutoff );
+                        short toSpawn = (short)Math.Min( toSpawnInTotal, stackSize );
                         GameEntity_Squad youngling = GameEntity_Squad.CreateNew( enclave.Planet.GetPlanetFactionForFaction( spawnFaction ), unitData, markLevel, enclave.Planet.GetPlanetFactionForFaction( spawnFaction ).FleetUsedAtPlanet, 1, enclave.WorldLocation, Context );
                         youngling.AddOrSetExtraStackedSquadsInThis( (short)(toSpawn - 1), true );
                         youngling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );

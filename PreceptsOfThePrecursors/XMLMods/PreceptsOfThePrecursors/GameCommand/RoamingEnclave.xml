@@ -11,4 +11,5 @@
   <command name="ClaimHivesFromHumanAllies" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.ClaimHivesFromHumanAllies" />
   <command name="LoadYounglingsIntoEnclaves" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.LoadYounglingsIntoEnclaves" />
   <command name="UnloadYounglingsFromEnclaves" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.UnloadYounglingsFromEnclaves" />
+  <command name="StackYounglings" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.StackYounglings" />
 </root>
