@@ -946,7 +946,7 @@ namespace PreceptsOfThePrecursors
                 } );
             }
 
-            while ( toSpawn > 0 )
+            while ( toSpawn > 0 && validPlanets.GetPairCount() > 0 )
             {
                 validPlanets.DoFor( pair =>
                 {
