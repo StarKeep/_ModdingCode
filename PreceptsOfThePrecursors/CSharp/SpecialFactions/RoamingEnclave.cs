@@ -143,8 +143,6 @@ namespace PreceptsOfThePrecursors
 
             HandleYounglingCombining( Context );
 
-            HandleUnitSpawningForEnclaves( Context );
-
             HandleUnitSpawningForHives( Context );
         }
 
@@ -167,12 +165,6 @@ namespace PreceptsOfThePrecursors
                 Enclaves[x].CombineYounglingsIfAble( Context );
         }
 
-        private void HandleUnitSpawningForEnclaves( ArcenSimContext Context )
-        {
-            if ( Enclaves.Count > 0 && CanSpawnUnits( null ) )
-                SpawnUnitsForEnclave( Enclaves, Context );
-        }
-
         private void HandleUnitSpawningForHives( ArcenSimContext Context )
         {
             for ( int y = 0; y < Hives.Count; y++ )
@@ -192,20 +184,6 @@ namespace PreceptsOfThePrecursors
             GameEntity_Squad unit = GameEntity_Squad.CreateNew( hive.PlanetFaction, YounglingTypeByHive[hive.TypeData], hive.CurrentMarkLevel, hive.PlanetFaction.FleetUsedAtPlanet, 0, hive.WorldLocation, Context );
             unit.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, hive.PlanetFaction.Faction.FactionIndex );
             unit.MinorFactionStackingID = -1;
-            if ( this is RoamingEnclavePlayerTeam )
-                (this as RoamingEnclavePlayerTeam).SpawnYounglingsForPlayerEnclaves( hive, Context );
-        }
-
-        private void SpawnUnitsForEnclave( List<GameEntity_Squad> enclaves, ArcenSimContext Context )
-        {
-            for ( int x = 0; x < enclaves.Count; x++ )
-            {
-                GameEntity_Squad enclave = enclaves[x];
-                GameEntity_Squad unit = GameEntity_Squad.CreateNew( enclave.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "YounglingWorm" ), enclave.CurrentMarkLevel, enclave.PlanetFaction.FleetUsedAtPlanet, 0, enclave.WorldLocation, Context );
-                enclave.StoreYoungling( unit, Context );
-            }
-            if ( this is RoamingEnclavePlayerTeam )
-                (this as RoamingEnclavePlayerTeam).SpawnYounglingsForPlayerEnclaves( null, Context );
         }
 
         public abstract Planet BulkSpawn( Faction faction, ArcenSimContext Context );
@@ -1360,25 +1338,6 @@ namespace PreceptsOfThePrecursors
                     PlayerEnclaves[x].CombineYounglingsIfAble( Context );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
-        }
-
-        public void SpawnYounglingsForPlayerEnclaves( GameEntity_Squad hive, ArcenSimContext Context )
-        {
-            Faction spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( RoamingEnclavePlayerTeam ) );
-            for ( int x = 0; x < PlayerEnclaves.Count; x++ )
-            {
-                GameEntity_Squad enclave = PlayerEnclaves[x];
-                PlanetFaction pFaction = hive != null ? hive.PlanetFaction : enclave.Planet.GetPlanetFactionForFaction( spawnFaction );
-                GameEntityTypeData entityData = hive != null ? YounglingTypeByHive[hive.TypeData] : GameEntityTypeDataTable.Instance.GetRowByName( "YounglingWorm" );
-                GameEntity_Squad unit = GameEntity_Squad.CreateNew( pFaction, entityData, enclave.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, hive != null ? hive.WorldLocation : enclave.WorldLocation, Context );
-                if ( hive == null )
-                    enclave.StoreYoungling( unit, Context );
-                else
-                {
-                    unit.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
-                    unit.MinorFactionStackingID = enclave.PrimaryKeyID;
-                }
-            }
         }
 
         public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )

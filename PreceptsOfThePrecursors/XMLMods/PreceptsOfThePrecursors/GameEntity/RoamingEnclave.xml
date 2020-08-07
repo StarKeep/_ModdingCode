@@ -668,7 +668,7 @@
 				damage_per_shot="1" range="Tiny3" shot_speed="Normal" rate_of_fire="Devourer"
 				shots_per_salvo="50" fires_salvos_sequentially="false"
 				shot_type_data="DoubleShot_Red"
-        damage_amplification="true" damage_amplification_duration="2" damage_amplification_flat="500"
+        damage_amplification="true" damage_amplification_duration="3" damage_amplification_flat="750"
 				>
     </system>
     <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5000" multiplier="0.05" />
@@ -715,7 +715,7 @@
 				damage_per_shot="1" range="Tiny3" shot_speed="Normal" rate_of_fire="Devourer"
 				shots_per_salvo="50" fires_salvos_sequentially="false"
 				shot_type_data="DoubleShot_Red"
-        damage_amplification="true" damage_amplification_duration="2" damage_amplification_flat="500"
+        damage_amplification="true" damage_amplification_duration="3" damage_amplification_flat="750"
 				>
     </system>
     <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5000" multiplier="0.05" />
