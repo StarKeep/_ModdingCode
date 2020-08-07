@@ -665,7 +665,7 @@ namespace PreceptsOfThePrecursors
         {
             if ( Mothership == null )
                 return;
-            if ( PrecursorCosts.Mines( Mothership.CurrentMarkLevel, faction ) > ProtoSphereCosts.BuildCost( faction ) )
+            if ( PrecursorCosts.Resources( Mothership.CurrentMarkLevel, faction ) > ProtoSphereCosts.BuildCost( faction ) )
                 return;
             if ( MothershipData.Level < 7 && DysonNodes.GetHasKey( Mothership.Planet ) &&
                 MothershipData.Resources >= PrecursorCosts.Resources( MothershipData.Level, faction ) &&
