@@ -1424,10 +1424,6 @@ namespace PreceptsOfThePrecursors
             AddAndClaimHivesFromPlayers( faction, Context );
 
             base.DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( faction, Context );
-
-            HandlePlayerEnclaveSpawning( faction, Context );
-
-            HandlePlayerYounglingLogic( faction, Context );
         }
 
         private void AddAndClaimHivesFromPlayers( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
@@ -1462,101 +1458,6 @@ namespace PreceptsOfThePrecursors
                 Context.QueueCommandForSendingAtEndOfContext( addHiveToBuildListsCommand );
             if ( takeFullyBuiltHivesCommand.RelatedEntityIDs.Count > 0 )
                 Context.QueueCommandForSendingAtEndOfContext( takeFullyBuiltHivesCommand );
-        }
-
-        private void HandlePlayerEnclaveSpawning( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
-        {
-            GameCommand spawnEnclaves = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.AddPlayerRoamingYounglingToBuildList.ToString() ), GameCommandSource.AnythingElse, faction );
-            GameCommand activateEnclaves = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.ActivatePlayerRoamingYoungling.ToString() ), GameCommandSource.AnythingElse, faction );
-            GameCommand populatePlayerEnclaves = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.PopulatePlayerEnclavesList.ToString() ), GameCommandSource.AnythingElse, faction );
-
-            World_AIW2.Instance.DoForFactions( otherFaction =>
-            {
-                if ( otherFaction.Type == FactionType.Player && faction.GetIsFriendlyTowards( otherFaction ) )
-                {
-                    int giftedEnclave = 0;
-                    otherFaction.DoForEntities( PLAYER_ENCLAVE_TAG, ( GameEntity_Squad entity ) =>
-                    {
-                        giftedEnclave++;
-
-                        populatePlayerEnclaves.RelatedEntityIDs.Add( entity.PrimaryKeyID );
-
-                        return DelReturn.Continue;
-                    } );
-                    Fleet.Membership mem = otherFaction.GetFactionKing().FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "PlayerRoamingEnclaveConstructor" ) );
-                    if ( mem != null )
-                        giftedEnclave += mem.ExplicitBaseSquadCap;
-
-                    int toGetAnother = 10;
-                    for ( int x = 0; x < giftedEnclave; x++ )
-                        toGetAnother *= 2;
-                    if ( Hives.Count >= toGetAnother )
-                        spawnEnclaves.RelatedEntityIDs.Add( otherFaction.GetFactionKing().PrimaryKeyID );
-                    if ( mem != null )
-                        mem.DoForEntities( playerEnclave =>
-                        {
-                            if ( playerEnclave.SelfBuildingMetalRemaining <= 0 && playerEnclave.SecondsSpentAsRemains <= 0 )
-                                activateEnclaves.RelatedEntityIDs.Add( playerEnclave.PrimaryKeyID );
-
-                            return DelReturn.Continue;
-                        } );
-                }
-
-                return DelReturn.Continue;
-            } );
-
-            if ( spawnEnclaves.RelatedEntityIDs.Count > 0 )
-                Context.QueueCommandForSendingAtEndOfContext( spawnEnclaves );
-            if ( activateEnclaves.RelatedEntityIDs.Count > 0 )
-                Context.QueueCommandForSendingAtEndOfContext( activateEnclaves );
-            if ( populatePlayerEnclaves.RelatedEntityIDs.Count > 0 )
-                Context.QueueCommandForSendingAtEndOfContext( populatePlayerEnclaves );
-        }
-
-        private void HandlePlayerYounglingLogic( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
-        {
-            GameCommand loadYounglingsCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.LoadYounglingsIntoEnclaves.ToString() ), GameCommandSource.AnythingElse, faction );
-            GameCommand enclaveUnloadCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.UnloadYounglingsFromEnclaves.ToString() ), GameCommandSource.AnythingElse, faction );
-
-            World_AIW2.Instance.DoForFactions( otherFaction =>
-            {
-                if ( otherFaction.Type != FactionType.Player || otherFaction.GetIsHostileTowards( faction ) )
-                    return DelReturn.Continue;
-                otherFaction.DoForEntities( PLAYER_ENCLAVE_TAG, enclave =>
-                {
-                    if ( !enclave.FleetMembership.Fleet.IsFleetInTransportLoadMode )
-                        enclaveUnloadCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
-
-                    faction.DoForEntities( YOUNGLING_TAG, youngling =>
-                    {
-                        if ( youngling.MinorFactionStackingID != enclave.PrimaryKeyID )
-                            return DelReturn.Continue;
-
-                        if ( youngling.Planet == enclave.Planet )
-                        {
-                            if ( enclave.FleetMembership.Fleet.IsFleetInTransportLoadMode || youngling.GetCurrentHullPoints() < youngling.GetMaxHullPoints() * 0.33 )
-                            {
-                                loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
-                                loadYounglingsCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
-                            }
-                            else if ( enclave.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength <= 50 && youngling.GetDistanceTo_VeryCheapButExtremelyRough( enclave.WorldLocation, false ) > 1000 )
-                                youngling.QueueMovementCommand( enclave.WorldLocation );
-                        }
-                        else if ( youngling.LongRangePlanningData.FinalDestinationPlanetIndex == -1 )
-                            youngling.QueueWormholeCommand( enclave.Planet, Context );
-
-                        return DelReturn.Continue;
-                    } );
-
-                    return DelReturn.Continue;
-                } );
-                return DelReturn.Continue;
-            } );
-
-            if ( loadYounglingsCommand.RelatedIntegers.Count > 0 )
-                Context.QueueCommandForSendingAtEndOfContext( loadYounglingsCommand );
-            if ( enclaveUnloadCommand.RelatedEntityIDs.Count > 0 )
-                Context.QueueCommandForSendingAtEndOfContext( enclaveUnloadCommand );
         }
     }
 }
