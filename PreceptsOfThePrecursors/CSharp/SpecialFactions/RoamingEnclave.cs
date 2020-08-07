@@ -1280,6 +1280,8 @@ namespace PreceptsOfThePrecursors
     {
         public List<GameEntity_Squad> PlayerEnclaves = new List<GameEntity_Squad>();
 
+        private bool Initialized;
+
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             allyThisFactionToHumans( faction );
@@ -1289,6 +1291,23 @@ namespace PreceptsOfThePrecursors
 
             if ( !EnclaveSettings.GetIsEnabled( faction ) )
                 return;
+
+            if ( !Initialized )
+            {
+                World_AIW2.Instance.DoForEntities( PLAYER_ENCLAVE_TAG, playerEnclave =>
+                {
+                    World_AIW2.Instance.DoForEntities( YOUNGLING_TAG, youngling =>
+                    {
+                        if ( youngling.MinorFactionStackingID == playerEnclave.PrimaryKeyID )
+                            youngling.Despawn( Context, true, InstancedRendererDeactivationReason.IFinishedMyJob );
+
+                        return DelReturn.Continue;
+                    } );
+                    playerEnclave.Despawn( Context, true, InstancedRendererDeactivationReason.IFinishedMyJob );
+                    return DelReturn.Continue;
+                } );
+                Initialized = true;
+            }
 
             if ( PlayerEnclaves != null && PlayerEnclaves.Count > 0 )
                 for ( int x = 0; x < PlayerEnclaves.Count; x++ )
