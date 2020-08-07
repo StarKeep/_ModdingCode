@@ -1,8 +1,8 @@
-﻿using Arcen.AIW2.Core;
+﻿using System;
+using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using System;
-using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -52,21 +52,21 @@ namespace PreceptsOfThePrecursors
         private static bool Initialized;
         private static int Base, IncreasePerExisting, MinCost, MaxCost, MarkUpBase, MarkUpIncrease;
 
-        private static void Initialize()
+        private static void Initialize( Faction faction )
         {
-            Base = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereBaseCost" );
-            IncreasePerExisting = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereCostIncreasePerExistingSphere" );
-            MinCost = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereMinCost" );
-            MaxCost = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereMaxCost" );
-            MarkUpBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpBase" );
-            MarkUpIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpIncrease" );
+            Base = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereBaseCost" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            IncreasePerExisting = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereCostIncreasePerExistingSphere" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            MinCost = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereMinCost" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            MaxCost = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereMaxCost" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            MarkUpBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpBase" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            MarkUpIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpIncrease" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
             Initialized = true;
         }
 
         public static int BuildCost( Faction faction )
         {
             if ( !Initialized )
-                Initialize();
+                Initialize( faction );
 
             int cost = Base;
 
@@ -77,8 +77,6 @@ namespace PreceptsOfThePrecursors
 
                  return DelReturn.Continue;
              } );
-
-            cost = (cost / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
 
             cost = Math.Max( MinCost, cost );
             cost = Math.Min( MaxCost, cost );
@@ -91,7 +89,7 @@ namespace PreceptsOfThePrecursors
         public static int Resources( int currentMarkLevel, Faction faction )
         {
             if ( !Initialized )
-                Initialize();
+                Initialize( faction );
 
             int cost = MarkUpBase;
 
@@ -101,7 +99,7 @@ namespace PreceptsOfThePrecursors
             if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
                 cost /= 10;
 
-            return (cost / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            return cost;
         }
     }
     public static class PacketTimers
@@ -111,10 +109,10 @@ namespace PreceptsOfThePrecursors
 
         private static void Initialize( Faction faction )
         {
-            NodeBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalBase" );
-            NodeIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalIncreasePerNodeLevel" );
-            SphereBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereBase" );
-            SphereIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereIncreasePerLevel" );
+            NodeBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalBase" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            NodeIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalIncreasePerNodeLevel" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            SphereBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereBase" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            SphereIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereIncreasePerLevel" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
             Initialized = true;
         }
 
@@ -125,7 +123,7 @@ namespace PreceptsOfThePrecursors
 
             bool[] shouldSpawn = new bool[7];
             for ( int x = 0; x < 7; x++ )
-                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (((NodeBase + (NodeIncrease * x)) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity)) == 0;
+                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (NodeBase + (NodeIncrease * x)) == 0;
 
             return shouldSpawn;
         }
@@ -137,7 +135,7 @@ namespace PreceptsOfThePrecursors
 
             bool[] shouldSpawn = new bool[7];
             for ( int x = 0; x < 7; x++ )
-                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (((SphereBase + (SphereBase * x)) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity)) == 0;
+                shouldSpawn[x] = World_AIW2.Instance.GameSecond % (SphereBase + (SphereIncrease * x)) == 0;
 
             return shouldSpawn;
         }
@@ -299,8 +297,25 @@ namespace PreceptsOfThePrecursors
                     faction.OverallPowerLevel += FInt.FromParts( 0, 334 );
                 return;
             }
-            else
-                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
+
+            faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
+
+            World_AIW2.Instance.DoForPlanets( false, planet =>
+            {
+                if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
+                    faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
+
+                if ( faction.OverallPowerLevel > 5 )
+                {
+                    faction.OverallPowerLevel = FInt.FromParts( 5, 000 );
+                    return DelReturn.Break;
+                }
+
+                return DelReturn.Continue;
+            } );
+
+            if ( faction.OverallPowerLevel > 5 )
+                faction.OverallPowerLevel = FInt.FromParts( 5, 000 );
         }
         public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
@@ -332,8 +347,6 @@ namespace PreceptsOfThePrecursors
         {
             if ( faction.MustBeAwakenedByPlayer && !faction.HasBeenAwakenedByPlayer )
                 return;
-
-            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Dyson Precursors";
 
             Initialize( faction, Context );
 
@@ -523,7 +536,7 @@ namespace PreceptsOfThePrecursors
                 enemyThisFactionToAll( faction );
                 Hacking_OverrideMothershipPacification.IsActive = false;
             }
-            else if ( Mothership.GetSecondsSinceEnteringThisPlanet() > 10 &&
+            else if ( (Mothership.GetSecondsSinceEnteringThisPlanet() > 10 || faction.GetIsHostileTowards( BadgerFactionUtilityMethods.findHumanKing().GetControllingFaction() )) &&
                 ((Mothership.Planet.GetIsControlledByFactionType( FactionType.Player ) && MothershipData.Trust.GetTrust( Mothership.Planet ) < -2000) ||
                 (!Mothership.Planet.GetIsControlledByFactionType( FactionType.Player ) && MothershipData.Trust.GetTrust( Mothership.Planet ) < 1000)) )
                 enemyThisFactionToAll( faction );
@@ -651,6 +664,8 @@ namespace PreceptsOfThePrecursors
         private void LevelUpMothershipIfAble( Faction faction, ArcenSimContext Context )
         {
             if ( Mothership == null )
+                return;
+            if ( PrecursorCosts.Mines( Mothership.CurrentMarkLevel, faction ) > ProtoSphereCosts.BuildCost( faction ) )
                 return;
             if ( MothershipData.Level < 7 && DysonNodes.GetHasKey( Mothership.Planet ) &&
                 MothershipData.Resources >= PrecursorCosts.Resources( MothershipData.Level, faction ) &&
@@ -882,7 +897,7 @@ namespace PreceptsOfThePrecursors
                 return;
             // If we've been at this planet too long, move on.
             int timeToStay = Math.Max( 60, Math.Min( 300, 300 - Math.Abs( MothershipData.Trust.GetTrust( Mothership.Planet ) ) / 10 ) );
-            if ( World_AIW2.Instance.GameSecond - Mothership.GameSecondEnteredThisPlanet > timeToStay )
+            if ( MothershipData.PlanetToBuildOn != null || World_AIW2.Instance.GameSecond - Mothership.GameSecondEnteredThisPlanet > timeToStay )
             {
                 if ( !MothershipData.ReadyToMoveOn )
                     MoveToNewPlanet( faction, Context );
@@ -1728,7 +1743,6 @@ namespace PreceptsOfThePrecursors
             Faction precFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonPrecursors ) );
             if ( faction.MustBeAwakenedByPlayer )
                 faction.HasBeenAwakenedByPlayer = precFaction != null && (!precFaction.MustBeAwakenedByPlayer || precFaction.HasBeenAwakenedByPlayer);
-            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Dyson Precursors";
             UpdateDysonAllegiance( faction, Context );
         }
         private void UpdateDysonAllegiance( Faction faction, ArcenSimContext Context )
@@ -1813,7 +1827,7 @@ namespace PreceptsOfThePrecursors
         public override void UpdatePowerLevel( Faction faction )
         {
             faction.OverallPowerLevel = FInt.Zero;
-            if ( DysonPrecursors.MothershipData == null || DysonPrecursors.DysonNodes == null || DysonPrecursors.DysonNodes.GetPairCount() == 0 )
+            if ( DysonPrecursors.MothershipData == null || DysonPrecursors.DysonNodes == null )
                 return;
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
@@ -1821,11 +1835,10 @@ namespace PreceptsOfThePrecursors
                  if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
                      faction.OverallPowerLevel += FInt.FromParts( 0, 150 );
 
-                 if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) < 0 )
-                     if ( DysonPrecursors.DysonNodes != null && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
-                         for ( int x = 0; x < 7; x++ )
-                             if ( DysonPrecursors.DysonNodes[planet][x] != null )
-                                 faction.OverallPowerLevel += FInt.FromParts( 0, 005 ) * x;
+                 if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) < 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
+                     for ( int x = 0; x < 7; x++ )
+                         if ( DysonPrecursors.DysonNodes[planet][x] != null )
+                             faction.OverallPowerLevel += FInt.FromParts( 0, 005 ) * (x + 1);
 
                  return DelReturn.Continue;
              } );
@@ -2052,7 +2065,7 @@ namespace PreceptsOfThePrecursors
         public override void UpdatePowerLevel( Faction faction )
         {
             faction.OverallPowerLevel = FInt.Zero;
-            if ( DysonPrecursors.MothershipData == null || DysonPrecursors.DysonNodes == null || DysonPrecursors.DysonNodes.GetPairCount() == 0 )
+            if ( DysonPrecursors.MothershipData == null || DysonPrecursors.DysonNodes == null )
                 return;
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
@@ -2060,11 +2073,16 @@ namespace PreceptsOfThePrecursors
                  if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
                      faction.OverallPowerLevel += FInt.FromParts( 0, 150 );
 
+                 if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
+                     for ( int x = 0; x < 7; x++ )
+                         if ( DysonPrecursors.DysonNodes[planet][x] != null )
+                             faction.OverallPowerLevel += FInt.FromParts( 0, 005 ) * (x + 1);
+
                  return DelReturn.Continue;
              } );
 
-            if ( faction.OverallPowerLevel > 1 )
-                faction.OverallPowerLevel = FInt.FromParts( 1, 000 );
+            if ( faction.OverallPowerLevel > 2 )
+                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
         }
         public override void CreateProtoSphere( Faction faction, Planet planet, ArcenSimContext Context )
         {
