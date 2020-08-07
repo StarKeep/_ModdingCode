@@ -1,8 +1,8 @@
-﻿using Arcen.AIW2.Core;
+﻿using System;
+using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using System;
-using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -261,7 +261,7 @@ namespace PreceptsOfThePrecursors
                     switch ( team.status )
                     {
                         case FireteamStatus.Attacking:
-                            if ( team.TargetPlanet != null && team.TargetPlanet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, team.TargetPlanet, Context ) ) > 0 )
+                            if ( team.TargetPlanet != null )
                             {
                                 if ( fireteamsAttacking.GetHasKey( team.TargetPlanet ) )
                                     fireteamsAttacking[team.TargetPlanet].Add( team );
@@ -272,6 +272,7 @@ namespace PreceptsOfThePrecursors
                         case FireteamStatus.Assembling:
                         case FireteamStatus.Staging:
                         case FireteamStatus.ReadyToAttack:
+                            bool discarded = false;
                             if ( team.LurkPlanet != null && team.CurrentPlanet == team.LurkPlanet )
                             {
                                 int idleSince = -1;
@@ -279,7 +280,17 @@ namespace PreceptsOfThePrecursors
                                     for ( int x = 0; x < team.History.Count; x++ )
                                         idleSince = Math.Max( idleSince, team.History[x].GameSecond );
                                 if ( idleSince > 0 && World_AIW2.Instance.GameSecond - idleSince > 15 )
+                                {
                                     team.DiscardCurrentObjectives();
+                                    discarded = true;
+                                }
+                            }
+                            if ( !discarded && team.TargetPlanet != null )
+                            {
+                                if ( fireteamsAttacking.GetHasKey( team.TargetPlanet ) )
+                                    fireteamsAttacking[team.TargetPlanet].Add( team );
+                                else
+                                    fireteamsAttacking.AddPair( team.TargetPlanet, new List<Fireteam>() { team } );
                             }
                             break;
                         default:
@@ -316,14 +327,14 @@ namespace PreceptsOfThePrecursors
                 if ( hostileStrength > (friendlyStrength + ourStrength) * 2 )
                     for ( int x = 0; x < pair.Value.Count; x++ )
                         pair.Value[x].DisbandAndRetreat( faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Value[x].CurrentPlanet, Context ) );
-
-                // Bleed off Enclaves from winning fights.
-                while ( ourStrength + friendlyStrength > hostileStrength * 3 && pair.Value.Count > 0 )
-                {
-                    ourStrength -= pair.Value[0].TeamStrength;
-                    pair.Value[0].DisbandAndRetreat( faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Value[0].CurrentPlanet, Context ) );
-                    pair.Value.RemoveAt( 0 );
-                }
+                else
+                    // Bleed off Enclaves from winning fights.
+                    while ( ourStrength + friendlyStrength > hostileStrength * 5 && pair.Value.Count > 0 )
+                    {
+                        ourStrength -= pair.Value[0].TeamStrength;
+                        pair.Value[0].DisbandAndRetreat( faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Value[0].CurrentPlanet, Context ) );
+                        pair.Value.RemoveAt( 0 );
+                    }
 
                 return DelReturn.Continue;
             } );
@@ -584,7 +595,7 @@ namespace PreceptsOfThePrecursors
                 int friendlyStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Friendly].TotalStrength;
                 int hostileStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength;
 
-                if ( friendlyStrength > 2500 && hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 3, false ) )
+                if ( friendlyStrength > 2500 && hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 5, false ) )
                 {
                     if ( hops <= 1 )
                         alliedDefense.Add( planet );
@@ -593,7 +604,7 @@ namespace PreceptsOfThePrecursors
                 }
                 if ( hops == 0 )
                 {
-                    if ( hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 3, false ) )
+                    if ( hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 5, false ) )
                         hivesInDanger.Add( planet );
 
                     int enclaveOnPlanet = 0;
@@ -611,11 +622,11 @@ namespace PreceptsOfThePrecursors
                     else
                         planetsByEnclaveCount.AddPair( enclaveOnPlanet, new List<Planet>() { planet } );
                 }
-                else if ( hops == 1 && hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 3, false ) )
+                else if ( hops == 1 && hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 5, false ) )
                 {
                     hivesThreatened.Add( planet );
                 }
-                else if ( hops <= AttackHops && hostileStrength > 2500 && Fireteam.GetDangerOfPath( faction, Context, CurrentPlanetForFireteam, planet, false, out short _ ) < 500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 3, false ) )
+                else if ( hops <= AttackHops && hostileStrength > 2500 && Fireteam.GetDangerOfPath( faction, Context, CurrentPlanetForFireteam, planet, false, out short _ ) < 500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 5, false ) )
                 {
                     planetsToAttack.Add( planet );
                 }
