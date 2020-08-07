@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Arcen.AIW2.Core;
+﻿using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
+using System;
+using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -866,6 +866,7 @@ namespace PreceptsOfThePrecursors
                 return;
 
             int toSpawn = HivesToSpawn;
+            ArcenSparseLookup<Planet, int> validPlanets = new ArcenSparseLookup<Planet, int>();
 
             for ( int x = 0; x < HivePlanets.Count; x++ )
             {
@@ -874,7 +875,19 @@ namespace PreceptsOfThePrecursors
                     if ( planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 2500 )
                         return DelReturn.Continue;
 
-                    if ( !HivePlanets.Contains( planet ) )
+                    if (HivePlanets.Contains(planet))
+                    {
+                        int hivesOnPlanet = 0;
+                        for ( int y = 0; y < Hives.Count; y++ )
+                            if ( Hives[y].Planet == planet )
+                                hivesOnPlanet++;
+                        if ( hivesOnPlanet < Intensity )
+                            if ( validPlanets.GetHasKey( planet ) )
+                                validPlanets[planet]++;
+                            else
+                                validPlanets.AddPair( planet, 1 );
+                    }
+                    else
                     {
                         planet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
                         toSpawn--;
@@ -887,11 +900,17 @@ namespace PreceptsOfThePrecursors
                 } );
             }
 
-            for ( int x = 0; x < toSpawn; x++ )
+            while (toSpawn > 0 )
             {
-                Planet spawnPlanet = HivePlanets[Context.RandomToUse.Next( HivePlanets.Count )];
+                validPlanets.DoFor( pair =>
+                {
+                    pair.Key.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                    pair.Value++;
+                    if ( pair.Value > Intensity )
+                        return DelReturn.RemoveAndContinue;
 
-                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                    return DelReturn.Continue;
+                } );
             }
 
             if ( faction.HasObtainedSpireDebris )
@@ -1366,7 +1385,14 @@ namespace PreceptsOfThePrecursors
                         {
                             validPlanets.Add( planet );
                             if ( !HivePlanets.Contains( planet ) )
-                                forceSpawn.Add( planet );
+                            {
+                                int hivesOnPlanet = 0;
+                                for ( int x = 0; x < Hives.Count; x++ )
+                                    if ( Hives[x].Planet == planet )
+                                        hivesOnPlanet++;
+                                if ( hivesOnPlanet < Intensity )
+                                    forceSpawn.Add( planet );
+                            }
                         }
 
                         return DelReturn.Continue;
@@ -1375,9 +1401,11 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
-            Planet spawnPlanet = validPlanets[Context.RandomToUse.Next( validPlanets.Count )];
-
-            spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+            if ( validPlanets.Count > 0 )
+            {
+                Planet spawnPlanet = validPlanets[Context.RandomToUse.Next( validPlanets.Count )];
+                spawnPlanet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+            }
 
             for ( int x = 0; x < forceSpawn.Count; x++ )
             {
