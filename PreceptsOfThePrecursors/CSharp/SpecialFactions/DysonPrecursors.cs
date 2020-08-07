@@ -295,10 +295,8 @@ namespace PreceptsOfThePrecursors
             {
                 for ( int x = 0; x < MothershipData.Level; x++ )
                     faction.OverallPowerLevel += FInt.FromParts( 0, 334 );
-                return;
-            }
-
-            faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
+            } else 
+                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
@@ -1833,12 +1831,12 @@ namespace PreceptsOfThePrecursors
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
                  if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
-                     faction.OverallPowerLevel += FInt.FromParts( 0, 150 );
+                     faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
 
                  if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) < 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                      for ( int x = 0; x < 7; x++ )
                          if ( DysonPrecursors.DysonNodes[planet][x] != null )
-                             faction.OverallPowerLevel += FInt.FromParts( 0, 005 ) * (x + 1);
+                             faction.OverallPowerLevel += FInt.FromParts( 0, 010 ) * (x + 1);
 
                  return DelReturn.Continue;
              } );
@@ -2007,7 +2005,7 @@ namespace PreceptsOfThePrecursors
                      if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
                          return DelReturn.Continue; // Do not path into Protector planets.
 
-                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 500;
+                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 2500;
 
                      if ( DysonPrecursors.Mothership != null && DysonPrecursors.Mothership.Planet == planet && workingPlanetHasHostiles )
                      {
@@ -2071,12 +2069,12 @@ namespace PreceptsOfThePrecursors
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
                  if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
-                     faction.OverallPowerLevel += FInt.FromParts( 0, 150 );
+                     faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
 
                  if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                      for ( int x = 0; x < 7; x++ )
                          if ( DysonPrecursors.DysonNodes[planet][x] != null )
-                             faction.OverallPowerLevel += FInt.FromParts( 0, 005 ) * (x + 1);
+                             faction.OverallPowerLevel += FInt.FromParts( 0, 010 ) * (x + 1);
 
                  return DelReturn.Continue;
              } );
@@ -2220,7 +2218,7 @@ namespace PreceptsOfThePrecursors
                     continue;
                 packet.Planet.DoForLinkedNeighbors( false, planet =>
                  {
-                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 500;
+                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 2500;
 
                      if ( DysonPrecursors.Mothership != null && DysonPrecursors.Mothership.Planet == planet && workingPlanetHasHostiles )
                      {
