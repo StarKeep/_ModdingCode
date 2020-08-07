@@ -4,6 +4,8 @@ using Arcen.Universal;
 using System;
 using System.Collections.Generic;
 
+//TODO - Setup Enclaves to only claim a singular Youngling type each.
+
 namespace PreceptsOfThePrecursors
 {
     public static class EnclaveSettings
@@ -925,17 +927,18 @@ namespace PreceptsOfThePrecursors
             }
 
             while ( toSpawn > 0 && validPlanets.GetPairCount() > 0 )
-            {
-                validPlanets.DoFor( pair =>
+                for ( int x = 0; x < validPlanets.GetPairCount() && toSpawn > 0; x++ )
                 {
-                    pair.Key.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
-                    pair.Value++;
-                    if ( pair.Value > Intensity )
-                        return DelReturn.RemoveAndContinue;
-
-                    return DelReturn.Continue;
-                } );
-            }
+                    Planet planet = validPlanets.GetPairByIndex( x ).Key;
+                    planet.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, YOUNGLING_HIVE_TAG ), PlanetSeedingZone.OuterSystem );
+                    validPlanets[planet]++;
+                    toSpawn--;
+                    if ( validPlanets[planet] >= Intensity )
+                    {
+                        validPlanets.RemovePairByKey( planet );
+                        x--;
+                    }
+                }
 
             if ( faction.HasObtainedSpireDebris )
                 World_AIW2.Instance.DoForPlanets( false, planet =>
