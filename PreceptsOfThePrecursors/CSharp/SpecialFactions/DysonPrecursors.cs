@@ -11,19 +11,19 @@ namespace PreceptsOfThePrecursors
         private static bool Initialized;
         private static int MinesBase, MinesIncrease, ResourcesBase, ResourcesIncrease;
 
-        private static void Initialize()
+        private static void Initialize( Faction faction )
         {
             MinesBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MinesToMarkUpBase" );
             MinesIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MinesToMarkUpIncrease" );
-            ResourcesBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpBase" );
-            ResourcesIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpIncrease" );
+            ResourcesBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpBase" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity); ;
+            ResourcesIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpIncrease" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity); ;
             Initialized = true;
         }
 
         public static int Mines( int currentMarkLevel, Faction faction )
         {
             if ( !Initialized )
-                Initialize();
+                Initialize( faction );
 
             int cost = MinesBase;
             if ( currentMarkLevel > 1 )
@@ -31,12 +31,12 @@ namespace PreceptsOfThePrecursors
             if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
                 cost /= 10;
 
-            return (cost / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            return cost;
         }
         public static int Resources( int currentMarkLevel, Faction faction )
         {
             if ( !Initialized )
-                Initialize();
+                Initialize( faction );
 
             int cost = ResourcesBase;
             if ( currentMarkLevel > 1 )
@@ -44,20 +44,18 @@ namespace PreceptsOfThePrecursors
             if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
                 cost /= 10;
 
-            return (cost / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            return cost;
         }
     }
     public static class ProtoSphereCosts
     {
         private static bool Initialized;
-        private static int Base, IncreasePerExisting, MinCost, MaxCost, MarkUpBase, MarkUpIncrease;
+        private static int Base, IncreasePerExisting, MarkUpBase, MarkUpIncrease;
 
         private static void Initialize( Faction faction )
         {
             Base = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereBaseCost" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
             IncreasePerExisting = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereCostIncreasePerExistingSphere" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
-            MinCost = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereMinCost" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
-            MaxCost = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereMaxCost" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
             MarkUpBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpBase" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
             MarkUpIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpIncrease" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
             Initialized = true;
@@ -77,9 +75,6 @@ namespace PreceptsOfThePrecursors
 
                  return DelReturn.Continue;
              } );
-
-            cost = Math.Max( MinCost, cost );
-            cost = Math.Min( MaxCost, cost );
 
             if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
                 cost /= 10;
@@ -295,7 +290,8 @@ namespace PreceptsOfThePrecursors
             {
                 for ( int x = 0; x < MothershipData.Level; x++ )
                     faction.OverallPowerLevel += FInt.FromParts( 0, 334 );
-            } else 
+            }
+            else
                 faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
