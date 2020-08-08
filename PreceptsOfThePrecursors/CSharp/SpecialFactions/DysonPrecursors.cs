@@ -1263,7 +1263,7 @@ namespace PreceptsOfThePrecursors
         private void HandleMothershipMovement( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
             // If we've taken heavy damage, panic and run away.
-            if ( Mothership.GetCurrentShieldPoints() < 5000000 * (Mothership.CurrentMarkLevel * 1.5) && World_AIW2.Instance.GameSecond - Mothership.GameSecondEnteredThisPlanet > 30 )
+            if ( Mothership.GetCurrentShieldPoints() < (Mothership.TypeData.GetForMark(1).BaseShieldPoints / 2) * (Mothership.CurrentMarkLevel * 1.5) && World_AIW2.Instance.GameSecond - Mothership.GameSecondEnteredThisPlanet > 30 )
             {
                 // If we're nowhere near a trusted planet, go to the nearest wormhole.
                 Planet nearestTrustedPlanet = MothershipData.Trust.GetNearbyTrustedPlanet( Mothership.Planet, Context );

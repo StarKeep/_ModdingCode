@@ -790,7 +790,7 @@
     tags="DysonNode,DysonNodeAncient,InvulnerabilityGranter,ShowsOnNormalDisplayMode"
     starting_mark_level="Mark1"
     fleet_design_template_i_use_for_drones="DysonSuppressorDronesHig"
-    multiplier_to_all_healths="50.0"
+    multiplier_to_all_healths="5.0"
     damage_multiplier_to_all_weapons="10.0"
     multiplier_to_all_scales="5.0"
     eligible_for_hacks="AwakenDysonPrecursors"
