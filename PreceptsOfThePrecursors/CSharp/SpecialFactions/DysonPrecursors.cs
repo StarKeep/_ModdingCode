@@ -1084,7 +1084,7 @@ namespace PreceptsOfThePrecursors
                     WaveData.timeForNextWave--;
                 else
                 {
-                    WaveData.currentWaveBudget -= AntiMinorFactionWaveData.QueueWave( faction, Context, WaveData.currentWaveBudget.GetNearestIntPreferringHigher() );
+                    WaveData.currentWaveBudget -= AntiMinorFactionWaveData.QueueWave( World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonSuppressors)), Context, WaveData.currentWaveBudget.GetNearestIntPreferringHigher() );
                     WaveData.timeForNextWave = 600;
                 }
             }
