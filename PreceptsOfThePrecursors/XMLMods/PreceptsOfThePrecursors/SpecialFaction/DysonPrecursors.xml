@@ -13,12 +13,13 @@
     player_discoverable="true"
     description="A (relatively) small Dyson Mothership is scouring the galaxy looking for resources. It appears weak, but whoes to say what would happen if this ship manages to achieve its goal?
     
-This Mothership will work to gather resources and rebuild Zenith control over the galaxy, completely consuming Metal Generators to produce Dyson Nodes to secure territory it considers its own. Time will tell if you'll have a place in this new Zenith takeover.
+This Mothership will work to gather resources and rebuild Zenith control over the galaxy, completely consuming Metal Generators to produce defensive structures to secure territory it considers its own. Time will tell if you'll have a place in this new Zenith takeover.
 
-&lt;color=#f25e1c&gt;HIGH IMPACT:&lt;/color&gt; This faction can permanently modify the galaxy, capable of bringing intense pressure to planets and semi-permanently removing resources from planets.">
+&lt;color=#800080&gt;EXTREMELY HIGH IMPACT:&lt;/color&gt; This faction can permanently modify the galaxy's landscape, consuming metal generators in the early game, and locking down entire sections of the galaxy late game.">
     <custom_field name="Intensity" display_name="Strength" description="Just how effective is this faction?"
       sort_group="200" setting_type="IntSlider" default="5" min="1" max="10" />
-    <custom_field name="DebugMode" display_name="Debug" description="Enables debug mode, cutting leveling and building costs by 90%. Development only"
+    <custom_field name="ExtraStrongMode" display_name="Fully Awakened" description="Enable this setting to unleash the full power of the Mothership. With this enabled, she will become a major player early on, even at Intensity 1.
+This is dedicated to people who like unfair challenges. She will ignore many of her normal restrictions, and will quickly carve out sections of the galaxy for her own use. Be warned."
               sort_group="250" setting_type="CustomDropdownArbitraryOptions" arbitrary_options="Enabled,Disabled" default_option="Disabled" />
   </faction>
   <!-- Protectors are a subfaction that are placed by the Precursors on planets that need protected.

@@ -15,8 +15,8 @@ namespace PreceptsOfThePrecursors
         {
             MinesBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MinesToMarkUpBase" );
             MinesIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MinesToMarkUpIncrease" );
-            ResourcesBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpBase" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity); ;
-            ResourcesIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpIncrease" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity); ;
+            ResourcesBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            ResourcesIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
             Initialized = true;
         }
 
@@ -28,8 +28,9 @@ namespace PreceptsOfThePrecursors
             int cost = MinesBase;
             if ( currentMarkLevel > 1 )
                 cost += MinesIncrease * (currentMarkLevel - 1);
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
-                cost /= 10;
+
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+                return 0;
 
             return cost;
         }
@@ -41,8 +42,8 @@ namespace PreceptsOfThePrecursors
             int cost = ResourcesBase;
             if ( currentMarkLevel > 1 )
                 cost += ResourcesIncrease * (currentMarkLevel - 1);
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
-                cost /= 10;
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+                return 0;
 
             return cost;
         }
@@ -54,10 +55,10 @@ namespace PreceptsOfThePrecursors
 
         private static void Initialize( Faction faction )
         {
-            Base = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereBaseCost" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
-            IncreasePerExisting = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereCostIncreasePerExistingSphere" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
-            MarkUpBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpBase" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
-            MarkUpIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpIncrease" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            Base = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereBaseCost" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            IncreasePerExisting = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereCostIncreasePerExistingSphere" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            MarkUpBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            MarkUpIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
             Initialized = true;
         }
 
@@ -76,8 +77,8 @@ namespace PreceptsOfThePrecursors
                  return DelReturn.Continue;
              } );
 
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
-                cost /= 10;
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+                cost /= 2;
 
             return cost;
         }
@@ -91,8 +92,8 @@ namespace PreceptsOfThePrecursors
             if ( currentMarkLevel > 1 )
                 cost += MarkUpIncrease * (currentMarkLevel - 1);
 
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().DebugMode )
-                cost /= 10;
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+                cost /= 2;
 
             return cost;
         }
@@ -104,10 +105,19 @@ namespace PreceptsOfThePrecursors
 
         private static void Initialize( Faction faction )
         {
-            NodeBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalBase" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
-            NodeIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalIncreasePerNodeLevel" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
-            SphereBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereBase" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
-            SphereIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereIncreasePerLevel" ) / 10) * (11 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            NodeBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            NodeIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalIncreasePerNodeLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            SphereBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            SphereIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereIncreasePerLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+            {
+                NodeBase /= 2;
+                NodeIncrease /= 2;
+                SphereBase /= 2;
+                SphereIncrease /= 2;
+            }
+
             Initialized = true;
         }
 
@@ -161,7 +171,7 @@ namespace PreceptsOfThePrecursors
                 Buffer.Add( $"\nThis Mothership has reached its final form. It has stockpiled {MothershipData.Resources} metal and {MothershipData.Mines} mines. " );
             else
                 Buffer.Add( $"\nThis Mothership is currently level {MothershipData.Level} and has {MothershipData.Resources}/{PrecursorCosts.Resources( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction )} of the metal and {MothershipData.Mines}/{PrecursorCosts.Mines( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction )} of the consumed mines required to level up. " );
-            if ( MothershipData.Level < 7 && MothershipData.Resources >= PrecursorCosts.Resources( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction ) )
+            if ( MothershipData.Level < 7 && MothershipData.Resources >= PrecursorCosts.Resources( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction ) && MothershipData.Mines >= PrecursorCosts.Mines(MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction) )
                 Buffer.Add( $"\nIt is ready to upgrade, and will attempt to do so over time on a friendly Noded planet." );
 
             Buffer.Add( $"\nIt can build another Proto Sphere after stockpiling {ProtoSphereCosts.BuildCost( RelatedEntityOrNull.PlanetFaction.Faction )} resources. " );
