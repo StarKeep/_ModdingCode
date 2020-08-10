@@ -803,7 +803,7 @@
     tags="DysonNode,DysonNodeAncient,InvulnerabilityGranter,ShowsOnNormalDisplayMode"
     starting_mark_level="Mark1"
     fleet_design_template_i_use_for_drones="DysonSuppressorDronesHig"
-    multiplier_to_all_healths="5.0"
+    multiplier_to_all_healths="10.0"
     damage_multiplier_to_all_weapons="10.0"
     multiplier_to_all_scales="5.0"
     eligible_for_hacks="AwakenDysonPrecursors"
@@ -811,7 +811,7 @@
     science_to_grant_on_death="3000"
     shows_on_galaxy_map_for_explored_planets="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
   </entity>
   <!--  Dyson Packets
         Built by Dyson Nodes, these release swarms of drones when killed.

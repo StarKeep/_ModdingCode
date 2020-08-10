@@ -1055,6 +1055,9 @@ namespace PreceptsOfThePrecursors
 
         private void HandleAIResponse( Faction faction, ArcenSimContext Context )
         {
+            if ( faction.OverallPowerLevel < 2 )
+                return;
+
             // Increase strength for each proto sphere and dyson node that exists.
             int strMod = MothershipData.Level;
             bool hasSphere = false;
