@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Arcen.AIW2.Core;
+﻿using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
+using System;
+using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -171,7 +171,7 @@ namespace PreceptsOfThePrecursors
                 Buffer.Add( $"\nThis Mothership has reached its final form. It has stockpiled {MothershipData.Resources} metal and {MothershipData.Mines} mines. " );
             else
                 Buffer.Add( $"\nThis Mothership is currently level {MothershipData.Level} and has {MothershipData.Resources}/{PrecursorCosts.Resources( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction )} of the metal and {MothershipData.Mines}/{PrecursorCosts.Mines( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction )} of the consumed mines required to level up. " );
-            if ( MothershipData.Level < 7 && MothershipData.Resources >= PrecursorCosts.Resources( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction ) && MothershipData.Mines >= PrecursorCosts.Mines(MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction) )
+            if ( MothershipData.Level < 7 && MothershipData.Resources >= PrecursorCosts.Resources( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction ) && MothershipData.Mines >= PrecursorCosts.Mines( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction ) )
                 Buffer.Add( $"\nIt is ready to upgrade, and will attempt to do so over time on a friendly Noded planet." );
 
             Buffer.Add( $"\nIt can build another Proto Sphere after stockpiling {ProtoSphereCosts.BuildCost( RelatedEntityOrNull.PlanetFaction.Faction )} resources. " );
@@ -1273,8 +1273,9 @@ namespace PreceptsOfThePrecursors
         private void HandleMothershipMovement( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
             // If we've taken heavy damage, panic and run away.
-            if ( Mothership.GetCurrentShieldPoints() < (Mothership.TypeData.GetForMark(1).BaseShieldPoints / 2) * (Mothership.CurrentMarkLevel * 1.5) && World_AIW2.Instance.GameSecond - Mothership.GameSecondEnteredThisPlanet > 30 )
+            if ( Mothership.GetCurrentShieldPoints() < (Mothership.TypeData.GetForMark( 1 ).BaseShieldPoints / 4) * 3 && World_AIW2.Instance.GameSecond - Mothership.GameSecondEnteredThisPlanet > 30 )
             {
+                ArcenDebugging.SingleLineQuickDebug( $"Mothership running! We have {Mothership.GetCurrentShieldPoints()} which is less than {(Mothership.TypeData.GetForMark( 1 ).BaseShieldPoints / 2) * (Mothership.CurrentMarkLevel * 1.5)}" );
                 // If we're nowhere near a trusted planet, go to the nearest wormhole.
                 Planet nearestTrustedPlanet = MothershipData.Trust.GetNearbyTrustedPlanet( Mothership.Planet, Context );
                 if ( Mothership.Planet.GetHopsTo( nearestTrustedPlanet ) > 3 )
