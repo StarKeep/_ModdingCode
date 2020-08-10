@@ -1084,7 +1084,7 @@ namespace PreceptsOfThePrecursors
                     WaveData.timeForNextWave--;
                 else
                 {
-                    WaveData.currentWaveBudget -= AntiMinorFactionWaveData.QueueWave( World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonSuppressors)), Context, WaveData.currentWaveBudget.GetNearestIntPreferringHigher() );
+                    WaveData.currentWaveBudget -= AntiMinorFactionWaveData.QueueWave( World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) ), Context, WaveData.currentWaveBudget.GetNearestIntPreferringHigher() );
                     WaveData.timeForNextWave = 600;
                 }
             }
@@ -1111,21 +1111,13 @@ namespace PreceptsOfThePrecursors
                 for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
                 {
                     Planet nodePlanet = DysonNodes.GetPairByIndex( x ).Key;
-                    bool isInFocus = false;
-                    nodePlanet.DoForLinkedNeighborsAndSelf( false, planet =>
+                    bool isInFocus = nodePlanet.GetControllingFaction().Type == FactionType.AI;
+                    if ( isInFocus && !hasFocus )
                     {
-                        if ( planet.GetControllingFaction().Type == FactionType.AI )
-                        {
-                            if ( !hasFocus )
-                            {
-                                hasFocus = true;
-                                nodes = new List<GameEntity_Squad>();
-                            }
-                            isInFocus = true;
-                            return DelReturn.Break;
-                        }
-                        return DelReturn.Continue;
-                    } );
+                        hasFocus = true;
+                        nodes = new List<GameEntity_Squad>();
+                    }
+
                     if ( !hasFocus || isInFocus )
                         for ( int y = 0; y < 7; y++ )
                             if ( DysonNodes[nodePlanet][y] != null )
