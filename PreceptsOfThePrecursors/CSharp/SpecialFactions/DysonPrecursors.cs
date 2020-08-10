@@ -266,17 +266,7 @@ namespace PreceptsOfThePrecursors
 
         public override bool GetShouldAttackNormallyExcludedTarget( Faction faction, GameEntity_Squad Target )
         {
-            bool isNearMothershipTerritory = false;
-            Target.Planet.DoForLinkedNeighborsAndSelf( false, planet =>
-            {
-                if ( Target.Planet.GetProtoSphereData().Level > 0 )
-                {
-                    isNearMothershipTerritory = true;
-                    return DelReturn.Break;
-                }
-                return DelReturn.Continue;
-            } );
-            if ( isNearMothershipTerritory && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
+            if ( Target.Planet.GetProtoSphereData().Level > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
                 return true;
             if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) )
                 return true;
@@ -1859,17 +1849,7 @@ namespace PreceptsOfThePrecursors
         }
         public override bool GetShouldAttackNormallyExcludedTarget( Faction faction, GameEntity_Squad Target )
         {
-            bool isNearMothershipTerritory = false;
-            Target.Planet.DoForLinkedNeighborsAndSelf( false, planet =>
-            {
-                if ( planet.GetProtoSphereData().Level > 0 )
-                {
-                    isNearMothershipTerritory = true;
-                    return DelReturn.Break;
-                }
-                return DelReturn.Continue;
-            } );
-            if ( isNearMothershipTerritory && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
+            if ( Target.Planet.GetProtoSphereData().Level > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
                 return true;
             if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) )
                 return true;
