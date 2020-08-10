@@ -343,6 +343,8 @@ namespace PreceptsOfThePrecursors
 
             HandleMovedToNewPlanetLogicIfNeeded( Context );
 
+            DecayTrust( faction );
+
             HandleTrust( faction );
 
             HandleMineConsumption( faction, Context );
@@ -690,6 +692,25 @@ namespace PreceptsOfThePrecursors
             if ( Mothership.GetSecondsSinceEnteringThisPlanet() < 30 )
                 Mothership.TakeShieldRepair( Mothership.CurrentMarkLevel * 250000 );
         }
+        private void DecayTrust(Faction faction )
+        {
+            if ( Mothership == null )
+                return;
+
+            // Decay trust that the Motherhsip is not on, down to an absolute of 1000.
+            World_AIW2.Instance.DoForPlanets( false, planet =>
+            {
+                if ( Mothership.Planet.GetHopsTo( planet ) < 1 )
+                    return DelReturn.Continue;
+
+                if ( MothershipData.Trust.GetTrust( planet ) > 1000 && MothershipData.Trust.GetTrust( planet ) > MothershipData.Trust.MinTrust( planet ) )
+                    MothershipData.Trust.AddOrSubtractTrust( planet, -1 );
+                else if ( MothershipData.Trust.GetTrust( planet ) < -1000 && MothershipData.Trust.GetTrust( planet ) < MothershipData.Trust.MaxTrust( planet ) )
+                    MothershipData.Trust.AddOrSubtractTrust( planet, 1 );
+
+                return DelReturn.Continue;
+            } );
+        }
         private void HandleTrust( Faction faction )
         {
             if ( Mothership == null )
@@ -749,6 +770,8 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
             hostileStrength += Mothership.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength;
+            // Factor in suppressrors.
+            hostileStrength += Mothership.Planet.GetPlanetFactionForFaction( World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) ) ).DataByStance[FactionStance.Self].TotalStrength;
             mothershipStrength = Mothership.PlanetFaction.DataByStance[FactionStance.Self].TotalStrength;
 
             if ( MothershipUndamaged( hullForTrustGain, shieldForTrustGain ) && HumanStrengthAdvantage( humanStrength, hostileStrength ) )
