@@ -1056,7 +1056,7 @@ namespace PreceptsOfThePrecursors
         private void HandleAIResponse( Faction faction, ArcenSimContext Context )
         {
             // Increase strength for each proto sphere and dyson node that exists.
-            int strMod = MothershipData.Level, reqStrength = 0;
+            int strMod = MothershipData.Level;
             bool hasSphere = false;
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
@@ -1102,32 +1102,37 @@ namespace PreceptsOfThePrecursors
                 }
 
             ExoData.ExoReasonOverride = "The Precursor Menace";
-            ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 1000));
-            ExoData.CurrentExoStrength += (totalNodeMarkCount * MothershipData.Level) + strMod;
-            if (ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo)
+            ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 500));
+            ExoData.CurrentExoStrength += strMod;
+            if ( ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo )
             {
                 List<GameEntity_Squad> nodes = new List<GameEntity_Squad>();
                 bool hasFocus = false;
-                for(int x = 0; x < DysonNodes.GetPairCount(); x++ )
+                for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
                 {
                     Planet nodePlanet = DysonNodes.GetPairByIndex( x ).Key;
-                    if ( !hasFocus )
-                        nodePlanet.DoForLinkedNeighborsAndSelf( false, planet =>
+                    bool isInFocus = false;
+                    nodePlanet.DoForLinkedNeighborsAndSelf( false, planet =>
+                    {
+                        if ( planet.GetControllingFaction().Type == FactionType.AI )
                         {
-                            if ( planet.GetControllingFaction().Type == FactionType.AI )
+                            if ( !hasFocus )
                             {
                                 hasFocus = true;
                                 nodes = new List<GameEntity_Squad>();
-                                return DelReturn.Break;
                             }
-                            return DelReturn.Continue;
-                        } );
-                    for ( int y = 0; y < 7; y++ )
-                        if ( DysonNodes[nodePlanet][y] != null )
-                            nodes.Add( DysonNodes[nodePlanet][y] );
+                            isInFocus = true;
+                            return DelReturn.Break;
+                        }
+                        return DelReturn.Continue;
+                    } );
+                    if ( !hasFocus || isInFocus )
+                        for ( int y = 0; y < 7; y++ )
+                            if ( DysonNodes[nodePlanet][y] != null )
+                                nodes.Add( DysonNodes[nodePlanet][y] );
                 }
 
-                ExoGalacticAttackManager.SendExoGalacticAttack(ExoOptions.CreateWithDefaults(nodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction), Context);
+                ExoGalacticAttackManager.SendExoGalacticAttack( ExoOptions.CreateWithDefaults( nodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction ), Context );
                 ExoData.CurrentExoStrength = FInt.Zero;
                 ExoData.NumExosSoFar++;
             }
@@ -2019,7 +2024,7 @@ namespace PreceptsOfThePrecursors
                      if ( planet.GetControllingFaction().Type == FactionType.Player && DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > -500 )
                          return DelReturn.Continue; // Do not path into player planets unless they aggrevated our mothership.
 
-                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength - planet.GetPlanetFactionForFaction(faction).DataByStance[FactionStance.Hostile].CloakedStrength > 2500;
+                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength - planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].CloakedStrength > 2500;
 
                      if ( DysonPrecursors.Mothership != null && DysonPrecursors.Mothership.Planet == planet && workingPlanetHasHostiles )
                      {

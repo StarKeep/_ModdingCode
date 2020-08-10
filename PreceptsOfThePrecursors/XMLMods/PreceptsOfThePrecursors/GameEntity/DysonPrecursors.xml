@@ -50,8 +50,8 @@
     >
     <system name="DysonImmurementCannon" display_name="Zenith Immurement Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="7000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
-				shot_type_data="ArmorPiercingShell" shots_per_salvo="7" added_shots_per_salvo_per_mark="1"
+				damage_per_shot="21000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" shots_per_salvo="3" added_shots_per_salvo_per_mark="3"
 				base_engine_stun_per_shot="3" engine_stun_to_engine_gx_less_than="30"	max_engine_stun_seconds="7"
                 base_enemy_weapon_reload_slowing_seconds_per_shot="3" enemy_weapon_reload_slowing_to_armor_mm_less_than="300"
 				max_enemy_weapon_reload_slowing_seconds="30"
@@ -334,7 +334,7 @@
 			>
     <system name="ZenithSuppressionCannon" display_name="Zenith Suppression Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="1400" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				damage_per_shot="14000" range="High2" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
 				shot_type_data="ArmorPiercingShell" shots_per_salvo="14" added_shots_per_salvo_per_mark="14"
 				base_engine_stun_per_shot="7" engine_stun_to_engine_gx_less_than="18"	max_engine_stun_seconds="21"
         base_enemy_weapon_reload_slowing_seconds_per_shot="7" enemy_weapon_reload_slowing_to_armor_mm_less_than="180"
@@ -674,7 +674,7 @@
 			>
     <system name="ZenithSuppressionCannon" display_name="Zenith Suppression Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="1400" range="AboveAverage1" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				damage_per_shot="7000" range="AboveAverage3" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
 				shot_type_data="ArmorPiercingShell" shots_per_salvo="7" added_shots_per_salvo_per_mark="7"
 				>
     </system>
