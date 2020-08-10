@@ -221,6 +221,11 @@
 
     <fleet_membership name="DysonNodeDronesLow"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
     <fleet_membership name="DysonNodeDronesMed"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
+
+    <fleet_membership name="DysonPacketDronesLow"     ship_cap_group="Strike" weight="100" min="5" max="5"/>
+    <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="7" max="7"/>
+    <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="10" max="10"/>
+    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="12" max="12"/>
   </entity>
   <entity
       name="DysonMothershipDefenderDrone"
@@ -245,6 +250,11 @@
 
     <fleet_membership name="DysonNodeDronesLow"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
     <fleet_membership name="DysonNodeDronesMed"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
+
+    <fleet_membership name="DysonPacketDronesLow"     ship_cap_group="Strike" weight="100" min="5" max="5"/>
+    <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="7" max="7"/>
+    <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="10" max="10"/>
+    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="12" max="12"/>
   </entity>
   <entity
       name="DysonMothershipBulwarkDrone"
@@ -265,6 +275,10 @@
     <fleet_membership name="DysonProtectorDronesHig"  ship_cap_group="Strike" weight="100" min="10" max="10"/>
 
     <fleet_membership name="DysonNodeDronesMed"       ship_cap_group="Strike" weight="100" min="2" max="2"/>
+
+    <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="1" max="1"/>
+    <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="2" max="2"/>
+    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="4" max="4"/>
   </entity>
   <entity
       name="DysonMothershipBastionDrone"
@@ -280,6 +294,8 @@
     <fleet_membership name="DysonSuppressorDronesHig" ship_cap_group="Strike" weight="100" min="2" max="2"/>
 
     <fleet_membership name="DysonProtectorDronesHig"  ship_cap_group="Strike" weight="100" min="1" max="1"/>
+
+    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="1" max="1"/>
   </entity>
   <!-- Proto Spheres
        Two Sphere types, Suppressor and Protector
@@ -801,10 +817,10 @@
         Built by Dyson Nodes, these release swarms of drones when killed.
   -->
   <entity
-    name="DysonPacket1"
-    tags="DysonPacket"
-    voice_group="Zenith"
-    gimbal_icon_size_multiplier="1.5"
+    name="DysonPacket1"                                                                                         
+    tags="DysonPacket"                                                                                          
+    voice_group="Zenith"                                                                                        
+    gimbal_icon_size_multiplier="1.5"                                                                           
     visuals="assets/_finalgamemeshes/humanoddities/colonyship/colonyship.prefab"
 		icon_name="Ships1/ColonyShip"
     category="Ship"
@@ -815,7 +831,7 @@
 	display_name="Level 1 Dyson Packet"
 	description="The Precursor workhorse, the Dyson Packet will attempt to blows iteslf, as well as spawning 300% of its listed drone capacity on death."
     starting_mark_level="Mark1"
-    fleet_design_template_i_use_for_drones="DysonNodeDronesLow" strength_multiplier="2.8"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
 	health_change_by_max_health_divided_by_this_per_attack="-1"
     drone_starting_behavior_type="Attacker_Full"
     cost_for_ai_to_purchase="10000"
@@ -838,11 +854,11 @@
 			>
     <system name="ZenithImplosion" display_name="Zenith Implosion"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="10000" range="AlmostNone" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				damage_per_shot="25000" range="AlmostNone" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
 				shot_type_data="FlakShotAOEBurstAtEnd"
-			    area_of_effect_size="1000"
+			    area_of_effect_size="2500"
 			    shots_detonate_immediately="true"
-			    maximum_number_of_targets_hit_per_shot="10"
+			    maximum_number_of_targets_hit_per_shot="25"
 				>
 	</system>
 	  <metal_flow purpose="BuildingDronesInternally" throughput="10" />
@@ -854,7 +870,7 @@
     display_name="Level 2 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark2"
-    fleet_design_template_i_use_for_drones="DysonNodeDronesLow" strength_multiplier="2.8"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
     metal_cost="500000"
     energy_consumption="25000"
     >
@@ -867,7 +883,7 @@
     display_name="Level 3 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark3"
-    fleet_design_template_i_use_for_drones="DysonNodeDronesLow" strength_multiplier="2.8"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
     metal_cost="750000"
     energy_consumption="37500"
     >
@@ -880,7 +896,7 @@
     display_name="Level 4 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark4"
-    fleet_design_template_i_use_for_drones="DysonNodeDronesLow" strength_multiplier="2.8"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
     metal_cost="1000000"
     energy_consumption="50000"
     >
@@ -893,7 +909,7 @@
     display_name="Level 5 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark5"
-    fleet_design_template_i_use_for_drones="DysonNodeDronesMed" strength_multiplier="4.3"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesMed" strength_multiplier="4.3"
     metal_cost="2000000"
     energy_consumption="100000"
     >
@@ -906,7 +922,7 @@
     display_name="Level 6 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark6"
-    fleet_design_template_i_use_for_drones="DysonNodeDronesMed" strength_multiplier="4.3"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesMed" strength_multiplier="4.3"
     metal_cost="3000000"
     energy_consumption="150000"
     >
@@ -919,7 +935,7 @@
     display_name="Level 7 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark7"
-    fleet_design_template_i_use_for_drones="DysonNodeDronesMed" strength_multiplier="4.3"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesMed" strength_multiplier="4.3"
     metal_cost="4000000"
     energy_consumption="200000"
     >
@@ -932,7 +948,7 @@
     display_name="Level 8 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark7"
-    fleet_design_template_i_use_for_drones="DysonProtectorDronesMed" strength_multiplier="20"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesProt" strength_multiplier="20"
     metal_cost="6000000"
     energy_consumption="300000"
     >
@@ -945,7 +961,7 @@
     display_name="Level 9 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark7"
-    fleet_design_template_i_use_for_drones="DysonSuppressorDronesMed" strength_multiplier="40"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesSupp" strength_multiplier="40"
     metal_cost="10000000"
     energy_consumption="5000000"
     >
