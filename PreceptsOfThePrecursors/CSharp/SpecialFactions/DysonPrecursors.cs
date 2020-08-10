@@ -1100,23 +1100,43 @@ namespace PreceptsOfThePrecursors
             }
 
             //Handle the sending of exos towards Noded planets.
-            List<GameEntity_Squad> nodes = new List<GameEntity_Squad>();
             int totalNodeMarkCount = 0;
-            if (DysonNodes != null)
-                for(int x = 0; x < DysonNodes.GetPairCount(); x++)
-                    for(int y = 0; y < 7; y++)
-                        if (DysonNodes.GetPairByIndex(x).Value[y] != null)
+            if ( DysonNodes != null )
+                for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
+                {
+                    for ( int y = 0; y < 7; y++ )
+                        if ( DysonNodes.GetPairByIndex( x ).Value[y] != null )
                         {
-                            int mark = y + 1;
-                            nodes.Add( DysonNodes.GetPairByIndex( x ).Value[x] );
-                            totalNodeMarkCount += mark;
+                            totalNodeMarkCount += y + 1;
                         }
+                }
 
             ExoData.ExoReasonOverride = "The Zenith Awakening";
-            ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 1000));
-            ExoData.CurrentExoStrength += (totalNodeMarkCount * 10) + strMod;
+            ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 10000));
+            ExoData.CurrentExoStrength += (totalNodeMarkCount * MothershipData.Level * 10) + strMod;
             if (ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo)
             {
+                List<GameEntity_Squad> nodes = new List<GameEntity_Squad>();
+                bool hasFocus = false;
+                for(int x = 0; x < DysonNodes.GetPairCount(); x++ )
+                {
+                    Planet nodePlanet = DysonNodes.GetPairByIndex( x ).Key;
+                    if ( !hasFocus )
+                        nodePlanet.DoForLinkedNeighborsAndSelf( false, planet =>
+                        {
+                            if ( planet.GetControllingFaction().Type == FactionType.AI )
+                            {
+                                hasFocus = true;
+                                nodes = new List<GameEntity_Squad>();
+                                return DelReturn.Break;
+                            }
+                            return DelReturn.Continue;
+                        } );
+                    for ( int y = 0; y < 7; y++ )
+                        if ( DysonNodes[nodePlanet][y] != null )
+                            nodes.Add( DysonNodes[nodePlanet][y] );
+                }
+
                 ExoGalacticAttackManager.SendExoGalacticAttack(ExoOptions.CreateWithDefaults(nodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction), Context);
                 ExoData.CurrentExoStrength = FInt.Zero;
                 ExoData.NumExosSoFar++;
