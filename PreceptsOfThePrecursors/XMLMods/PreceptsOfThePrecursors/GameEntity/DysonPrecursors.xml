@@ -50,16 +50,23 @@
     >
     <system name="DysonImmurementCannon" display_name="Zenith Immurement Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="7000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
-				shot_type_data="ArmorPiercingShell" shots_per_salvo="7"
+				damage_per_shot="7000" range="AboveAverage1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" shots_per_salvo="7" added_shots_per_salvo_per_mark="7"
 				base_engine_stun_per_shot="3" engine_stun_to_engine_gx_less_than="30"	max_engine_stun_seconds="7"
                 base_enemy_weapon_reload_slowing_seconds_per_shot="3" enemy_weapon_reload_slowing_to_armor_mm_less_than="300"
 				max_enemy_weapon_reload_slowing_seconds="30"
 				>
     </system>
+    <system name="DysonDesedimentationCannon" display_name="Zenith Desedimentation Cannon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="21000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				shot_type_data="ArmorPiercingShell" shots_per_salvo="7" only_targets_static_units="true"
+				>
+    </system>
     <system name="TachyonArray" display_name="Tachyon Array"
 				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
     <incoming_damage_modifier based_on="MyTimeAtPlanet" comparison_type="LessThan" compared_to="10" multiplier="0.25" />
+    <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5500" multiplier="0.9" />
     <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
   </entity>
   <entity

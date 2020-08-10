@@ -665,10 +665,10 @@ namespace PreceptsOfThePrecursors
                 MothershipData.Mines >= PrecursorCosts.Mines( MothershipData.Level, faction ) )
             {
                 // Level on up.
+                MothershipData.Resources -= PrecursorCosts.Resources( Mothership.CurrentMarkLevel, faction );
                 GameEntityTypeData newMothershipData = GameEntityTypeDataTable.Instance.GetRowByName( MOTHERSHIP_NAME + (MothershipData.Level + 1) );
                 Mothership = Mothership.TransformInto( Context, newMothershipData, 1 );
                 MothershipData.Level++;
-                MothershipData.Resources = 0;
                 if ( Mothership.Planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched )
                     World_AIW2.Instance.QueueChatMessageOrCommand( "The Dyson Mothership on " + Mothership.Planet.Name + " has leveled up to level " + MothershipData.Level + ".", ChatType.LogToCentralChat, Context );
             }
@@ -1012,8 +1012,8 @@ namespace PreceptsOfThePrecursors
                         spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
                     if ( spawnFaction != null )
                     {
+                        MothershipData.Resources -= ProtoSphereCosts.BuildCost( faction );
                         (spawnFaction.Implementation as BaseDysonSubfaction).CreateProtoSphere( spawnFaction, Mothership.Planet, Context );
-                        MothershipData.Resources = 0;
                         MothershipData.PlanetToBuildOn = null;
                     }
                 }
