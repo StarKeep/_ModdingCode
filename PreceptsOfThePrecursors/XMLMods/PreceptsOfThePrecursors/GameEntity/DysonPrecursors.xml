@@ -222,10 +222,10 @@
     <fleet_membership name="DysonNodeDronesLow"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
     <fleet_membership name="DysonNodeDronesMed"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
 
-    <fleet_membership name="DysonPacketDronesLow"     ship_cap_group="Strike" weight="100" min="5" max="5"/>
-    <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="7" max="7"/>
-    <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="10" max="10"/>
-    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="12" max="12"/>
+    <fleet_membership name="DysonPacketDronesLow"     ship_cap_group="Strike" weight="100" min="10" max="10"/>
+    <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="15" max="15"/>
+    <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="20" max="20"/>
+    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="25" max="25"/>
   </entity>
   <entity
       name="DysonMothershipDefenderDrone"
@@ -251,10 +251,10 @@
     <fleet_membership name="DysonNodeDronesLow"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
     <fleet_membership name="DysonNodeDronesMed"       ship_cap_group="Strike" weight="100" min="25" max="25"/>
 
-    <fleet_membership name="DysonPacketDronesLow"     ship_cap_group="Strike" weight="100" min="5" max="5"/>
-    <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="7" max="7"/>
-    <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="10" max="10"/>
-    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="12" max="12"/>
+    <fleet_membership name="DysonPacketDronesLow"     ship_cap_group="Strike" weight="100" min="10" max="10"/>
+    <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="15" max="15"/>
+    <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="20" max="20"/>
+    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="25" max="25"/>
   </entity>
   <entity
       name="DysonMothershipBulwarkDrone"
@@ -295,7 +295,8 @@
 
     <fleet_membership name="DysonProtectorDronesHig"  ship_cap_group="Strike" weight="100" min="1" max="1"/>
 
-    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="1" max="1"/>
+    <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="1" max="1"/>
+    <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="2" max="2"/>
   </entity>
   <!-- Proto Spheres
        Two Sphere types, Suppressor and Protector
@@ -811,7 +812,7 @@
     science_to_grant_on_death="3000"
     shows_on_galaxy_map_for_explored_planets="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="5000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="50000" />
   </entity>
   <!--  Dyson Packets
         Built by Dyson Nodes, these release swarms of drones when killed.
@@ -854,9 +855,9 @@
 			>
     <system name="ZenithImplosion" display_name="Zenith Implosion"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="25000" range="AlmostNone" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				damage_per_shot="25000" range="Small1" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
 				shot_type_data="FlakShotAOEBurstAtEnd"
-			    area_of_effect_size="2500"
+			    area_of_effect_size="5000"
 			    shots_detonate_immediately="true"
 			    maximum_number_of_targets_hit_per_shot="25"
 				>
