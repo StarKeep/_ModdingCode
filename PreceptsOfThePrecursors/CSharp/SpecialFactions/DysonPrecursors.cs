@@ -272,36 +272,7 @@ namespace PreceptsOfThePrecursors
                 return true;
             return false;
         }
-        public override void UpdatePowerLevel( Faction faction )
-        {
-            faction.OverallPowerLevel = FInt.Zero;
-            if ( MothershipData == null )
-                return;
-            if ( MothershipData.Level < 6 )
-            {
-                for ( int x = 0; x < MothershipData.Level; x++ )
-                    faction.OverallPowerLevel += FInt.FromParts( 0, 334 );
-            }
-            else
-                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
-
-            World_AIW2.Instance.DoForPlanets( false, planet =>
-            {
-                if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
-                    faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
-
-                if ( faction.OverallPowerLevel > 5 )
-                {
-                    faction.OverallPowerLevel = FInt.FromParts( 5, 000 );
-                    return DelReturn.Break;
-                }
-
-                return DelReturn.Continue;
-            } );
-
-            if ( faction.OverallPowerLevel > 5 )
-                faction.OverallPowerLevel = FInt.FromParts( 5, 000 );
-        }
+        
         public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             if ( faction.MustBeAwakenedByPlayer && !faction.HasBeenAwakenedByPlayer )
@@ -692,7 +663,7 @@ namespace PreceptsOfThePrecursors
             if ( Mothership.GetSecondsSinceEnteringThisPlanet() < 30 )
                 Mothership.TakeShieldRepair( Mothership.CurrentMarkLevel * 250000 );
         }
-        private void DecayTrust(Faction faction )
+        private void DecayTrust( Faction faction )
         {
             if ( Mothership == null )
                 return;
@@ -700,7 +671,7 @@ namespace PreceptsOfThePrecursors
             // Decay trust that the Motherhsip is not on, down to an absolute of 1000.
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                if ( Mothership.Planet.GetHopsTo( planet ) < 1 )
+                if ( Mothership.Planet.GetHopsTo( planet ) < 1 || (MothershipData.PlanetToBuildOn != null && MothershipData.PlanetToBuildOn == planet) )
                     return DelReturn.Continue;
 
                 if ( MothershipData.Trust.GetTrust( planet ) > 1000 && MothershipData.Trust.GetTrust( planet ) > MothershipData.Trust.MinTrust( planet ) )
@@ -1047,7 +1018,7 @@ namespace PreceptsOfThePrecursors
 
         private void HandleAIResponse( Faction faction, ArcenSimContext Context )
         {
-            if ( faction.OverallPowerLevel < 2 )
+            if ( World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonSuppressors)).OverallPowerLevel < 2 )
                 return;
 
             // Increase strength for each proto sphere and dyson node that exists.
@@ -1106,6 +1077,8 @@ namespace PreceptsOfThePrecursors
                 for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
                 {
                     Planet nodePlanet = DysonNodes.GetPairByIndex( x ).Key;
+                    if ( MothershipData.Trust.GetTrust( nodePlanet ) > 0 )
+                        continue; // Skip protectors.
                     bool isInFocus = nodePlanet.GetControllingFaction().Type == FactionType.AI;
                     if ( isInFocus && !hasFocus )
                     {
@@ -1118,7 +1091,7 @@ namespace PreceptsOfThePrecursors
                             if ( DysonNodes[nodePlanet][y] != null )
                                 nodes.Add( DysonNodes[nodePlanet][y] );
                 }
-
+                nodes.Add( Mothership );
                 ExoGalacticAttackManager.SendExoGalacticAttack( ExoOptions.CreateWithDefaults( nodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction ), Context );
                 ExoData.CurrentExoStrength = FInt.Zero;
                 ExoData.NumExosSoFar++;
@@ -1820,21 +1793,29 @@ namespace PreceptsOfThePrecursors
         public override void UpdatePowerLevel( Faction faction )
         {
             faction.OverallPowerLevel = FInt.Zero;
-            if ( DysonPrecursors.MothershipData == null || DysonPrecursors.DysonNodes == null )
+            if ( DysonPrecursors.MothershipData == null )
                 return;
+            if ( DysonPrecursors.MothershipData.Level < 6 )
+            {
+                for ( int x = 0; x < DysonPrecursors.MothershipData.Level; x++ )
+                    faction.OverallPowerLevel += FInt.FromParts( 0, 334 );
+            }
+            else
+                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
-             {
-                 if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
-                     faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
+            {
+                if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
+                    faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
 
-                 if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) < 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
-                     for ( int x = 0; x < 7; x++ )
-                         if ( DysonPrecursors.DysonNodes[planet][x] != null )
-                             faction.OverallPowerLevel += FInt.FromParts( 0, 010 ) * (x + 1);
+                if ( faction.OverallPowerLevel > 5 )
+                {
+                    faction.OverallPowerLevel = FInt.FromParts( 5, 000 );
+                    return DelReturn.Break;
+                }
 
-                 return DelReturn.Continue;
-             } );
+                return DelReturn.Continue;
+            } );
 
             if ( faction.OverallPowerLevel > 5 )
                 faction.OverallPowerLevel = FInt.FromParts( 5, 000 );
