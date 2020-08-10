@@ -1101,9 +1101,9 @@ namespace PreceptsOfThePrecursors
                         }
                 }
 
-            ExoData.ExoReasonOverride = "The Zenith Awakening";
-            ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 10000));
-            ExoData.CurrentExoStrength += (totalNodeMarkCount * MothershipData.Level * 10) + strMod;
+            ExoData.ExoReasonOverride = "The Precursor Menace";
+            ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 1000));
+            ExoData.CurrentExoStrength += (totalNodeMarkCount * MothershipData.Level) + strMod;
             if (ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo)
             {
                 List<GameEntity_Squad> nodes = new List<GameEntity_Squad>();
