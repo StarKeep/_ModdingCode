@@ -685,37 +685,6 @@ namespace PreceptsOfThePrecursors
 
                 // Reset some movement boolean(s).
                 MothershipData.ReadyToMoveOn = false;
-
-                // Spawn a node if our absolute trust on the planet is above 1k.
-                if ( Math.Abs( MothershipData.Trust.GetTrust( Mothership.Planet ) ) >= 1000 )
-                {
-                    for ( int x = 0; x < MothershipData.Level; x++ )
-                    {
-                        if ( DysonNodes[Mothership.Planet] == null || DysonNodes[Mothership.Planet][x] == null )
-                        {
-                            // Found a free slot. Spawn a new node.
-                            Faction spawnFaction = null;
-                            if ( MothershipData.Trust.GetTrust( Mothership.Planet ) >= 1000 )
-                            {
-                                spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) );
-                            }
-                            else if ( MothershipData.Trust.GetTrust( Mothership.Planet ) <= -1000 )
-                            {
-                                spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
-                            }
-                            // Support for non-protector, non-suppresor dyson factions.
-                            if ( spawnFaction == null && Mothership.Planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Other )
-                            {
-                                spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
-                            }
-                            if ( spawnFaction != null )
-                            {
-                                (spawnFaction.Implementation as BaseDysonSubfaction).CreateDysonNode( spawnFaction, Mothership.Planet, x + 1, Context );
-                                break;
-                            }
-                        }
-                    }
-                }
             }
             // If we recently entered a new planet, regenerate our shields.
             if ( Mothership.GetSecondsSinceEnteringThisPlanet() < 30 )
