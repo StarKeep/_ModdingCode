@@ -266,7 +266,17 @@ namespace PreceptsOfThePrecursors
 
         public override bool GetShouldAttackNormallyExcludedTarget( Faction faction, GameEntity_Squad Target )
         {
-            if ( Target.Planet.GetProtoSphereData().Level > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
+            bool isNearMothershipTerritory = false;
+            Target.Planet.DoForLinkedNeighborsAndSelf( false, planet =>
+            {
+                if ( Target.Planet.GetProtoSphereData().Level > 0 )
+                {
+                    isNearMothershipTerritory = true;
+                    return DelReturn.Break;
+                }
+                return DelReturn.Continue;
+            } );
+            if ( isNearMothershipTerritory && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
                 return true;
             if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) )
                 return true;
@@ -1062,14 +1072,12 @@ namespace PreceptsOfThePrecursors
             {
                 if ( planet.GetProtoSphereData().Level > 0 && planet.GetControllingOrInfluencingFaction().Implementation is DysonSuppressors )
                     hasSphere = true;
-                strMod += planet.GetProtoSphereData().Level;
-                reqStrength += planet.GetProtoSphereData().Level * 2500;
+                strMod += planet.GetProtoSphereData().Level * 100;
                 if ( DysonNodes[planet] != null )
                     for ( int x = 0; x < DysonNodes[planet].Length; x++ )
                         if ( DysonNodes[planet][x] != null )
                         {
                             strMod += x + 1;
-                            reqStrength += (x + 1) * 1000;
                         }
                 return DelReturn.Continue;
             } );
@@ -1091,30 +1099,28 @@ namespace PreceptsOfThePrecursors
                 }
             }
 
-            // Handle the sending of exos towards Noded planets.
-            //List<GameEntity_Squad> highestMarkNodes = new List<GameEntity_Squad>();
-            //int highestMark = 0, totalNodeMarkCount = 0;
-            //if (DysonNodes != null)
-            //    for(int x = 0; x < DysonNodes.GetPairCount(); x++)
-            //        for(int y = 0; y < 7; y++)
-            //            if (DysonNodes.GetPairByIndex(x).Value[y] != null)
-            //            {
-            //                int mark = y + 1;
-            //                if (mark > highestMark)
-            //                    highestMark = mark;
-            //                if (mark == highestMark)
-            //                    highestMarkNodes.Add(DysonNodes.GetPairByIndex(x).Value[y]);
-            //                totalNodeMarkCount += mark;
-            //            }
-            //
-            //ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (highestMark * 1000)) + (MothershipData.Level * 5000);
-            //ExoData.CurrentExoStrength += 100 * totalNodeMarkCount;
-            //if (ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo)
-            //{
-            //    ExoGalacticAttackManager.SendExoGalacticAttack(ExoOptions.CreateWithDefaults(highestMarkNodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction), Context);
-            //    ExoData.CurrentExoStrength = FInt.Zero;
-            //    ExoData.NumExosSoFar++;
-            //}
+            //Handle the sending of exos towards Noded planets.
+            List<GameEntity_Squad> nodes = new List<GameEntity_Squad>();
+            int totalNodeMarkCount = 0;
+            if (DysonNodes != null)
+                for(int x = 0; x < DysonNodes.GetPairCount(); x++)
+                    for(int y = 0; y < 7; y++)
+                        if (DysonNodes.GetPairByIndex(x).Value[y] != null)
+                        {
+                            int mark = y + 1;
+                            nodes.Add( DysonNodes.GetPairByIndex( x ).Value[x] );
+                            totalNodeMarkCount += mark;
+                        }
+
+            ExoData.ExoReasonOverride = "The Zenith Awakening";
+            ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 1000));
+            ExoData.CurrentExoStrength += (totalNodeMarkCount * 10) + strMod;
+            if (ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo)
+            {
+                ExoGalacticAttackManager.SendExoGalacticAttack(ExoOptions.CreateWithDefaults(nodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction), Context);
+                ExoData.CurrentExoStrength = FInt.Zero;
+                ExoData.NumExosSoFar++;
+            }
         }
 
         private void SpawnPackets( Faction faction, ArcenSimContext Context )
@@ -1414,8 +1420,6 @@ namespace PreceptsOfThePrecursors
         {
             if ( planet.GetProtoSphereData().Type != DysonProtoSphereData.ProtoSphereType.None )
                 return false;
-            if ( Math.Abs( MothershipData.Trust.GetTrust( planet ) ) < 2000 )
-                return false;
             return true;
         }
         // Handle movement for security and expansion.
@@ -1705,14 +1709,6 @@ namespace PreceptsOfThePrecursors
                     World_AIW2.Instance.QueueChatMessageOrCommand( $"{creator} on {planet.Name} has constructed a level {nodeMarkLevel} Dyson Node for {faction.StartFactionColourForLog()}{faction.GetDisplayName()}</color>.", ChatType.LogToCentralChat, Context );
             }
         }
-        public override bool GetShouldAttackNormallyExcludedTarget( Faction faction, GameEntity_Squad Target )
-        {
-            if ( Target.Planet.GetProtoSphereData().Level > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
-                return true;
-            if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) )
-                return true;
-            return false;
-        }
         public void FixProtoSphereLevelIfNeeded( Faction faction, Planet planet )
         {
             bool sphereExists = false;
@@ -1838,8 +1834,26 @@ namespace PreceptsOfThePrecursors
                  return DelReturn.Continue;
              } );
 
-            if ( faction.OverallPowerLevel > 2 )
-                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
+            if ( faction.OverallPowerLevel > 5 )
+                faction.OverallPowerLevel = FInt.FromParts( 5, 000 );
+        }
+        public override bool GetShouldAttackNormallyExcludedTarget( Faction faction, GameEntity_Squad Target )
+        {
+            bool isNearMothershipTerritory = false;
+            Target.Planet.DoForLinkedNeighborsAndSelf( false, planet =>
+            {
+                if ( planet.GetProtoSphereData().Level > 0 )
+                {
+                    isNearMothershipTerritory = true;
+                    return DelReturn.Break;
+                }
+                return DelReturn.Continue;
+            } );
+            if ( isNearMothershipTerritory && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
+                return true;
+            if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) )
+                return true;
+            return false;
         }
 
         public override void CreateProtoSphere( Faction faction, Planet planet, ArcenSimContext Context )
@@ -2005,7 +2019,7 @@ namespace PreceptsOfThePrecursors
                      if ( planet.GetControllingFaction().Type == FactionType.Player && DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > -500 )
                          return DelReturn.Continue; // Do not path into player planets unless they aggrevated our mothership.
 
-                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 2500;
+                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength - planet.GetPlanetFactionForFaction(faction).DataByStance[FactionStance.Hostile].CloakedStrength > 2500;
 
                      if ( DysonPrecursors.Mothership != null && DysonPrecursors.Mothership.Planet == planet && workingPlanetHasHostiles )
                      {
@@ -2218,7 +2232,7 @@ namespace PreceptsOfThePrecursors
                     continue;
                 packet.Planet.DoForLinkedNeighbors( false, planet =>
                  {
-                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 2500;
+                     bool workingPlanetHasHostiles = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength - planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].CloakedStrength > 2500;
 
                      if ( DysonPrecursors.Mothership != null && DysonPrecursors.Mothership.Planet == planet && workingPlanetHasHostiles )
                      {

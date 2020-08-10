@@ -647,7 +647,7 @@
 		y_offset_of_icon="50"
 		collision_priority="810"
 		display_name="Dyson Node"
-		description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres and The Mothership on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 200k Metal."
+		description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres and The Mothership on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 200k Metal."
 		fleet_design_template_i_use_for_drones="DysonNodeDronesLow" strength_multiplier="1.12"
     drone_starting_behavior_type="Attacker_Full"
     behavior="Stationary"
