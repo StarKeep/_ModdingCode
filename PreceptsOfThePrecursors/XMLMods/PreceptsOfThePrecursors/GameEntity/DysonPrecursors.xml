@@ -843,7 +843,7 @@
     energy_consumption="12500"
     armor_mm="40"
     albedo="1"
-    mass_tx="1.5"
+    mass_tx="3"
     engine_gx="8"
 	ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
 	ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
@@ -852,6 +852,7 @@
     priority_as_frd_target="NotDangerous"
     priority_to_protect="Expendable"
     should_never_be_captured_by_another_faction="true"
+    speed_multiplier_first_5_seconds_on_planet="5"
 			>
     <system name="ZenithImplosion" display_name="Zenith Implosion"
 				category="Weapon" firing_timing="OnlyInRange"
