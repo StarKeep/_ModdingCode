@@ -108,7 +108,6 @@ namespace PreceptsOfThePrecursors
             for ( int x = 0; x < 7; x++ )
             {
                 bool canSpawn = World_AIW2.Instance.GameSecond % (NodeBase + (NodeIncrease * x)) == 0;
-                ArcenDebugging.SingleLineQuickDebug( $"Mothership, Packet Timer for Mark {x + 1}: {(NodeBase + (NodeIncrease * x))}; can spawn on {World_AIW2.Instance.GameSecond}: {canSpawn.ToString()}" );
                 shouldSpawn[x] = canSpawn;
             }
 

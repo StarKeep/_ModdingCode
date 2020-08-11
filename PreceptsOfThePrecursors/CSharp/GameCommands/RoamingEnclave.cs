@@ -174,6 +174,7 @@ namespace PreceptsOfThePrecursors.GameCommands
         }
     }
 
+    // Used as a temporary fix in early August; kept in just in case. Forcefully stack all younglings on a planet regardless of ownership.
     public class StackYounglings : BaseGameCommand
     {
         public override void Execute( GameCommand command, ArcenSimContext context )

@@ -172,7 +172,7 @@ namespace PreceptsOfThePrecursors
             {
                 int count = 0;
                 int strength = 0;
-                Unit unit = storage.StoredYounglings.GetPairByIndex( x ).Key;
+                YounglingUnit unit = storage.StoredYounglings.GetPairByIndex( x ).Key;
                 GameEntityTypeData unitData = GameEntityTypeDataTable.Instance.GetRowByName( unit.ToString() );
                 for ( int y = 0; y < storage.StoredYounglings[unit].UnitsByMark.GetPairCount(); y++ )
                 {
@@ -241,7 +241,7 @@ namespace PreceptsOfThePrecursors
 
     public class StoredYounglingsData
     {
-        public ArcenSparseLookup<Unit, YounglingCollection> StoredYounglings;
+        public ArcenSparseLookup<YounglingUnit, YounglingCollection> StoredYounglings;
         public int TotalStrength
         {
             get
@@ -255,7 +255,7 @@ namespace PreceptsOfThePrecursors
 
         public bool AddYoungling( GameEntity_Squad youngling )
         {
-            if ( Enum.TryParse( youngling.TypeData.InternalName, out Unit unitName ) )
+            if ( Enum.TryParse( youngling.TypeData.InternalName, out YounglingUnit unitName ) )
             {
                 if ( !StoredYounglings.GetHasKey( unitName ) )
                     StoredYounglings.AddPair( unitName, new YounglingCollection() );
@@ -270,7 +270,7 @@ namespace PreceptsOfThePrecursors
             Faction spawnFaction = enclave.PlanetFaction.Faction.Type == FactionType.SpecialFaction ? enclave.PlanetFaction.Faction : World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( RoamingEnclavePlayerTeam ) );
             for ( int x = 0; x < StoredYounglings.GetPairCount(); x++ )
             {
-                Unit unitName = StoredYounglings.GetPairByIndex( x ).Key;
+                YounglingUnit unitName = StoredYounglings.GetPairByIndex( x ).Key;
                 GameEntityTypeData unitData = GameEntityTypeDataTable.Instance.GetRowByName( unitName.ToString() );
                 YounglingCollection collection = StoredYounglings[unitName];
                 for ( int i = 0; i < collection.UnitsByMark.GetPairCount(); i++ )
@@ -290,10 +290,10 @@ namespace PreceptsOfThePrecursors
                     }
                 }
             }
-            StoredYounglings = new ArcenSparseLookup<Unit, YounglingCollection>();
+            StoredYounglings = new ArcenSparseLookup<YounglingUnit, YounglingCollection>();
         }
 
-        public void AttemptToCombineYounglings( GameEntity_Squad enclave, Unit unit )
+        public void AttemptToCombineYounglings( GameEntity_Squad enclave, YounglingUnit unit )
         {
             if ( !StoredYounglings.GetHasKey( unit ) )
                 return;
@@ -323,7 +323,7 @@ namespace PreceptsOfThePrecursors
 
         public StoredYounglingsData()
         {
-            StoredYounglings = new ArcenSparseLookup<Unit, YounglingCollection>();
+            StoredYounglings = new ArcenSparseLookup<YounglingUnit, YounglingCollection>();
         }
         public void SerializeTo( ArcenSerializationBuffer buffer )
         {
@@ -331,7 +331,7 @@ namespace PreceptsOfThePrecursors
             buffer.AddInt32( ReadStyle.NonNeg, count );
             for ( int x = 0; x < count; x++ )
             {
-                ArcenSparseLookupPair<Unit, YounglingCollection> pair = StoredYounglings.GetPairByIndex( x );
+                ArcenSparseLookupPair<YounglingUnit, YounglingCollection> pair = StoredYounglings.GetPairByIndex( x );
                 buffer.AddByte( ReadStyleByte.Normal, (byte)pair.Key );
                 pair.Value.SerializeTo( buffer );
             }
@@ -340,7 +340,7 @@ namespace PreceptsOfThePrecursors
         {
             int count = buffer.ReadInt32( ReadStyle.NonNeg );
             for ( int x = 0; x < count; x++ )
-                StoredYounglings.AddPair( (Unit)buffer.ReadByte( ReadStyleByte.Normal ), new YounglingCollection( buffer ) );
+                StoredYounglings.AddPair( (YounglingUnit)buffer.ReadByte( ReadStyleByte.Normal ), new YounglingCollection( buffer ) );
         }
     }
 
@@ -391,7 +391,7 @@ namespace PreceptsOfThePrecursors
         {
             StoredYounglingsData storage = enclave.GetStoredYounglings();
             enclave.AdditionalStrengthFromFactions = 0;
-            if ( Enum.TryParse( youngling.TypeData.InternalName, out Unit unitType ) )
+            if ( Enum.TryParse( youngling.TypeData.InternalName, out YounglingUnit unitType ) )
             {
                 if ( storage.AddYoungling( youngling ) )
                     youngling.Despawn( Context, true, InstancedRendererDeactivationReason.GettingIntoTransport );
