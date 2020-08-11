@@ -35,7 +35,7 @@ namespace PreceptsOfThePrecursors
             MaxDefensiveEnclave
         }
     }
-    public enum Unit
+    public enum YounglingUnit
     {
         YounglingWorm,
         YounglingPuffin,
@@ -164,7 +164,7 @@ namespace PreceptsOfThePrecursors
         private void HandleYounglingCombining( ArcenSimContext Context )
         {
             for ( int x = 0; x < Enclaves.Count; x++ )
-                Enclaves[x].CombineYounglingsIfAble( Context );
+                Enclaves[x].PerSecondLogic( Context );
         }
 
         private void HandleUnitSpawningForHives( ArcenSimContext Context )
@@ -200,6 +200,10 @@ namespace PreceptsOfThePrecursors
         private int FireteamsPerDefense;
         private int RetreatPercentage;
 
+        private GameEntity_Squad UnassignedEnclave;
+        private ArcenSparseLookup<YounglingUnit, List<GameEntity_Squad>> EnclavesByYounglingType;
+        private ArcenSparseLookup<YounglingUnit, List<GameEntity_Squad>> HivesByYounglingType;
+
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
             if ( !EnclavesGloballyEnabled )
@@ -219,6 +223,10 @@ namespace PreceptsOfThePrecursors
                 team.Reset();
                 return DelReturn.Continue;
             } );
+
+            UnassignedEnclave = null;
+            EnclavesByYounglingType = new ArcenSparseLookup<YounglingUnit, List<GameEntity_Squad>>();
+            HivesByYounglingType = new ArcenSparseLookup<YounglingUnit, List<GameEntity_Squad>>();
 
             SetupHives( faction, Context );
             SetupEnclaves( faction, Context );
@@ -301,18 +309,22 @@ namespace PreceptsOfThePrecursors
                     } );
                 }
 
-                // Run from a losing fight.
-                if ( hostileStrength > (friendlyStrength + ourStrength) * 2 )
-                    for ( int x = 0; x < pair.Value.Count; x++ )
-                        pair.Value[x].DisbandAndRetreat( faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Value[x].CurrentPlanet, Context ) );
-                else
-                    // Bleed off Enclaves from winning fights.
-                    while ( ourStrength + friendlyStrength > hostileStrength * 5 && pair.Value.Count > 0 )
-                    {
-                        ourStrength -= pair.Value[0].TeamStrength;
-                        pair.Value[0].DisbandAndRetreat( faction, Context, GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Value[0].CurrentPlanet, Context ) );
-                        pair.Value.RemoveAt( 0 );
-                    }
+                GameEntity_Squad retreatPoint = GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Key, Context );
+                if ( retreatPoint != null )
+                {
+                    // Run from a losing fight.
+                    if ( hostileStrength > (friendlyStrength + ourStrength) * 2 )
+                        for ( int x = 0; x < pair.Value.Count; x++ )
+                            pair.Value[x].DisbandAndRetreat( faction, Context, retreatPoint );
+                    else
+                        // Bleed off Enclaves from winning fights.
+                        while ( ourStrength + friendlyStrength > hostileStrength * 5 && pair.Value.Count > 0 )
+                        {
+                            ourStrength -= pair.Value[0].TeamStrength;
+                            pair.Value[0].DisbandAndRetreat( faction, Context, retreatPoint );
+                            pair.Value.RemoveAt( 0 );
+                        }
+                }
 
                 return DelReturn.Continue;
             } );
@@ -323,6 +335,28 @@ namespace PreceptsOfThePrecursors
 
             faction.ExecuteMovementCommands( Context );
             faction.ExecuteWormholeCommands( Context );
+        }
+
+        private YounglingUnit GetYounglingUsedByEnclave( GameEntity_Squad enclave, Faction faction )
+        {
+            YounglingUnit unitType = YounglingUnit.Length;
+
+            if ( enclave.GetStoredYounglings().StoredYounglings.GetPairCount() > 0 )
+                enclave.GetStoredYounglings().StoredYounglings.DoFor( pair =>
+                {
+                    unitType = pair.Key;
+
+                    return DelReturn.Break;
+                } );
+
+            faction.DoForEntities( YOUNGLING_TAG, youngling =>
+            {
+                if ( youngling.MinorFactionStackingID == enclave.PrimaryKeyID && Enum.TryParse( youngling.TypeData.InternalName, out unitType ) )
+                    return DelReturn.Break;
+
+                return DelReturn.Continue;
+            } );
+            return unitType;
         }
 
         private void SetupEnclaves( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
@@ -380,6 +414,19 @@ namespace PreceptsOfThePrecursors
                         else
                             enclave.FireteamId = -1; //something happened to the fireteam, so lets find a new one next LRP stage
                     }
+                }
+
+                YounglingUnit unitType = GetYounglingUsedByEnclave( enclave, faction );
+                if ( unitType == YounglingUnit.Length )
+                {
+                    if ( enclave.GetSecondsSinceCreation() > 10 )
+                        UnassignedEnclave = enclave;
+                }
+                else
+                {
+                    if ( !EnclavesByYounglingType.GetHasKey( unitType ) )
+                        EnclavesByYounglingType.AddPair( unitType, new List<GameEntity_Squad>() );
+                    EnclavesByYounglingType[unitType].Add( enclave );
                 }
 
                 if ( hostileStrength > 0 )
@@ -460,6 +507,11 @@ namespace PreceptsOfThePrecursors
                 if ( !HivePlanetsForBackgroundThreadOnly.Contains( hive.Planet ) )
                     HivePlanetsForBackgroundThreadOnly.Add( hive.Planet );
 
+                YounglingUnit unitType = (YounglingUnit)Enum.Parse( typeof( YounglingUnit ), hive.TypeData.InternalName.Substring( 4 ) );
+                if ( !HivesByYounglingType.GetHasKey( unitType ) )
+                    HivesByYounglingType.AddPair( unitType, new List<GameEntity_Squad>() );
+                HivesByYounglingType[unitType].Add( hive );
+
                 return DelReturn.Continue;
             } );
 
@@ -483,8 +535,7 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
-            ArcenSparseLookup<Planet, ArcenSparseLookup<int, ArcenSparseLookup<byte, List<GameEntity_Squad>>>> younglingGroups = new ArcenSparseLookup<Planet, ArcenSparseLookup<int, ArcenSparseLookup<byte, List<GameEntity_Squad>>>>();
-            int totalCount = 0;
+            ArcenSparseLookup<YounglingUnit, List<GameEntity_Squad>> younglingsThatNeedAnEnclave = new ArcenSparseLookup<YounglingUnit, List<GameEntity_Squad>>();
 
             faction.DoForEntities( YOUNGLING_TAG, youngling =>
             {
@@ -494,10 +545,11 @@ namespace PreceptsOfThePrecursors
                 GameEntity_Squad enclave = World_AIW2.Instance.GetEntityByID_Squad( youngling.MinorFactionStackingID );
                 if ( enclave == null )
                 {
-                    if ( enclaves.Count > 0 )
-                        enclave = enclaves[Context.RandomToUse.Next( enclaves.Count )];
-                    else
-                        return DelReturn.Continue;
+                    YounglingUnit unitType = (YounglingUnit)Enum.Parse( typeof( YounglingUnit ), youngling.TypeData.InternalName );
+                    if ( !younglingsThatNeedAnEnclave.GetHasKey( unitType ) )
+                        younglingsThatNeedAnEnclave.AddPair( unitType, new List<GameEntity_Squad>() );
+                    younglingsThatNeedAnEnclave[unitType].Add( youngling );
+                    return DelReturn.Continue;
                 }
 
                 // If player controlled, leave the Youngling alone.
@@ -536,53 +588,70 @@ namespace PreceptsOfThePrecursors
                     }
                 }
 
-                totalCount++;
-
-                if ( !younglingGroups.GetHasKey( youngling.Planet ) )
-                    younglingGroups.AddPair( youngling.Planet, new ArcenSparseLookup<int, ArcenSparseLookup<byte, List<GameEntity_Squad>>>() );
-                if ( !younglingGroups[youngling.Planet].GetHasKey( youngling.TypeData.RowIndexNonSim ) )
-                    younglingGroups[youngling.Planet].AddPair( youngling.TypeData.RowIndexNonSim, new ArcenSparseLookup<byte, List<GameEntity_Squad>>() );
-                if ( !younglingGroups[youngling.Planet][youngling.TypeData.RowIndexNonSim].GetHasKey( youngling.CurrentMarkLevel ) )
-                    younglingGroups[youngling.Planet][youngling.TypeData.RowIndexNonSim].AddPair( youngling.CurrentMarkLevel, new List<GameEntity_Squad>() );
-
-                younglingGroups[youngling.Planet][youngling.TypeData.RowIndexNonSim][youngling.CurrentMarkLevel].Add( youngling );
-
                 return DelReturn.Continue;
             } );
 
-            younglingGroups.DoFor( mainPair =>
+            try
             {
-                int onPlanet = 0;
-                mainPair.Value.DoFor( subPair =>
-                {
-                    subPair.Value.DoFor( pair =>
+                if ( younglingsThatNeedAnEnclave.GetPairCount() > 0 )
+                    if ( UnassignedEnclave != null )
                     {
-                        onPlanet += pair.Value.Count;
-
-                        return DelReturn.Continue;
-                    } );
-                    return DelReturn.Continue;
-                } );
-
-                if ( onPlanet > 100 )
-                    mainPair.Value.DoFor( subPair =>
-                    {
-                        subPair.Value.DoFor( pair =>
+                        YounglingUnit unitData = YounglingUnit.Length;
+                        int lowestUsage = 999;
+                        HivesByYounglingType.DoFor( pair =>
                         {
-                            if ( pair.Value.Count < 2 )
-                                return DelReturn.Continue;
-                            GameCommand stackYounglingsCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.StackYounglings.ToString() ), GameCommandSource.AnythingElse, faction );
-                            for ( int x = 0; x < pair.Value.Count; x++ )
-                                stackYounglingsCommand.RelatedEntityIDs.Add( pair.Value[x].PrimaryKeyID );
+                            int capacity = pair.Value.Count;
+                            switch ( pair.Key )
+                            {
+                                case YounglingUnit.ClanlingMammoth:
+                                case YounglingUnit.ClanlingBear:
+                                    capacity *= 3;
+                                    break;
+                                default:
+                                    break;
+                            }
 
-                            Context.QueueCommandForSendingAtEndOfContext( stackYounglingsCommand );
+                            int usage = -capacity;
+
+                            if ( EnclavesByYounglingType.GetHasKey( pair.Key ) )
+                                usage += EnclavesByYounglingType[pair.Key].Count;
+
+                            if ( usage < lowestUsage )
+                            {
+                                lowestUsage = usage;
+                                unitData = pair.Key;
+                            }
+
                             return DelReturn.Continue;
                         } );
-                        return DelReturn.Continue;
-                    } );
-                return DelReturn.Continue;
-            } );
 
+                        for ( int x = 0; x < younglingsThatNeedAnEnclave[unitData].Count; x++ )
+                        {
+                            ownershipCommand.RelatedIntegers.Add( younglingsThatNeedAnEnclave[unitData][x].PrimaryKeyID );
+                            ownershipCommand.RelatedIntegers2.Add( UnassignedEnclave.PrimaryKeyID );
+                        }
+                    }
+                    else
+                    {
+                        younglingsThatNeedAnEnclave.DoFor( pair =>
+                        {
+                            if ( !EnclavesByYounglingType.GetHasKey( pair.Key ) )
+                                return DelReturn.Continue;
+
+                            for ( int x = 0; x < pair.Value.Count; x++ )
+                            {
+                                ownershipCommand.RelatedIntegers.Add( pair.Value[x].PrimaryKeyID );
+                                ownershipCommand.RelatedIntegers2.Add( EnclavesByYounglingType[pair.Key][Context.RandomToUse.Next( EnclavesByYounglingType[pair.Key].Count )].PrimaryKeyID );
+                            }
+
+                            return DelReturn.Continue;
+                        } );
+                    }
+            }
+            catch (Exception e)
+            {
+                ArcenDebugging.SingleLineQuickDebug( $"We ran into an error in SetupYounglings. This is on a relatively harmless section of code, so we'll keep going, but the error is as follows: {e.StackTrace}" );
+            }
             if ( markUpCommand.RelatedEntityIDs.Count > 0 )
                 Context.QueueCommandForSendingAtEndOfContext( markUpCommand );
             Context.QueueCommandForSendingAtEndOfContext( ownershipCommand );
@@ -759,9 +828,9 @@ namespace PreceptsOfThePrecursors
                 BaseRoamingEnclave.SecondsPerUnitProduction = new ArcenSparseLookup<GameEntityTypeData, int>();
                 bool useExternal = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetBool_Slow( "MetalCostOverride" );
 
-                for ( int x = 0; x < (int)Unit.Length; x++ )
+                for ( int x = 0; x < (int)YounglingUnit.Length; x++ )
                 {
-                    GameEntityTypeData entityType = GameEntityTypeDataTable.Instance.GetRowByName( ((Unit)x).ToString() );
+                    GameEntityTypeData entityType = GameEntityTypeDataTable.Instance.GetRowByName( ((YounglingUnit)x).ToString() );
                     int baseCost;
                     if ( useExternal || entityType.MetalCost == 0 )
                     {
@@ -771,7 +840,7 @@ namespace PreceptsOfThePrecursors
                             baseCost = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "YounglingCost" );
                     }
                     else
-                        baseCost = GameEntityTypeDataTable.Instance.GetRowByName( ((Unit)x).ToString() ).MetalCost;
+                        baseCost = GameEntityTypeDataTable.Instance.GetRowByName( ((YounglingUnit)x).ToString() ).MetalCost;
                     ArcenDebugging.SingleLineQuickDebug( $"Setting up Youngling Cost for {entityType.DisplayName}" );
                     int secondsPer = baseCost / (20 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity * 3));
                     if ( secondsPer < 1 )
@@ -1338,7 +1407,7 @@ namespace PreceptsOfThePrecursors
 
             if ( PlayerEnclaves != null && PlayerEnclaves.Count > 0 )
                 for ( int x = 0; x < PlayerEnclaves.Count; x++ )
-                    PlayerEnclaves[x].CombineYounglingsIfAble( Context );
+                    PlayerEnclaves[x].PerSecondLogic( Context );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }

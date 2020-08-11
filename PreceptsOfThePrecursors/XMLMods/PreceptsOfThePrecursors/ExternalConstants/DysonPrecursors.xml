@@ -15,9 +15,9 @@
 	custom_int_DysonPrecursors_ProtoSphereResourcesToMarkUpBase="75000"
 	custom_int_DysonPrecursors_ProtoSphereResourcesToMarkUpIncrease="75000"
 	
-	custom_int_DysonPrecursors_PacketSpawnIntervalBase="180"
+	custom_int_DysonPrecursors_PacketSpawnIntervalBase="120"
 	custom_int_DysonPrecursors_PacketSpawnIntervalIncreasePerNodeLevel="60"
-	custom_int_DysonPrecursors_PacketSpawnIntervalSphereBase="120"
-	custom_int_DysonPrecursors_PacketSpawnIntervalSphereIncreasePerLevel="60"
+	custom_int_DysonPrecursors_PacketSpawnIntervalSphereBase="90"
+	custom_int_DysonPrecursors_PacketSpawnIntervalSphereIncreasePerLevel="45"
 >
 </root>

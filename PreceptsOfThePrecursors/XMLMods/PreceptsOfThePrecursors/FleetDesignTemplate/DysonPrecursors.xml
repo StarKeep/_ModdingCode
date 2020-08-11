@@ -24,5 +24,10 @@
   <fleet_design name="DysonNodeDronesLow" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
   <fleet_design name="DysonNodeDronesMed" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
 
+  <fleet_design name="DysonPacketDronesLow" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonPacketDronesMed" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonPacketDronesProt" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  <fleet_design name="DysonPacketDronesSupp" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
+  
   <fleet_design name="DysonSeedlingDrones" design_logic="Drones" weight="1" include_full_cap_of_each_type="true" />
 </root>
