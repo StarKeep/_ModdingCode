@@ -164,7 +164,7 @@ namespace PreceptsOfThePrecursors
         private void HandleYounglingCombining( ArcenSimContext Context )
         {
             for ( int x = 0; x < Enclaves.Count; x++ )
-                Enclaves[x].CombineYounglingsIfAble( Context );
+                Enclaves[x].PerSecondLogic( Context );
         }
 
         private void HandleUnitSpawningForHives( ArcenSimContext Context )
@@ -1407,7 +1407,7 @@ namespace PreceptsOfThePrecursors
 
             if ( PlayerEnclaves != null && PlayerEnclaves.Count > 0 )
                 for ( int x = 0; x < PlayerEnclaves.Count; x++ )
-                    PlayerEnclaves[x].CombineYounglingsIfAble( Context );
+                    PlayerEnclaves[x].PerSecondLogic( Context );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }

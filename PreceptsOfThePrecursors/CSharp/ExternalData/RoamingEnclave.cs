@@ -211,6 +211,30 @@ namespace PreceptsOfThePrecursors
             strength += youngling.GetStrengthPerSquad() * (1 + youngling.ExtraStackedSquadsInThis);
         }
 
+        public void DeployYounglings( YounglingUnit younglingType, GameEntity_Squad enclave, Faction spawnFaction, ArcenSimContext Context, bool setFree = false )
+        {
+            GameEntityTypeData unitData = GameEntityTypeDataTable.Instance.GetRowByName( younglingType.ToString() );
+            for ( int i = 0; i < UnitsByMark.GetPairCount(); i++ )
+            {
+                byte markLevel = UnitsByMark.GetPairByIndex( i ).Key;
+                int toSpawnInTotal = UnitsByMark[markLevel];
+                int stackingCutoff = 10;
+                int stackSize = Math.Max( 1, toSpawnInTotal / stackingCutoff );
+                while ( toSpawnInTotal > 0 )
+                {
+                    short toSpawn = (short)Math.Min( toSpawnInTotal, stackSize );
+                    GameEntity_Squad youngling = GameEntity_Squad.CreateNew( enclave.Planet.GetPlanetFactionForFaction( spawnFaction ), unitData, markLevel, enclave.Planet.GetPlanetFactionForFaction( spawnFaction ).FleetUsedAtPlanet, 1, enclave.WorldLocation, Context );
+                    youngling.AddOrSetExtraStackedSquadsInThis( (short)(toSpawn - 1), true );
+                    youngling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                    if ( setFree )
+                        youngling.MinorFactionStackingID = -1;
+                    else
+                        youngling.MinorFactionStackingID = enclave.PrimaryKeyID;
+                    toSpawnInTotal -= toSpawn;
+                }
+            }
+        }
+
         public YounglingCollection()
         {
             UnitsByMark = new ArcenSparseLookup<byte, int>();
@@ -270,25 +294,7 @@ namespace PreceptsOfThePrecursors
             Faction spawnFaction = enclave.PlanetFaction.Faction.Type == FactionType.SpecialFaction ? enclave.PlanetFaction.Faction : World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( RoamingEnclavePlayerTeam ) );
             for ( int x = 0; x < StoredYounglings.GetPairCount(); x++ )
             {
-                YounglingUnit unitName = StoredYounglings.GetPairByIndex( x ).Key;
-                GameEntityTypeData unitData = GameEntityTypeDataTable.Instance.GetRowByName( unitName.ToString() );
-                YounglingCollection collection = StoredYounglings[unitName];
-                for ( int i = 0; i < collection.UnitsByMark.GetPairCount(); i++ )
-                {
-                    byte markLevel = collection.UnitsByMark.GetPairByIndex( i ).Key;
-                    int toSpawnInTotal = collection.UnitsByMark[markLevel];
-                    int stackingCutoff = 3;
-                    int stackSize = Math.Max( 1, toSpawnInTotal / stackingCutoff );
-                    while ( toSpawnInTotal > 0 )
-                    {
-                        short toSpawn = (short)Math.Min( toSpawnInTotal, stackSize );
-                        GameEntity_Squad youngling = GameEntity_Squad.CreateNew( enclave.Planet.GetPlanetFactionForFaction( spawnFaction ), unitData, markLevel, enclave.Planet.GetPlanetFactionForFaction( spawnFaction ).FleetUsedAtPlanet, 1, enclave.WorldLocation, Context );
-                        youngling.AddOrSetExtraStackedSquadsInThis( (short)(toSpawn - 1), true );
-                        youngling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
-                        youngling.MinorFactionStackingID = enclave.PrimaryKeyID;
-                        toSpawnInTotal -= toSpawn;
-                    }
-                }
+                StoredYounglings.GetPairByIndex( x ).Value.DeployYounglings( StoredYounglings.GetPairByIndex(x).Key, enclave, spawnFaction, Context );
             }
             StoredYounglings = new ArcenSparseLookup<YounglingUnit, YounglingCollection>();
         }
@@ -406,11 +412,26 @@ namespace PreceptsOfThePrecursors
             enclave.AdditionalStrengthFromFactions = 0;
         }
 
-        public static void CombineYounglingsIfAble( this GameEntity_Squad enclave, ArcenSimContext Context )
+        public static void PerSecondLogic( this GameEntity_Squad enclave, ArcenSimContext Context )
         {
             enclave.AdditionalStrengthFromFactions = 0;
 
             StoredYounglingsData collection = enclave.GetStoredYounglings();
+
+            if ( collection.StoredYounglings.GetPairCount() > 0 )
+            {
+                Faction spawnFaction = enclave.PlanetFaction.Faction.Type == FactionType.SpecialFaction ? enclave.PlanetFaction.Faction : World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( RoamingEnclavePlayerTeam ) );
+
+                collection.StoredYounglings.Sort( ( pair1, pair2 ) => { return pair2.Value.Strength.CompareTo( pair1.Value.Strength ); } );
+                for ( int x = 1; x < collection.StoredYounglings.GetPairCount(); x++ )
+                {
+                    YounglingUnit younglingType = collection.StoredYounglings.GetPairByIndex( x ).Key;
+                    collection.StoredYounglings[younglingType].DeployYounglings( younglingType, enclave, spawnFaction, Context, true );
+                    collection.StoredYounglings.RemovePairByKey( younglingType );
+                    x--;
+                }
+            }
+
             for ( int x = 0; x < collection.StoredYounglings.GetPairCount(); x++ )
                 collection.AttemptToCombineYounglings( enclave, collection.StoredYounglings.GetPairByIndex( x ).Key );
 

@@ -51,7 +51,7 @@
     <system name="DysonImmurementCannon" display_name="Zenith Immurement Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="14000" range="AboveAverage1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
-				shot_type_data="ArmorPiercingShell" shots_per_salvo="7" added_shots_per_salvo_per_mark="7"
+				shot_type_data="EnergyWave" shots_per_salvo="7" added_shots_per_salvo_per_mark="7"
 				base_engine_stun_per_shot="3" engine_stun_to_engine_gx_less_than="30"	max_engine_stun_seconds="7"
                 base_enemy_weapon_reload_slowing_seconds_per_shot="3" enemy_weapon_reload_slowing_to_armor_mm_less_than="300"
 				max_enemy_weapon_reload_slowing_seconds="30"
@@ -60,7 +60,7 @@
     <system name="DysonDesedimentationCannon" display_name="Zenith Desedimentation Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="7000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
-				shot_type_data="ArmorPiercingShell" shots_per_salvo="7" only_targets_static_units="true"
+				shot_type_data="EnergyWave" shots_per_salvo="7" only_targets_static_units="true"
 				>
     </system>
     <system name="TachyonArray" display_name="Tachyon Array"
@@ -822,7 +822,7 @@
     <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
     <system name="SpawnPacket" display_name="Spawn Level 1 Packet"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="High" fires_salvos_sequentially="true"
 				shot_type_data="DysonPacket1"
 				system_is_hidden_for_ui="true"
 				>
@@ -871,7 +871,7 @@
     <system name="ZenithImplosion" display_name="Zenith Implosion"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="25000" range="Tiny2" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
-				shot_type_data="FlakShotAOEBurstAtEnd"
+				shot_type_data="PlasmaTorpedoAOEBurstAtEnd"
 			    area_of_effect_size="2500"
 			    shots_detonate_immediately="true"
 			    maximum_number_of_targets_hit_per_shot="25"
