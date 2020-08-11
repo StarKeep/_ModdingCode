@@ -819,7 +819,14 @@
     science_to_grant_on_death="3000"
     shows_on_galaxy_map_for_explored_planets="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="50000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
+    <system name="SpawnPacket" display_name="Spawn Level 1 Packet"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				shot_type_data="DysonPacket1"
+				system_is_hidden_for_ui="true"
+				>
+    </system>
   </entity>
   <!--  Dyson Packets
         Built by Dyson Nodes, these release swarms of drones when killed.
@@ -863,9 +870,9 @@
 			>
     <system name="ZenithImplosion" display_name="Zenith Implosion"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="25000" range="Small1" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				damage_per_shot="25000" range="Tiny2" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
 				shot_type_data="FlakShotAOEBurstAtEnd"
-			    area_of_effect_size="5000"
+			    area_of_effect_size="2500"
 			    shots_detonate_immediately="true"
 			    maximum_number_of_targets_hit_per_shot="25"
 				>
