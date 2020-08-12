@@ -1017,22 +1017,22 @@ namespace PreceptsOfThePrecursors
 
         private void HandleAIResponse( Faction faction, ArcenSimContext Context )
         {
-            if ( World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType(typeof(DysonSuppressors)).OverallPowerLevel < 2 )
+            if ( World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) ).OverallPowerLevel < 2 )
                 return;
 
             // Increase strength for each proto sphere and dyson node that exists.
-            int strMod = MothershipData.Level;
+            int strMod = MothershipData.Level * 100, sphereMod = 0, nodeMod = 0;
             bool hasSphere = false;
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
                 if ( planet.GetProtoSphereData().Level > 0 && planet.GetControllingOrInfluencingFaction().Implementation is DysonSuppressors )
                     hasSphere = true;
-                strMod += planet.GetProtoSphereData().Level * 100;
+                sphereMod += planet.GetProtoSphereData().Level * 100;
                 if ( DysonNodes[planet] != null )
                     for ( int x = 0; x < DysonNodes[planet].Length; x++ )
                         if ( DysonNodes[planet][x] != null )
                         {
-                            strMod += x + 1;
+                            nodeMod += x + 1;
                         }
                 return DelReturn.Continue;
             } );
@@ -1043,7 +1043,7 @@ namespace PreceptsOfThePrecursors
             // Handle the sending of waves towards Proto Sphere planets.
             if ( hasSphere )
             {
-                WaveData.currentWaveBudget += strMod;
+                WaveData.currentWaveBudget += strMod + sphereMod;
 
                 if ( WaveData.timeForNextWave > 0 )
                     WaveData.timeForNextWave--;
@@ -1066,34 +1066,42 @@ namespace PreceptsOfThePrecursors
                         }
                 }
 
-            ExoData.ExoReasonOverride = "The Precursor Menace";
-            ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 500));
-            ExoData.CurrentExoStrength += strMod;
-            if ( ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo )
+            if ( totalNodeMarkCount < 100 )
             {
-                List<GameEntity_Squad> nodes = new List<GameEntity_Squad>();
-                bool hasFocus = false;
-                for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
-                {
-                    Planet nodePlanet = DysonNodes.GetPairByIndex( x ).Key;
-                    if ( MothershipData.Trust.GetTrust( nodePlanet ) > 0 )
-                        continue; // Skip protectors.
-                    bool isInFocus = nodePlanet.GetControllingFaction().Type == FactionType.AI;
-                    if ( isInFocus && !hasFocus )
-                    {
-                        hasFocus = true;
-                        nodes = new List<GameEntity_Squad>();
-                    }
-
-                    if ( !hasFocus || isInFocus )
-                        for ( int y = 0; y < 7; y++ )
-                            if ( DysonNodes[nodePlanet][y] != null )
-                                nodes.Add( DysonNodes[nodePlanet][y] );
-                }
-                nodes.Add( Mothership );
-                ExoGalacticAttackManager.SendExoGalacticAttack( ExoOptions.CreateWithDefaults( nodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction ), Context );
                 ExoData.CurrentExoStrength = FInt.Zero;
-                ExoData.NumExosSoFar++;
+                ExoData.StrengthRequiredForNextExo = FInt.One * 1000;
+            }
+            else
+            {
+                ExoData.ExoReasonOverride = "The Precursor Menace";
+                ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 500));
+                ExoData.CurrentExoStrength += strMod + sphereMod + nodeMod;
+                if ( ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo )
+                {
+                    List<GameEntity_Squad> nodes = new List<GameEntity_Squad>();
+                    bool hasFocus = false;
+                    for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
+                    {
+                        Planet nodePlanet = DysonNodes.GetPairByIndex( x ).Key;
+                        if ( MothershipData.Trust.GetTrust( nodePlanet ) > 0 )
+                            continue; // Skip protectors.
+                        bool isInFocus = nodePlanet.GetControllingFaction().Type == FactionType.AI;
+                        if ( isInFocus && !hasFocus )
+                        {
+                            hasFocus = true;
+                            nodes = new List<GameEntity_Squad>();
+                        }
+
+                        if ( !hasFocus || isInFocus )
+                            for ( int y = 0; y < 7; y++ )
+                                if ( DysonNodes[nodePlanet][y] != null )
+                                    nodes.Add( DysonNodes[nodePlanet][y] );
+                    }
+                    nodes.Add( Mothership );
+                    ExoGalacticAttackManager.SendExoGalacticAttack( ExoOptions.CreateWithDefaults( nodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction ), Context );
+                    ExoData.CurrentExoStrength = FInt.Zero;
+                    ExoData.NumExosSoFar++;
+                }
             }
         }
 
@@ -1875,7 +1883,7 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
-            if ( protoSphere != null && protoSphere.GetSecondsSinceCreation() % 600 == 0 )
+            if ( protoSphere != null && protoSphere.GetSecondsSinceCreation() % 300 == 0 )
             {
                 for ( int x = 0; x < planet.GetProtoSphereData().Level; x++ )
                 {
