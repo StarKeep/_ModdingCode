@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
+using DiffLib;
 
 namespace PreceptsOfThePrecursors
 {
@@ -1280,6 +1281,39 @@ namespace PreceptsOfThePrecursors
                 else
                 {
                     Mothership.QueueWormholeCommand( nearestTrustedPlanet );
+                    return;
+                }
+            }
+
+            // If there is a high amount of strength near her territory, and shes mark 7, deal with it.
+            if ( MothershipData.Level >= 7 )
+            {
+                List<Planet> threatenedPlanets = new List<Planet>();
+                World_AIW2.Instance.DoForPlanets( false, planet =>
+                {
+                    if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || DysonPrecursors.DysonNodes.GetHasKey( planet ) )
+                        planet.DoForLinkedNeighborsAndSelf( false, adjPlanet =>
+                        {
+                            if ( adjPlanet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 3000000 )
+                                threatenedPlanets.Add( adjPlanet );
+
+                            return DelReturn.Continue;
+                        } );
+
+                    return DelReturn.Continue;
+                } );
+
+                if ( threatenedPlanets.Count > 0 )
+                {
+                    Planet targetPlanet = threatenedPlanets[0];
+                    if ( threatenedPlanets.Count > 1 )
+                        for ( int x = 0; x < threatenedPlanets.Count; x++ )
+                            if ( Mothership.Planet.GetHopsTo( threatenedPlanets[x] ) < Mothership.Planet.GetHopsTo( targetPlanet ) )
+                                targetPlanet = threatenedPlanets[x];
+
+                    if ( Mothership.Planet != targetPlanet )
+                        Mothership.QueueWormholeCommand( targetPlanet );
+
                     return;
                 }
             }

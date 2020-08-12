@@ -50,7 +50,7 @@
     >
     <system name="DysonImmurementCannon" display_name="Zenith Immurement Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="14000" range="AboveAverage1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				damage_per_shot="21000" range="High2" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
 				shot_type_data="LaserPulse_DeepBlue" shots_per_salvo="7" added_shots_per_salvo_per_mark="7"
 				base_engine_stun_per_shot="3" engine_stun_to_engine_gx_less_than="30"	max_engine_stun_seconds="7"
                 base_enemy_weapon_reload_slowing_seconds_per_shot="3" enemy_weapon_reload_slowing_to_armor_mm_less_than="300"
@@ -698,8 +698,8 @@
 			>
 	  <system name="ZenithRapidCannon" display_name="Zenith Rapid Cannon"
 				  category="Weapon" firing_timing="OnlyInRange"
-				  damage_per_shot="1400" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
-				  shot_type_data="ArmorPiercingShell" shots_per_salvo="14" added_shots_per_salvo_per_mark="14"
+				  damage_per_shot="1400" range="High2" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
+				  shot_type_data="ArmorPiercingShell" shots_per_salvo="7" added_shots_per_salvo_per_mark="7"
 				>
 	  </system>
     <system name="TachyonArray" display_name="Tachyon Array"
@@ -854,7 +854,7 @@
     shield_points="10000"
     speed="BelowAverage1"
     metal_cost="250000"
-    energy_consumption="12500"
+    energy_consumption="5000"
     armor_mm="40"
     albedo="1"
     mass_tx="3"
@@ -889,7 +889,7 @@
     starting_mark_level="Mark2"
     fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
     metal_cost="500000"
-    energy_consumption="25000"
+    energy_consumption="10000"
 	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="6"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
@@ -903,7 +903,7 @@
     starting_mark_level="Mark3"
     fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
     metal_cost="750000"
-    energy_consumption="37500"
+    energy_consumption="15000"
 	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="5"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
@@ -917,7 +917,7 @@
     starting_mark_level="Mark4"
     fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
     metal_cost="1000000"
-    energy_consumption="50000"
+    energy_consumption="20000"
 	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="4"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
@@ -931,7 +931,7 @@
     starting_mark_level="Mark5"
     fleet_design_template_i_use_for_drones="DysonPacketDronesMed" strength_multiplier="4.3"
     metal_cost="2000000"
-    energy_consumption="100000"
+    energy_consumption="25000"
 	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="3"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
@@ -945,7 +945,7 @@
     starting_mark_level="Mark6"
     fleet_design_template_i_use_for_drones="DysonPacketDronesMed" strength_multiplier="4.3"
     metal_cost="3000000"
-    energy_consumption="150000"
+    energy_consumption="30000"
 	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="2"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
@@ -959,7 +959,7 @@
     starting_mark_level="Mark7"
     fleet_design_template_i_use_for_drones="DysonPacketDronesMed" strength_multiplier="4.3"
     metal_cost="4000000"
-    energy_consumption="200000"
+    energy_consumption="35000"
 	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="1"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
@@ -973,7 +973,7 @@
     starting_mark_level="Mark7"
     fleet_design_template_i_use_for_drones="DysonPacketDronesProt" strength_multiplier="20"
     metal_cost="6000000"
-    energy_consumption="300000"
+    energy_consumption="40000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
@@ -986,7 +986,7 @@
     starting_mark_level="Mark7"
     fleet_design_template_i_use_for_drones="DysonPacketDronesSupp" strength_multiplier="40"
     metal_cost="10000000"
-    energy_consumption="5000000"
+    energy_consumption="50000"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
