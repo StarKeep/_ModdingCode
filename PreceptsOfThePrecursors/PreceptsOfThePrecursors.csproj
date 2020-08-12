@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\RoamingEnclave.xml" />

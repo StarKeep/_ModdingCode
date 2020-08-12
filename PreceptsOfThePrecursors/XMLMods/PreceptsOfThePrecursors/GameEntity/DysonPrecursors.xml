@@ -867,6 +867,7 @@
     priority_to_protect="Expendable"
     should_never_be_captured_by_another_faction="true"
     speed_multiplier_first_5_seconds_on_planet="5"
+	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="7"
 			>
     <system name="ZenithImplosion" display_name="Zenith Implosion"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -889,6 +890,7 @@
     fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
     metal_cost="500000"
     energy_consumption="25000"
+	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="6"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
@@ -902,6 +904,7 @@
     fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
     metal_cost="750000"
     energy_consumption="37500"
+	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="5"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
@@ -915,6 +918,7 @@
     fleet_design_template_i_use_for_drones="DysonPacketDronesLow" strength_multiplier="2.8"
     metal_cost="1000000"
     energy_consumption="50000"
+	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="4"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
@@ -928,6 +932,7 @@
     fleet_design_template_i_use_for_drones="DysonPacketDronesMed" strength_multiplier="4.3"
     metal_cost="2000000"
     energy_consumption="100000"
+	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="3"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
@@ -941,6 +946,7 @@
     fleet_design_template_i_use_for_drones="DysonPacketDronesMed" strength_multiplier="4.3"
     metal_cost="3000000"
     energy_consumption="150000"
+	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="2"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
@@ -954,6 +960,7 @@
     fleet_design_template_i_use_for_drones="DysonPacketDronesMed" strength_multiplier="4.3"
     metal_cost="4000000"
     energy_consumption="200000"
+	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="1"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>

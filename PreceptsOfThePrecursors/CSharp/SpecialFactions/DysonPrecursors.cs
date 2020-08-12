@@ -2158,7 +2158,7 @@ namespace PreceptsOfThePrecursors
                      if ( command != null )
                      {
                          for ( int x = 1; x <= planet.GetProtoSphereData().Level; x++ )
-                             command.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( DysonPrecursors.DYSON_PACKET_TAG + x ) ).ExplicitBaseSquadCap = 1 + planet.GetProtoSphereData().Level - x;
+                             command.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( DysonPrecursors.DYSON_PACKET_TAG + x ) ).ExplicitBaseSquadCap = 1 + planet.GetProtoSphereData().Level - x;
                      }
                  }
 
