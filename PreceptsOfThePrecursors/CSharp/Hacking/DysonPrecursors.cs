@@ -161,16 +161,23 @@ namespace PreceptsOfThePrecursors
             GameEntityTypeData sentinelData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderDecaying" );
             GameEntityTypeData defenderData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelDecaying" );
             GameEntityTypeData bulwarkData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkDecaying" );
-            planet.Mapgen_SeedEntity( Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
-            planet.Mapgen_SeedEntity( Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
-            if ( Hacker.ActiveHack_DurationThusFar % 5 == 0 )
-                planet.Mapgen_SeedEntity( Context, spawnFaction, bulwarkData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+            GameEntityTypeData bastionData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionDecaying" );
+            int toSpawn = 1 + (Hacker.ActiveHack_DurationThusFar / 30);
+            for ( int x = 0; x < toSpawn; x++ )
+            {
+                planet.Mapgen_SeedEntity( Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                planet.Mapgen_SeedEntity( Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                if ( Hacker.ActiveHack_DurationThusFar % 5 == 0 )
+                    planet.Mapgen_SeedEntity( Context, spawnFaction, bulwarkData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                if (Hacker.ActiveHack_DurationThusFar % 30 == 0)
+                    planet.Mapgen_SeedEntity( Context, spawnFaction, bastionData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+            }
 
             if ( Hacker.ActiveHack_DurationThusFar < 60 )
                 return;
 
             // Give them their first batch of units.
-            if ( Hacker.ActiveHack_DurationThusFar % 90 == 0 )
+            if ( Hacker.ActiveHack_DurationThusFar % 60 == 0 )
             {
                 Fleet.Membership defenderMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( sentinelData );
                 defenderMem.ExplicitBaseSquadCap += 10;

@@ -1,8 +1,8 @@
-﻿using Arcen.AIW2.Core;
+﻿using System;
+using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using System;
-using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -271,7 +271,7 @@ namespace PreceptsOfThePrecursors
                 return true;
             return false;
         }
-        
+
         public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             if ( faction.MustBeAwakenedByPlayer && !faction.HasBeenAwakenedByPlayer )
@@ -1059,6 +1059,8 @@ namespace PreceptsOfThePrecursors
             if ( DysonNodes != null )
                 for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
                 {
+                    if ( MothershipData.Trust.GetTrust( DysonNodes.GetPairByIndex( x ).Key ) > 0 && World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) ).OverallPowerLevel < 2 )
+                        continue; // Skip protectors until strong enough.
                     for ( int y = 0; y < 7; y++ )
                         if ( DysonNodes.GetPairByIndex( x ).Value[y] != null )
                         {
@@ -1083,8 +1085,8 @@ namespace PreceptsOfThePrecursors
                     for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
                     {
                         Planet nodePlanet = DysonNodes.GetPairByIndex( x ).Key;
-                        if ( MothershipData.Trust.GetTrust( nodePlanet ) > 0 )
-                            continue; // Skip protectors.
+                        if ( MothershipData.Trust.GetTrust( nodePlanet ) > 0 && World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) ).OverallPowerLevel < 2 )
+                            continue; // Skip protectors untl strong enough.
                         bool isInFocus = nodePlanet.GetControllingFaction().Type == FactionType.AI;
                         if ( isInFocus && !hasFocus )
                         {
@@ -1723,7 +1725,6 @@ namespace PreceptsOfThePrecursors
             Faction precursorFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonPrecursors ) );
             if ( precursorFaction == null )
                 return;
-            enemyThisFactionToAll( faction );
             GetFactionsToAllyTo( faction, Context );
             // Ally up.
             for ( int x = 0; x < FactionsToAllyTo.Count; x++ )
@@ -1750,8 +1751,6 @@ namespace PreceptsOfThePrecursors
                 for ( int i = 0; i < World_AIW2.Instance.Factions.Count; i++ )
                 {
                     Faction otherFaction = World_AIW2.Instance.Factions[i];
-                    if ( faction == otherFaction )
-                        continue;
                     if ( (otherFaction.GetDisplayName().ToLower().Contains( "dyson" ) || otherFaction.GetDisplayName().ToLower().Contains( "zenith" )) && !otherFaction.GetDisplayName().ToLower().Contains( "dark" ) )
                     {
                         FactionsToAllyTo.Add( otherFaction );
@@ -1813,7 +1812,12 @@ namespace PreceptsOfThePrecursors
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
                 if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
-                    faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
+                    faction.OverallPowerLevel += FInt.FromParts( 0, 032 ) * planet.GetProtoSphereData().Level;
+
+                if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) < 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
+                    for ( int x = 0; x < 7; x++ )
+                        if ( DysonPrecursors.DysonNodes[planet][x] != null )
+                            faction.OverallPowerLevel += FInt.FromParts( 0, 010 ) * (x + 1);
 
                 if ( faction.OverallPowerLevel > 5 )
                 {
@@ -1908,6 +1912,7 @@ namespace PreceptsOfThePrecursors
         }
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
+            enemyThisFactionToAll( faction );
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
 
@@ -2063,7 +2068,7 @@ namespace PreceptsOfThePrecursors
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
                  if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
-                     faction.OverallPowerLevel += FInt.FromParts( 0, 500 );
+                     faction.OverallPowerLevel += FInt.FromParts( 0, 032 ) * planet.GetProtoSphereData().Level;
 
                  if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                      for ( int x = 0; x < 7; x++ )
@@ -2073,8 +2078,8 @@ namespace PreceptsOfThePrecursors
                  return DelReturn.Continue;
              } );
 
-            if ( faction.OverallPowerLevel > 2 )
-                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
+            if ( faction.OverallPowerLevel > 3 )
+                faction.OverallPowerLevel = FInt.FromParts( 3, 000 );
         }
         public override void CreateProtoSphere( Faction faction, Planet planet, ArcenSimContext Context )
         {
@@ -2150,19 +2155,19 @@ namespace PreceptsOfThePrecursors
         {
             allyThisFactionToHumans( faction );
             World_AIW2.Instance.DoForPlanets( false, planet =>
-             {
-                 if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter && planet.GetControllingOrInfluencingFaction().Type == FactionType.Player )
-                 {
-                     GameEntity_Squad command = planet.GetCommandStationOrNull();
-                     if ( command != null )
-                     {
-                         for ( int x = 1; x <= planet.GetProtoSphereData().Level; x++ )
-                             command.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( DysonPrecursors.DYSON_PACKET_TAG + x ) ).ExplicitBaseSquadCap = 1 + planet.GetProtoSphereData().Level - x;
-                     }
-                 }
+            {
+                if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter && planet.GetControllingOrInfluencingFaction().Type == FactionType.Player )
+                {
+                    GameEntity_Squad command = planet.GetCommandStationOrNull();
+                    if ( command != null )
+                    {
+                        for ( int x = 1; x <= planet.GetProtoSphereData().Level; x++ )
+                            command.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( DysonPrecursors.DYSON_PACKET_TAG + x ) ).ExplicitBaseSquadCap = 1 + planet.GetProtoSphereData().Level - x;
+                    }
+                }
 
-                 return DelReturn.Continue;
-             } );
+                return DelReturn.Continue;
+            } );
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
 
         }
