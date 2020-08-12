@@ -1684,9 +1684,7 @@ namespace PreceptsOfThePrecursors
             if ( RelatedEntityOrNull.PlanetFaction.Faction.Type == FactionType.Player )
                 return;
 
-            if ( RelatedEntityOrNull.CurrentMarkLevel >= 7 )
-                Buffer.Add( "This Sphere Golem is currently " ).StartColor( UnityEngine.Color.red ).Add( "invulnerable.</color>" );
-            else if ( RelatedEntityOrNull.CountOfEntitiesProvidingExternalInvulnerability > 0 )
+            if ( RelatedEntityOrNull.CountOfEntitiesProvidingExternalInvulnerability > 0 )
                 Buffer.Add( "This Sphere Golem is currently " ).StartColor( UnityEngine.Color.red ).Add( $"invulnerable.</color> The remaining Dyson Nodes on the planet must be killed first." );
 
             DysonProtoSphereData protoSphereData = RelatedEntityOrNull.Planet.GetProtoSphereData();
@@ -1903,7 +1901,7 @@ namespace PreceptsOfThePrecursors
                 planet.GetProtoSphereData().Level++;
                 planet.GetProtoSphereData().Resources = 0;
                 if ( planet.GetProtoSphereData().Level >= 7 )
-                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has reached its maximum level, and has completed constructing a Dyson Sphere. It has become indestructible.", ChatType.LogToCentralChat, Context );
+                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has reached its maximum level, and has completed constructing a Dyson Sphere.", ChatType.LogToCentralChat, Context );
                 else
                     World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has leveled up to level {planet.GetProtoSphereData().Level} .", ChatType.LogToCentralChat, Context );
             }
@@ -2144,7 +2142,7 @@ namespace PreceptsOfThePrecursors
                 planet.GetProtoSphereData().Level++;
                 planet.GetProtoSphereData().Resources = 0;
                 if ( planet.GetProtoSphereData().Level >= 7 )
-                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has reached its maximum level and has become indestructible.", ChatType.LogToCentralChat, Context );
+                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has reached its maximum level.", ChatType.LogToCentralChat, Context );
                 else
                     World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has leveled up to level {planet.GetProtoSphereData().Level} .", ChatType.LogToCentralChat, Context );
             }
@@ -2168,7 +2166,7 @@ namespace PreceptsOfThePrecursors
                 {
                     if ( DysonPrecursors.DysonNodes[planet] == null || DysonPrecursors.DysonNodes[planet][x] == null )
                     {
-                        CreateDysonNode( faction, planet, x + 1, Context, "A Suppressor Sphere" );
+                        CreateDysonNode( faction, planet, x + 1, Context, "A Proto Sphere" );
                         break;
                     }
                 }
