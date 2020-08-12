@@ -170,7 +170,7 @@ namespace PreceptsOfThePrecursors
                 return;
 
             // Give them their first batch of units.
-            if ( Hacker.ActiveHack_DurationThusFar == 60 )
+            if ( Hacker.ActiveHack_DurationThusFar % 90 == 0 )
             {
                 Fleet.Membership defenderMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( sentinelData );
                 defenderMem.ExplicitBaseSquadCap += 10;
@@ -202,11 +202,11 @@ namespace PreceptsOfThePrecursors
                     if ( Hacker.ActiveHack_DurationThusFar > 210 )
                     {
                         Fleet.Membership bulwarkMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( bulwarkData );
-                        bulwarkMem.ExplicitBaseSquadCap++;
+                        bulwarkMem.ExplicitBaseSquadCap = Math.Max(1, bulwarkMem.ExplicitBaseSquadCap + 1);
                         World_AIW2.Instance.QueueChatMessageOrCommand( $"You have stolen the designs from a Dyson Node on {planet.Name}, gaining another 5 Dyson Defenders and 5 Dyson Sentinels. You have also managed to get a Dyson Bulwark!", ChatType.LogToCentralChat, Context );
                     }
                     else
-                        World_AIW2.Instance.QueueChatMessageOrCommand( "You have stolen the designs from a Dyson Node on {planet.Name}, gaining another 5 Dyson Defenders and 5 Dyson Sentinels.", ChatType.LogToCentralChat, Context );
+                        World_AIW2.Instance.QueueChatMessageOrCommand( $"You have stolen the designs from a Dyson Node on {planet.Name}, gaining another 5 Dyson Defenders and 5 Dyson Sentinels.", ChatType.LogToCentralChat, Context );
                 }
             }
 
