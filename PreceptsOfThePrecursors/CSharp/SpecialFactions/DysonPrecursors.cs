@@ -2148,7 +2148,6 @@ namespace PreceptsOfThePrecursors
         }
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
             allyThisFactionToHumans( faction );
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
@@ -2164,6 +2163,8 @@ namespace PreceptsOfThePrecursors
 
                  return DelReturn.Continue;
              } );
+            base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
+
         }
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
