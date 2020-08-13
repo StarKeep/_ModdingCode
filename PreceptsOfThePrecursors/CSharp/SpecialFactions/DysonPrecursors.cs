@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using DiffLib;
 
 namespace PreceptsOfThePrecursors
 {
@@ -1698,6 +1697,10 @@ namespace PreceptsOfThePrecursors
     public abstract class BaseDysonSubfaction : BaseSpecialFaction, IBulkPathfinding
     {
         protected override bool EverNeedsToRunLongRangePlanning => false;
+
+        public static string DEFENSVE_TAG = "DysonDefensive";
+        public static string UTILITY_TAG = "DysonUtility";
+
         // A list of Zenith factions that the Precursors, Suppressors, and Protectors should always be allied to.
         public static List<Faction> FactionsToAllyTo;
         public ArcenSparseLookup<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>> WormholeCommands { get; set; }
@@ -2183,9 +2186,8 @@ namespace PreceptsOfThePrecursors
                 if ( planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched )
                     World_AIW2.Instance.QueueChatMessageOrCommand( $"{creator} on {planet.Name} has constructed a level {nodeMarkLevel} Dyson Node.", ChatType.LogToCentralChat, Context );
         }
-        public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
+        private void GiveDysonStructures( ArcenSimContext Context )
         {
-            allyThisFactionToHumans( faction );
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
                 if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter && planet.GetControllingOrInfluencingFaction().Type == FactionType.Player )
@@ -2195,11 +2197,54 @@ namespace PreceptsOfThePrecursors
                     {
                         for ( int x = 1; x <= planet.GetProtoSphereData().Level; x++ )
                             command.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( DysonPrecursors.DYSON_PACKET_TAG + x ) ).ExplicitBaseSquadCap = 1 + planet.GetProtoSphereData().Level - x;
+
+                        int toGet = 1 + ((planet.GetProtoSphereData().Level - 1) / 2);
+
+                        if ( toGet > 0 )
+                        {
+                            List<GameEntityTypeData> has = new List<GameEntityTypeData>();
+
+                            command.FleetMembership.Fleet.DoForMemberGroups( mem =>
+                            {
+                                if ( mem.TypeData.GetHasTag( DEFENSVE_TAG ) || mem.TypeData.GetHasTag( UTILITY_TAG ) )
+                                    has.Add( mem.TypeData );
+
+                                return DelReturn.Continue;
+                            } );
+
+                            if ( has.Count < toGet )
+                            {
+                                GameEntityTypeData structType = null;
+                                List<GameEntityTypeData> choices = new List<GameEntityTypeData>();
+                                if ( has.Count % 2 == 0 )
+                                {
+                                    for ( int x = 0; x < GameEntityTypeDataTable.Instance.RowsByTag[DEFENSVE_TAG].Count; x++ )
+                                        if ( !has.Contains( GameEntityTypeDataTable.Instance.RowsByTag[DEFENSVE_TAG][x] ) )
+                                            choices.Add( GameEntityTypeDataTable.Instance.RowsByTag[DEFENSVE_TAG][x] );
+                                }
+                                else
+                                    for ( int x = 0; x < GameEntityTypeDataTable.Instance.RowsByTag[UTILITY_TAG].Count; x++ )
+                                        if ( !has.Contains( GameEntityTypeDataTable.Instance.RowsByTag[UTILITY_TAG][x] ) )
+                                            choices.Add( GameEntityTypeDataTable.Instance.RowsByTag[UTILITY_TAG][x] );
+
+
+                                structType = choices[Context.RandomToUse.Next( choices.Count )];
+                                has.Add( structType );
+                                command.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( structType ).ExplicitBaseSquadCap = 1;
+                            }
+                        }
                     }
                 }
 
                 return DelReturn.Continue;
             } );
+        }
+        public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
+        {
+            allyThisFactionToHumans( faction );
+
+            GiveDysonStructures( Context );
+
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
 
         }
