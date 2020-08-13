@@ -673,6 +673,7 @@
     </system>
     <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5000" multiplier="0.05" />
   </entity>
+	<!-- Unused Below -->
   <!-- Player-controlled Enclave. Can build your first one at 5 hives, than every double hives later. (5,10,20,40...) -->
   <entity name="PlayerRoamingEnclaveConstructor" copy_from="NeinzulHiveBase" skip_export="true" metal_cost="5000000" energy_consumption="50000" strength_multiplier="0.01"
 						display_name="Roaming Enclave Constructor" build_sidebar_categories_i_am_part_of="NeinzulEnclaveStructures" absolute_max_cap_when_in_fleets="1"
