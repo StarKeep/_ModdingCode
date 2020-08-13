@@ -991,8 +991,8 @@
     copy_from="DysonSentinel"
     display_name="Dyson Sentinel"
     self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
-    always_self_attritions="true"
 	energy_consumption="0"
+	tech_upgrades_that_benefit_me="Generalist,Light"
   >
   </entity>
   <entity
@@ -1000,8 +1000,8 @@
       copy_from="DysonDefender"
       display_name="Dyson Defender"
       self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
-	    always_self_attritions="true"
 	  energy_consumption="0"
+	  tech_upgrades_that_benefit_me="Fusion,Medium"
   >
   </entity>
   <entity
@@ -1009,8 +1009,8 @@
       copy_from="DysonBulwark"
       display_name="Dyson Bulwark"
       self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
-		always_self_attritions="true"
 	  energy_consumption="0"
+	  tech_upgrades_that_benefit_me="Splash,Medium"
   >
   </entity>
   <entity
@@ -1018,8 +1018,8 @@
       copy_from="DysonBastion"
       display_name="Dyson Bastion"
       self_attritions_X_percent_per_second_if_parent_ship_not_on_planet="1"
-		  always_self_attritions="true"
 	  energy_consumption="0"
+	  tech_upgrades_that_benefit_me="Generalist,Heavy"
   >
   </entity>
 </root>

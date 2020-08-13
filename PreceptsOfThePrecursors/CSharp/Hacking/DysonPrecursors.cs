@@ -177,7 +177,7 @@ namespace PreceptsOfThePrecursors
                 return;
 
             // Give them their first batch of units.
-            if ( Hacker.ActiveHack_DurationThusFar % 60 == 0 )
+            if ( Hacker.ActiveHack_DurationThusFar == 60 )
             {
                 Fleet.Membership defenderMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( sentinelData );
                 defenderMem.ExplicitBaseSquadCap += 10;
@@ -197,19 +197,28 @@ namespace PreceptsOfThePrecursors
                         if ( DysonPrecursors.DysonNodes[planet][x] != null )
                             nodeToPop = DysonPrecursors.DysonNodes[planet][x];
 
+                    byte nodePopped = nodeToPop.CurrentMarkLevel;
+
                     nodeToPop.Die( Context, true );
 
-                    Fleet.Membership defenderMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( sentinelData );
+                    Fleet.Membership defenderMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( sentinelData, 1 );
                     defenderMem.ExplicitBaseSquadCap += 5;
 
-                    Fleet.Membership sentinelMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( defenderData );
+                    Fleet.Membership sentinelMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( defenderData, 1 );
                     sentinelMem.ExplicitBaseSquadCap += 5;
 
                     // If the hack has gone on for long enough, also reward them with a Bulwark.
-                    if ( Hacker.ActiveHack_DurationThusFar > 210 )
+                    if ( nodePopped >= 5 )
                     {
-                        Fleet.Membership bulwarkMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( bulwarkData );
+                        Fleet.Membership bulwarkMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( bulwarkData, 1 );
                         bulwarkMem.ExplicitBaseSquadCap = Math.Max(1, bulwarkMem.ExplicitBaseSquadCap + 1);
+                        if ( nodePopped >= 7 )
+                        {
+                            Fleet.Membership bastionMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( bastionData, 1 );
+                            bastionMem.ExplicitBaseSquadCap = Math.Max( 1, bastionMem.ExplicitBaseSquadCap + 1 );
+                            World_AIW2.Instance.QueueChatMessageOrCommand( $"You have stolen the designs from a Dyson Node on {planet.Name}, gaining another 5 Dyson Defenders and 5 Dyson Sentinels. You have also managed to get a Dyson Bulwark, AND a Dyson Bastion!", ChatType.LogToCentralChat, Context );
+                        }
+                        else
                         World_AIW2.Instance.QueueChatMessageOrCommand( $"You have stolen the designs from a Dyson Node on {planet.Name}, gaining another 5 Dyson Defenders and 5 Dyson Sentinels. You have also managed to get a Dyson Bulwark!", ChatType.LogToCentralChat, Context );
                     }
                     else
