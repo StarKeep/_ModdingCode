@@ -1974,8 +1974,6 @@ namespace PreceptsOfThePrecursors
                      } );
                 SpawnDronesOnNodeOrPacketDeath( entity, entity.PlanetFaction.Faction, Context );
             }
-            else if ( entity.TypeData.GetHasTag( DysonPrecursors.DYSON_PACKET_TAG ) )
-                SpawnDronesOnNodeOrPacketDeath( entity, entity.PlanetFaction.Faction, Context );
         }
 
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
@@ -2376,7 +2374,10 @@ namespace PreceptsOfThePrecursors
                 Faction suppressorFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
                 (suppressorFaction.Implementation as DysonSuppressors).SpawnDronesOnNodeOrPacketDeath( entity, suppressorFaction, Context );
             }
-            else if ( entity.TypeData.GetHasTag( DysonPrecursors.DYSON_PACKET_TAG ) )
+        }
+        public override void DoOnAnyDeathLogic_FromCentralLoop_NotJustMyOwnShips( ref int debugStage, GameEntity_Squad entity, DamageSource Damage, EntitySystem FiringSystemOrNull, Faction factionThatKilledEntity, Faction entityOwningFaction, int numExtraStacksKilled, ArcenSimContext Context )
+        {
+            if ( entity.TypeData.GetHasTag( DysonPrecursors.DYSON_PACKET_TAG ) )
                 SpawnDronesOnNodeOrPacketDeath( entity, entity.PlanetFaction.Faction, Context );
         }
     }
