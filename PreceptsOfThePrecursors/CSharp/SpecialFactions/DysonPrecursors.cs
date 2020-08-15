@@ -762,7 +762,7 @@ namespace PreceptsOfThePrecursors
                 if ( trust > MothershipData.Trust.MinTrust( Mothership.Planet ) )
                 {
                     short potentialChange = (short)((-baseChange) + nodeBonus);
-                    short change = Math.Min( baseChange, potentialChange );
+                    short change = (short)Math.Min( -baseChange, potentialChange );
 
                     MothershipData.Trust.AddOrSubtractTrust( Mothership.Planet, change );
                     MothershipData.IsLosingTrust = true;
@@ -1817,7 +1817,7 @@ namespace PreceptsOfThePrecursors
                              break;
                      }
                      for ( int x = 0; x < mem.EffectiveSquadCap * 3; x++ )
-                         GameEntity_Squad.CreateNew( pFaction, spawnData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context );
+                         GameEntity_Squad.CreateNew( pFaction, spawnData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context ).Orders.SetBehaviorDirectlyInSim(EntityBehaviorType.Attacker_Full, faction.FactionIndex);
                  }
 
                  return DelReturn.Continue;
