@@ -1072,7 +1072,7 @@ namespace PreceptsOfThePrecursors
 
             FInt pseudoAIP = CalculateFactionOwnership( faction );
 
-            HandleAIResponse( pseudoAIP, faction, Context );
+            //HandleAIResponse( pseudoAIP, faction, Context );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }

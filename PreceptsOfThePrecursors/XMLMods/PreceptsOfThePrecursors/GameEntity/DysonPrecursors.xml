@@ -67,7 +67,7 @@
 				category="Passive" tachyon_points="50" tachyon_points_added_per_mark="25" tachyon_range="Normal4" tachyon_hits_albedo_less_than="0.75"></system>
     <incoming_damage_modifier based_on="MyTimeAtPlanet" comparison_type="LessThan" compared_to="10" multiplier="0.25" />
     <incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="5500" multiplier="0.9" />
-    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="6000" />
   </entity>
   <entity
     name="DysonMothership2"
@@ -89,7 +89,7 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="11000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="7000" />
   </entity>
   <entity
     name="DysonMothership3"
@@ -111,7 +111,7 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="12000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="8000" />
   </entity>
   <entity
       name="DysonMothership4"
@@ -133,7 +133,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="15000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="9000" />
   </entity>
   <entity
       name="DysonMothership5"
@@ -155,7 +155,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="17500" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
   <entity
       name="DysonMothership6"
@@ -177,7 +177,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="20000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="12500" />
   </entity>
   <entity
       name="DysonMothership7"
@@ -199,7 +199,7 @@
       shows_on_galaxy_map_for_explored_planets="true"
       pushes_enemy_shields="true"
     >
-    <metal_flow purpose="BuildingDronesInternally" throughput="25000" />
+    <metal_flow purpose="BuildingDronesInternally" throughput="15000" />
   </entity>
   <!-- 
   Drones
@@ -860,7 +860,7 @@
     priority_as_frd_target="NotDangerous"
     priority_to_protect="Expendable"
     should_never_be_captured_by_another_faction="true"
-    speed_multiplier_first_5_seconds_on_planet="5"
+    speed_multiplier_first_5_seconds_on_planet="10"
 	build_sidebar_categories_i_am_part_of="DysonProtectorStructures" absolute_max_cap_when_in_fleets="7"
 			>
     <system name="ZenithImplosion" display_name="Zenith Implosion"

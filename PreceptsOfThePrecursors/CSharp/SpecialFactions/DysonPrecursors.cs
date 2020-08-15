@@ -1846,7 +1846,7 @@ namespace PreceptsOfThePrecursors
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
+                if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
                     faction.OverallPowerLevel += FInt.FromParts( 0, 032 ) * planet.GetProtoSphereData().Level;
 
                 if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) < 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
@@ -2010,7 +2010,7 @@ namespace PreceptsOfThePrecursors
                      int strength = entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength - entity.PlanetFaction.DataByStance[FactionStance.Hostile].CloakedStrength;
                      if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index )
                          effectivePlanet = World_AIW2.Instance.GetPlanetByIndex( entity.LongRangePlanningData.FinalDestinationPlanetIndex );
-                     else if ( entity.GetSecondsSinceEnteringThisPlanet() >= 15 && strength < 500 )
+                     else if ( strength < 500 )
                          packetsToMove.Add( entity );
                      if ( packetsByPlanet.GetHasKey( effectivePlanet ) )
                          packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
@@ -2053,9 +2053,9 @@ namespace PreceptsOfThePrecursors
                          bestPlanet = planet;
                          bestPlanetPackets = workingPlanetPackets;
                          if ( packetsByPlanet.GetHasKey( planet ) )
-                             packetsByPlanet[planet] += packet.CurrentMarkLevel;
+                             packetsByPlanet[planet]++;
                          else
-                             packetsByPlanet.AddPair( planet, packet.CurrentMarkLevel );
+                             packetsByPlanet.AddPair( planet, 1 );
                          bestPlanetHasHostiles = workingPlanetHasHostiles;
                      }
                      else
@@ -2067,9 +2067,9 @@ namespace PreceptsOfThePrecursors
                              bestPlanet = planet;
                              bestPlanetPackets = workingPlanetPackets;
                              if ( packetsByPlanet.GetHasKey( planet ) )
-                                 packetsByPlanet[planet] += packet.CurrentMarkLevel;
+                                 packetsByPlanet[planet]++;
                              else
-                                 packetsByPlanet.AddPair( planet, packet.CurrentMarkLevel );
+                                 packetsByPlanet.AddPair( planet, 1 );
                              bestPlanetHasHostiles = workingPlanetHasHostiles;
                          }
                      }
@@ -2272,7 +2272,7 @@ namespace PreceptsOfThePrecursors
                      int strength = entity.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength - entity.PlanetFaction.DataByStance[FactionStance.Hostile].CloakedStrength;
                      if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex != -1 && entity.LongRangePlanningData.FinalDestinationPlanetIndex != entity.Planet.Index )
                          effectivePlanet = World_AIW2.Instance.GetPlanetByIndex( entity.LongRangePlanningData.FinalDestinationPlanetIndex );
-                     else if ( entity.GetSecondsSinceEnteringThisPlanet() >= 15 && strength < 500 )
+                     else if ( strength < 500 )
                          packetsToMove.Add( entity );
                      if ( packetsByPlanet.GetHasKey( effectivePlanet ) )
                          packetsByPlanet[effectivePlanet] += entity.CurrentMarkLevel;
@@ -2309,9 +2309,9 @@ namespace PreceptsOfThePrecursors
                          bestPlanet = planet;
                          bestPlanetPackets = workingPlanetPackets;
                          if ( packetsByPlanet.GetHasKey( planet ) )
-                             packetsByPlanet[planet] += packet.CurrentMarkLevel;
+                             packetsByPlanet[planet]++;
                          else
-                             packetsByPlanet.AddPair( planet, packet.CurrentMarkLevel );
+                             packetsByPlanet.AddPair( planet, 1 );
                          bestPlanetHasHostiles = workingPlanetHasHostiles;
                      }
                      else
@@ -2323,9 +2323,9 @@ namespace PreceptsOfThePrecursors
                              bestPlanet = planet;
                              bestPlanetPackets = workingPlanetPackets;
                              if ( packetsByPlanet.GetHasKey( planet ) )
-                                 packetsByPlanet[planet] += packet.CurrentMarkLevel;
+                                 packetsByPlanet[planet]++;
                              else
-                                 packetsByPlanet.AddPair( planet, packet.CurrentMarkLevel );
+                                 packetsByPlanet.AddPair( planet, 1 );
                              bestPlanetHasHostiles = workingPlanetHasHostiles;
                          }
                      }
