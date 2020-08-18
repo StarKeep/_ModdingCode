@@ -78,7 +78,7 @@
 			visuals_scale_multiplier="3.8"
 			y_offset_of_icon="30"
 			display_name="Battlestar"
-			description="A shield heavy drone supership, this ship constantly outputs an ever increasing number of strikecraft wings as it levels up. While its various fighter wings provide support, this ship is personally capable of very powerful single target damage at extreme ranges.
+			description="A shield heavy drone supership, this ship constantly outputs an ever increasing number of strikecraft wings as it levels up. While its various fighter wings provide support, this ship will additionally bolster allied attack strength on the planet, and it is personally capable of very powerful single target damage at extreme ranges.
 Constantly summons wings consisting of 6 ships, gaining new ones every mark.
 Mark 1: Fighter
 Mark 2: Stingray
@@ -89,7 +89,7 @@ Mark 6: Grenade
 Mark 7: Bomber"
 			collision_priority="810"
 			metal_to_claim="2000000"
-			aip_to_claim="30"
+			aip_to_claim="20"
 			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
 			cost_for_ai_to_purchase="10000" strength_multiplier="5"
 			hull_points="250000" shield_points="1500000" speed="AboveAverage1"
@@ -98,8 +98,10 @@ Mark 7: Bomber"
 			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
 			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
-      priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="BigFavoriteToy"
-      drone_starting_behavior_type="Attacker_Full"
+			priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="BigFavoriteToy"
+			drone_starting_behavior_type="Attacker_Full"
+			allied_attack_multiplier="1.15"
+			allied_attack_multiplier_added_per_mark="0.15"
 			>
     <system name="OrchestrationCannon" display_name="Orchestration Cannon"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -123,42 +125,42 @@ Mark 7: Bomber"
     </system>
     <system name="StingraySquad" display_name="Stingray Squad" min_mark_level_to_function="2"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
 				shot_type_data="BattlestarStingrayWingLeader"
 				system_is_hidden_for_ui="true"
 				>
     </system>
 		<system name="RaiderSquad" display_name="Raider Squad" min_mark_level_to_function="3"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
 				shot_type_data="BattlestarRaiderWingLeader"
 				system_is_hidden_for_ui="true"
 				>
     </system>
     <system name="ConcussionCorvetteSquad" display_name="Concussion Corvette Squad" min_mark_level_to_function="4"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
 				shot_type_data="BattlestarConcussionCorvetteWingLeader"
 				system_is_hidden_for_ui="true"
 				>
     </system>
 		<system name="PikeCorvetteSquad" display_name="Pike Corvette Squad" min_mark_level_to_function="5"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
 				shot_type_data="BattlestarPikeCorvetteWingLeader"
 				system_is_hidden_for_ui="true"
 				>
     </system>
 		<system name="Grenade Launcher Corvette Squad" display_name="Grenade Launcher Corvette Squad" min_mark_level_to_function="6"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
 				shot_type_data="BattlestarGrenadeLauncherCorvetteWingLeader"
 				system_is_hidden_for_ui="true"
 				>
     </system>
     <system name="BomberSquad" display_name="Bomber Squad" min_mark_level_to_function="7"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
 				shot_type_data="BattlestarFusionBomberWingLeader"
 				system_is_hidden_for_ui="true"
 				>
