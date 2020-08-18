@@ -1,8 +1,8 @@
-﻿using Arcen.AIW2.Core;
+﻿using System;
+using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using System;
-using System.Collections.Generic;
 
 //TODO - Setup Enclaves to only claim a singular Youngling type each.
 
@@ -129,11 +129,15 @@ namespace PreceptsOfThePrecursors
         }
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            if ( !EnclavesGloballyEnabled )
+            if ( !EnclavesGloballyEnabled || !EnclaveSettings.GetIsEnabled( faction ) )
+            {
+                faction.SpecialFactionData.CanUseSpireDebris = false;
                 return;
-
-            if ( !EnclaveSettings.GetIsEnabled( faction ) )
-                return;
+            }
+            else if ( Hives == null || Hives.Count <= 0 )
+                faction.SpecialFactionData.CanUseSpireDebris = false;
+            else
+                faction.SpecialFactionData.CanUseSpireDebris = true;
 
             if ( FactionData == null )
                 FactionData = faction.GetEnclaveFactionData();
@@ -648,7 +652,7 @@ namespace PreceptsOfThePrecursors
                         } );
                     }
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
                 ArcenDebugging.SingleLineQuickDebug( $"We ran into an error in SetupYounglings. This is on a relatively harmless section of code, so we'll keep going, but the error is as follows: {e.StackTrace}" );
             }
