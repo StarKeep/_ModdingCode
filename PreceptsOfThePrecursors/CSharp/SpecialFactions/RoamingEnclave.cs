@@ -114,10 +114,15 @@ namespace PreceptsOfThePrecursors
             EnclavesGloballyEnabled = false;
             Intensity = 0;
         }
-
         public override bool GetShouldAttackNormallyExcludedTarget( Faction faction, GameEntity_Squad Target )
         {
-            return !(this is RoamingEnclavePlayerTeam) && Target.TypeData.IsCommandStation;
+            if ( this is RoamingEnclavePlayerTeam )
+                return false;
+            if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) || Target.TypeData.GetHasTag( "VengeanceGeneratorConquestSpawn" ) )
+                return true;
+            if ( this is RoamingEnclaveHostileTeam && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
+                return true;
+            return false;
         }
         public override void UpdatePowerLevel( Faction faction )
         {
@@ -244,7 +249,7 @@ namespace PreceptsOfThePrecursors
             SetupYounglings( faction, Context );
 
             HandleRetreatAndBleedoffLogic( faction, Context );
-            
+
             FireteamUtility.CleanUpDisbandedFireteams( FactionData.Teams );
             ArcenCharacterBuffer buffer = this.tracingBuffer_longTerm;
             FireteamUtility.UpdateFireteams( faction, Context, FactionData.Teams, FactionData.TeamsAimedAtPlanet, buffer, FInt.One );
@@ -572,7 +577,7 @@ namespace PreceptsOfThePrecursors
                 Context.QueueCommandForSendingAtEndOfContext( loadYounglingsCommand );
         }
 
-        public void HandleRetreatAndBleedoffLogic(Faction faction, ArcenLongTermIntermittentPlanningContext Context )
+        public void HandleRetreatAndBleedoffLogic( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
             ArcenSparseLookup<Planet, List<Fireteam>> fireteamsAttacking = new ArcenSparseLookup<Planet, List<Fireteam>>();
 

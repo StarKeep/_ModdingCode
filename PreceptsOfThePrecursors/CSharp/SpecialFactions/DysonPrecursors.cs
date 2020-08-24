@@ -267,7 +267,7 @@ namespace PreceptsOfThePrecursors
         {
             if ( Target.Planet.GetProtoSphereData().Level > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
                 return true;
-            if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) )
+            if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) || Target.TypeData.GetHasTag( "VengeanceGeneratorConquestSpawn" ) )
                 return true;
             return false;
         }
@@ -1817,7 +1817,7 @@ namespace PreceptsOfThePrecursors
                              break;
                      }
                      for ( int x = 0; x < mem.EffectiveSquadCap * 3; x++ )
-                         GameEntity_Squad.CreateNew( pFaction, spawnData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context ).Orders.SetBehaviorDirectlyInSim(EntityBehaviorType.Attacker_Full, faction.FactionIndex);
+                         GameEntity_Squad.CreateNew( pFaction, spawnData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
                  }
 
                  return DelReturn.Continue;
@@ -1870,7 +1870,7 @@ namespace PreceptsOfThePrecursors
         {
             if ( Target.Planet.GetProtoSphereData().Level > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
                 return true;
-            if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) )
+            if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) || Target.TypeData.GetHasTag( "VengeanceGeneratorConquestSpawn" ) )
                 return true;
             return false;
         }
