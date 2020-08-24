@@ -173,7 +173,7 @@ Mark 7: Bomber"
 		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
 		fleet_design_template_i_use_for_drones="BattlestarFighterWing" drone_starting_behavior_type="Attacker_Full"
     multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
-    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
 	</entity>
@@ -182,7 +182,7 @@ Mark 7: Bomber"
    description="A member of a Battlestar Fighter wing." 
    starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
     multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
-    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <fleet_membership name="BattlestarFighterWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
@@ -193,7 +193,7 @@ Mark 7: Bomber"
 		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
 		fleet_design_template_i_use_for_drones="BattlestarStingrayWing" drone_starting_behavior_type="Attacker_Full"
     multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
-    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
@@ -202,7 +202,7 @@ Mark 7: Bomber"
    description="The leader of a Battlestar Stingray wing."
    starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
     multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
-    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <fleet_membership name="BattlestarStingrayWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
@@ -213,7 +213,7 @@ Mark 7: Bomber"
 		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
 		fleet_design_template_i_use_for_drones="BattlestarRaiderWing" drone_starting_behavior_type="Attacker_Full"
     multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
-    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
@@ -222,7 +222,7 @@ Mark 7: Bomber"
    description="The leader of a Battlestar Raider wing."
    starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
     multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
-    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <fleet_membership name="BattlestarRaiderWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
@@ -233,7 +233,7 @@ Mark 7: Bomber"
 		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
 		fleet_design_template_i_use_for_drones="BattlestarConcussionCorvetteWing" drone_starting_behavior_type="Attacker_Full"
     multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
-    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
@@ -242,7 +242,7 @@ Mark 7: Bomber"
    description="The leader of a Battlestar ConcussionCorvette wing."
    starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
     multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
-    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <fleet_membership name="BattlestarConcussionCorvetteWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
@@ -253,7 +253,7 @@ Mark 7: Bomber"
 		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
 		fleet_design_template_i_use_for_drones="BattlestarPikeCorvetteWing" drone_starting_behavior_type="Attacker_Full"
     multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
-    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
@@ -262,7 +262,7 @@ Mark 7: Bomber"
    description="The leader of a Battlestar PikeCorvette wing."
    starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
     multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
-    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <fleet_membership name="BattlestarPikeCorvetteWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
@@ -273,7 +273,7 @@ Mark 7: Bomber"
 		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
 		fleet_design_template_i_use_for_drones="BattlestarGrenadeLauncherCorvetteWing" drone_starting_behavior_type="Attacker_Full"
     multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
-    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
@@ -282,7 +282,7 @@ Mark 7: Bomber"
    description="The leader of a Battlestar GrenadeLauncherCorvette wing."
    starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
     multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
-    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+   priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <fleet_membership name="BattlestarGrenadeLauncherCorvetteWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
@@ -293,7 +293,7 @@ Mark 7: Bomber"
 		starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly"
 		fleet_design_template_i_use_for_drones="BattlestarFusionBomberWing" drone_starting_behavior_type="Attacker_Full"
     multiplier_to_all_healths="2" damage_multiplier_to_all_weapons="2" multiplier_to_all_scales="1.5"
-    priority_as_ai_target="BiggerFleetship" priority_as_frd_target="BiggerFleetship" priority_to_protect="SlightlyLessExpendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <metal_flow purpose="BuildingDronesInternally" throughput="10000" />
   </entity>
@@ -302,7 +302,7 @@ Mark 7: Bomber"
    description="The leader of a Battlestar FusionBomber wing."
    starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
     multiplier_to_all_healths="0.75" damage_multiplier_to_all_weapons="0.75" multiplier_to_all_scales="0.75" gimbal_icon_size_multiplier="0.75"
-    priority_as_ai_target="LowGradeAnnoyance" priority_as_frd_target="LowGradeAnnoyance" priority_to_protect="Expendable"
+    priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="Expendable"
 	>
     <fleet_membership name="BattlestarFusionBomberWing" ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
