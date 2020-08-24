@@ -1836,32 +1836,32 @@ namespace PreceptsOfThePrecursors
             faction.OverallPowerLevel = FInt.Zero;
             if ( DysonPrecursors.MothershipData == null )
                 return;
+
+            FInt fromMothership = FInt.Zero, fromFaction = FInt.Zero;
+
             if ( DysonPrecursors.MothershipData.Level < 6 )
             {
                 for ( int x = 0; x < DysonPrecursors.MothershipData.Level; x++ )
-                    faction.OverallPowerLevel += FInt.FromParts( 0, 334 );
+                    fromMothership += FInt.FromParts( 0, 334 );
             }
             else
-                faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
+                fromMothership = FInt.FromParts( 2, 000 );
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
                 if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
-                    faction.OverallPowerLevel += FInt.FromParts( 0, 032 ) * planet.GetProtoSphereData().Level;
+                    fromFaction += FInt.FromParts( 0, 025 ) * planet.GetProtoSphereData().Level;
 
                 if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) < 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                     for ( int x = 0; x < 7; x++ )
                         if ( DysonPrecursors.DysonNodes[planet][x] != null )
-                            faction.OverallPowerLevel += FInt.FromParts( 0, 010 ) * (x + 1);
-
-                if ( faction.OverallPowerLevel > 5 )
-                {
-                    faction.OverallPowerLevel = FInt.FromParts( 5, 000 );
-                    return DelReturn.Break;
-                }
+                            fromFaction += FInt.FromParts( 0, 005 ) * (x + 1);
 
                 return DelReturn.Continue;
             } );
+
+            if ( fromFaction > 0 )
+                faction.OverallPowerLevel = fromMothership + fromFaction;
 
             if ( faction.OverallPowerLevel > 5 )
                 faction.OverallPowerLevel = FInt.FromParts( 5, 000 );
@@ -2098,18 +2098,31 @@ namespace PreceptsOfThePrecursors
             if ( DysonPrecursors.MothershipData == null || DysonPrecursors.DysonNodes == null )
                 return;
 
+            FInt fromMothership = FInt.Zero, fromFaction = FInt.Zero;
+
+            if ( DysonPrecursors.MothershipData.Level < 6 )
+            {
+                for ( int x = 0; x < DysonPrecursors.MothershipData.Level; x++ )
+                    fromMothership += FInt.FromParts( 0, 334 );
+            }
+            else
+                fromMothership = FInt.FromParts( 2, 000 );
+
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
                  if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
-                     faction.OverallPowerLevel += FInt.FromParts( 0, 032 ) * planet.GetProtoSphereData().Level;
+                     fromFaction += FInt.FromParts( 0, 025 ) * planet.GetProtoSphereData().Level;
 
                  if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                      for ( int x = 0; x < 7; x++ )
                          if ( DysonPrecursors.DysonNodes[planet][x] != null )
-                             faction.OverallPowerLevel += FInt.FromParts( 0, 010 ) * (x + 1);
+                             fromFaction += FInt.FromParts( 0, 005 ) * (x + 1);
 
                  return DelReturn.Continue;
              } );
+
+            if ( fromFaction > 0 )
+                faction.OverallPowerLevel = fromMothership + fromFaction;
 
             if ( faction.OverallPowerLevel > 3 )
                 faction.OverallPowerLevel = FInt.FromParts( 3, 000 );

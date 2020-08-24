@@ -131,13 +131,20 @@ namespace PreceptsOfThePrecursors
         {
             if ( !EnclavesGloballyEnabled || !EnclaveSettings.GetIsEnabled( faction ) )
             {
-                faction.SpecialFactionData.CanUseSpireDebris = false;
+                faction.MustBeAwakenedByPlayer = true;
+                faction.HasBeenAwakenedByPlayer = false;
                 return;
             }
             else if ( Hives == null || Hives.Count <= 0 )
-                faction.SpecialFactionData.CanUseSpireDebris = false;
+            {
+                faction.MustBeAwakenedByPlayer = true;
+                faction.HasBeenAwakenedByPlayer = false;
+            }
             else
-                faction.SpecialFactionData.CanUseSpireDebris = true;
+            {
+                faction.MustBeAwakenedByPlayer = false;
+                faction.HasBeenAwakenedByPlayer = true;
+            }
 
             if ( FactionData == null )
                 FactionData = faction.GetEnclaveFactionData();
