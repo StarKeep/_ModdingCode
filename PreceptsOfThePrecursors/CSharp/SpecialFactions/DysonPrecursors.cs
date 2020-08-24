@@ -661,6 +661,41 @@ namespace PreceptsOfThePrecursors
             // If we recently entered a new planet, regenerate our shields.
             if ( Mothership.GetSecondsSinceEnteringThisPlanet() < 30 )
                 Mothership.TakeShieldRepair( Mothership.CurrentMarkLevel * 250000 );
+
+            Faction darkSpire = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( SpecialFaction_DarkSpire ) );
+            if ( darkSpire != null )
+            {
+                GameEntity_Squad darkSpireGenerator = Mothership.Planet.GetFirstMatching( FactionType.SpecialFaction, "VengeanceGeneratorNormalSpawn", false, false );
+                if ( darkSpireGenerator != null )
+                {
+                    DarkSpireData darkSpireGlobalData = World.Instance.GetDarkSpireDataExt_AndCacheAfter();
+                    if ( Mothership.GetSecondsSinceEnteringThisPlanet() == 2 )
+                        World_AIW2.Instance.QueueChatMessageOrCommand( $"The Dyson Mothership on {Mothership.Planet.Name} has begune to consume a Vengence Generator, angering the Dark Spire. She will finish within a minute.", ChatType.LogToCentralChat, Context );
+                    else if ( Mothership.GetSecondsSinceEnteringThisPlanet() >= 60 )
+                    {
+                        World_AIW2.Instance.QueueChatMessageOrCommand( $"The Dyson Mothership on {Mothership.Planet.Name} has finished consuming a Vengence Generator, and has built a Level 10 Packet Generator in its place.", ChatType.LogToCentralChat, Context );
+                        Faction spawnFaction = null;
+                        if ( MothershipData.Trust.GetTrust( Mothership.Planet ) > 500 )
+                            spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) );
+                        else
+                            spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
+                        PlanetFaction pFaction = Mothership.Planet.GetPlanetFactionForFaction( spawnFaction );
+                        GameEntity_Squad.CreateNew( pFaction, GameEntityTypeDataTable.Instance.GetRowByName( "Level10PacketGenerator" ), 7, pFaction.FleetUsedAtPlanet, 0, darkSpireGenerator.WorldLocation, Context );
+                        darkSpireGenerator.Despawn( Context, true, InstancedRendererDeactivationReason.TransformedIntoAnotherEntityType );
+                        for ( int x = 0; x < darkSpireGlobalData.PerPlanet.GetPairCount(); x++ )
+                        {
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 100000;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 100000;
+                        }
+                    }
+                    else
+                        for ( int x = 0; x < darkSpireGlobalData.PerPlanet.GetPairCount(); x++ )
+                        {
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 20000;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 20000;
+                        }
+                }
+            }
         }
         private void DecayTrust( Faction faction )
         {
@@ -1283,6 +1318,10 @@ namespace PreceptsOfThePrecursors
                     return;
                 }
             }
+
+            // If there is a Dark Spire generator on our current planet, wait until we finish chomping.
+            if ( Mothership.Planet.GetFirstMatching( FactionType.SpecialFaction, "VengeanceGeneratorNormalSpawn", false, false ) != null )
+                return;
 
             // If there is a high amount of strength near her territory, and shes mark 7, deal with it.
             if ( MothershipData.Level >= 7 )

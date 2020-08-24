@@ -232,8 +232,10 @@
     <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="15" max="15"/>
     <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="20" max="20"/>
     <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="25" max="25"/>
+	  
+	<fleet_membership name="DysonPacketDronesMax"    ship_cap_group="Strike" weight="100" min="30" max="30"/>
   </entity>
-  <entity
+	<entity
       name="DysonMothershipDefenderDrone"
       copy_from="DysonDefender"
       display_name="Dyson Defender Drone"
@@ -260,6 +262,8 @@
     <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="15" max="15"/>
     <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="20" max="20"/>
     <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="25" max="25"/>
+
+	<fleet_membership name="DysonPacketDronesMax"    ship_cap_group="Strike" weight="100" min="30" max="30"/>
   </entity>
   <entity
       name="DysonMothershipBulwarkDrone"
@@ -283,6 +287,8 @@
     <fleet_membership name="DysonPacketDronesMed"     ship_cap_group="Strike" weight="100" min="1" max="1"/>
     <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="2" max="2"/>
     <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="4" max="4"/>
+
+	<fleet_membership name="DysonPacketDronesMax"    ship_cap_group="Strike" weight="100" min="5" max="5"/>
   </entity>
   <entity
       name="DysonMothershipBastionDrone"
@@ -300,6 +306,8 @@
 
     <fleet_membership name="DysonPacketDronesProt"    ship_cap_group="Strike" weight="100" min="1" max="1"/>
     <fleet_membership name="DysonPacketDronesSupp"    ship_cap_group="Strike" weight="100" min="2" max="2"/>
+
+	 <fleet_membership name="DysonPacketDronesMax"    ship_cap_group="Strike" weight="100" min="3" max="3"/>
   </entity>
   <!-- Proto Spheres
        Two Sphere types, Suppressor and Protector
@@ -966,9 +974,12 @@
     display_name="Level 8 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark7" max_mark_level="7"
-    fleet_design_template_i_use_for_drones="DysonPacketDronesProt" strength_multiplier="20"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesProt" strength_multiplier="5"
     metal_cost="800000"
     energy_consumption="40000"
+	multiplier_to_all_healths="1.5"
+    damage_multiplier_to_all_weapons="1.5"
+    multiplier_to_all_scales="1.5"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
@@ -979,12 +990,31 @@
     display_name="Level 9 Dyson Packet"
     tags="DysonPacket"
     starting_mark_level="Mark7" max_mark_level="7"
-    fleet_design_template_i_use_for_drones="DysonPacketDronesSupp" strength_multiplier="40"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesSupp" strength_multiplier="5"
     metal_cost="900000"
     energy_consumption="50000"
+	multiplier_to_all_healths="2"
+    damage_multiplier_to_all_weapons="2"
+    multiplier_to_all_scales="2"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="10" />
   </entity>
+	<entity
+    name="DysonPacket10"
+    copy_from="DysonPacket9"
+    skip_export="true"
+    display_name="Level 10 Dyson Packet"
+    tags="DysonPacket"
+    starting_mark_level="Mark7" max_mark_level="7"
+    fleet_design_template_i_use_for_drones="DysonPacketDronesMax" strength_multiplier="5"
+    metal_cost="900000"
+    energy_consumption="50000"
+	multiplier_to_all_healths="3"
+    damage_multiplier_to_all_weapons="3"
+    multiplier_to_all_scales="3"
+    >
+		<metal_flow purpose="BuildingDronesInternally" throughput="10" />
+	</entity>
   <!-- Copies of the basic Dyson units that are set to decay over time. For on-death spawns.
    -->
   <entity
@@ -1181,4 +1211,39 @@
 			>
 	<metal_flow purpose="SelfConstruction" throughput="250"/>
   </entity>
+	<!-- Level 10 Packet Generator; built by consuming Dark Spire Vengence Generators -->
+	<entity name="Level10PacketGenerator"
+			draw_in_galaxy_view="true"
+			visuals="Assets/_FinalGameMeshes/Spire/DarkSpireVG/DarkSpireVG.prefab" gimbal_name="Vengeance Generator"
+			icon_name="Ships1/VengeanceGenerator" gimbal_icon_size_multiplier="1.4"
+			category="Ship"
+			size_scale="10.8"
+			visuals_scale_multiplier="9"
+			y_offset_of_icon="30"
+			collision_priority="810"
+			display_name="Level 10 Packet Generator"
+			description="Created from the husk of a Dark Spire Vengence Generator, this formidable piece of technology outputs a constant barrage of Level 10 Packets to kill any whom enter this planet."
+			behavior="Stationary"
+			does_not_use_multipliers_from_mark_level="true"
+			starting_mark_level="Mark7" tech_upgrades_that_benefit_me="Unused"
+			cost_for_ai_to_purchase="1400"
+			hull_points="20000000" shield_points="70000000" speed="Immobile"
+			metal_cost="1085000" energy_consumption="100000"
+			armor_mm="180" albedo="1" mass_tx="7"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			voice_group="Spire"
+			priority_as_ai_target="MidNasty"
+            priority_as_frd_target="MidNasty"
+            priority_to_protect="SlightlyLessExpendable"
+			>
+		<system name="SpawnPacket" display_name="Spawn Level 10 Packet"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="10" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				shot_type_data="DysonPacket10"
+				system_is_hidden_for_ui="true"
+				>
+    </system>
+	</entity>
 </root>
