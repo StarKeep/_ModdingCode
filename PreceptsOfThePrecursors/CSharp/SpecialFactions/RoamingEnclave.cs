@@ -243,102 +243,8 @@ namespace PreceptsOfThePrecursors
             SetupEnclaves( faction, Context );
             SetupYounglings( faction, Context );
 
-            ArcenSparseLookup<Planet, List<Fireteam>> fireteamsAttacking = new ArcenSparseLookup<Planet, List<Fireteam>>();
-
-            Fireteam.DoFor( FactionData.Teams, delegate ( Fireteam team )
-            {
-                if ( team.ships.Count == 0 )
-                    team.Disband( Context );
-                else
-                {
-                    team.NoDeathballing = true;
-
-                    team.DefenseMode = FireteamsPerDefense > 0 ? (team.id % FireteamsPerDefense == 0) : false;
-
-                    switch ( team.status )
-                    {
-                        case FireteamStatus.Attacking:
-                            if ( team.TargetPlanet != null )
-                            {
-                                if ( fireteamsAttacking.GetHasKey( team.TargetPlanet ) )
-                                    fireteamsAttacking[team.TargetPlanet].Add( team );
-                                else
-                                    fireteamsAttacking.AddPair( team.TargetPlanet, new List<Fireteam>() { team } );
-                            }
-                            break;
-                        case FireteamStatus.Assembling:
-                        case FireteamStatus.Staging:
-                        case FireteamStatus.ReadyToAttack:
-                            bool discarded = false;
-                            if ( team.LurkPlanet != null && team.CurrentPlanet == team.LurkPlanet )
-                            {
-                                int idleSince = -1;
-                                if ( team.History.Count > 0 )
-                                    for ( int x = 0; x < team.History.Count; x++ )
-                                        idleSince = Math.Max( idleSince, team.History[x].GameSecond );
-                                if ( idleSince > 0 && World_AIW2.Instance.GameSecond - idleSince > 15 )
-                                {
-                                    team.DiscardCurrentObjectives();
-                                    discarded = true;
-                                }
-                            }
-                            if ( !discarded && team.TargetPlanet != null )
-                            {
-                                if ( fireteamsAttacking.GetHasKey( team.TargetPlanet ) )
-                                    fireteamsAttacking[team.TargetPlanet].Add( team );
-                                else
-                                    fireteamsAttacking.AddPair( team.TargetPlanet, new List<Fireteam>() { team } );
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                return DelReturn.Continue;
-            } );
-            fireteamsAttacking.DoFor( pair =>
-            {
-                var stanceData = pair.Key.GetPlanetFactionForFaction( faction ).DataByStance;
-
-                int hostileStrength = stanceData[FactionStance.Hostile].TotalStrength;
-                int friendlyStrength = stanceData[FactionStance.Friendly].TotalStrength;
-                int ourStrength = stanceData[FactionStance.Self].TotalStrength;
-
-                for ( int x = 0; x < pair.Value.Count; x++ )
-                {
-                    Fireteam team = pair.Value[x];
-                    team.BuildShipsLookup( true, null );
-                    team.shipsByPlanet.DoFor( ships =>
-                    {
-                        if ( ships.Key == pair.Key )
-                            return DelReturn.Continue;
-
-                        for ( int y = 0; y < ships.Value.Count; y++ )
-                            ourStrength += (ships.Value[y].GetStrengthPerSquad() * (1 + ships.Value[y].ExtraStackedSquadsInThis)) + ships.Value[y].AdditionalStrengthFromFactions;
-
-                        return DelReturn.Continue;
-                    } );
-                }
-
-                GameEntity_Squad retreatPoint = GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Key, Context );
-                if ( retreatPoint != null )
-                {
-                    // Run from a losing fight.
-                    if ( hostileStrength > (friendlyStrength + ourStrength) * 2 )
-                        for ( int x = 0; x < pair.Value.Count; x++ )
-                            pair.Value[x].DisbandAndRetreat( faction, Context, retreatPoint );
-                    else
-                        // Bleed off Enclaves from winning fights.
-                        while ( ourStrength + friendlyStrength > hostileStrength * 5 && pair.Value.Count > 0 )
-                        {
-                            ourStrength -= pair.Value[0].TeamStrength;
-                            pair.Value[0].DisbandAndRetreat( faction, Context, retreatPoint );
-                            pair.Value.RemoveAt( 0 );
-                        }
-                }
-
-                return DelReturn.Continue;
-            } );
+            HandleRetreatAndBleedoffLogic( faction, Context );
+            
             FireteamUtility.CleanUpDisbandedFireteams( FactionData.Teams );
             ArcenCharacterBuffer buffer = this.tracingBuffer_longTerm;
             FireteamUtility.UpdateFireteams( faction, Context, FactionData.Teams, FactionData.TeamsAimedAtPlanet, buffer, FInt.One );
@@ -576,7 +482,6 @@ namespace PreceptsOfThePrecursors
                 {
                     if ( youngling.LongRangePlanningData.FinalDestinationPlanetIndex == -1 )
                         youngling.QueueWormholeCommand( enclave.Planet, Context );
-                    youngling.FireteamId = -1;
                     if ( team != null )
                         team.TeamStrength += youngling.GetStrengthPerSquad() * (1 + youngling.ExtraStackedSquadsInThis);
                 }
@@ -584,7 +489,6 @@ namespace PreceptsOfThePrecursors
                 {
                     if ( youngling.GetCurrentHullPoints() < youngling.GetCurrentHullPoints() * 0.33 || youngling.PlanetFaction.DataByStance[FactionStance.Hostile].TotalStrength <= 50 )
                     {
-                        youngling.FireteamId = -1;
                         loadYounglingsCommand.RelatedIntegers.Add( youngling.PrimaryKeyID );
                         loadYounglingsCommand.RelatedIntegers2.Add( enclave.PrimaryKeyID );
                         if ( team != null )
@@ -593,9 +497,7 @@ namespace PreceptsOfThePrecursors
                     else
                     {
                         if ( team != null )
-                            team.AddUnit( youngling );
-                        else
-                            youngling.FireteamId = -1;
+                            team.TeamStrength += youngling.GetStrengthPerSquad() * (1 + youngling.ExtraStackedSquadsInThis);
                     }
                 }
 
@@ -670,6 +572,106 @@ namespace PreceptsOfThePrecursors
                 Context.QueueCommandForSendingAtEndOfContext( loadYounglingsCommand );
         }
 
+        public void HandleRetreatAndBleedoffLogic(Faction faction, ArcenLongTermIntermittentPlanningContext Context )
+        {
+            ArcenSparseLookup<Planet, List<Fireteam>> fireteamsAttacking = new ArcenSparseLookup<Planet, List<Fireteam>>();
+
+            Fireteam.DoFor( FactionData.Teams, delegate ( Fireteam team )
+            {
+                if ( team.ships.Count == 0 )
+                    team.Disband( Context );
+                else
+                {
+                    team.NoDeathballing = true;
+
+                    team.DefenseMode = FireteamsPerDefense > 0 ? (team.id % FireteamsPerDefense == 0) : false;
+
+                    switch ( team.status )
+                    {
+                        case FireteamStatus.Attacking:
+                            if ( team.TargetPlanet != null )
+                            {
+                                if ( fireteamsAttacking.GetHasKey( team.TargetPlanet ) )
+                                    fireteamsAttacking[team.TargetPlanet].Add( team );
+                                else
+                                    fireteamsAttacking.AddPair( team.TargetPlanet, new List<Fireteam>() { team } );
+                            }
+                            break;
+                        case FireteamStatus.Assembling:
+                        case FireteamStatus.Staging:
+                        case FireteamStatus.ReadyToAttack:
+                            bool discarded = false;
+                            if ( team.LurkPlanet != null && team.CurrentPlanet == team.LurkPlanet )
+                            {
+                                int idleSince = -1;
+                                if ( team.History.Count > 0 )
+                                    for ( int x = 0; x < team.History.Count; x++ )
+                                        idleSince = Math.Max( idleSince, team.History[x].GameSecond );
+                                if ( idleSince > 0 && World_AIW2.Instance.GameSecond - idleSince > 15 )
+                                {
+                                    team.DiscardCurrentObjectives();
+                                    discarded = true;
+                                }
+                            }
+                            if ( !discarded && team.TargetPlanet != null )
+                            {
+                                if ( fireteamsAttacking.GetHasKey( team.TargetPlanet ) )
+                                    fireteamsAttacking[team.TargetPlanet].Add( team );
+                                else
+                                    fireteamsAttacking.AddPair( team.TargetPlanet, new List<Fireteam>() { team } );
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return DelReturn.Continue;
+            } );
+            fireteamsAttacking.DoFor( pair =>
+            {
+                var stanceData = pair.Key.GetPlanetFactionForFaction( faction ).DataByStance;
+
+                int hostileStrength = stanceData[FactionStance.Hostile].TotalStrength;
+                int friendlyStrength = stanceData[FactionStance.Friendly].TotalStrength;
+                int ourStrength = stanceData[FactionStance.Self].TotalStrength;
+
+                for ( int x = 0; x < pair.Value.Count; x++ )
+                {
+                    Fireteam team = pair.Value[x];
+                    team.BuildShipsLookup( true, null );
+                    team.shipsByPlanet.DoFor( ships =>
+                    {
+                        if ( ships.Key == pair.Key )
+                            return DelReturn.Continue;
+
+                        for ( int y = 0; y < ships.Value.Count; y++ )
+                            ourStrength += (ships.Value[y].GetStrengthPerSquad() * (1 + ships.Value[y].ExtraStackedSquadsInThis)) + ships.Value[y].AdditionalStrengthFromFactions;
+
+                        return DelReturn.Continue;
+                    } );
+                }
+
+                GameEntity_Squad retreatPoint = GetFireteamRetreatPoint_OnBackgroundNonSimThread_Subclass( faction, pair.Key, Context );
+                if ( retreatPoint != null )
+                {
+                    // Run from a losing fight.
+                    if ( hostileStrength > (friendlyStrength + ourStrength) * 2 )
+                        for ( int x = 0; x < pair.Value.Count; x++ )
+                            pair.Value[x].DisbandAndRetreat( faction, Context, retreatPoint );
+                    else
+                        // Bleed off Enclaves from winning fights.
+                        while ( ourStrength + friendlyStrength > hostileStrength * 5 && pair.Value.Count > 0 )
+                        {
+                            ourStrength -= pair.Value[0].TeamStrength;
+                            pair.Value[0].DisbandAndRetreat( faction, Context, retreatPoint );
+                            pair.Value.RemoveAt( 0 );
+                        }
+                }
+
+                return DelReturn.Continue;
+            } );
+        }
+
         #region Fireteams
         private List<Planet> HivePlanetsForBackgroundThreadOnly = new List<Planet>();
 
@@ -698,6 +700,7 @@ namespace PreceptsOfThePrecursors
             {
                 int hops = planet.GetHopsTo( GetNearestHivePlanetBackgroundThreadOnly( faction, planet, Context ) );
 
+                int enclaveStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Self].TotalStrength;
                 int friendlyStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Friendly].TotalStrength;
                 int hostileStrength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength;
 
@@ -715,18 +718,33 @@ namespace PreceptsOfThePrecursors
 
                     int enclaveOnPlanet = 0;
 
-                    planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( ENCLAVE_TAG, entity =>
+                    bool isBorder = false;
+                    planet.DoForLinkedNeighbors( false, adjPlanet =>
                     {
-                        if ( entity.PlanetFaction.Faction == faction )
-                            enclaveOnPlanet++;
+                        if ( !HivePlanetsForBackgroundThreadOnly.Contains( adjPlanet ) )
+                        {
+                            isBorder = true;
+                            return DelReturn.Break;
+                        }
 
                         return DelReturn.Continue;
                     } );
 
-                    if ( planetsByEnclaveCount.GetHasKey( enclaveOnPlanet ) )
-                        planetsByEnclaveCount[enclaveOnPlanet].Add( planet );
-                    else
-                        planetsByEnclaveCount.AddPair( enclaveOnPlanet, new List<Planet>() { planet } );
+                    if ( isBorder )
+                    {
+                        planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( ENCLAVE_TAG, entity =>
+                        {
+                            if ( entity.PlanetFaction.Faction == faction )
+                                enclaveOnPlanet++;
+
+                            return DelReturn.Continue;
+                        } );
+
+                        if ( planetsByEnclaveCount.GetHasKey( enclaveOnPlanet ) )
+                            planetsByEnclaveCount[enclaveOnPlanet].Add( planet );
+                        else
+                            planetsByEnclaveCount.AddPair( enclaveOnPlanet, new List<Planet>() { planet } );
+                    }
                 }
                 else if ( hops == 1 && hostileStrength > 2500 && !Fireteam.IsThisAWinningBattle( faction, Context, planet, 5, false ) )
                 {
