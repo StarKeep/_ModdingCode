@@ -93,7 +93,7 @@ Mark 7: Bomber"
 			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Battlestar"
 			cost_for_ai_to_purchase="10000" strength_multiplier="5"
 			hull_points="250000" shield_points="1500000" speed="AboveAverage1"
-			armor_mm="180" albedo="0.7" engine_gx="18" mass_tx="9"
+			armor_mm="180" albedo="0.7" engine_gx="18" mass_tx="7"
 			metal_cost="2000000" energy_consumption="75000"
 			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
@@ -503,16 +503,16 @@ Mark 7: Bomber"
 			y_offset_of_icon="55"
 			collision_priority="810"
 			display_name="Reprocessor Regnat"
-			description="Ancient Zenith ship capable of pulling in hostile ships and processing them for metal. It is capable of pulling any targets with Mass less than its current Mark level. Gains Greater Metabolization at Mark 5."
+			description="Ancient Zenith ship capable of pulling in hostile ships and processing them for metal. Every mark allows it to pull more strikecraft. At mark 3 it gains the ability to pull in and harvest singular high mass targets. At mark 5, it upgrades all its weapons to Greater Metabolization."
 			should_never_be_captured_by_another_faction="true"
-			metal_to_claim="5000000"
-			aip_to_claim="50"
+			metal_to_claim="3000000"
+			aip_to_claim="30"
 			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="UpgradeMeFromFleetOnly" tech_upgrade_that_is_used_for_my_direct_science="Direct_GolemBotnet"
 			cost_for_ai_to_purchase="20000" strength_multiplier="2"			
 			hull_points="1200000" shield_points="600000" speed="AboveAverage1"
 			metal_cost="5000000" energy_consumption="50000"
       assist_range="Normal1"			
-			armor_mm="190" albedo="0.8" engine_gx="18" mass_tx="11"
+			armor_mm="190" albedo="0.8" engine_gx="18" mass_tx="7"
 			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
 			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
@@ -520,111 +520,56 @@ Mark 7: Bomber"
 			 shows_on_galaxy_map_for_explored_planets="true" always_visible_to_players="true"
       priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
 			>
-		<metal_flow purpose="RebuildingRemains" throughput="100" increase_per_mark_level="100"/>		
-    <system name="Pull1" display_name="Reaper's Harpoon" min_mark_level_to_function="1"
-				category="Weapon" firing_timing="OnlyInRange" max_mark_level_to_function="1"
-				damage_per_shot="1000" range="AboveAverage4" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="false"
-				base_knockback_per_shot="-5000" knockback_to_ships_mass_tx_less_than="1.1"
-				shot_type_data="MeleeInvisible"				
+		<metal_flow purpose="RebuildingRemains" throughput="100" increase_per_mark_level="100"/>
+    <system name="TornadicPull" display_name="Tornadic Pull"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="25" range="AboveAverage4" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="false"
+				base_knockback_per_shot="-2500" knockback_to_ships_mass_tx_less_than="1"
+				shots_per_salvo="5" added_shots_per_salvo_per_mark="5"
+				shot_type_data="MeleeInvisible"	added_target_evaluator="CanKnockback"		
 				>	
     </system>
-    <system name="Kill1" display_name="Reaper's Consumption" min_mark_level_to_function="1"
-				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="1"
-				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
-				shot_type_data="ExplosiveInvisible"	
-				>
-      <death_effect_damage type="Metabolization" tier_name="Gangsaw"/>
-      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="1" multiplier="10" />
-    </system>
-  <system name="Pull2" display_name="Reaper's Harpoon" min_mark_level_to_function="2"
-				category="Weapon" firing_timing="OnlyInRange" max_mark_level_to_function="2"
-				damage_per_shot="1000" range="AboveAverage4" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="false"
-				base_knockback_per_shot="-5000" knockback_to_ships_mass_tx_less_than="2.1"
-				shot_type_data="MeleeInvisible"				
-				>	
-    </system>
-    <system name="Kill2" display_name="Reaper's Consumption" min_mark_level_to_function="2"
-				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="2"
-				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
-				shot_type_data="ExplosiveInvisible"
-				>
-      <death_effect_damage type="Metabolization" tier_name="Gangsaw"/>
-      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="10" />
-    </system>
-<system name="Pull3" display_name="Reaper's Harpoon" min_mark_level_to_function="3"
-				category="Weapon" firing_timing="OnlyInRange" max_mark_level_to_function="3"
-				damage_per_shot="1000" range="AboveAverage4" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="false"
-				base_knockback_per_shot="-5000" knockback_to_ships_mass_tx_less_than="3.1"
-				shot_type_data="MeleeInvisible"				
-				>	
-    </system>
-    <system name="Kill3" display_name="Reaper's Consumption" min_mark_level_to_function="3"
-				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="3"
-				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
-				shot_type_data="ExplosiveInvisible"	
-				>
-      <death_effect_damage type="Metabolization" tier_name="Gangsaw"/>
-      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="3" multiplier="10" />
-    </system>
-<system name="Pull4" display_name="Reaper's Harpoon" min_mark_level_to_function="4"
-				category="Weapon" firing_timing="OnlyInRange" max_mark_level_to_function="4"
-				damage_per_shot="1000" range="AboveAverage4" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="false"
-				base_knockback_per_shot="-5000" knockback_to_ships_mass_tx_less_than="4.1"
-				shot_type_data="MeleeInvisible"				
-				>	
-    </system>
-    <system name="Kill4" display_name="Reaper's Consumption" min_mark_level_to_function="4"
+    <system name="TornadicConsumption" display_name="Tornadic Consumption"
 				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="4"
-				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
-				shot_type_data="ExplosiveInvisible"
+				damage_per_shot="500" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				shots_per_salvo="7" added_shots_per_salvo_per_mark="7"
+				shot_type_data="ExplosiveInvisible"	
 				>
       <death_effect_damage type="Metabolization" tier_name="Gangsaw"/>
-      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="4" multiplier="10" />
+      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="1" multiplier="100" />
     </system>
-<system name="Pull5" display_name="Reaper's Harpoon" min_mark_level_to_function="5"
-				category="Weapon" firing_timing="OnlyInRange" max_mark_level_to_function="5"
-				damage_per_shot="1000" range="AboveAverage4" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="false"
-				base_knockback_per_shot="-5000" knockback_to_ships_mass_tx_less_than="5.1"
-				shot_type_data="MeleeInvisible"				
+	<system name="ReaperHarpoon" display_name="Reaper Harpoon" min_mark_level_to_function="3"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="25" range="AboveAverage4" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="false"
+				base_knockback_per_shot="-2500" knockback_to_ships_mass_tx_less_than="5.1"
+				shot_type_data="MeleeInvisible" added_target_evaluator="PreferHigherMassTargetsCappingAt5"
 				>	
     </system>
-    <system name="Kill5" display_name="Reaper's Consumption" min_mark_level_to_function="5"
-				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="5"
-				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
-				shot_type_data="ExplosiveInvisible"		
-				>	
+    <system name="ReaperConsumption" display_name="Reaper Consumption" min_mark_level_to_function="3"
+				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="4"
+				damage_per_shot="5000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				shot_type_data="ExplosiveInvisible" added_target_evaluator="PreferHigherMassTargetsCappingAt5"
+				>
+      <death_effect_damage type="Metabolization" tier_name="Gangsaw"/>
+      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="5" multiplier="100" />
+    </system>
+		
+    <system name="GreaterTornadicConsumption" display_name="Tornadic Consumption" min_mark_level_to_function="5"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="500" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				shots_per_salvo="7" added_shots_per_salvo_per_mark="7"
+				shot_type_data="ExplosiveInvisible"	
+				>
       <death_effect_damage type="GreaterMetabolization" tier_name="BountyHunter"/>
-      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="5" multiplier="10" />
+      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="1" multiplier="100" />
     </system>
-<system name="Pull6" display_name="Reaper's Harpoon" min_mark_level_to_function="6"
-				category="Weapon" firing_timing="OnlyInRange" max_mark_level_to_function="6"
-				damage_per_shot="1000" range="AboveAverage4" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="false"
-				base_knockback_per_shot="-5000" knockback_to_ships_mass_tx_less_than="6.1"
-				shot_type_data="MeleeInvisible"				
-				>	
-    </system>
-    <system name="Kill6" display_name="Reaper's Consumption" min_mark_level_to_function="6"
-				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="6"
-				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
-				shot_type_data="ExplosiveInvisible"		
-				>	
-    <death_effect_damage type="GreaterMetabolization" tier_name="BountyHunter"/>
-      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="6" multiplier="10" />
-    </system>
-<system name="Pull7" display_name="Reaper's Harpoon" min_mark_level_to_function="7"
-				category="Weapon" firing_timing="OnlyInRange" max_mark_level_to_function="7"
-				damage_per_shot="1000" range="AboveAverage4" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="false"
-				base_knockback_per_shot="-5000" knockback_to_ships_mass_tx_less_than="7.1"
-				shot_type_data="MeleeInvisible"				
-				>	
-    </system>
-    <system name="Kill7" display_name="Reaper's Consumption" min_mark_level_to_function="7"
-				category="Weapon" firing_timing="OnlyInRange"	max_mark_level_to_function="7"
-				damage_per_shot="10000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
-				shot_type_data="ExplosiveInvisible"		
-				>	
+    <system name="GreaterReaperConsumption" display_name="Reaper Consumption" min_mark_level_to_function="5"
+				category="Weapon" firing_timing="OnlyInRange"	
+				damage_per_shot="5000" range="Small1" shot_speed="Instant" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				shot_type_data="ExplosiveInvisible"	added_target_evaluator="PreferHigherMassTargetsCappingAt5"
+				>
       <death_effect_damage type="GreaterMetabolization" tier_name="BountyHunter"/>
-      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="7" multiplier="10" />
+      <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="5" multiplier="100" />
     </system>
   </entity>
 
@@ -653,7 +598,7 @@ Mark 7: Bomber"
 			health_change_per_damage_dealt="50"
 			metal_cost="7500000" energy_consumption="50000"
       assist_range="Normal1"			
-			armor_mm="230" albedo="0.9" engine_gx="22" mass_tx="12"
+			armor_mm="230" albedo="0.9" engine_gx="22" mass_tx="7"
 			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
 			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"

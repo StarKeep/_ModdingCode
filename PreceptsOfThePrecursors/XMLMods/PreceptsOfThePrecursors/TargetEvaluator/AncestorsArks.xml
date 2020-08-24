@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <target_evaluator name="PreferHigherMassTargetsCappingAt5" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.TargetEvaluator.PreferHigherMassTargetsCappingAt5" />
+</root>

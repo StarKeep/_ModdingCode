@@ -112,6 +112,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\TargetEvaluator\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\TechUpgrade\AncestorsArks.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +127,7 @@
     <Compile Include="CSharp\SpecialFactions\DysonPrecursors.cs" />
     <Compile Include="CSharp\SpecialFactions\AncestorsArks.cs" />
     <Compile Include="CSharp\SpecialFactions\RoamingEnclave.cs" />
+    <Compile Include="CSharp\TargetEvaluator\PreferHigherMassTargetsCappingAt5.cs" />
     <Compile Include="CSharp\Trust.cs" />
     <Compile Include="CSharp\Utilities.cs" />
   </ItemGroup>
