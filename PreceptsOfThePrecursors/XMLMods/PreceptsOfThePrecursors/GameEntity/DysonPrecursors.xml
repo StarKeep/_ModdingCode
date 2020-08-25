@@ -1227,7 +1227,7 @@
 			does_not_use_multipliers_from_mark_level="true"
 			starting_mark_level="Mark7" tech_upgrades_that_benefit_me="Unused"
 			cost_for_ai_to_purchase="1400"
-			hull_points="20000000" shield_points="70000000" speed="Immobile"
+			hull_points="20000000" shield_points="7000000" speed="Immobile"
 			metal_cost="1085000" energy_consumption="100000"
 			armor_mm="180" albedo="1" mass_tx="7"
 			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
@@ -1240,7 +1240,7 @@
 			>
 		<system name="SpawnPacket" display_name="Spawn Level 10 Packet"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="10" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
 				shot_type_data="DysonPacket10"
 				system_is_hidden_for_ui="true"
 				>
