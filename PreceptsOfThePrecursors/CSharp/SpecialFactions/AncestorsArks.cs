@@ -1,7 +1,8 @@
-﻿using Arcen.AIW2.Core;
+﻿using System;
+using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using System;
 
 namespace PreceptsOfThePrecursors
 {
@@ -35,6 +36,9 @@ namespace PreceptsOfThePrecursors
 
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
+            if ( World_AIW2.Instance.GameSecond == 5 )
+                SetupScrapyards( Context );
+
             if ( goonData == null )
             {
                 goonData = World.Instance.GetAncestorsArksData();
@@ -91,19 +95,94 @@ namespace PreceptsOfThePrecursors
             }
         }
 
+        private void SetupScrapyards( ArcenSimContext Context )
+        {
+            int cap = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "ScrapyardCap" ), 
+                baseHops = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "ScrapyardHopsBase" ), 
+                hopsIncrease = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "ScrapyardHopIncreasePer" );
+
+            List<GameEntityTypeData> possibleTypes = new List<GameEntityTypeData>();
+            for ( int x = 0; x < GameEntityTypeDataTable.Instance.Rows.Count; x++ )
+            {
+                GameEntityTypeData workingData = GameEntityTypeDataTable.Instance.Rows[x];
+                if ( workingData.CapturableCanSeedAtAll && workingData.CapturableMaxPerGalaxy > 0 && (workingData.IsGolem || workingData.IsArk) )
+                    possibleTypes.Add( workingData );
+            }
+
+            for ( int x = 0; x < possibleTypes.Count; x++ )
+                if ( World_AIW2.Instance.GetNeutralFaction().GetFirstMatching( possibleTypes[x], true, true ) != null )
+                {
+                    possibleTypes.RemoveAt( x );
+                    x--;
+                }
+
+            for ( int x = 0; x < cap && possibleTypes.Count >= 3; x++ )
+            {
+                ScrapyardData scrapyardData = new ScrapyardData();
+                int indexToUse;
+                while ( scrapyardData.Alpha == null && possibleTypes.Count > 0 )
+                {
+                    indexToUse = Context.RandomToUse.Next( possibleTypes.Count );
+                    scrapyardData.Alpha = possibleTypes[indexToUse];
+                    possibleTypes.RemoveAt( indexToUse );
+                }
+
+                if ( possibleTypes.Count < 2 )
+                    break;
+
+                while ( scrapyardData.Beta == null && possibleTypes.Count > 0 )
+                {
+                    indexToUse = Context.RandomToUse.Next( possibleTypes.Count );
+                    scrapyardData.Beta = possibleTypes[indexToUse];
+                    possibleTypes.RemoveAt( indexToUse );
+                }
+
+                if ( possibleTypes.Count < 1 )
+                    break;
+
+                while ( scrapyardData.Gamma == null && possibleTypes.Count > 0 )
+                {
+                    indexToUse = Context.RandomToUse.Next( possibleTypes.Count );
+                    scrapyardData.Gamma = possibleTypes[indexToUse];
+                    possibleTypes.RemoveAt( indexToUse );
+                }
+
+                if ( scrapyardData.Alpha == null || scrapyardData.Beta == null || scrapyardData.Gamma == null )
+                    break;
+
+                List<Planet> possiblePlanets = new List<Planet>();
+                World_AIW2.Instance.DoForPlanets( false, planet =>
+                {
+                    if ( planet.OriginalHopsToHumanHomeworld == baseHops + hopsIncrease * x )
+                        possiblePlanets.Add( planet );
+
+                    return DelReturn.Continue;
+                } );
+
+                if ( possiblePlanets.Count < 1 )
+                    break;
+
+                Planet spawnPlanet = possiblePlanets[Context.RandomToUse.Next( possiblePlanets.Count )];
+
+                spawnPlanet.Mapgen_SeedEntity( Context, World_AIW2.Instance.GetNeutralFaction(), GameEntityTypeDataTable.Instance.GetRowByName( "PotPScrapyard" ), PlanetSeedingZone.MostAnywhere ).SetScrapyardData( scrapyardData );
+
+                World_AIW2.Instance.QueueChatMessageOrCommand( $"Scrapyard seeded on {spawnPlanet.Name}.", ChatType.LogToCentralChat, Context );
+            }
+        }
+
         private void AddDownfallJournal( GameEntity_Squad entity )
         {
             if ( entity.PlanetFaction.Faction.Type == FactionType.Player && !goonData.JournalEntries.GetHasKey( Ship.DemocracyDownfall.ToString() ) )
                 messageToSend = Ship.DemocracyDownfall.ToString();
         }
 
-        private void AddClockworkJournal(GameEntity_Squad entity )
+        private void AddClockworkJournal( GameEntity_Squad entity )
         {
             if ( entity.PlanetFaction.Faction.Type == FactionType.Player && !goonData.JournalEntries.GetHasKey( Ship.TheClockwork.ToString() ) )
                 messageToSend = Ship.TheClockwork.ToString();
         }
 
-        private void AddReprocessorRegnatJournal(GameEntity_Squad entity )
+        private void AddReprocessorRegnatJournal( GameEntity_Squad entity )
         {
             if ( entity.PlanetFaction.Faction.Type == FactionType.Player && !goonData.JournalEntries.GetHasKey( Ship.ReprocessorRegnat.ToString() ) )
                 messageToSend = Ship.ReprocessorRegnat.ToString();
@@ -121,11 +200,11 @@ namespace PreceptsOfThePrecursors
 
                           if ( entity.Systems[0].GetIsTargetInRange( otherEntity, RangeCheckType.ForActualFiring ) )
                           {
-                              for (int x = 0; x < entity.CurrentMarkLevel * 5; x++)
+                              for ( int x = 0; x < entity.CurrentMarkLevel * 5; x++ )
                               {
-                                  GameEntity_Squad shardling = GameEntity_Squad.CreateNew(entity.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName("NeinzulShardling"), entity.CurrentMarkLevel,
-                                      entity.FleetMembership.Fleet, 1, otherEntity.WorldLocation, Context);
-                                  shardling.Orders.SetBehaviorDirectlyInSim(EntityBehaviorType.Attacker_Full, entity.PlanetFaction.Faction.FactionIndex);
+                                  GameEntity_Squad shardling = GameEntity_Squad.CreateNew( entity.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "NeinzulShardling" ), entity.CurrentMarkLevel,
+                                      entity.FleetMembership.Fleet, 1, otherEntity.WorldLocation, Context );
+                                  shardling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, entity.PlanetFaction.Faction.FactionIndex );
                               }
                           }
 

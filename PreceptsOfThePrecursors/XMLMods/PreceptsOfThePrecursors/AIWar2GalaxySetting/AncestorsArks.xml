@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <galaxy_setting category="Capturables" name="ScrapyardCap" display_name="Max Scrapyard To Seed" type="IntSlider" default="3" min="0" max="10" changeable_during_gameplay="true"
+    description="How many scrapyards can the game spawn? Less may spawn depending on how many arks and golems have already been spawnt, as Scrapyards can only contain non-seeded centerpieces."
+  />
+  <galaxy_setting category="Capturables" name="ScrapyardHopsBase" display_name="Hops For First Scrapyard" type="IntSlider" default="2" min="0" max="5" changeable_during_gameplay="true"
+	  description="How many hops from the human homeworld can the first Scrapyard be found?"
+  />
+  <galaxy_setting category="Capturables" name="ScrapyardHopIncreasePer" display_name="Hops Increase For Each Scrapyard" type="IntSlider" default="2" min="1" max="5" changeable_during_gameplay="true"
+    description="How many more hops for each additional scrapyard? This is additive for each additional Scrapyard."
+  />
+</root>

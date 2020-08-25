@@ -1,5 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+	<!-- Scrapyard. Build up to two of these per galaxy, can be hacked to take one of three Ark/Golems. -->
+	<entity name="PotPScrapyard" gimbal_icon_size_multiplier="1.4"
+			special_entity_type="LargeShipNotStackable" tags="ShowsOnNormalDisplayMode" draw_in_galaxy_view="true"
+			visuals="assets/_finalgamemeshes/aibuildings/usurper/usurper.prefab"
+			icon_name="Ships1/Usurper" is_auto_scrapping_skipped_when_command_station_type_changes="true"
+			uses_large_health_bar="true"
+			category="Ship"
+			size_scale="9"
+			visuals_scale_multiplier="2"
+			y_offset_of_icon="40"
+			collision_priority="800"
+			display_name="Scrapyard"
+			behavior="Stationary" speed="Immobile"
+			description="A graveyard of ancient technology, this can be hacked to reproduce a single blueprint contained within."
+			voice_group="Silent"
+			starting_mark_level="Markless"
+			cost_for_ai_to_purchase="1000"
+			hull_points="100000" shield_points="100000"
+			metal_cost="12000" energy_consumption="15000"
+			armor_mm="140" albedo="0.9" mass_tx="7"
+			ship_or_structure_explosion_sfx="Attrition_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+            priority_as_ai_target="IrreplaceableBigAsTheyCome" priority_as_frd_target="MajorPlanetLevelObjective" priority_to_protect="Irreplaceable"
+			target_type_for_player="NeverTarget"
+			eligible_for_hacks="ScrapyardHackAlpha,ScrapyardHackBeta,ScrapyardHackGamma"
+			>
+	</entity>
   <!-- Deomcracy's Downfall. Nothing but grenades. And no shields because he loves the smell of grenades in the morning. -->
   <entity
 		name="DemocracyDownfall" is_ark="true" display_name="Democracy's Downfall" special_entity_type="MobileOfficerCombatFleetFlagship" 

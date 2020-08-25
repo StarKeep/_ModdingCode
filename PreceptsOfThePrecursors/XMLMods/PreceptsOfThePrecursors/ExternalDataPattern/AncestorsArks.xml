@@ -5,4 +5,5 @@
       type_name is what you've called the storage class in your externaldata cs file.
 -->
   <item name="AncestorsArksData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.AncestorsArksExternalData" />
+	<item name="ScrapyardData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.ScrapyardExternalData" />
 </root>

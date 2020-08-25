@@ -87,6 +87,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\RoamingEnclave.xml" />
@@ -103,6 +104,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\HackingType\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\HackingType\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\AncestorsArks.xml" />
@@ -123,6 +125,7 @@
     <Compile Include="CSharp\GameCommands\AncestorsArks.cs" />
     <Compile Include="CSharp\GameCommands\RoamingEnclave.cs" />
     <Compile Include="CSharp\GameCommands\DysonPrecursors.cs" />
+    <Compile Include="CSharp\Hacking\AncestorsArks.cs" />
     <Compile Include="CSharp\Hacking\DysonPrecursors.cs" />
     <Compile Include="CSharp\SpecialFactions\DysonPrecursors.cs" />
     <Compile Include="CSharp\SpecialFactions\AncestorsArks.cs" />
