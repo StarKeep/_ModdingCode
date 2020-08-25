@@ -669,6 +669,7 @@ namespace PreceptsOfThePrecursors
                 if ( darkSpireGenerator != null )
                 {
                     DarkSpireData darkSpireGlobalData = World.Instance.GetDarkSpireDataExt_AndCacheAfter();
+                    FInt mult = (FInt.One * Mothership.CurrentMarkLevel) / (11 - darkSpire.Ex_MinorFactionCommon_GetPrimitives().Intensity);
                     if ( Mothership.GetSecondsSinceEnteringThisPlanet() == 2 )
                         World_AIW2.Instance.QueueChatMessageOrCommand( $"The Dyson Mothership on {Mothership.Planet.Name} has begune to consume a Vengence Generator, angering the Dark Spire. She will finish within a minute.", ChatType.LogToCentralChat, Context );
                     else if ( Mothership.GetSecondsSinceEnteringThisPlanet() >= 60 )
@@ -684,15 +685,15 @@ namespace PreceptsOfThePrecursors
                         darkSpireGenerator.Despawn( Context, true, InstancedRendererDeactivationReason.TransformedIntoAnotherEntityType );
                         for ( int x = 0; x < darkSpireGlobalData.PerPlanet.GetPairCount(); x++ )
                         {
-                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 100000;
-                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 100000;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 25000 * mult;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 25000 * mult;
                         }
                     }
                     else
                         for ( int x = 0; x < darkSpireGlobalData.PerPlanet.GetPairCount(); x++ )
                         {
-                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 20000;
-                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 20000;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 1000 * mult;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 1000 * mult;
                         }
                 }
             }
