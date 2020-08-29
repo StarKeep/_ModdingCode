@@ -195,8 +195,21 @@ namespace PreceptsOfThePrecursors
             else if ( MothershipData.IsLosingTrust )
                 Buffer.Add( " Its trust towards this planet is currently decreasing. " );
 
+            bool hasAdjacentProtectorNode = false;
+            RelatedEntityOrNull.Planet.DoForLinkedNeighbors( false, adjPlanet =>
+            {
+                if ( DysonPrecursors.DysonNodes.GetHasKey( adjPlanet ) && MothershipData.Trust.GetTrust( adjPlanet ) > 500 )
+                {
+                    hasAdjacentProtectorNode = true;
+                    return DelReturn.Break;
+                }
+
+                return DelReturn.Continue;
+            } );
             if ( RelatedEntityOrNull.Planet.GetIsControlledByFactionType( FactionType.Player ) && trust > -1000 && trust <= 1000 )
                 Buffer.Add( " It has recognized that we consider this planet our home and has ceased aggression... for now. " );
+            else if ( hasAdjacentProtectorNode )
+                Buffer.Add( " It is currently friendly to us on this planet due to an adjacent Protector Node." );
 
             if ( World_AIW2.Instance.GameSecond - RelatedEntityOrNull.GameSecondEnteredThisPlanet < 30 )
                 Buffer.Add( "\nIt is currently converting excess energy from its recent wormhole traversal to rapidly recharge its shields. " );
@@ -491,6 +504,17 @@ namespace PreceptsOfThePrecursors
         {
             if ( Mothership == null )
                 return;
+            bool hasAdjacentProtectorNode = false;
+            Mothership.Planet.DoForLinkedNeighbors( false, adjPlanet =>
+            {
+                if (DysonNodes.GetHasKey(adjPlanet) && MothershipData.Trust.GetTrust(adjPlanet) > 500 )
+                {
+                    hasAdjacentProtectorNode = true;
+                    return DelReturn.Break;
+                }
+
+                return DelReturn.Continue;
+            } );
             if ( Hacking_MothershipPacification.IsActive )
             {
                 allyThisFactionToHumans( faction );
@@ -501,6 +525,8 @@ namespace PreceptsOfThePrecursors
                 enemyThisFactionToAll( faction );
                 Hacking_OverrideMothershipPacification.IsActive = false;
             }
+            else if ( hasAdjacentProtectorNode )
+                allyThisFactionToHumans( faction );
             else if ( (Mothership.GetSecondsSinceEnteringThisPlanet() > 10 || faction.GetIsHostileTowards( BadgerFactionUtilityMethods.findHumanKing().GetControllingFaction() )) &&
                 ((Mothership.Planet.GetIsControlledByFactionType( FactionType.Player ) && MothershipData.Trust.GetTrust( Mothership.Planet ) < -2000) ||
                 (!Mothership.Planet.GetIsControlledByFactionType( FactionType.Player ) && MothershipData.Trust.GetTrust( Mothership.Planet ) < 1000)) )
