@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <entity name="MetalGenerator" is_partial_record="true"
-        tags="MetalGenerator,CivTrade,CivRandom1,CivStorage200,CivPro02Iron,CivPro02Steel,CivPro02Protium,CivPro02Disrupeon,CivPro02Staalreem,CivPro02Ambium,CivPro02Trigon,CivPro02Scrap"
-  >
-  </entity>
-</root>
