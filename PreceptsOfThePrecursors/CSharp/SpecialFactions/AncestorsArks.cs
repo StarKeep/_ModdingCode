@@ -194,22 +194,22 @@ namespace PreceptsOfThePrecursors
             {
                 if ( entity.PlanetFaction.Faction.GetIsHostileTowards( faction ) )
                     entity.Planet.GetPlanetFactionForFaction( faction ).Entities.DoForEntities( ( GameEntity_Squad otherEntity ) =>
-                      {
-                          if ( otherEntity.TypeData.Mass_tX < 5 || otherEntity.TypeData.TargetTypeForPlayer != PlayerTargetType.AutotargetAlways )
-                              return DelReturn.Continue;
+                        {
+                            if ( otherEntity.TypeData.Mass_tX < 5 || otherEntity.TypeData.TargetTypeForPlayer != PlayerTargetType.AutotargetAlways )
+                                return DelReturn.Continue;
 
-                          if ( entity.Systems[0].GetIsTargetInRange( otherEntity, RangeCheckType.ForActualFiring ) )
-                          {
-                              for ( int x = 0; x < entity.CurrentMarkLevel * 5; x++ )
-                              {
-                                  GameEntity_Squad shardling = GameEntity_Squad.CreateNew( entity.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "NeinzulShardling" ), entity.CurrentMarkLevel,
-                                      entity.FleetMembership.Fleet, 1, otherEntity.WorldLocation, Context );
-                                  shardling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, entity.PlanetFaction.Faction.FactionIndex );
-                              }
-                          }
+                            if ( entity.Systems[0].GetIsTargetInRange( otherEntity, RangeCheckType.ForActualFiring ) )
+                            {
+                                for ( int x = 0; x < entity.CurrentMarkLevel * 5; x++ )
+                                {
+                                    GameEntity_Squad shardling = GameEntity_Squad.CreateNew( entity.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "NeinzulShardling" ), entity.CurrentMarkLevel,
+                                        entity.FleetMembership.Fleet, 1, otherEntity.WorldLocation, Context );
+                                    shardling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, entity.PlanetFaction.Faction.FactionIndex );
+                                }
+                            }
 
-                          return DelReturn.Continue;
-                      } );
+                            return DelReturn.Continue;
+                        } );
                 return DelReturn.Continue;
             } );
         }
