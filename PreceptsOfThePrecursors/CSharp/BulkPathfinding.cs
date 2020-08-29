@@ -13,10 +13,17 @@ namespace PreceptsOfThePrecursors
 
     public static class BulkPathfinding
     {
-        public static void QueueWormholeCommand( this GameEntity_Squad entity, Planet destination, ArcenLongTermIntermittentPlanningContext ContextForSmartPathfindingOrNullForDumb = null )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="destination"></param>
+        /// <param name="ContextForSmartPathfindingOrNullForDumb"></param>
+        /// <returns>The next planet the entity will move to.</returns>
+        public static Planet QueueWormholeCommand( this GameEntity_Squad entity, Planet destination, ArcenLongTermIntermittentPlanningContext ContextForSmartPathfindingOrNullForDumb = null, bool forResultOnlyDoNotActuallyQueue = false )
         {
             if ( !(entity.PlanetFaction.Faction.Implementation is IBulkPathfinding) )
-                return;
+                return null;
 
             IBulkPathfinding BPFaction = entity.PlanetFaction.Faction.Implementation as IBulkPathfinding;
 
@@ -46,11 +53,15 @@ namespace PreceptsOfThePrecursors
                     return DelReturn.Continue;
                 } );
 
-            if ( !BPFaction.WormholeCommands.GetHasKey( origin ) )
-                BPFaction.WormholeCommands.AddPair( origin, new ArcenSparseLookup<Planet, List<GameEntity_Squad>>() );
-            if ( !BPFaction.WormholeCommands[origin].GetHasKey( nextPlanet ) )
-                BPFaction.WormholeCommands[origin].AddPair( nextPlanet, new List<GameEntity_Squad>() );
-            BPFaction.WormholeCommands[origin][nextPlanet].Add( entity );
+            if ( !forResultOnlyDoNotActuallyQueue )
+            {
+                if ( !BPFaction.WormholeCommands.GetHasKey( origin ) )
+                    BPFaction.WormholeCommands.AddPair( origin, new ArcenSparseLookup<Planet, List<GameEntity_Squad>>() );
+                if ( !BPFaction.WormholeCommands[origin].GetHasKey( nextPlanet ) )
+                    BPFaction.WormholeCommands[origin].AddPair( nextPlanet, new List<GameEntity_Squad>() );
+                BPFaction.WormholeCommands[origin][nextPlanet].Add( entity );
+            }
+            return nextPlanet;
         }
         public static void ExecuteWormholeCommands( this Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {

@@ -9,9 +9,8 @@ namespace PreceptsOfThePrecursors
         public override Hackable GetCanBeHacked( GameEntity_Squad Target, GameEntity_Squad HackerOrNull, Planet planet, Faction HackerFaction, HackingType Type, string RelatedStringOrNull, int RelatedIntOrNull, out string RejectionReasonDescription )
         {
             Hackable result = base.GetCanBeHacked( Target, HackerOrNull, planet, HackerFaction, Type, RelatedStringOrNull, RelatedIntOrNull, out RejectionReasonDescription );
-            if ( Target == null )
-                if ( result != Hackable.CanBeHacked )
-                    return result;
+            if ( result != Hackable.CanBeHacked )
+                return result;
             return Hackable.CanBeHacked;
         }
 
@@ -30,7 +29,7 @@ namespace PreceptsOfThePrecursors
             if ( Hacker.ActiveHack_DurationThusFar % type.TertiaryHackResponseInterval == 0 )
                 budget += type.TertiaryResponseStrengthPerInterval * mult * 1000;
 
-            if (budget > FInt.One)
+            if ( budget > FInt.One )
                 ExoGalacticAttackManager.SendExoGalacticAttack( ExoOptions.CreateWithDefaults( Hacker, budget.GetNearestIntPreferringHigher(), spawnFaction, Hacker.PlanetFaction.Faction ), Context );
             if ( Hacker.ActiveHack_DurationThusFar >= type.GetEffectiveHackDuration() )
                 DoSuccessfulCompletionLogic( Target, planet, Hacker, Context, type, Event );

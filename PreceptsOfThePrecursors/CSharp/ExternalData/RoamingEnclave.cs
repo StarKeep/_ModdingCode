@@ -412,7 +412,7 @@ namespace PreceptsOfThePrecursors
             enclave.AdditionalStrengthFromFactions = 0;
         }
 
-        public static void PerSecondLogic( this GameEntity_Squad enclave, ArcenSimContext Context )
+        public static void YounglingStoragePerSecondLogic( this GameEntity_Squad enclave, ArcenSimContext Context )
         {
             enclave.AdditionalStrengthFromFactions = 0;
 

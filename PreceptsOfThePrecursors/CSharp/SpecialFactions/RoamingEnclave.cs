@@ -180,7 +180,7 @@ namespace PreceptsOfThePrecursors
         private void HandleYounglingCombining( ArcenSimContext Context )
         {
             for ( int x = 0; x < Enclaves.Count; x++ )
-                Enclaves[x].PerSecondLogic( Context );
+                Enclaves[x].YounglingStoragePerSecondLogic( Context );
         }
 
         private void HandleUnitSpawningForHives( ArcenSimContext Context )
@@ -568,7 +568,7 @@ namespace PreceptsOfThePrecursors
             }
             catch ( Exception e )
             {
-                ArcenDebugging.SingleLineQuickDebug( $"We ran into an error in SetupYounglings. This is on a relatively harmless section of code, so we'll keep going, but the error is as follows: {e.StackTrace}" );
+                ArcenDebugging.ArcenDebugLog( $"We ran into an error in SetupYounglings. This is on a relatively harmless section of code, so we'll keep going, but the error is as follows: {e.Message}", Verbosity.DoNotShow );
             }
             if ( markUpCommand.RelatedEntityIDs.Count > 0 )
                 Context.QueueCommandForSendingAtEndOfContext( markUpCommand );
@@ -1441,7 +1441,7 @@ namespace PreceptsOfThePrecursors
 
             if ( PlayerEnclaves != null && PlayerEnclaves.Count > 0 )
                 for ( int x = 0; x < PlayerEnclaves.Count; x++ )
-                    PlayerEnclaves[x].PerSecondLogic( Context );
+                    PlayerEnclaves[x].YounglingStoragePerSecondLogic( Context );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
