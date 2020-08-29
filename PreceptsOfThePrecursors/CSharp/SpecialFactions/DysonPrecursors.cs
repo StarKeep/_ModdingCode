@@ -2030,14 +2030,20 @@ namespace PreceptsOfThePrecursors
             }
             else if ( entity.TypeData.GetHasTag( DysonPrecursors.DYSON_NODE_NAME ) )
             {
-                if ( FiringSystemOrNull == null || FiringSystemOrNull.ParentEntity.PlanetFaction.Faction.Type == FactionType.Player )
-                    World_AIW2.Instance.DoForFactions( faction =>
-                     {
-                         if ( faction.Type == FactionType.Player )
-                             faction.StoredMetal += entity.TypeData.MetalCost;
+                World_AIW2.Instance.DoForFactions( faction =>
+                    {
+                        if ( faction.Type == FactionType.Player && entity.Planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Self].TotalStrength > 100 )
+                        {
+                            faction.StoredMetal += entity.TypeData.MetalCost;
 
-                         return DelReturn.Continue;
-                     } );
+                            if ( entity.TypeData.GetHasTag( DysonPrecursors.DYSON_ANCIENT_NODE_NAME ) )
+                                faction.StoredHacking += 10;
+                            else
+                                faction.StoredHacking += entity.CurrentMarkLevel;
+                        }
+
+                        return DelReturn.Continue;
+                    } );
                 SpawnDronesOnNodeOrPacketDeath( entity, entity.PlanetFaction.Faction, Context );
             }
         }
