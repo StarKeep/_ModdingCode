@@ -685,15 +685,15 @@ namespace PreceptsOfThePrecursors
                         darkSpireGenerator.Despawn( Context, true, InstancedRendererDeactivationReason.TransformedIntoAnotherEntityType );
                         for ( int x = 0; x < darkSpireGlobalData.PerPlanet.GetPairCount(); x++ )
                         {
-                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 25000 * mult;
-                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 25000 * mult;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 2500 * mult;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 2500 * mult;
                         }
                     }
                     else
                         for ( int x = 0; x < darkSpireGlobalData.PerPlanet.GetPairCount(); x++ )
                         {
-                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 1000 * mult;
-                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 1000 * mult;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.NetEnergy += 100 * mult;
+                            darkSpireGlobalData.PerPlanet.GetPairByIndex( x ).Value.TotalEnergy += 100 * mult;
                         }
                 }
             }
