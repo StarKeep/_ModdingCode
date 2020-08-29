@@ -1,0 +1,13 @@
+Every empire is only as strong as the people within.
+Protect your people, and they will help your empire flourish.
+From collecting and processing various resource around the galaxy to bolster the economy, to taking up arms on their own to aid your survival, you'll find their help invaluable in the long term.
+
+As they flourish, so do you.
+
+Adds in the Civilian Industry faction, a potent defensive faction that can be allied to either a player, or a faction team.
+They will expand alongside their respective ally, and produce a large number of defensive forces to aid their team.
+They gain a new resource type per planet they expand to, and will work diligently to spread these resources throughout their empire.
+
+When allied to the player; you will find your command station and battlestations have access to a few new structures that you can invest in to greatly incresae the power of your civilian economy.
+
+Please check Galaxy Settings for many tweaks in regards to how they behave.

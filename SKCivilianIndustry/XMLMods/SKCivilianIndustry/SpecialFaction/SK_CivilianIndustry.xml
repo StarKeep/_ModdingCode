@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- The main faction. Trading logic is handled in a subfaction below. -->
+  <!-- The creation of our custom faction. -->
   <faction name="SKCivilianIndustry"
            display_name="Civilian Industry"
            dll_name="SKCivilianIndustry"
@@ -14,19 +14,5 @@
     <custom_field name="Allegiance" display_name="Allegiance" description="What team will this industry support?"
           sort_group="250" setting_type="CustomDropdownArbitraryOptions" 
           arbitrary_options="Player Team,Minor Faction Team Red,Minor Faction Team Blue,Minor Faction Team Green" default_option="Player Team" />
-  </faction>
-
-  <!-- This faction handles all actual trading logic. This is done to allow cross-faction resource transfering between, say, allies. -->
-  <faction name="SKTradeLogicFaction"
-           display_name="Trade Logic Faction"
-           dll_name="SKCivilianIndustry"
-           type_name="SKCivilianIndustry.SKTradeLogicFaction"
-           team_center_color="Gray" team_border_color="Gray"
-           type="SpecialFaction"
-           should_not_be_shown="true"
-           player_discoverable="true"
-           auto_add_one_of_faction_if_missing_on_save_load="true"
-           description="A faction used for trading logic. If you see this, thats not good."
-  >
   </faction>
 </root>

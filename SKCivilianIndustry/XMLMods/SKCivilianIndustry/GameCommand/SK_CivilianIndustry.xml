@@ -3,14 +3,4 @@
   <!-- No functional difference, but many vanilla commands assign a unique command name for debugging. Seems like a harmless enough change so its easy to tell when a command is from this mod. -->
   <command name="SetWormholePath_CivilianIndustryBulk" core_function="SetWormholePath_NPCDirectedMob" audio_cue="SetWormholePath" dll_name="AIWarExternalCode" type_name="Arcen.AIW2.External.GameCommand_SetWormholePath" />
   <command name="MoveManyToOnePoint_CivilianIndustryBulk" core_function="MoveManyToOnePoint" audio_cue="Move" dll_name="AIWarExternalCode" type_name="Arcen.AIW2.External.GameCommand_MoveManyToOnePoint" />
-  
-  <!-- Unique commands. -->
-  <command name="ExecuteTradeOrder" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.GameCommand_ExecuteTradeOrder" />
-  <command name="PopulateCargoShipList" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.GameCommand_PopulateCargoShipList" />
-  <command name="PopulateTradeEntitiesList" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.GameCommand_PopulateTradeEntitiesList" />
-  <command name="PopulateIndustryEntitiesList" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.GameCommand_PopulateIndustryEntitiesList" />
-  <command name="PopulateCargoShipsToBuildList" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.GameCommand_PopulateCargoShipsToBuildList" />
-  <command name="AddUnitToCivFleet" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.GameCommand_AddUnitToCivFleet" />
-  <command name="InitializeCargo" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.GameCommand_InitializeCargo" />
-  <command name="InitializeIndustry" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.GameCommand_InitializeIndustry" />
 </root>
