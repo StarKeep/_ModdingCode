@@ -106,7 +106,7 @@
 			visuals_scale_multiplier="3.8"
 			y_offset_of_icon="30"
 			display_name="Battlestar"
-			description="A shield heavy drone supership, this ship constantly outputs an ever increasing number of strikecraft wings as it levels up. While its various fighter wings provide support, this ship will additionally bolster allied attack strength on the planet, and it is personally capable of very powerful single target damage at extreme ranges.
+			description="A shield heavy drone supership, this ship constantly outputs an ever increasing number of strikecraft wings as it levels up. While its various fighter wings provide support, this ship will additionally bolster allied attack strength on the planet, and it is personally capable of decent single target damage at extreme range.
 Constantly summons wings consisting of 6 ships, gaining new ones every mark.
 Mark 1: Fighter
 Mark 2: Stingray
@@ -137,12 +137,6 @@ Mark 7: Bomber"
 				shot_type_data="ExtremeLongRangeRailgun"
 				>
       <outgoing_damage_modifier based_on="AttackDistance" comparison_type="MultiplesOf" compared_to="2500" multiplier="1" />
-    </system>
-    <system name="MarineSquad" display_name="Marine Squad"
-				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="100000" range="VeryTiny1" shot_speed="VeryFast" rate_of_fire="SlightlyLow" fires_salvos_sequentially="true"
-				shot_type_data="ExtremeLongRangeRailgun"
-				>
     </system>
     <system name="FighterSquad" display_name="Fighter Squad"
 				category="Weapon" firing_timing="OnlyInRange"
