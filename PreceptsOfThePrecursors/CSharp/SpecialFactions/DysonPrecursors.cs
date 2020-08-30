@@ -916,7 +916,9 @@ namespace PreceptsOfThePrecursors
                 return;
             // If we've been at this planet too long, move on.
             int timeToStay = Math.Max( 60, Math.Min( 300, 300 - Math.Abs( MothershipData.Trust.GetTrust( Mothership.Planet ) ) / 10 ) );
-            if ( (MothershipData.PlanetToBuildOn != null && Mothership.Planet != MothershipData.PlanetToBuildOn) || World_AIW2.Instance.GameSecond - Mothership.GameSecondEnteredThisPlanet > timeToStay )
+            if ( MothershipData.PlanetToBuildOn != null )
+                timeToStay /= 2;
+            if ( World_AIW2.Instance.GameSecond - Mothership.GameSecondEnteredThisPlanet > timeToStay )
             {
                 if ( !MothershipData.ReadyToMoveOn )
                     MoveToNewPlanet( faction, Context );
@@ -1079,7 +1081,7 @@ namespace PreceptsOfThePrecursors
 
         private void HandleAIResponse( Faction faction, ArcenSimContext Context )
         {
-            if ( World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) ).OverallPowerLevel < 2 )
+            if ( World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) ).OverallPowerLevel < 1 )
                 return;
 
             // Increase strength for each proto sphere and dyson node that exists.
@@ -1130,7 +1132,7 @@ namespace PreceptsOfThePrecursors
                         }
                 }
 
-            if ( totalNodeMarkCount < 100 )
+            if ( totalNodeMarkCount < 50 )
             {
                 ExoData.CurrentExoStrength = FInt.Zero;
                 ExoData.StrengthRequiredForNextExo = FInt.One * 1000;
@@ -1167,6 +1169,31 @@ namespace PreceptsOfThePrecursors
                     ExoData.NumExosSoFar++;
                 }
             }
+
+            // Boost the budget of extragalactic units.
+            World_AIW2.Instance.DoForFactions( otherFaction =>
+            {
+                if ( otherFaction.Type != FactionType.AI )
+                    return DelReturn.Continue;
+
+                AISentinelsExternalData factionExternal = otherFaction.GetSentinelsExternal();
+                List<ExtragalacticBudget> budgets = factionExternal.ExtragalacticBudgets;
+
+                World_AIW2.Instance.DoForFactions( targetFaction =>
+                {
+                    if ( !(targetFaction.Implementation is BaseDysonSubfaction) )
+                        return DelReturn.Continue;
+
+                    ExtragalacticBudget budget = ExtragalacticBudget.GetBudgetFromList( budgets, targetFaction );
+                    if ( budget == null || budget.Budget < FInt.One * 100 )
+                        return DelReturn.Continue;
+
+                    budget.Budget += targetFaction.OverallPowerLevel * 100;
+                    return DelReturn.Continue;
+                } );
+
+                return DelReturn.Continue;
+            } );
         }
 
         private void SpawnPackets( Faction faction, ArcenSimContext Context )
@@ -1405,7 +1432,7 @@ namespace PreceptsOfThePrecursors
                 if ( Mothership.LongRangePlanningData.FinalDestinationPlanetIndex == -1 || Mothership.LongRangePlanningData.FinalDestinationPlanetIndex == Mothership.Planet.Index )
                     if ( MothershipData.Level >= 7 ||
                         ProtoSphereCosts.BuildCost( faction ) < PrecursorCosts.Resources( Mothership.CurrentMarkLevel, faction ) ||
-                        (MothershipData.Resources >= ProtoSphereCosts.BuildCost( faction ) && MothershipData.Mines < PrecursorCosts.Mines( Mothership.CurrentMarkLevel, faction )) )
+                        MothershipData.Resources >= ProtoSphereCosts.BuildCost( faction ) )
                         HandleSphereBuildingMovement( faction, Context );
                     else
                         HandleCollectionAndNodeMovement( faction, Context );
