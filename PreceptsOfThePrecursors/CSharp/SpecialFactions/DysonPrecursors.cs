@@ -1119,56 +1119,60 @@ namespace PreceptsOfThePrecursors
             }
 
             //Handle the sending of exos towards Noded planets.
-            int totalNodeMarkCount = 0;
-            if ( DysonNodes != null )
-                for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
-                {
-                    if ( MothershipData.Trust.GetTrust( DysonNodes.GetPairByIndex( x ).Key ) > 0 && World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) ).OverallPowerLevel < 2 )
-                        continue; // Skip protectors until strong enough.
-                    for ( int y = 0; y < 7; y++ )
-                        if ( DysonNodes.GetPairByIndex( x ).Value[y] != null )
-                        {
-                            totalNodeMarkCount += y + 1;
-                        }
-                }
-
-            if ( totalNodeMarkCount < 50 )
-            {
+            //int totalNodeMarkCount = 0;
+            //if ( DysonNodes != null )
+            //    for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
+            //    {
+            //        if ( MothershipData.Trust.GetTrust( DysonNodes.GetPairByIndex( x ).Key ) > 0 && World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) ).OverallPowerLevel < 2 )
+            //            continue; // Skip protectors until strong enough.
+            //        for ( int y = 0; y < 7; y++ )
+            //            if ( DysonNodes.GetPairByIndex( x ).Value[y] != null )
+            //            {
+            //                totalNodeMarkCount += y + 1;
+            //            }
+            //    }
+            //
+            //if ( totalNodeMarkCount < 50 )
+            //{
                 ExoData.CurrentExoStrength = FInt.Zero;
                 ExoData.StrengthRequiredForNextExo = FInt.One * 1000;
-            }
-            else
-            {
-                ExoData.ExoReasonOverride = "The Precursor Menace";
-                ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 500));
-                ExoData.CurrentExoStrength += strMod + sphereMod + nodeMod;
-                if ( ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo )
-                {
-                    List<GameEntity_Squad> nodes = new List<GameEntity_Squad>();
-                    bool hasFocus = false;
-                    for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
-                    {
-                        Planet nodePlanet = DysonNodes.GetPairByIndex( x ).Key;
-                        if ( MothershipData.Trust.GetTrust( nodePlanet ) > 0 && World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) ).OverallPowerLevel < 2 )
-                            continue; // Skip protectors untl strong enough.
-                        bool isInFocus = nodePlanet.GetControllingFaction().Type == FactionType.AI;
-                        if ( isInFocus && !hasFocus )
-                        {
-                            hasFocus = true;
-                            nodes = new List<GameEntity_Squad>();
-                        }
-
-                        if ( !hasFocus || isInFocus )
-                            for ( int y = 0; y < 7; y++ )
-                                if ( DysonNodes[nodePlanet][y] != null )
-                                    nodes.Add( DysonNodes[nodePlanet][y] );
-                    }
-                    nodes.Add( Mothership );
-                    ExoGalacticAttackManager.SendExoGalacticAttack( ExoOptions.CreateWithDefaults( nodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction ), Context );
-                    ExoData.CurrentExoStrength = FInt.Zero;
-                    ExoData.NumExosSoFar++;
-                }
-            }
+            //}
+            //else
+            //{
+            //    ExoData.ExoReasonOverride = "The Precursor Menace";
+            //    ExoData.StrengthRequiredForNextExo = FInt.Zero + (totalNodeMarkCount * (MothershipData.Level * 1000));
+            //    ExoData.CurrentExoStrength += strMod + sphereMod + nodeMod;
+            //    if ( ExoData.CurrentExoStrength >= ExoData.StrengthRequiredForNextExo )
+            //    {
+            //        List<GameEntity_Squad> nodes = new List<GameEntity_Squad>();
+            //        bool hasFocus = false;
+            //        for ( int x = 0; x < DysonNodes.GetPairCount(); x++ )
+            //        {
+            //            Planet nodePlanet = DysonNodes.GetPairByIndex( x ).Key;
+            //            if ( MothershipData.Trust.GetTrust( nodePlanet ) > 0 && World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonProtectors ) ).OverallPowerLevel < 2 )
+            //                continue; // Skip protectors untl strong enough.
+            //            bool isInFocus = nodePlanet.GetControllingFaction().Type == FactionType.AI;
+            //            if ( isInFocus && !hasFocus )
+            //            {
+            //                hasFocus = true;
+            //                nodes = new List<GameEntity_Squad>();
+            //            }
+            //
+            //            if ( !hasFocus || isInFocus )
+            //                for ( int y = 0; y < 7; y++ )
+            //                    if ( DysonNodes[nodePlanet][y] != null )
+            //                        nodes.Add( DysonNodes[nodePlanet][y] );
+            //        }
+            //        nodes.Add( Mothership );
+            //        ExoOptions exoOptions = ExoOptions.CreateWithDefaults( nodes, ExoData.StrengthRequiredForNextExo.ToInt(), null, faction );
+            //        exoOptions.UnitBlocksToUse = new List<ExoUnitType>();
+            //        exoOptions.UnitBlocksToUse.Add( ExoUnitType.ExoLeaders );
+            //        exoOptions.UnitBlocksToUse.Add( ExoUnitType.DireGuardians );
+            //        ExoGalacticAttackManager.SendExoGalacticAttack( exoOptions, Context );
+            //        ExoData.CurrentExoStrength = FInt.Zero;
+            //        ExoData.NumExosSoFar++;
+            //    }
+            //}
 
             // Boost the budget of extragalactic units.
             World_AIW2.Instance.DoForFactions( otherFaction =>
