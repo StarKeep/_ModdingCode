@@ -17,7 +17,7 @@
 	
 	custom_int_DysonPrecursors_PacketSpawnIntervalBase="120"
 	custom_int_DysonPrecursors_PacketSpawnIntervalIncreasePerNodeLevel="60"
-	custom_int_DysonPrecursors_PacketSpawnIntervalSphereBase="30"
-	custom_int_DysonPrecursors_PacketSpawnIntervalSphereIncreasePerLevel="15"
+	custom_int_DysonPrecursors_PacketSpawnIntervalSphereBase="40"
+	custom_int_DysonPrecursors_PacketSpawnIntervalSphereIncreasePerLevel="20"
 >
 </root>

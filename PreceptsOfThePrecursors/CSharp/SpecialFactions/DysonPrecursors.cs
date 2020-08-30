@@ -507,7 +507,7 @@ namespace PreceptsOfThePrecursors
             bool hasAdjacentProtectorNode = false;
             Mothership.Planet.DoForLinkedNeighbors( false, adjPlanet =>
             {
-                if (DysonNodes.GetHasKey(adjPlanet) && MothershipData.Trust.GetTrust(adjPlanet) > 500 )
+                if ( DysonNodes.GetHasKey( adjPlanet ) && MothershipData.Trust.GetTrust( adjPlanet ) > 500 )
                 {
                     hasAdjacentProtectorNode = true;
                     return DelReturn.Break;
@@ -1403,10 +1403,12 @@ namespace PreceptsOfThePrecursors
             if ( MothershipData.ReadyToMoveOn && Mothership.GetSecondsSinceEnteringThisPlanet() > 10 )
             {
                 if ( Mothership.LongRangePlanningData.FinalDestinationPlanetIndex == -1 || Mothership.LongRangePlanningData.FinalDestinationPlanetIndex == Mothership.Planet.Index )
-                    if ( MothershipData.Level < 7 && PrecursorCosts.Resources( Mothership.CurrentMarkLevel, faction ) < ProtoSphereCosts.BuildCost( faction ) )
-                        HandleCollectionAndNodeMovement( faction, Context );
-                    else
+                    if ( MothershipData.Level >= 7 ||
+                        ProtoSphereCosts.BuildCost( faction ) < PrecursorCosts.Resources( Mothership.CurrentMarkLevel, faction ) ||
+                        (MothershipData.Resources >= ProtoSphereCosts.BuildCost( faction ) && MothershipData.Mines < PrecursorCosts.Mines( Mothership.CurrentMarkLevel, faction )) )
                         HandleSphereBuildingMovement( faction, Context );
+                    else
+                        HandleCollectionAndNodeMovement( faction, Context );
                 return;
             }
 
