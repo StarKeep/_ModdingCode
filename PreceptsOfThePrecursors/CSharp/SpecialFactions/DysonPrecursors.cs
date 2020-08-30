@@ -1185,7 +1185,7 @@ namespace PreceptsOfThePrecursors
 
                 World_AIW2.Instance.DoForFactions( targetFaction =>
                 {
-                    if ( !(targetFaction.Implementation is BaseDysonSubfaction) )
+                    if ( !(targetFaction.Implementation is DysonSuppressors) )
                         return DelReturn.Continue;
 
                     ExtragalacticBudget budget = ExtragalacticBudget.GetBudgetFromList( budgets, targetFaction );
@@ -1949,7 +1949,7 @@ namespace PreceptsOfThePrecursors
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
                 if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
-                    fromFaction += FInt.FromParts( 0, 025 ) * planet.GetProtoSphereData().Level;
+                    fromFaction += FInt.FromParts( 0, 250 ) * planet.GetProtoSphereData().Level;
 
                 if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) < 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                     for ( int x = 0; x < 7; x++ )
@@ -2203,20 +2203,12 @@ namespace PreceptsOfThePrecursors
             if ( DysonPrecursors.MothershipData == null || DysonPrecursors.DysonNodes == null )
                 return;
 
-            FInt fromMothership = FInt.Zero, fromFaction = FInt.Zero;
-
-            if ( DysonPrecursors.MothershipData.Level < 6 )
-            {
-                for ( int x = 0; x < DysonPrecursors.MothershipData.Level; x++ )
-                    fromMothership += FInt.FromParts( 0, 334 );
-            }
-            else
-                fromMothership = FInt.FromParts( 2, 000 );
+            FInt fromFaction = FInt.Zero;
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
                  if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
-                     fromFaction += FInt.FromParts( 0, 025 ) * planet.GetProtoSphereData().Level;
+                     fromFaction += FInt.FromParts( 0, 250 ) * planet.GetProtoSphereData().Level;
 
                  if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                      for ( int x = 0; x < 7; x++ )
@@ -2227,7 +2219,7 @@ namespace PreceptsOfThePrecursors
              } );
 
             if ( fromFaction > 0 )
-                faction.OverallPowerLevel = fromMothership + fromFaction;
+                faction.OverallPowerLevel = fromFaction;
 
             if ( faction.OverallPowerLevel > 3 )
                 faction.OverallPowerLevel = FInt.FromParts( 3, 000 );
