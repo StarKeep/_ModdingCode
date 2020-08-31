@@ -234,14 +234,14 @@
     <entity name="CivSniper" display_name="Civilian Sniper" skip_export="true" copy_from="Sniper"
             tags="CivAmbushMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivRaptor" display_name="Civilian Raptor" skip_export="true" copy_from="Raptor"
             tags="CivAmbushMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
@@ -288,14 +288,14 @@
     <entity name="CivConcussionCorvette" display_name="Civilian Concussion Corvette" skip_export="true" copy_from="ConcussionCorvette"
             tags="CivConcussionMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivSiegeFrigate" display_name="Civilian Siege Frigate" skip_export="true" copy_from="SiegeFrigate"
             tags="CivConcussionMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
@@ -335,14 +335,14 @@
     <entity name="CivPikeCorvette" display_name="Civilian Pike Corvette" skip_export="true" copy_from="PikeCorvette"
             tags="CivDisruptiveMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivAgravicPod" display_name="Civilian Agravic Pod" skip_export="true" copy_from="AgravicPod"
             tags="CivDisruptiveMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
@@ -372,14 +372,14 @@
     <entity name="CivPulsarTank" display_name="Civilian Pulsar Tank" skip_export="true" copy_from="PulsarTank"
             tags="CivFusionMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivAssaultFrigate" display_name="Civilian Assault Frigate" skip_export="true" copy_from="AssaultFrigate"
             tags="CivFusionMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
@@ -413,14 +413,14 @@
     <entity name="CivVWing" display_name="Civilian V-Wing" skip_export="true" copy_from="VWing"
             tags="CivGeneralistMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivAutocannonMinipod" display_name="Civilian Autocannon Minipod" skip_export="true" copy_from="AutocannonMinipod"
             tags="CivGeneralistMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
@@ -457,14 +457,14 @@
     <entity name="CivVampireClaw" display_name="Civilian Vampire Claw" skip_export="true" copy_from="VampireClaw"
             tags="CivMeleeMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivMetabolizingGangsaw" display_name="Civilian Metabolizing Gangsaw" skip_export="true" copy_from="MetabolizingGangsaw"
             tags="CivMeleeMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
@@ -516,14 +516,14 @@
     <entity name="CivRaider" display_name="Civilian Raider" skip_export="true" copy_from="Raider"
             tags="CivRaidMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivRaidFrigate" display_name="Civilian Raid Frigate" skip_export="true" copy_from="RaidFrigate"
             tags="CivRaidMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
@@ -567,14 +567,14 @@
     <entity name="CivInhibitingTeslaCorvette" display_name="Civilian Inhibiting Tesla Corvette" skip_export="true" copy_from="InhibitingTeslaCorvette"
             tags="CivSplashMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivGrenadeLauncherCorvette" display_name="Civilian Grenade Launcher Corvette" skip_export="true" copy_from="GrenadeLauncherCorvette"
             tags="CivSplashMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
@@ -622,14 +622,14 @@
     <entity name="CivSpider" display_name="Civilian Spider" skip_export="true" copy_from="Spider"
             tags="CivSubterfugeMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivWarbirdFrigate" display_name="Civilian Warbird Frigate" skip_export="true" copy_from="WarbirdFrigate"
             tags="CivSubterfugeMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
       <system name="ParalysisBolt" shots_per_salvo="4" damage_per_shot="2240"></system>
@@ -670,14 +670,14 @@
     <entity name="CivSentinelGunboat" display_name="Civilian Sentinel Gunboat" skip_export="true" copy_from="SentinelGunboat"
             tags="CivTechnologistMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivEtherjet" display_name="Civilian Etherjet" skip_export="true" copy_from="Etherjet"
             tags="CivTechnologistMobile,CivMobile"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
-            damage_multiplier_to_all_weapons="0.5" multiplier_to_all_fleet_caps="2" 
+            damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
+using Arcen.Universal.UnitermData;
 using SKCivilianIndustry.Persistence;
 
 namespace SKCivilianIndustry
 {
     // The main faction class.
-    public class SpecialFaction_SKCivilianIndustry : BaseSpecialFaction
+    public class SpecialFaction_SKCivilianIndustry : BaseSpecialFaction, IBulkPathfinding
     {
         // Information required for our faction.
         // General identifier for our faction.
@@ -18,6 +20,9 @@ namespace SKCivilianIndustry
         // Let the game know we're going to want to use the DoLongRangePlanning_OnBackgroundNonSimThread_Subclass function.
         // This function is generally used for things that do not need to always run, such as navigation requests.
         protected override bool EverNeedsToRunLongRangePlanning => true;
+
+        public ArcenSparseLookup<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>> WormholeCommands { get; set; }
+        public ArcenSparseLookup<Planet, ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>> MovementCommands { get; set; }
 
         // The following can be set to limit the number of times the background thread can be ran.
         //protected override int MinimumSecondsBetweenLongRangePlannings => 5;
@@ -52,6 +57,11 @@ namespace SKCivilianIndustry
             LastGameSecondForMessageAboutThisPlanet = new ArcenSparseLookup<Planet, int>();
             LastGameSecondForLastTachyonBurstOnThisPlanet = new ArcenSparseLookup<Planet, int>();
             IgnoreResource = new bool[(int)CivilianResource.Length];
+        }
+
+        public enum Commands
+        {
+            SetMilitiaCaps
         }
 
         // Scale ship costs based on intensity. 5 is 100%, with a 10% step up or down based on intensity.
@@ -2377,15 +2387,15 @@ namespace SKCivilianIndustry
         public void DoCargoShipMovement( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
             // Ships going somewhere for dropoff.
-            ProcessIncoming( factionData.CargoShipsBuilding, 5000 );
-            ProcessIncoming( factionData.CargoShipsEnroute, 2000 );
-            ProcessIncoming( factionData.CargoShipsUnloading, 5000 );
+            ProcessIncoming( factionData.CargoShipsBuilding, 5000, Context );
+            ProcessIncoming( factionData.CargoShipsEnroute, 2000, Context );
+            ProcessIncoming( factionData.CargoShipsUnloading, 5000, Context );
 
             // Ships going somewhere for pickup.
-            ProcessOutgoing( factionData.CargoShipsLoading, 5000 );
-            ProcessOutgoing( factionData.CargoShipsPathing, 2000 );
+            ProcessOutgoing( factionData.CargoShipsLoading, 5000, Context );
+            ProcessOutgoing( factionData.CargoShipsPathing, 2000, Context );
         }
-        private void ProcessIncoming( List<int> ships, int maxDistance )
+        private void ProcessIncoming( List<int> ships, int maxDistance, ArcenLongTermIntermittentPlanningContext Context )
         {
             for ( int x = 0; x < ships.Count; x++ )
             {
@@ -2410,7 +2420,7 @@ namespace SKCivilianIndustry
                         continue; // Stop if already close enough.
 
                     // On planet. Begin pathing towards the station.
-                    QueueMovementCommand( ship, destinationStation.WorldLocation );
+                    ship.QueueMovementCommand( destinationStation.WorldLocation );
                 }
                 else
                 {
@@ -2418,11 +2428,11 @@ namespace SKCivilianIndustry
                         continue; // Stop if already enroute.
 
                     // Not on planet yet, prepare wormhole navigation.
-                    QueueWormholeCommand( ship, destinationPlanet );
+                    ship.QueueWormholeCommand( destinationPlanet, Context );
                 }
             }
         }
-        private void ProcessOutgoing( List<int> ships, int maxDistance )
+        private void ProcessOutgoing( List<int> ships, int maxDistance, ArcenLongTermIntermittentPlanningContext Context )
         {
             for ( int x = 0; x < ships.Count; x++ )
             {
@@ -2446,7 +2456,7 @@ namespace SKCivilianIndustry
                         continue; // Stop if already close enough.
 
                     // On planet. Begin pathing towards the station.
-                    QueueMovementCommand( ship, originStation.WorldLocation );
+                    ship.QueueMovementCommand( originStation.WorldLocation );
                 }
                 else
                 {
@@ -2454,7 +2464,7 @@ namespace SKCivilianIndustry
                         continue; // Stop if already moving.
 
                     // Not on planet yet, queue a wormhole movement command.
-                    QueueWormholeCommand( ship, originPlanet );
+                    ship.QueueWormholeCommand( originPlanet, Context );
                 }
             }
         }
@@ -2507,7 +2517,7 @@ namespace SKCivilianIndustry
                         if ( ship.LongRangePlanningData != null && ship.LongRangePlanningData.DestinationPoint == goalStation.WorldLocation )
                             continue; // Stop if we're already enroute.
 
-                        QueueMovementCommand( ship, goalStation.WorldLocation );
+                        ship.QueueMovementCommand( goalStation.WorldLocation );
                     }
                     else
                     {
@@ -2515,7 +2525,7 @@ namespace SKCivilianIndustry
                         if ( ship.LongRangePlanningData != null && ship.LongRangePlanningData.FinalDestinationPlanetIndex != -1 )
                             continue; // Stop if we're already enroute.
 
-                        QueueWormholeCommand( ship, planet );
+                        ship.QueueWormholeCommand( planet, Context );
                     }
                 }
                 else if ( shipStatus.Status == CivilianMilitiaStatus.EnrouteWormhole )
@@ -2539,7 +2549,7 @@ namespace SKCivilianIndustry
                     if ( ship.LongRangePlanningData != null && ship.LongRangePlanningData.DestinationPoint.GetDistanceTo( point, true ) < 1000 )
                         continue; // Stop if we're already enroute.
 
-                    QueueMovementCommand( ship, point );
+                    ship.QueueMovementCommand( point );
                 }
                 else if ( shipStatus.Status == CivilianMilitiaStatus.EnrouteMine )
                 {
@@ -2557,7 +2567,7 @@ namespace SKCivilianIndustry
                     if ( ship.LongRangePlanningData != null && ship.LongRangePlanningData.DestinationPoint == mine.WorldLocation )
                         continue; // Stop if we're enroute.
 
-                    QueueMovementCommand( ship, mine.WorldLocation );
+                    ship.QueueMovementCommand( mine.WorldLocation );
                 }
             }
         }
@@ -2648,12 +2658,12 @@ namespace SKCivilianIndustry
                                     if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex == centerpiece.Planet.Index )
                                         continue; // Stop if already moving towards it.
 
-                                    QueueWormholeCommand( entity, centerpiece.Planet );
+                                    entity.QueueWormholeCommand( centerpiece.Planet, Context );
                                 }
                                 else
                                 {
                                     // Not yet on our target planet, and we're on our centerpice planet. Path to our target planet.
-                                    QueueWormholeCommand( entity, targetPlanet );
+                                    entity.QueueWormholeCommand( targetPlanet, Context );
                                 }
                             }
                         }
@@ -2844,7 +2854,7 @@ namespace SKCivilianIndustry
                                 notReady++;
                                 if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex != centerpiece.Planet.Index )
                                 {
-                                    QueueWormholeCommand( entity, centerpiece.Planet );
+                                    entity.QueueWormholeCommand( centerpiece.Planet, Context );
                                 }
                             }
                             else if ( wormhole != null && wormhole.WorldLocation.GetExtremelyRoughDistanceTo( entity.WorldLocation ) > 5000
@@ -2854,7 +2864,7 @@ namespace SKCivilianIndustry
                                 // Create and add all required parts of a move to point command.
                                 if ( wormhole != null )
                                 {
-                                    QueueMovementCommand( entity, wormhole.WorldLocation );
+                                    entity.QueueMovementCommand( wormhole.WorldLocation );
                                 }
                             }
                             else
@@ -2929,12 +2939,12 @@ namespace SKCivilianIndustry
                                         if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex == centerpiece.Planet.Index )
                                             continue; // Stop if already moving towards it.
 
-                                        QueueWormholeCommand( entity, centerpiece.Planet );
+                                        entity.QueueWormholeCommand( centerpiece.Planet, Context );
                                     }
                                     else
                                     {
                                         // Not yet on our target planet, and we're on our centerpice planet. Path to our target planet.
-                                        QueueWormholeCommand( entity, assessment.Target );
+                                        entity.QueueWormholeCommand( assessment.Target, Context );
                                     }
                                 }
                             }
@@ -3000,7 +3010,7 @@ namespace SKCivilianIndustry
                                 (entity.Planet.GetHopsTo( centerpiece.Planet ) > 1 ||
                                 threat.MilitiaMobile + threat.MilitiaGuard + threat.FriendlyGuard + threat.FriendlyMobile < threat.Total * MilitiaAttackOverkillPercentage) )
                             {
-                                QueueWormholeCommand( entity, centerpiece.Planet );
+                                entity.QueueWormholeCommand( centerpiece.Planet, Context );
                             }
                         }
                     }
@@ -3013,6 +3023,8 @@ namespace SKCivilianIndustry
         // Update ship and turret caps for militia buildings.
         public void UpdateUnitCaps( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
+            GameCommand updateCommand = StaticMethods.CreateGameCommand( Commands.SetMilitiaCaps.ToString(), GameCommandSource.AnythingElse, faction );
+
             // Count the number of militia barracks for each planet.
             ArcenSparseLookup<Planet, int> barracksPerPlanet = new ArcenSparseLookup<Planet, int>();
             World_AIW2.Instance.DoForPlanets( false, planet =>
@@ -3046,17 +3058,24 @@ namespace SKCivilianIndustry
 
                         GameEntityTypeData turretData = GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeData[y] );
 
-                        militiaStatus.ShipCapacity[y] = (factionData.GetCap( faction ) / (FInt.Create( turretData.GetForMark( faction.GetGlobalMarkLevelForShipLine( turretData ) ).StrengthPerSquad_Original_DoesNotIncreaseWithMarkLevel, true ) / 10)).GetNearestIntPreferringHigher();
+                        int capacity = (factionData.GetCap( faction ) / (FInt.Create( turretData.GetForMark( faction.GetGlobalMarkLevelForShipLine( turretData ) ).StrengthPerSquad_Original_DoesNotIncreaseWithMarkLevel, true ) / 10)).GetNearestIntPreferringHigher();
                         militiaShip.Planet.DoForLinkedNeighborsAndSelf( false, delegate ( Planet otherPlanet )
                         {
                             if ( barracksPerPlanet.GetHasKey( otherPlanet ) )
                                 if ( turretData.MultiplierToAllFleetCaps == 0 )
-                                    militiaStatus.ShipCapacity[y] += barracksPerPlanet[otherPlanet] * Math.Max( 1, (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
+                                    capacity += barracksPerPlanet[otherPlanet] * Math.Max( 1, (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
                                 else
-                                    militiaStatus.ShipCapacity[y] += barracksPerPlanet[otherPlanet] * Math.Max( (1 / turretData.MultiplierToAllFleetCaps).GetNearestIntPreferringHigher(), (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
+                                    capacity += barracksPerPlanet[otherPlanet] * Math.Max( (1 / turretData.MultiplierToAllFleetCaps).GetNearestIntPreferringHigher(), (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
                             return DelReturn.Continue;
                         } );
-                        militiaStatus.ShipCapacity[y] = (int)(militiaStatus.ShipCapacity[y] * (militiaStatus.CapMultiplier / 100.0));
+                        capacity = (int)(capacity * (militiaStatus.CapMultiplier / 100.0));
+
+                        if ( capacity != militiaStatus.ShipCapacity[y] )
+                        {
+                            updateCommand.RelatedEntityIDs.Add( militiaShip.PrimaryKeyID );
+                            updateCommand.RelatedIntegers.Add( y );
+                            updateCommand.RelatedIntegers2.Add( capacity );
+                        }
                     }
                 }
                 else if ( militiaStatus.Status == CivilianMilitiaStatus.Patrolling ) // If patrolling, do unit spawning.
@@ -3072,129 +3091,39 @@ namespace SKCivilianIndustry
                         // If advanced, simply set to 1.
                         if ( militiaShip.TypeData.GetHasTag( "BuildsProtectors" ) )
                         {
-                            militiaStatus.ShipCapacity[y] = 1;
+                            if ( militiaStatus.ShipCapacity[y] != 1 )
+                            {
+                                updateCommand.RelatedEntityIDs.Add( militiaShip.PrimaryKeyID );
+                                updateCommand.RelatedIntegers.Add( y );
+                                updateCommand.RelatedIntegers2.Add( 1 );
+                            }
                             continue;
                         }
-                        militiaStatus.ShipCapacity[y] = (factionData.GetCap( faction ) / (FInt.Create( shipData.GetForMark( faction.GetGlobalMarkLevelForShipLine( shipData ) ).StrengthPerSquad_Original_DoesNotIncreaseWithMarkLevel, true ) / 10)).GetNearestIntPreferringHigher();
+                        int capacity = (factionData.GetCap( faction ) / (FInt.Create( shipData.GetForMark( faction.GetGlobalMarkLevelForShipLine( shipData ) ).StrengthPerSquad_Original_DoesNotIncreaseWithMarkLevel, true ) / 10)).GetNearestIntPreferringHigher();
                         militiaShip.Planet.DoForLinkedNeighborsAndSelf( false, delegate ( Planet otherPlanet )
                         {
                             if ( barracksPerPlanet.GetHasKey( otherPlanet ) )
                                 for ( int z = 0; z < barracksPerPlanet[otherPlanet]; z++ )
                                     if ( shipData.MultiplierToAllFleetCaps == 0 )
-                                        militiaStatus.ShipCapacity[y] += Math.Max( 1, (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
+                                        capacity += Math.Max( 1, (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
                                     else
-                                        militiaStatus.ShipCapacity[y] += Math.Max( (1 / shipData.MultiplierToAllFleetCaps).GetNearestIntPreferringHigher(), (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
+                                        capacity += Math.Max( (1 / shipData.MultiplierToAllFleetCaps).GetNearestIntPreferringHigher(), (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
                             return DelReturn.Continue;
                         } );
-                        militiaStatus.ShipCapacity[y] = (int)(militiaStatus.ShipCapacity[y] * (militiaStatus.CapMultiplier / 100.0));
+                        capacity = (int)(capacity * (militiaStatus.CapMultiplier / 100.0));
+
+                        if ( capacity != militiaStatus.ShipCapacity[y] )
+                        {
+                            updateCommand.RelatedEntityIDs.Add( militiaShip.PrimaryKeyID );
+                            updateCommand.RelatedIntegers.Add( y );
+                            updateCommand.RelatedIntegers2.Add( capacity );
+                        }
                     }
                 }
             }
-        }
 
-        // A collection of every single wormhole command we want to execute.
-        ArcenSparseLookup<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>> wormholeCommands;
-
-        /// <summary>
-        /// Add an entity that needs a wormhole move command.
-        /// </summary>
-        /// <param name="entity">The ship to move.</param>
-        /// <param name="destination">The planet to move to.</param>
-        private void QueueWormholeCommand( GameEntity_Squad entity, Planet destination )
-        {
-            Planet origin = entity.Planet;
-            if ( !wormholeCommands.GetHasKey( origin ) )
-                wormholeCommands.AddPair( origin, new ArcenSparseLookup<Planet, List<GameEntity_Squad>>() );
-            if ( !wormholeCommands[origin].GetHasKey( destination ) )
-                wormholeCommands[origin].AddPair( destination, new List<GameEntity_Squad>() );
-            wormholeCommands[origin][destination].Add( entity );
-        }
-
-        public void ExecuteWormholeCommands( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
-        {
-            for ( int x = 0; x < wormholeCommands.GetPairCount(); x++ )
-            {
-                ArcenSparseLookupPair<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>> originPair = wormholeCommands.GetPairByIndex( x );
-                if ( originPair == null )
-                    continue;
-                Planet origin = originPair.Key;
-                ArcenSparseLookup<Planet, List<GameEntity_Squad>> destinations = originPair.Value;
-                for ( int y = 0; y < destinations.GetPairCount(); y++ )
-                {
-                    ArcenSparseLookupPair<Planet, List<GameEntity_Squad>> destinationPair = destinations.GetPairByIndex( y );
-                    if ( destinationPair == null )
-                        continue;
-                    Planet destination = destinationPair.Key;
-                    List<GameEntity_Squad> entities = destinationPair.Value;
-                    if ( entities == null )
-                        continue;
-                    List<Planet> path = faction.FindPath( origin, destination, PathingMode.Safest, Context );
-                    GameCommand command = GameCommand.Create( GameCommandTypeTable.Instance.GetRowByName( "SetWormholePath_CivilianIndustryBulk" ), GameCommandSource.AnythingElse );
-                    for ( int p = 0; p < path.Count; p++ )
-                        command.RelatedIntegers.Add( path[p].Index );
-                    for ( int z = 0; z < entities.Count; z++ )
-                    {
-                        GameEntity_Squad entity = entities[z];
-                        if ( entity != null && entity.LongRangePlanningData.FinalDestinationPlanetIndex != destination.Index )
-                            command.RelatedEntityIDs.Add( entity.PrimaryKeyID );
-                    }
-                    if ( command.RelatedEntityIDs.Count > 0 )
-                        Context.QueueCommandForSendingAtEndOfContext( command );
-                }
-            }
-            wormholeCommands = null;
-        }
-
-        // A collection of every single movement command we want to execute.
-        ArcenSparseLookup<Planet, ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>> movementCommands;
-
-        /// <summary>
-        /// Add an entity that needs a movement command.
-        /// </summary>
-        /// <param name="entity">The ship to move.</param>
-        /// <param name="destination">The point to move to.</param>
-        private void QueueMovementCommand( GameEntity_Squad entity, ArcenPoint destination )
-        {
-            Planet planet = entity.Planet;
-            if ( !movementCommands.GetHasKey( planet ) )
-                movementCommands.AddPair( planet, new ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>() );
-            if ( !movementCommands[planet].GetHasKey( destination ) )
-                movementCommands[planet].AddPair( destination, new List<GameEntity_Squad>() );
-            movementCommands[planet][destination].Add( entity );
-        }
-
-        public void ExecuteMovementCommands( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
-        {
-            for ( int x = 0; x < movementCommands.GetPairCount(); x++ )
-            {
-                ArcenSparseLookupPair<Planet, ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>> planetPair = movementCommands.GetPairByIndex( x );
-                if ( planetPair == null )
-                    continue;
-                Planet planet = planetPair.Key;
-                ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>> destinations = planetPair.Value;
-                for ( int y = 0; y < destinations.GetPairCount(); y++ )
-                {
-                    ArcenSparseLookupPair<ArcenPoint, List<GameEntity_Squad>> destinationPair = destinations.GetPairByIndex( y );
-                    if ( destinationPair == null )
-                        continue;
-                    ArcenPoint destination = destinationPair.Key;
-                    if ( destination == ArcenPoint.ZeroZeroPoint )
-                        continue;
-                    List<GameEntity_Squad> entities = destinationPair.Value;
-                    if ( entities == null )
-                        continue;
-                    GameCommand command = GameCommand.Create( GameCommandTypeTable.Instance.GetRowByName( "MoveManyToOnePoint_CivilianIndustryBulk" ), GameCommandSource.AnythingElse );
-                    command.RelatedPoints.Add( destination );
-                    for ( int z = 0; z < entities.Count; z++ )
-                    {
-                        GameEntity_Squad entity = entities[z];
-                        if ( entities != null && entity.LongRangePlanningData.DestinationPoint != destination )
-                            command.RelatedEntityIDs.Add( entity.PrimaryKeyID );
-                    }
-                    if ( command.RelatedEntityIDs.Count > 0 && command.RelatedPoints.Count > 0 )
-                        Context.QueueCommandForSendingAtEndOfContext( command );
-                }
-            }
+            if ( updateCommand.RelatedEntityIDs.Count > 0 )
+                Context.QueueCommandForSendingAtEndOfContext( updateCommand );
         }
 
         // Do NOT directly change anything from this function. Doing so may cause desyncs in multiplayer.
@@ -3207,10 +3136,6 @@ namespace SKCivilianIndustry
             if ( factionData == null )
                 return; // Wait until we have our faction data ready to go.
 
-            // Set up a list of all movement commands, and execute them once we're done.
-            wormholeCommands = new ArcenSparseLookup<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>>();
-            movementCommands = new ArcenSparseLookup<Planet, ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>>();
-
             CalculateThreat( faction, Context );
             DoTradeRequests( faction, Context );
             DoCargoShipMovement( faction, Context );
@@ -3219,10 +3144,8 @@ namespace SKCivilianIndustry
             UpdateUnitCaps( faction, Context );
 
             // Execute all of our movement commands.
-            if ( wormholeCommands.GetPairCount() > 0 )
-                ExecuteWormholeCommands( faction, Context );
-            if ( movementCommands.GetPairCount() > 0 )
-                ExecuteMovementCommands( faction, Context );
+            BulkPathfinding.ExecuteMovementCommands( faction, Context );
+            BulkPathfinding.ExecuteMovementCommands( faction, Context );
         }
 
         // Check for our stuff dying.

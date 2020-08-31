@@ -34,8 +34,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AttackAssessment.cs" />
+    <Compile Include="BulkPathfinding.cs" />
     <Compile Include="CargoShipDescriptionAppender.cs" />
     <Compile Include="CivilianCargo.cs" />
+    <Compile Include="GameCommands\SKCivilianIndustry.cs" />
     <Compile Include="Persistence\CivilianCargoExtensions.cs" />
     <Compile Include="Persistence\CivilianCargoExternalData.cs" />
     <Compile Include="CivilianFaction.cs" />
@@ -62,6 +64,7 @@
     <Compile Include="ThreatReport.cs" />
     <Compile Include="TradeRequest.cs" />
     <Compile Include="TradeStationDescriptionAppender.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="XMLMods\SKCivilianIndustry\AIWar2GalaxySetting\SK_CivilianIndustry.xml" />
