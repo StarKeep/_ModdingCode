@@ -1772,7 +1772,7 @@ namespace SKCivilianIndustry
             int timeFactor = 900; // Minimum delay between raid waves.
             int budgetFactor = SpecialFaction_AI.Instance.GetSpecificBudgetAIPurchaseCostGainPerSecond( aiFaction, AIBudgetType.Wave, true, true ).GetNearestIntPreferringHigher();
             int tradeFactor = factionData.TradeStations.Count * 3;
-            FInt intensityMult = FInt.FromParts( 0, 800 ) + (FInt.FromParts( 1, 040 ) * faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            FInt intensityMult = FInt.FromParts( 0, 800 ) + (FInt.FromParts( 0, 040 ) * faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
             int raidBudget = ((budgetFactor + tradeFactor) * timeFactor * intensityMult).GetNearestIntPreferringHigher();
 
             // Stop once we're over budget. (Though allow our last wave to exceed it if needed.)
@@ -3144,8 +3144,8 @@ namespace SKCivilianIndustry
             UpdateUnitCaps( faction, Context );
 
             // Execute all of our movement commands.
-            BulkPathfinding.ExecuteMovementCommands( faction, Context );
-            BulkPathfinding.ExecuteMovementCommands( faction, Context );
+            faction.ExecuteMovementCommands( Context );
+            faction.ExecuteWormholeCommands( Context );
         }
 
         // Check for our stuff dying.
