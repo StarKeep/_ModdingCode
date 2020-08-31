@@ -45,10 +45,10 @@ namespace SKCivilianIndustry
             {
                 for (int x = 0; x < (int)CivilianResource.Length; x++)
                 {
-                    if ( militiaData.ShipTypeData[x] == "none" || militiaData.ShipCapacity[x] < 1 )
+                    if ( militiaData.ShipTypeDataNames[x] == "none" || militiaData.ShipCapacity[x] < 1 || !militiaData.ShipTypeData.GetHasKey(x) )
                         continue;
 
-                    GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName(militiaData.ShipTypeData[x]);
+                    GameEntityTypeData entityData = militiaData.ShipTypeData[x];
 
                     if (entityData == null)
                         continue;

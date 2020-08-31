@@ -177,14 +177,15 @@ namespace SKCivilianIndustry
 
         public override void DoPerSecondNonSimNotificationUpdates_OnBackgroundNonSimThread_NonBlocking( Faction faction, ArcenSimContext Context, bool IsFirstCallToFactionOfThisTypeThisCycle )
         {
-            if ( !PlayerAligned )
+            if ( !PlayerAligned || World_AIW2.Instance.GameSecond < 5 )
                 return;
 
-            if ( factionData.NextRaidInThisSeconds < 120 ) {
+            if ( factionData.NextRaidInThisSeconds < 120 )
+            {
 
                 AIRaidNotifier notifier = new AIRaidNotifier();
                 notifier.raidingWormholes = factionData.NextRaidWormholes;
-                notifier.faction = BadgerFactionUtilityMethods.GetRandomAIFaction(Context);
+                notifier.faction = BadgerFactionUtilityMethods.GetRandomAIFaction( Context );
                 notifier.SecondsLeft = factionData.NextRaidInThisSeconds;
 
                 NotificationNonSim notification = Engine_AIW2.NonSimNotificationList_Building.GetOrAddEntry();
@@ -1413,26 +1414,24 @@ namespace SKCivilianIndustry
                         if ( IgnoreResource[y] )
                             continue;
 
-                        // Get our tag to search for based on resource type.
-                        string typeTag = "Civ" + ((CivilianTech)y).ToString() + "Turret";
-
-                        if ( militiaStatus.ShipTypeData[y] == "none" )
+                        if ( militiaStatus.ShipTypeDataNames[y] == "none" )
                         {
+                            // Get our tag to search for based on resource type.
+                            string typeTag = "Civ" + ((CivilianTech)y).ToString() + "Turret";
                             // Attempt to find entitydata for our type.
                             if ( GameEntityTypeDataTable.Instance.RowsByTag.GetHasKey( typeTag ) )
                             {
                                 GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, typeTag );
                                 if ( typeData != null )
-                                    militiaStatus.ShipTypeData[y] = typeData.InternalName;
+                                    militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
                             }
                             else
                             {
                                 // No matching tag; get a random turret type.
                                 GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "CivTurret" );
                                 if ( typeData != null )
-                                    militiaStatus.ShipTypeData[y] = typeData.InternalName;
+                                    militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
                             }
-
                         }
 
                         // Clear out any dead or stacked units.
@@ -1446,8 +1445,12 @@ namespace SKCivilianIndustry
                             }
                         }
 
-                        GameEntityTypeData turretData = GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeData[y] );
-                        int count = militiaStatus.GetShipCount( militiaStatus.ShipTypeData[y] );
+                        if ( !militiaStatus.ShipTypeData.GetHasKey( y ) )
+                            militiaStatus.ShipTypeData.AddPair( y, GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] ) );
+
+                        GameEntityTypeData turretData = militiaStatus.ShipTypeData[y];
+
+                        int count = militiaStatus.GetShipCount( militiaStatus.ShipTypeDataNames[y] );
                         if ( count < militiaStatus.ShipCapacity[y] )
                         {
                             FInt countCostModifier = FInt.One + (FInt.One - ((militiaStatus.ShipCapacity[y] - count + FInt.One) / militiaStatus.ShipCapacity[y]));
@@ -1513,26 +1516,25 @@ namespace SKCivilianIndustry
                         if ( militiaShip.TypeData.GetHasTag( "BuildsProtectors" ) )
                             buildingProtectors = true;
 
-                        // Get our tag to search for based on resource type.
-                        string typeTag = "Civ" + ((CivilianTech)y).ToString() + "Mobile";
-                        if ( buildingProtectors )
-                            typeTag = "Civ" + ((CivilianTech)y).ToString() + "Protector";
-
-                        if ( militiaStatus.ShipTypeData[y] == "none" )
+                        if ( militiaStatus.ShipTypeDataNames[y] == "none" )
                         {
+                            // Get our tag to search for based on resource type.
+                            string typeTag = "Civ" + ((CivilianTech)y).ToString() + "Mobile";
+                            if ( buildingProtectors )
+                                typeTag = "Civ" + ((CivilianTech)y).ToString() + "Protector";
                             // Attempt to find entitydata for our type.
                             if ( GameEntityTypeDataTable.Instance.RowsByTag.GetHasKey( typeTag ) )
                             {
                                 GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, typeTag );
                                 if ( typeData != null )
-                                    militiaStatus.ShipTypeData[y] = typeData.InternalName;
+                                    militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
                             }
                             else
                             {
                                 // No matching tag; get a random turret type.
                                 GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "CivMobile" );
                                 if ( typeData != null )
-                                    militiaStatus.ShipTypeData[y] = typeData.InternalName;
+                                    militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
                             }
 
                         }
@@ -1548,9 +1550,12 @@ namespace SKCivilianIndustry
                             }
                         }
 
-                        GameEntityTypeData shipData = GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeData[y] );
+                        if ( !militiaStatus.ShipTypeData.GetHasKey( y ) )
+                            militiaStatus.ShipTypeData.AddPair( y, GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] ) );
 
-                        int count = militiaStatus.GetShipCount( militiaStatus.ShipTypeData[y] );
+                        GameEntityTypeData shipData = militiaStatus.ShipTypeData[y];
+
+                        int count = militiaStatus.GetShipCount( militiaStatus.ShipTypeDataNames[y] );
                         if ( count < militiaStatus.ShipCapacity[y] )
                         {
                             int cost = 0;
@@ -1568,60 +1573,24 @@ namespace SKCivilianIndustry
 
                             if ( militiaCargo.Amount[y] >= cost )
                             {
-                                // Spawn ship.
-                                // If we're already at our stacking cap, add it directly to a ship via stack.
-                                int shipCount = 0, stackingCap = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "StackingCutoffNPCs" );
-                                militiaShip.Planet.DoForEntities( EntityRollupType.MobileCombatants, delegate ( GameEntity_Squad otherSquad )
-                                {
-                                    if ( otherSquad.TypeData == shipData )
-                                    {
-                                        shipCount++;
-                                        if ( shipCount >= stackingCap )
-                                            return DelReturn.Break;
-                                    }
+                                // Remove cost.
+                                militiaCargo.Amount[y] -= cost;
 
-                                    return DelReturn.Continue;
-                                } );
-                                if ( shipCount >= stackingCap && count > 0 )
-                                {
-                                    // Get a random ship, and add a stack to it.
-                                    bool completed = false;
-                                    int attempts = 10;
-                                    while ( !completed && attempts > 0 )
-                                    {
-                                        GameEntity_Squad randomSquad = World_AIW2.Instance.GetEntityByID_Squad( militiaStatus.Ships[y][Context.RandomToUse.Next( militiaStatus.Ships[y].Count )] );
-                                        if ( randomSquad != null )
-                                        {
-                                            randomSquad.AddOrSetExtraStackedSquadsInThis( 1, false );
-                                            completed = true;
-                                            break;
-                                        }
-                                        attempts--;
-                                    }
-                                    if ( completed )
-                                        // Remove cost.
-                                        militiaCargo.Amount[y] -= cost;
-                                }
-                                else
-                                {
-                                    // Remove cost.
-                                    militiaCargo.Amount[y] -= cost;
+                                // Get the planet faction to spawn it in as.
+                                PlanetFaction pFaction = militiaShip.Planet.GetPlanetFactionForFaction( faction );
 
-                                    // Get the planet faction to spawn it in as.
-                                    PlanetFaction pFaction = militiaShip.Planet.GetPlanetFactionForFaction( faction );
+                                // Spawn in the ship.
+                                GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, shipData, faction.GetGlobalMarkLevelForShipLine( shipData ), pFaction.FleetUsedAtPlanet, 0, militiaShip.WorldLocation, Context );
 
-                                    // Spawn in the ship.
-                                    GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, shipData, faction.GetGlobalMarkLevelForShipLine( shipData ), pFaction.FleetUsedAtPlanet, 0, militiaShip.WorldLocation, Context );
+                                // Only let it stack with its own fleet.
+                                entity.MinorFactionStackingID = militiaShip.PrimaryKeyID;
 
-                                    // Only let it stack with its own fleet.
-                                    entity.MinorFactionStackingID = militiaShip.PrimaryKeyID;
+                                // Make it attack nearby hostiles.
+                                entity.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
 
-                                    // Make it attack nearby hostiles.
-                                    entity.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
+                                // Add the turret to our militia's fleet.
+                                militiaStatus.Ships[y].Add( entity.PrimaryKeyID );
 
-                                    // Add the turret to our militia's fleet.
-                                    militiaStatus.Ships[y].Add( entity.PrimaryKeyID );
-                                }
                             }
                         }
                         else if ( count > militiaStatus.ShipCapacity[y] && militiaStatus.Ships[y].Count > 0 )
@@ -1848,7 +1817,7 @@ namespace SKCivilianIndustry
                         else if ( World_AIW2.Instance.GetEntityByID_Squad( entity.MinorFactionStackingID ) != null )
                             requestedMark = Math.Max( requestedMark, World_AIW2.Instance.GetEntityByID_Squad( entity.MinorFactionStackingID ).Planet.MarkLevelForAIOnly.Ordinal );
                     }
-                    entity.SetCurrentMarkLevelIfHigherThanCurrent( requestedMark, Context );
+                    entity.SetCurrentMarkLevel( requestedMark, Context );
                     return DelReturn.Continue;
                 } );
 
@@ -3069,10 +3038,10 @@ namespace SKCivilianIndustry
                     // For each type of unit, process.
                     for ( int y = 0; y < (int)CivilianResource.Length; y++ )
                     {
-                        if ( militiaStatus.ShipTypeData[y] == "none" )
+                        if ( militiaStatus.ShipTypeDataNames[y] == "none" )
                             continue; // Skip if not yet loaded.
 
-                        GameEntityTypeData turretData = GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeData[y] );
+                        GameEntityTypeData turretData = GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] );
 
                         int capacity = (factionData.GetCap( faction ) / (FInt.Create( turretData.GetForMark( faction.GetGlobalMarkLevelForShipLine( turretData ) ).StrengthPerSquad_Original_DoesNotIncreaseWithMarkLevel, true ) / 10)).GetNearestIntPreferringHigher();
                         militiaShip.Planet.DoForLinkedNeighborsAndSelf( false, delegate ( Planet otherPlanet )
@@ -3099,10 +3068,10 @@ namespace SKCivilianIndustry
                     // For each type of unit, get ship count.
                     for ( int y = 0; y < (int)CivilianResource.Length; y++ )
                     {
-                        if ( militiaStatus.ShipTypeData[y] == "none" )
+                        if ( militiaStatus.ShipTypeDataNames[y] == "none" )
                             continue; // Skip if not yet loaded.
 
-                        GameEntityTypeData shipData = GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeData[y] );
+                        GameEntityTypeData shipData = GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] );
 
                         // If advanced, simply set to 1.
                         if ( militiaShip.TypeData.GetHasTag( "BuildsProtectors" ) )

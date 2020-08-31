@@ -37,7 +37,8 @@ namespace SKCivilianIndustry
         public int EntityFocus;
 
         // GameEntityTypeData that this militia builds, a list of every ship of that type under their control, and their capacity.
-        public ArcenSparseLookup<int, string> ShipTypeData = new ArcenSparseLookup<int, string>();
+        public ArcenSparseLookup<int, string> ShipTypeDataNames = new ArcenSparseLookup<int, string>();
+        public ArcenSparseLookup<int, GameEntityTypeData> ShipTypeData = new ArcenSparseLookup<int, GameEntityTypeData>();
         public ArcenSparseLookup<int, List<int>> Ships = new ArcenSparseLookup<int, List<int>>();
         public ArcenSparseLookup<int, int> ShipCapacity = new ArcenSparseLookup<int, int>();
 
@@ -49,8 +50,8 @@ namespace SKCivilianIndustry
         public int GetShipCount(string entityTypeDataInternalName)
         {
             int index = -1;
-            for (int x = 0; x < ShipTypeData.GetPairCount(); x++)
-                if (ShipTypeData[x] == entityTypeDataInternalName)
+            for (int x = 0; x < ShipTypeDataNames.GetPairCount(); x++)
+                if (ShipTypeDataNames[x] == entityTypeDataInternalName)
                 {
                     index = x;
                     break;
@@ -84,7 +85,7 @@ namespace SKCivilianIndustry
             this.EntityFocus = -1;
             for (int x = 0; x < (int)CivilianResource.Length; x++)
             {
-                this.ShipTypeData.AddPair(x, "none");
+                this.ShipTypeDataNames.AddPair(x, "none");
                 this.Ships.AddPair(x, new List<int>());
                 this.ShipCapacity.AddPair(x, 0);
             }
@@ -107,7 +108,7 @@ namespace SKCivilianIndustry
             Buffer.AddInt32( ReadStyle.NonNeg, count );
             for (int x = 0; x < count; x++)
             {
-                Buffer.AddString_Condensed(this.ShipTypeData[x]);
+                Buffer.AddString_Condensed(this.ShipTypeDataNames[x]);
                 int subCount = this.Ships[x].Count;
                 Buffer.AddInt32( ReadStyle.NonNeg, subCount );
                 for ( int y = 0; y < subCount; y++ )
@@ -135,18 +136,18 @@ namespace SKCivilianIndustry
             int count = Buffer.ReadInt32(ReadStyle.NonNeg );
             for (int x = 0; x < count; x++)
             {
-                this.ShipTypeData.AddPair(x, Buffer.ReadString_Condensed());
+                this.ShipTypeDataNames.AddPair(x, Buffer.ReadString_Condensed());
                 this.Ships[x] = new List<int>();
                 int subCount = Buffer.ReadInt32(ReadStyle.NonNeg );
                 for (int y = 0; y < subCount; y++)
                     this.Ships[x].Add(Buffer.ReadInt32(ReadStyle.NonNeg ) );
                 this.ShipCapacity[x] = Buffer.ReadInt32(ReadStyle.NonNeg );
             }
-            if (this.ShipTypeData.GetPairCount() < (int)CivilianResource.Length)
+            if (this.ShipTypeDataNames.GetPairCount() < (int)CivilianResource.Length)
             {
                 for (int x = count; x < (int)CivilianResource.Length; x++)
                 {
-                    this.ShipTypeData.AddPair(x, "none");
+                    this.ShipTypeDataNames.AddPair(x, "none");
                     this.Ships.AddPair(x, new List<int>());
                     this.ShipCapacity.AddPair(x, 0);
                 }
