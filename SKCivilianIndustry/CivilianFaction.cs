@@ -130,11 +130,11 @@ namespace SKCivilianIndustry
         /// <returns></returns>
         public int GetCap( Faction faction )
         {
-            int baseCap = 20;
+            int baseCap = 30;
             int intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
             int flatBonus = 3 * intensity;
             FInt intensityMult = FInt.FromParts( 1, 250 ) + (FInt.FromParts( 0, 025 ) * intensity);
-            int stationMult = (int)Math.Pow( 5 * TradeStations.Count, 0.9 );
+            int stationMult = (int)Math.Pow( 3 * TradeStations.Count, 0.9 );
             FInt scalingBonus = stationMult * intensityMult;
             int cap = (baseCap + flatBonus + scalingBonus).GetNearestIntPreferringHigher();
             return cap;
