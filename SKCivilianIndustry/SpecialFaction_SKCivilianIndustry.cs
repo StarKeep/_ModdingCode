@@ -3158,26 +3158,13 @@ namespace SKCivilianIndustry
             {
                 // Try to scrap all of its units.
                 CivilianMilitia militiaData = entity.GetCivilianMilitiaExt();
-                for ( int y = 0; y < militiaData.Ships.GetPairCount(); y++ )
-                {
-                    for ( int z = 0; z < militiaData.Ships[z].Count; z++ )
-                    {
-                        GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( militiaData.Ships[y][z] );
-                        if ( entity == null )
-                            continue;
-                        militiaData.Ships[y].RemoveAt( z );
-                        z--;
-                        squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
-                    }
-                }
                 militiaData.Ships.DoFor( pair =>
                 {
                     for ( int x = 0; x < pair.Value.Count; x++ )
                     {
                         GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( pair.Value[x] );
-                        if ( squad == null )
-                            continue;
-                        squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
+                        if ( squad != null )
+                            squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
                         pair.Value.RemoveAt( x );
                         x--;
                     }
