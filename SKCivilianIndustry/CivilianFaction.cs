@@ -133,10 +133,10 @@ namespace SKCivilianIndustry
             int baseCap = 20;
             int intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
             int flatBonus = 3 * intensity;
-            double intensityMult = 1.25 + (0.025 * intensity);
-            double stationMult = Math.Pow( 5.0 * TradeStations.Count, 0.9 );
-            double scalingBonus = Math.Pow( stationMult, intensityMult );
-            int cap = (int)(Math.Ceiling( baseCap + flatBonus + scalingBonus ));
+            FInt intensityMult = FInt.FromParts( 1, 250 ) + (FInt.FromParts( 0, 025 ) * intensity);
+            int stationMult = (int)Math.Pow( 5 * TradeStations.Count, 0.9 );
+            FInt scalingBonus = stationMult * intensityMult;
+            int cap = (baseCap + flatBonus + scalingBonus).GetNearestIntPreferringHigher();
             return cap;
         }
 

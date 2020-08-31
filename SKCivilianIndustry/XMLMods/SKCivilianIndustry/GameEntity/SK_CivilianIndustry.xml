@@ -260,7 +260,7 @@
                 tech_upgrades_that_benefit_me="Ambush,Medium"
 				multiplier_to_all_scales="4"
     >
-        <system name="FusionBolt" display_name="Crackerjack Bolt"
+        <system name="FusionBolt" display_name="Cracker Bolt"
                         category="Weapon" firing_timing="OnlyInRange" shots_per_salvo="3"
                         damage_per_shot="5000" range="Normal3" shot_speed="Fast" rate_of_fire="High" fires_salvos_sequentially="true"
                         shot_type_data="FusionBolt"
@@ -268,6 +268,21 @@
         >
           <outgoing_damage_modifier based_on="TargetTimeAtPlanet" comparison_type="LessThan" compared_to="60" multiplier="5" />
         </system>
+		<system name="EngineJacker" display_name="Engine Jacker"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1000" range="Normal3" shot_speed="Normal" rate_of_fire="Devourer"
+				shots_per_salvo="5" fires_salvos_sequentially="false"
+				stack_damage_multiplier="1.25"
+				shot_type_data="HeavyBeamInvisible"
+				beam_length_multiplier="1.3"
+				hits_all_intersecting_targets="true"
+				shots_detonate_immediately="true"
+				maximum_number_of_targets_hit_per_shot="5"
+				base_engine_stun_per_shot="1" 
+                engine_stun_to_engine_gx_less_than="18"
+				max_engine_stun_seconds="3" added_target_evaluator="EngineDamageAsMinorPart"
+				>
+		</system>
     </entity>
     
     <entity name="CivConcussionCorvette" display_name="Civilian Concussion Corvette" skip_export="true" copy_from="ConcussionCorvette"
@@ -294,12 +309,12 @@
     <entity name="Thunderstrike" display_name="Thunderstrike Protector" skip_export="true" copy_from="SiegeFrigate"
                 tags="CivConcussionProtector,CivProtector"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
-                description="A potent Protector, built using advanced Concussion technology. This ship is an expert at dividing enemy forces with a powerful aoe knockback effect."
+                description="A potent Protector, built using advanced Concussion technology. This ship is an expert at dividing enemy forces with powerful aoe knockback, and shredding low armor targets."
                 hull_points="1000000" shield_points="500000"
                 tech_upgrades_that_benefit_me="Concussion,Light"
 				multiplier_to_all_scales="2"
     >
-        <system name="PlasmaTorpedo" display_name="Thunderstrike Torpedo"
+        <system name="PlasmaTorpedo" display_name="Thunder Torpedo"
                         category="Weapon" firing_timing="OnlyInRange"
                         damage_per_shot="24000" range="AboveAverage3" shot_speed="Slow" rate_of_fire="Misery" fires_salvos_sequentially="true"
                         shot_type_data="PlasmaTorpedoAOEBurstAtEnd"
@@ -308,6 +323,13 @@
                         aoe_spreads_damage_among_available_targets="true"
         >
         </system>
+		<system name="Stormer" display_name="Stormer"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1000" range="High2" shot_speed="Normal" rate_of_fire="Misery"
+				shot_type_data="GuidedMissile" shots_per_salvo="10" fires_salvos_sequentially="false"
+				>
+			<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="4" />
+		</system>
     </entity>
 
     <entity name="CivPikeCorvette" display_name="Civilian Pike Corvette" skip_export="true" copy_from="PikeCorvette"
@@ -335,7 +357,7 @@
                 tags="CivDisruptiveProtector,CivProtector"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Disruptive technology. This ship is the ultimate in protecting its allies with powerful debuffs, a potent forcefield, and self healing."
-                hull_points="500000" shield_points="1000000" shield_size_scale="6" my_forcefield_does_not_shrink="true"
+                hull_points="500000" shield_points="1500000" shield_size_scale="6" my_forcefield_does_not_shrink="true"
                 health_change_per_damage_dealt="5"
                 tech_upgrades_that_benefit_me="Disruptive,Heavy"
 				multiplier_to_all_scales="2"
@@ -378,13 +400,13 @@
     >
         <system name="FusionBomb" display_name="Brick Bomb"
                 category="Weapon" firing_timing="OnlyInRange"
-                damage_per_shot="1000" range="VeryTiny1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+                damage_per_shot="7000" range="VeryTiny1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
                 shot_type_data="FusionBomb"	
                 base_percent_damage_bypasses_personal_shields="0"
         >
-            <outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtLeast" compared_to="90" multiplier="5" />
-            <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtLeast" compared_to="5" multiplier="5" />
-            <outgoing_damage_modifier based_on="Albedo" comparison_type="AtLeast" compared_to="0.7" multiplier="5" />
+            <outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtLeast" compared_to="90" multiplier="7" />
+            <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtLeast" compared_to="5" multiplier="7" />
+            <outgoing_damage_modifier based_on="Albedo" comparison_type="AtLeast" compared_to="0.7" multiplier="7" />
         </system>
     </entity>
     
@@ -423,6 +445,7 @@
 				shots_per_salvo="8" fires_salvos_sequentially="false"
 				shot_type_data="ExtremeLongRangeRailgun"				
 				>
+		<outgoing_damage_modifier based_on="AttackDistance" comparison_type="MultiplesOf" compared_to="3000" multiplier="1" />
     </system>
 	<system name="GraviticCore" display_name="Storm Core"
 				category="Passive"
@@ -455,7 +478,7 @@
       <system name="TeslaCoil" max_mark_level_to_function="0"></system>
       <system name="Spike" display_name="Kinetic Spike"
 				  category="Weapon" firing_timing="OnlyInRange"
-				  damage_per_shot="1200" range="Normal2" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
+				  damage_per_shot="5000" range="Normal2" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="true"
 				  shot_type_data="ArmorPiercingShell"	
 				  base_percent_damage_bypasses_personal_shields="1"
 				  >
@@ -476,7 +499,7 @@
     >
 	<system name="Melee" display_name="Ranged Blade"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="1500" shots_per_salvo="50" range="Tiny1" shot_speed="Fast" rate_of_fire="SlightlyLow" fires_salvos_sequentially="false"
+				damage_per_shot="2000" shots_per_salvo="50" range="Tiny1" shot_speed="Fast" rate_of_fire="Misery" fires_salvos_sequentially="false"
 				shot_type_data="MeleeInvisible" added_target_evaluator="Melee"
 				>
     </system>
@@ -531,13 +554,13 @@
     >
 	<system name="FusionBolt" display_name="Reaper Bolt"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="500" range="Normal3" shots_per_salvo="5" shot_speed="Fast" rate_of_fire="Devourer" fires_salvos_sequentially="false"
+				damage_per_shot="1400" range="Normal3" shots_per_salvo="5" shot_speed="Fast" rate_of_fire="Devourer" fires_salvos_sequentially="false"
 				shot_type_data="FusionBolt"
 				base_percent_damage_bypasses_personal_shields="0.9"
 				>
-				<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="5" />
-				<outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="5" />
-				<outgoing_damage_modifier based_on="Albedo" comparison_type="AtMost" compared_to="0.3" multiplier="5" />
+				<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="7" />
+				<outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="7" />
+				<outgoing_damage_modifier based_on="Albedo" comparison_type="AtMost" compared_to="0.3" multiplier="7" />
     </system>
     </entity>
     
@@ -572,21 +595,21 @@
     >
 	<system name="Grenade" display_name="Flak Grenade"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="800" range="EssentiallyInfinite" shot_speed="Grenade" rate_of_fire="ExtremelyLow" fires_salvos_sequentially="true"
+				damage_per_shot="8000" range="EssentiallyInfinite" shot_speed="Grenade" rate_of_fire="ExtremelyLow" fires_salvos_sequentially="true"
 				shot_type_data="FlakShotAOEBurstAtEnd" shots_per_salvo="8"
 				area_of_effect_size="3200"
 				stack_damage_multiplier="2"
-				maximum_number_of_targets_hit_per_shot="9"
+				maximum_number_of_targets_hit_per_shot="8"
 				>
 				<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="5" />
     </system>
 	<system name="Grenade2" display_name="Lightning Grenade"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="800" range="EssentiallyInfinite" shot_speed="Grenade" rate_of_fire="ExtremelyLow" fires_salvos_sequentially="true"
+				damage_per_shot="8000" range="EssentiallyInfinite" shot_speed="Grenade" rate_of_fire="ExtremelyLow" fires_salvos_sequentially="true"
 				shot_type_data="LightningExplosionAOEShot" shots_per_salvo="8"
 				added_target_evaluator="WeaponJamAsPrimary"
 				area_of_effect_size="3200"				
-				maximum_number_of_targets_hit_per_shot="9"
+				maximum_number_of_targets_hit_per_shot="8"
 				stack_damage_multiplier="2"
 			base_enemy_weapon_reload_slowing_seconds_per_shot="2" added_enemy_weapon_reload_slowing_seconds_per_shot_per_mark="1"
 			max_enemy_weapon_reload_slowing_seconds="12"
@@ -621,7 +644,7 @@
 	<entity name="Tangler" display_name="Tangler Protector" skip_export="true" copy_from="WarbirdFrigate"
                 tags="CivSubterfugeProtector,CivProtector"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
-                description="A potent Protector, built using advanced Subterfuge technology. This ship is capable of rapidly vaporizing fast moving ships and paralyzing the rest."
+                description="A potent Protector, built using advanced Subterfuge technology. This ship is capable of rapidly vaporizing moving ships and paralyzing the rest."
                 hull_points="1000000" shield_points="500000"
                 tech_upgrades_that_benefit_me="Subterfuge,Light"
 				multiplier_to_all_scales="2"
@@ -632,7 +655,7 @@
 				shots_per_salvo="16" added_shots_per_salvo_per_mark="6" fires_salvos_sequentially="false"				
 				shot_type_data="ParalysisProngedShot_Blue"				
 				>
-		<outgoing_damage_modifier based_on="CurrentSpeedIfMoving" comparison_type="AtLeast" compared_to="1000" multiplier="10" />
+		<outgoing_damage_modifier based_on="CurrentSpeedIfMoving" comparison_type="AtLeast" compared_to="700" multiplier="14" />
     </system>
 	<system name="ParalysisBolt" display_name="Vine Sprayer"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -660,6 +683,7 @@
     </entity>
     <entity name="CivTechnoBabbleTurret" display_name="Civilian Techno Babble Turret" skip_export="true" copy_from="PikeTurret"
               tags="CivTechnologistTurret,CivTurret"
+			  tech_upgrades_that_benefit_me="Technologist,Turret"
               description="Provides mid-ranged tachyon and a Plinker Cannon to offer some offensive use."
               multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
               damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
@@ -686,8 +710,8 @@
                 tech_upgrades_that_benefit_me="Technologist,Medium"
 				fleet_design_template_i_use_for_drones="DecoyDrones"
 				drone_starting_behavior_type="Attacker_Full"	
-				allied_speed_multiplier="1.2"
-				allied_speed_multiplier_added_per_mark="0.05"
+				allied_speed_multiplier="1.5"
+				allied_speed_multiplier_added_per_mark="0.15"
 				multiplier_to_all_scales="3"
     >
 	<system name="TachyonArray" display_name="Orchestration Array"

@@ -67,9 +67,9 @@ namespace SKCivilianIndustry
                         cost = (int)(12000 * SpecialFaction_SKCivilianIndustry.CostIntensityModifier(RelatedEntityOrNull.PlanetFaction.Faction));
                     else
                     {
-                        double countCostModifier = 1.0 + (1.0 - ((militiaData.ShipCapacity[x] - count + 1.0) / militiaData.ShipCapacity[x]));
+                        FInt countCostModifier = FInt.One + (FInt.One - ((militiaData.ShipCapacity[x] - count + FInt.One) / militiaData.ShipCapacity[x]));
                         int baseCost = entityData.CostForAIToPurchase;
-                        cost = (int)(SpecialFaction_SKCivilianIndustry.CostIntensityModifier(RelatedEntityOrNull.PlanetFaction.Faction) * (baseCost * countCostModifier * (militiaData.CostMultiplier / 100.0)));
+                        cost = (SpecialFaction_SKCivilianIndustry.CostIntensityModifier(RelatedEntityOrNull.PlanetFaction.Faction) * (baseCost * countCostModifier * (militiaData.CostMultiplier / (FInt.One * 100)))).GetNearestIntPreferringHigher();
                     }
 
                     if (count < militiaData.ShipCapacity[x])

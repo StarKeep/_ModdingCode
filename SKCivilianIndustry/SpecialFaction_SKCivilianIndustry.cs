@@ -33,12 +33,12 @@ namespace SKCivilianIndustry
         private bool SettingsInitialized;
         public bool PlayerAligned;
         protected int MinimumOutpostDeploymentRange;
-        protected double MilitiaAttackOverkillPercentage;
+        protected FInt MilitiaAttackOverkillPercentage;
         protected int SecondsBetweenMilitiaUpgrades;
         protected bool DefensiveBattlestationForces;
         public int MinTechToProcess;
         public bool[] IgnoreResource;
-        public double MilitiaStockpilePercentage;
+        public FInt MilitiaStockpilePercentage;
         protected bool MilitiaExpandWithAllAllies;
         protected int MilitiaAttackMinimumStrength;
 
@@ -55,10 +55,10 @@ namespace SKCivilianIndustry
         }
 
         // Scale ship costs based on intensity. 5 is 100%, with a 10% step up or down based on intensity.
-        public static double CostIntensityModifier( Faction faction )
+        public static FInt CostIntensityModifier( Faction faction )
         {
             int intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
-            return 1.5 - (intensity * 0.1);
+            return FInt.FromParts(1, 500) - (intensity * FInt.FromParts(0, 100));
         }
 
         /// <summary>
@@ -101,11 +101,11 @@ namespace SKCivilianIndustry
             if ( !SettingsInitialized )
             {
                 MinimumOutpostDeploymentRange = AIWar2GalaxySettingTable.Instance.GetRowByName( "MinimumOutpostDeploymentRange" ).DefaultIntValue;
-                MilitiaAttackOverkillPercentage = AIWar2GalaxySettingTable.Instance.GetRowByName( "MilitiaAttackOverkillPercentage" ).DefaultIntValue / 100.0;
+                MilitiaAttackOverkillPercentage = FInt.FromParts( AIWar2GalaxySettingTable.Instance.GetRowByName( "MilitiaAttackOverkillPercentage" ).DefaultIntValue, 000 ) / 100;
                 SecondsBetweenMilitiaUpgrades = AIWar2GalaxySettingTable.Instance.GetRowByName( "SecondsBetweenMilitiaUpgrades" ).DefaultIntValue;
                 MinTechToProcess = AIWar2GalaxySettingTable.Instance.GetRowByName( "MinTechToProcess" ).DefaultIntValue;
                 DefensiveBattlestationForces = false; // Can't get a default boolean from xml, apparently.
-                MilitiaStockpilePercentage = AIWar2GalaxySettingTable.Instance.GetRowByName( "MilitiaStockpilePercentage" ).DefaultIntValue / 100.0;
+                MilitiaStockpilePercentage = FInt.FromParts( AIWar2GalaxySettingTable.Instance.GetRowByName( "MilitiaStockpilePercentage" ).DefaultIntValue, 000) / 100;
                 MilitiaExpandWithAllAllies = false;
                 SettingsInitialized = true;
                 MilitiaAttackMinimumStrength = AIWar2GalaxySettingTable.Instance.GetRowByName( "MilitiaAttackMinimumStrength" ).DefaultIntValue * 1000;
@@ -127,11 +127,11 @@ namespace SKCivilianIndustry
                     allyThisFactionToHumans( faction );
                     // If human related, also reload settings in case they changed them.
                     MinimumOutpostDeploymentRange = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MinimumOutpostDeploymentRange" );
-                    MilitiaAttackOverkillPercentage = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaAttackOverkillPercentage" ) / 100.0;
+                    MilitiaAttackOverkillPercentage = FInt.FromParts( AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaAttackOverkillPercentage" ), 000) / 100;
                     SecondsBetweenMilitiaUpgrades = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "SecondsBetweenMilitiaUpgrades" );
                     MinTechToProcess = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MinTechToProcess" );
                     DefensiveBattlestationForces = AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( "DefensiveBattlestationForces" );
-                    MilitiaStockpilePercentage = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaStockpilePercentage" ) / 100.0;
+                    MilitiaStockpilePercentage = FInt.FromParts( AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaStockpilePercentage" ), 000) / 100;
                     MilitiaExpandWithAllAllies = AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( "MilitiaExpandWithAllAllies" );
                     MilitiaAttackMinimumStrength = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaAttackMinimumStrength" ) * 1000;
                     PlayerAligned = true;
@@ -1424,9 +1424,9 @@ namespace SKCivilianIndustry
                         int count = militiaStatus.GetShipCount( militiaStatus.ShipTypeData[y] );
                         if ( count < militiaStatus.ShipCapacity[y] )
                         {
-                            double countCostModifier = 1.0 + (1.0 - ((militiaStatus.ShipCapacity[y] - count + 1.0) / militiaStatus.ShipCapacity[y]));
+                            FInt countCostModifier = FInt.One + (FInt.One - ((militiaStatus.ShipCapacity[y] - count + FInt.One) / militiaStatus.ShipCapacity[y]));
                             int baseCost = turretData.CostForAIToPurchase;
-                            int cost = (int)(CostIntensityModifier( faction ) * (baseCost * countCostModifier * (militiaStatus.CostMultiplier / 100.0)));
+                            int cost = (CostIntensityModifier( faction ) * (baseCost * countCostModifier * (militiaStatus.CostMultiplier / (FInt.One * 100)))).GetNearestIntPreferringHigher();
 
                             if ( militiaCargo.Capacity[y] < cost )
                                 militiaCargo.Capacity[y] = (int)(cost * MilitiaStockpilePercentage); // Stockpile some resources.
@@ -1529,12 +1529,12 @@ namespace SKCivilianIndustry
                         {
                             int cost = 0;
                             if ( buildingProtectors )
-                                cost = (int)(12000 * CostIntensityModifier( faction ));
+                                cost = (int)(7000 * CostIntensityModifier( faction ));
                             else
                             {
-                                double countCostModifier = 1.0 + (1.0 - ((militiaStatus.ShipCapacity[y] - count + 1.0) / militiaStatus.ShipCapacity[y]));
+                                FInt countCostModifier = FInt.One + (FInt.One - ((militiaStatus.ShipCapacity[y] - count + FInt.One) / militiaStatus.ShipCapacity[y]));
                                 int baseCost = shipData.CostForAIToPurchase;
-                                cost = (int)(CostIntensityModifier( faction ) * (baseCost * countCostModifier * (militiaStatus.CostMultiplier / 100.0)));
+                                cost = (CostIntensityModifier( faction ) * (baseCost * countCostModifier * (militiaStatus.CostMultiplier / (FInt.One * 100)))).GetNearestIntPreferringHigher();
                             }
 
                             if ( militiaCargo.Capacity[y] < cost )
@@ -1674,7 +1674,7 @@ namespace SKCivilianIndustry
                     return DelReturn.Continue;
                 } );
                 if ( PlayerAligned )
-                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The AI is preparing to read cargo ships on planets near {targetStation.Planet.Name}.", ChatType.ShowToEveryone, Context );
+                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The AI is preparing to raid cargo ships on planets near {targetStation.Planet.Name}.", ChatType.ShowToEveryone, Context );
 
                 // Start timer.
                 factionData.NextRaidInThisSeconds = 119;
@@ -1700,7 +1700,7 @@ namespace SKCivilianIndustry
                 int thisBudget = 2500;
                 raidBudget -= thisBudget;
                 // Spawn random fast ships that the ai is allowed to have.
-                string[] shipNames = BadgerFactionUtilityMethods.getEntitesInAIShipGroup( AIShipGroupTable.Instance.GetRowByName( "SneakyStrikecraft" ) ).Split( ',' );
+                string[] shipNames = BadgerFactionUtilityMethods.getEntitesInAIShipGroup( AIShipGroupTable.Instance.GetRowByName( "SneakyStrikecraft" ) ).Substring(15).Split( ',' );
                 List<GameEntityTypeData> shipTypes = new List<GameEntityTypeData>();
                 for ( int y = 0; y < shipNames.Length; y++ )
                 {
@@ -1762,8 +1762,8 @@ namespace SKCivilianIndustry
             int timeFactor = 900; // Minimum delay between raid waves.
             int budgetFactor = SpecialFaction_AI.Instance.GetSpecificBudgetAIPurchaseCostGainPerSecond( aiFaction, AIBudgetType.Wave, true, true ).GetNearestIntPreferringHigher();
             int tradeFactor = factionData.TradeStations.Count * 3;
-            double intensityMult = 0.8 + (0.04 * faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
-            int raidBudget = (int)((budgetFactor + tradeFactor) * timeFactor * intensityMult);
+            FInt intensityMult = FInt.FromParts( 0, 800 ) + (FInt.FromParts( 1, 040 ) * faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            int raidBudget = ((budgetFactor + tradeFactor) * timeFactor * intensityMult).GetNearestIntPreferringHigher();
 
             // Stop once we're over budget. (Though allow our last wave to exceed it if needed.)
             for ( int x = 0; x < factionData.CargoShips.Count && raidBudget > 0; x++ )
@@ -3267,11 +3267,11 @@ namespace SKCivilianIndustry
                     for(int x = 0; x < pair.Value.Count; x++ )
                     {
                         GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( pair.Value[x] );
-                        if ( entity == null )
+                        if ( squad == null )
                             continue;
+                        squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
                         pair.Value.RemoveAt( x );
                         x--;
-                        squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
                     }
 
                     return DelReturn.Continue;
