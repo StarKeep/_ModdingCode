@@ -3011,16 +3011,24 @@ namespace SKCivilianIndustry
             GameCommand updateCommand = StaticMethods.CreateGameCommand( Commands.SetMilitiaCaps.ToString(), GameCommandSource.AnythingElse, faction );
 
             // Count the number of militia barracks for each planet.
-            ArcenSparseLookup<Planet, int> barracksPerPlanet = new ArcenSparseLookup<Planet, int>();
+            ArcenSparseLookup<Planet, FInt> barrackBonusByPlanet = new ArcenSparseLookup<Planet, FInt>();
+            ArcenSparseLookup<Planet, int> barrackBonusProtectorsByPlanet = new ArcenSparseLookup<Planet, int>();
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
                  planet.DoForEntities( "MilitiaBarracks", delegate ( GameEntity_Squad building )
                  {
                      if ( building.SelfBuildingMetalRemaining <= 0 && building.SecondsSpentAsRemains <= 0 )
-                         if ( barracksPerPlanet.GetHasKey( planet ) )
-                             barracksPerPlanet[planet]++;
+                     {
+                         if ( barrackBonusByPlanet.GetHasKey( planet ) )
+                             barrackBonusByPlanet[planet] += 15 + (5 * building.CurrentMarkLevel);
                          else
-                             barracksPerPlanet.AddPair( planet, 1 );
+                             barrackBonusByPlanet.AddPair( planet, FInt.FromParts( 15 + (5 * building.CurrentMarkLevel), 000 ) / 100 );
+                         if ( building.CurrentMarkLevel >= 7 )
+                             if ( barrackBonusProtectorsByPlanet.GetHasKey( planet ) )
+                                 barrackBonusProtectorsByPlanet[planet]++;
+                             else
+                                 barrackBonusProtectorsByPlanet.AddPair( planet, 1 );
+                     }
                      return DelReturn.Continue;
                  } );
                  return DelReturn.Continue;
@@ -3044,16 +3052,18 @@ namespace SKCivilianIndustry
                         GameEntityTypeData turretData = GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] );
 
                         int capacity = (factionData.GetCap( faction ) / (FInt.Create( turretData.GetForMark( faction.GetGlobalMarkLevelForShipLine( turretData ) ).StrengthPerSquad_Original_DoesNotIncreaseWithMarkLevel, true ) / 10)).GetNearestIntPreferringHigher();
+                        capacity = (int)(capacity * (militiaStatus.CapMultiplier / 100.0));
+
+                        FInt bonus = FInt.One;
                         militiaShip.Planet.DoForLinkedNeighborsAndSelf( false, delegate ( Planet otherPlanet )
                         {
-                            if ( barracksPerPlanet.GetHasKey( otherPlanet ) )
-                                if ( turretData.MultiplierToAllFleetCaps == 0 )
-                                    capacity += barracksPerPlanet[otherPlanet] * Math.Max( 1, (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
-                                else
-                                    capacity += barracksPerPlanet[otherPlanet] * Math.Max( (1 / turretData.MultiplierToAllFleetCaps).GetNearestIntPreferringHigher(), (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
+                            if ( barrackBonusByPlanet.GetHasKey( otherPlanet ) )
+                                bonus += barrackBonusByPlanet[otherPlanet];
                             return DelReturn.Continue;
                         } );
-                        capacity = (int)(capacity * (militiaStatus.CapMultiplier / 100.0));
+
+                        if ( bonus > 1 )
+                            capacity = Math.Max( capacity + 1, (capacity * bonus).GetNearestIntPreferringHigher() );
 
                         if ( capacity != militiaStatus.ShipCapacity[y] )
                         {
@@ -3076,26 +3086,37 @@ namespace SKCivilianIndustry
                         // If advanced, simply set to 1.
                         if ( militiaShip.TypeData.GetHasTag( "BuildsProtectors" ) )
                         {
-                            if ( militiaStatus.ShipCapacity[y] != 1 )
+                            int protCap = 1;
+
+                            militiaShip.Planet.DoForLinkedNeighborsAndSelf( false, otherPlanet =>
+                            {
+                                if ( barrackBonusProtectorsByPlanet.GetHasKey( otherPlanet ) )
+                                    protCap += barrackBonusProtectorsByPlanet[otherPlanet];
+
+                                return DelReturn.Continue;
+                            } );
+
+                            if ( militiaStatus.ShipCapacity[y] != protCap )
                             {
                                 updateCommand.RelatedEntityIDs.Add( militiaShip.PrimaryKeyID );
                                 updateCommand.RelatedIntegers.Add( y );
-                                updateCommand.RelatedIntegers2.Add( 1 );
+                                updateCommand.RelatedIntegers2.Add( protCap );
                             }
                             continue;
                         }
                         int capacity = (factionData.GetCap( faction ) / (FInt.Create( shipData.GetForMark( faction.GetGlobalMarkLevelForShipLine( shipData ) ).StrengthPerSquad_Original_DoesNotIncreaseWithMarkLevel, true ) / 10)).GetNearestIntPreferringHigher();
+                        capacity = (int)(capacity * (militiaStatus.CapMultiplier / 100.0));
+
+                        FInt bonus = FInt.One;
                         militiaShip.Planet.DoForLinkedNeighborsAndSelf( false, delegate ( Planet otherPlanet )
                         {
-                            if ( barracksPerPlanet.GetHasKey( otherPlanet ) )
-                                for ( int z = 0; z < barracksPerPlanet[otherPlanet]; z++ )
-                                    if ( shipData.MultiplierToAllFleetCaps == 0 )
-                                        capacity += Math.Max( 1, (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
-                                    else
-                                        capacity += Math.Max( (1 / shipData.MultiplierToAllFleetCaps).GetNearestIntPreferringHigher(), (FInt.Create( militiaStatus.ShipCapacity[y], true ) / 3).GetNearestIntPreferringHigher() );
+                            if ( barrackBonusByPlanet.GetHasKey( otherPlanet ) )
+                                bonus += barrackBonusByPlanet[otherPlanet];
                             return DelReturn.Continue;
                         } );
-                        capacity = (int)(capacity * (militiaStatus.CapMultiplier / 100.0));
+
+                        if ( bonus > 1 )
+                            capacity = Math.Max( capacity + 1, (capacity * bonus).GetNearestIntPreferringHigher() );
 
                         if ( capacity != militiaStatus.ShipCapacity[y] )
                         {
