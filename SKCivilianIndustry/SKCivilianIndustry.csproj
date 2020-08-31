@@ -38,6 +38,7 @@
     <Compile Include="CargoShipDescriptionAppender.cs" />
     <Compile Include="CivilianCargo.cs" />
     <Compile Include="GameCommands\SKCivilianIndustry.cs" />
+    <Compile Include="Notifications\SKCivilianIndustry.cs" />
     <Compile Include="Persistence\CivilianCargoExtensions.cs" />
     <Compile Include="Persistence\CivilianCargoExternalData.cs" />
     <Compile Include="CivilianFaction.cs" />

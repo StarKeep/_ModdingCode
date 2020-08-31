@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using Arcen.Universal.UnitermData;
+using SKCivilianIndustry.Notifications;
 using SKCivilianIndustry.Persistence;
 
 namespace SKCivilianIndustry
@@ -68,7 +67,7 @@ namespace SKCivilianIndustry
         public static FInt CostIntensityModifier( Faction faction )
         {
             int intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
-            return FInt.FromParts(1, 500) - (intensity * FInt.FromParts(0, 100));
+            return FInt.FromParts( 1, 500 ) - (intensity * FInt.FromParts( 0, 100 ));
         }
 
         /// <summary>
@@ -115,7 +114,7 @@ namespace SKCivilianIndustry
                 SecondsBetweenMilitiaUpgrades = AIWar2GalaxySettingTable.Instance.GetRowByName( "SecondsBetweenMilitiaUpgrades" ).DefaultIntValue;
                 MinTechToProcess = AIWar2GalaxySettingTable.Instance.GetRowByName( "MinTechToProcess" ).DefaultIntValue;
                 DefensiveBattlestationForces = false; // Can't get a default boolean from xml, apparently.
-                MilitiaStockpilePercentage = FInt.FromParts( AIWar2GalaxySettingTable.Instance.GetRowByName( "MilitiaStockpilePercentage" ).DefaultIntValue, 000) / 100;
+                MilitiaStockpilePercentage = FInt.FromParts( AIWar2GalaxySettingTable.Instance.GetRowByName( "MilitiaStockpilePercentage" ).DefaultIntValue, 000 ) / 100;
                 MilitiaExpandWithAllAllies = false;
                 SettingsInitialized = true;
                 MilitiaAttackMinimumStrength = AIWar2GalaxySettingTable.Instance.GetRowByName( "MilitiaAttackMinimumStrength" ).DefaultIntValue * 1000;
@@ -137,11 +136,11 @@ namespace SKCivilianIndustry
                     allyThisFactionToHumans( faction );
                     // If human related, also reload settings in case they changed them.
                     MinimumOutpostDeploymentRange = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MinimumOutpostDeploymentRange" );
-                    MilitiaAttackOverkillPercentage = FInt.FromParts( AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaAttackOverkillPercentage" ), 000) / 100;
+                    MilitiaAttackOverkillPercentage = FInt.FromParts( AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaAttackOverkillPercentage" ), 000 ) / 100;
                     SecondsBetweenMilitiaUpgrades = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "SecondsBetweenMilitiaUpgrades" );
                     MinTechToProcess = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MinTechToProcess" );
                     DefensiveBattlestationForces = AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( "DefensiveBattlestationForces" );
-                    MilitiaStockpilePercentage = FInt.FromParts( AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaStockpilePercentage" ), 000) / 100;
+                    MilitiaStockpilePercentage = FInt.FromParts( AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaStockpilePercentage" ), 000 ) / 100;
                     MilitiaExpandWithAllAllies = AIWar2GalaxySettingTable.GetIsBoolSettingEnabledByName_DuringGame( "MilitiaExpandWithAllAllies" );
                     MilitiaAttackMinimumStrength = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "MilitiaAttackMinimumStrength" ) * 1000;
                     PlayerAligned = true;
@@ -173,6 +172,23 @@ namespace SKCivilianIndustry
                         }
                     }
                 }
+            }
+        }
+
+        public override void DoPerSecondNonSimNotificationUpdates_OnBackgroundNonSimThread_NonBlocking( Faction faction, ArcenSimContext Context, bool IsFirstCallToFactionOfThisTypeThisCycle )
+        {
+            if ( !PlayerAligned )
+                return;
+
+            if ( factionData.NextRaidInThisSeconds < 120 ) {
+
+                AIRaidNotifier notifier = new AIRaidNotifier();
+                notifier.raidingWormholes = factionData.NextRaidWormholes;
+                notifier.faction = BadgerFactionUtilityMethods.GetRandomAIFaction(Context);
+                notifier.SecondsLeft = factionData.NextRaidInThisSeconds;
+
+                NotificationNonSim notification = Engine_AIW2.NonSimNotificationList_Building.GetOrAddEntry();
+                notification.Assign( notifier.ClickHandler, notifier.ContentGetter, notifier.MouseoverHandler, "", 0, "AICargoShipRaiders" );
             }
         }
 
@@ -1710,7 +1726,7 @@ namespace SKCivilianIndustry
                 int thisBudget = 2500;
                 raidBudget -= thisBudget;
                 // Spawn random fast ships that the ai is allowed to have.
-                string[] shipNames = BadgerFactionUtilityMethods.getEntitesInAIShipGroup( AIShipGroupTable.Instance.GetRowByName( "SneakyStrikecraft" ) ).Substring(15).Split( ',' );
+                string[] shipNames = BadgerFactionUtilityMethods.getEntitesInAIShipGroup( AIShipGroupTable.Instance.GetRowByName( "SneakyStrikecraft" ) ).Substring( 15 ).Split( ',' );
                 List<GameEntityTypeData> shipTypes = new List<GameEntityTypeData>();
                 for ( int y = 0; y < shipNames.Length; y++ )
                 {
@@ -3187,7 +3203,7 @@ namespace SKCivilianIndustry
                 }
                 militiaData.Ships.DoFor( pair =>
                 {
-                    for(int x = 0; x < pair.Value.Count; x++ )
+                    for ( int x = 0; x < pair.Value.Count; x++ )
                     {
                         GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( pair.Value[x] );
                         if ( squad == null )
