@@ -174,7 +174,7 @@ namespace SKCivilianIndustry
         /// </summary>
         /// <param name="cargoShipID">The PrimaryKeyID of the ship to modify.</param>
         /// <param name="status">The status to change to. Idle, Loading, Unloading, Building, Pathing, or Enroute</param>
-        public void ChangeCargoShipStatus( GameEntity_Squad cargoShip, string status )
+        public void ChangeCargoShipStatus( GameEntity_Squad cargoShip, Status status )
         {
             int cargoShipID = cargoShip.PrimaryKeyID;
             if ( !this.CargoShips.Contains( cargoShipID ) )
@@ -182,19 +182,19 @@ namespace SKCivilianIndustry
             RemoveCargoShipStatus( cargoShipID );
             switch ( status )
             {
-                case "Loading":
+                case Status.Loading:
                     this.CargoShipsLoading.Add( cargoShipID );
                     break;
-                case "Unloading":
+                case Status.Unloading:
                     this.CargoShipsUnloading.Add( cargoShipID );
                     break;
-                case "Building":
+                case Status.Building:
                     this.CargoShipsBuilding.Add( cargoShipID );
                     break;
-                case "Pathing":
+                case Status.Pathing:
                     this.CargoShipsPathing.Add( cargoShipID );
                     break;
-                case "Enroute":
+                case Status.Enroute:
                     this.CargoShipsEnroute.Add( cargoShipID );
                     break;
                 default:

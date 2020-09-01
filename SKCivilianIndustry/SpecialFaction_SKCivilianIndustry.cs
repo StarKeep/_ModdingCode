@@ -4,6 +4,7 @@ using System.Linq;
 using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
+using Arcen.Universal.UnitermData;
 using SKCivilianIndustry.Notifications;
 using SKCivilianIndustry.Persistence;
 
@@ -61,7 +62,8 @@ namespace SKCivilianIndustry
         public enum Commands
         {
             SetMilitiaCaps,
-            RemoveUnitFromMilitiaByIndex
+            RemoveUnitFromMilitiaByIndex,
+            UpdateCargoShips
         }
 
         // Scale ship costs based on intensity. 5 is 100%, with a 10% step up or down based on intensity.
@@ -765,7 +767,7 @@ namespace SKCivilianIndustry
 
                     // Add the cargo ship to our faction data.
                     factionData.CargoShips.Add( entity.PrimaryKeyID );
-                    factionData.ChangeCargoShipStatus( entity, "Idle" );
+                    factionData.ChangeCargoShipStatus( entity, Status.Idle );
                 }
 
                 // Reset the build counter.
@@ -816,7 +818,7 @@ namespace SKCivilianIndustry
                 // If station not found, idle the cargo ship.
                 if ( destinationStation == null )
                 {
-                    factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                    factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
                     continue;
                 }
@@ -830,17 +832,17 @@ namespace SKCivilianIndustry
                 {
                     if ( factionData.TradeStations.Contains( destinationStation.PrimaryKeyID ) )
                     {
-                        factionData.ChangeCargoShipStatus( cargoShip, "Unloading" );
+                        factionData.ChangeCargoShipStatus( cargoShip, Status.Unloading );
                         shipStatus.LoadTimer = 120;
                     }
                     else if ( factionData.MilitiaLeaders.Contains( destinationStation.PrimaryKeyID ) )
                     {
-                        factionData.ChangeCargoShipStatus( cargoShip, "Building" );
+                        factionData.ChangeCargoShipStatus( cargoShip, Status.Building );
                         shipStatus.LoadTimer = 120;
                     }
                     else
                     {
-                        factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                        factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     }
                     cargoShip.SetCivilianStatusExt( shipStatus );
                     x--;
@@ -862,7 +864,7 @@ namespace SKCivilianIndustry
                 // If station not found, idle the cargo ship.
                 if ( originStation == null )
                 {
-                    factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                    factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
                     continue;
                 }
@@ -874,7 +876,7 @@ namespace SKCivilianIndustry
                 // If ship is close to origin station, start loading.
                 if ( cargoShip.GetDistanceTo_ExpensiveAccurate( originStation.WorldLocation, true, true ) < 2000 )
                 {
-                    factionData.ChangeCargoShipStatus( cargoShip, "Loading" );
+                    factionData.ChangeCargoShipStatus( cargoShip, Status.Loading );
                     shipStatus.LoadTimer = 120;
                     x--;
                     cargoShip.SetCivilianStatusExt( shipStatus );
@@ -907,7 +909,7 @@ namespace SKCivilianIndustry
                 // If the station has died, free the cargo ship.
                 if ( originStation == null )
                 {
-                    factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                    factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
                     continue;
                 }
@@ -918,7 +920,7 @@ namespace SKCivilianIndustry
                 // If the station has died, free the cargo ship.
                 if ( destinationStation == null )
                 {
-                    factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                    factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
                     continue;
                 }
@@ -974,11 +976,11 @@ namespace SKCivilianIndustry
                         }
                     if ( hasEnough )
                     {
-                        factionData.ChangeCargoShipStatus( cargoShip, "Enroute" );
+                        factionData.ChangeCargoShipStatus( cargoShip, Status.Enroute );
                     }
                     else
                     {
-                        factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                        factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     }
                     shipStatus.LoadTimer = 0;
                     cargoShip.SetCivilianStatusExt( shipStatus );
@@ -1007,7 +1009,7 @@ namespace SKCivilianIndustry
                 // If the station has died, free the cargo ship.
                 if ( destinationStation == null )
                 {
-                    factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                    factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
                     continue;
                 }
@@ -1050,7 +1052,7 @@ namespace SKCivilianIndustry
                 // If ship finished, have it go back to being Idle.
                 if ( isFinished )
                 {
-                    factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                    factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
                 }
             }
@@ -1072,7 +1074,7 @@ namespace SKCivilianIndustry
                 // If the station has died, free the cargo ship.
                 if ( destinationStation == null )
                 {
-                    factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                    factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
                     continue;
                 }
@@ -1104,7 +1106,7 @@ namespace SKCivilianIndustry
                 // If ship finished, have it go back to being Idle.
                 if ( isFinished )
                 {
-                    factionData.ChangeCargoShipStatus( cargoShip, "Idle" );
+                    factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
                 }
             }
@@ -2078,6 +2080,8 @@ namespace SKCivilianIndustry
         {
             Engine_Universal.NewTimingsBeingBuilt.StartRememberingFrame( FramePartTimings.TimingType.ShortTermBackgroundThreadEntry, "DoTradeRequests" );
 
+            GameCommand tradeCommand = StaticMethods.CreateGameCommand( Commands.UpdateCargoShips.ToString(), GameCommandSource.AnythingElse, faction );
+
             #region Preparation
             // Clear our lists.
             factionData.ImportRequests = new List<TradeRequest>();
@@ -2267,13 +2271,11 @@ namespace SKCivilianIndustry
 
                 if ( hasEnough )
                 {
-                    // Update our cargo ship with its new mission.
-                    CivilianStatus cargoShipStatus = foundCargoShip.GetCivilianStatusExt();
-                    cargoShipStatus.Origin = -1;    // No origin station required.
-                    cargoShipStatus.Destination = requestingEntity.PrimaryKeyID;
-                    factionData.ChangeCargoShipStatus( foundCargoShip, "Enroute" );
-                    // Save its updated status.
-                    foundCargoShip.SetCivilianStatusExt( cargoShipStatus );
+                    tradeCommand.RelatedEntityIDs.Add( foundCargoShip.PrimaryKeyID );
+                    tradeCommand.RelatedIntegers.Add( -1 );
+                    tradeCommand.RelatedIntegers2.Add( requestingEntity.PrimaryKeyID );
+                    tradeCommand.RelatedIntegers3.Add( (int)Status.Enroute );
+
                     // Remove the completed entities from processing.
                     importRequest.Processed = true;
                     continue;
@@ -2304,15 +2306,11 @@ namespace SKCivilianIndustry
                 }
                 if ( otherStation != null )
                 {
-                    // Assign our ship to our new trade route, and remove both requests and the ship from our lists.
-                    CivilianStatus cargoShipStatus = foundCargoShip.GetCivilianStatusExt();
-                    // Make sure the Origin is the Exporter and the Destination is the Importer.
-                    cargoShipStatus.Origin = otherStation.PrimaryKeyID;
-                    cargoShipStatus.Destination = requestingEntity.PrimaryKeyID;
+                    tradeCommand.RelatedEntityIDs.Add( foundCargoShip.PrimaryKeyID );
+                    tradeCommand.RelatedIntegers.Add( otherStation.PrimaryKeyID );
+                    tradeCommand.RelatedIntegers2.Add( requestingEntity.PrimaryKeyID );
+                    tradeCommand.RelatedIntegers3.Add( (int)Status.Pathing );
 
-                    factionData.ChangeCargoShipStatus( foundCargoShip, "Pathing" );
-                    // Save its updated status.
-                    foundCargoShip.SetCivilianStatusExt( cargoShipStatus );
                     // Remove the completed entities from processing.
                     importRequest.Processed = true;
                     if ( otherRequest != null )
@@ -2325,6 +2323,9 @@ namespace SKCivilianIndustry
                 factionData.FailedCounter = (factionData.ImportRequests.Count, factionData.ExportRequests.Count);
             else
                 factionData.FailedCounter = (0, 0);
+
+            if ( tradeCommand.RelatedEntityIDs.Count > 0 )
+                Context.QueueCommandForSendingAtEndOfContext( tradeCommand );
             #endregion
 
             Engine_Universal.NewTimingsBeingBuilt.FinishRememberingFrame( FramePartTimings.TimingType.MainSimThreadNormal, "DoTradeRequests" );

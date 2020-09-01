@@ -7,6 +7,16 @@ using System.Threading.Tasks;
 
 namespace SKCivilianIndustry
 {
+    public enum Status
+    {
+        Loading,
+        Unloading,
+        Building,
+        Pathing,
+        Enroute,
+        Idle
+    }
+
     /// <summary>
     /// Used on mobile ships. Tells us what they're currently doing.
     /// </summary>
