@@ -1,11 +1,6 @@
 ﻿using Arcen.AIW2.Core;
 using Arcen.Universal;
 using SKCivilianIndustry.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SKCivilianIndustry
 {
@@ -45,10 +40,15 @@ namespace SKCivilianIndustry
                 }
                 else
                 {
-                    Buffer.StartColor( CivilianResourceHexColors.Color[x] );
                     if ( cargoData.Amount[x] > 0 || cargoData.PerSecond[x] != 0 )
+                    {
+                        Buffer.StartColor( CivilianResourceHexColors.Color[x] );
                         Buffer.Add( $"\n{cargoData.Amount[x]}/{cargoData.Capacity[x]} {(CivilianResource)x}" );
-                    Buffer.EndColor();
+                        Buffer.EndColor();
+                        Buffer.StartColor( UnityEngine.Color.magenta );
+                        Buffer.Add( $" [{(CivilianTech)x}]" );
+                        Buffer.EndColor();
+                    }
                     // If resource has generation or drain, notify them.
                     if ( cargoData.PerSecond[x] > 0 )
                     {

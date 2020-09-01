@@ -1,9 +1,9 @@
-﻿using Arcen.AIW2.Core;
+﻿using System;
+using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
 using SKCivilianIndustry.Persistence;
-using System;
-using System.Collections.Generic;
 
 namespace SKCivilianIndustry
 {
@@ -125,18 +125,16 @@ namespace SKCivilianIndustry
 
         /// <summary>
         /// Returns the ship/turret capacity. Increases based on intensity and trade station count.
-        /// 20 + intensity * 3 + (((5 * StationCount) ^ 0.9) ^ (1.25 + (0.025 * Intensity)))
         /// </summary>
         /// <returns></returns>
         public int GetCap( Faction faction )
         {
-            int baseCap = 30;
+            int baseCap = 10;
             int intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
-            int flatBonus = 3 * intensity;
-            FInt intensityMult = FInt.FromParts( 1, 250 ) + (FInt.FromParts( 0, 025 ) * intensity);
-            int stationMult = (int)Math.Pow( 3 * TradeStations.Count, 0.9 );
-            FInt scalingBonus = stationMult * intensityMult;
-            int cap = (baseCap + flatBonus + scalingBonus).GetNearestIntPreferringHigher();
+            int intensityBonus = intensity > 5 ? intensity * 2 : 0;
+            FInt intensityMult = FInt.FromParts( 0, 750 ) + (FInt.FromParts( 0, 050 ) * intensity);
+            int stationBonus = 2 * TradeStations.Count;
+            int cap = ((baseCap + intensityBonus + stationBonus) * intensityMult).GetNearestIntPreferringHigher();
             return cap;
         }
 
@@ -284,7 +282,7 @@ namespace SKCivilianIndustry
         }
         private void SerializeSparseLookup( ArcenSparseLookup<int, int> lookup, ArcenSerializationBuffer Buffer )
         {
-            Buffer.AddInt32( ReadStyle.NonNeg, lookup.GetPairCount());
+            Buffer.AddInt32( ReadStyle.NonNeg, lookup.GetPairCount() );
             lookup.DoFor( pair =>
             {
                 Buffer.AddInt32( ReadStyle.NonNeg, pair.Key );

@@ -62,7 +62,7 @@ namespace SKCivilianIndustry
                     Buffer.Add($" ({(CivilianResource)x})");
                     Buffer.EndColor();
                     Buffer.StartColor( UnityEngine.Color.magenta );
-                    Buffer.Add( $" [{(CivilianTech)x}" );
+                    Buffer.Add( $" [{(CivilianTech)x}]" );
                     Buffer.EndColor();
 
                     int cost;
