@@ -53,7 +53,7 @@ namespace SKCivilianIndustry
                     if (entityData == null)
                         continue;
 
-                    int count = militiaData.GetShipCount(entityData.InternalName);
+                    int count = militiaData.GetShipCount( entityData, false );
                     Buffer.Add($"\n{entityData.DisplayName}:");
                     Buffer.StartColor(UnityEngine.Color.green);
                     Buffer.Add($" {count}/{militiaData.ShipCapacity[x]}");

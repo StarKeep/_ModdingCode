@@ -60,7 +60,8 @@ namespace SKCivilianIndustry
 
         public enum Commands
         {
-            SetMilitiaCaps
+            SetMilitiaCaps,
+            RemoveUnitFromMilitiaByIndex
         }
 
         // Scale ship costs based on intensity. 5 is 100%, with a 10% step up or down based on intensity.
@@ -1434,23 +1435,12 @@ namespace SKCivilianIndustry
                             }
                         }
 
-                        // Clear out any dead or stacked units.
-                        for ( int z = 0; z < militiaStatus.Ships[y].Count; z++ )
-                        {
-                            GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( militiaStatus.Ships[y][z] );
-                            if ( squad == null )
-                            {
-                                militiaStatus.Ships[y].RemoveAt( z );
-                                z--;
-                            }
-                        }
-
                         if ( !militiaStatus.ShipTypeData.GetHasKey( y ) )
                             militiaStatus.ShipTypeData.AddPair( y, GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] ) );
 
                         GameEntityTypeData turretData = militiaStatus.ShipTypeData[y];
 
-                        int count = militiaStatus.GetShipCount( militiaStatus.ShipTypeDataNames[y] );
+                        int count = militiaStatus.GetShipCount( turretData );
                         if ( count < militiaStatus.ShipCapacity[y] )
                         {
                             FInt countCostModifier = FInt.One + (FInt.One - ((militiaStatus.ShipCapacity[y] - count + FInt.One) / militiaStatus.ShipCapacity[y]));
@@ -1539,23 +1529,12 @@ namespace SKCivilianIndustry
 
                         }
 
-                        // Clear out any dead or stacked units.
-                        for ( int z = 0; z < militiaStatus.Ships[y].Count; z++ )
-                        {
-                            GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( militiaStatus.Ships[y][z] );
-                            if ( squad == null )
-                            {
-                                militiaStatus.Ships[y].RemoveAt( z );
-                                z--;
-                            }
-                        }
-
                         if ( !militiaStatus.ShipTypeData.GetHasKey( y ) )
                             militiaStatus.ShipTypeData.AddPair( y, GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] ) );
 
                         GameEntityTypeData shipData = militiaStatus.ShipTypeData[y];
 
-                        int count = militiaStatus.GetShipCount( militiaStatus.ShipTypeDataNames[y] );
+                        int count = militiaStatus.GetShipCount( shipData );
                         if ( count < militiaStatus.ShipCapacity[y] )
                         {
                             int cost = 0;

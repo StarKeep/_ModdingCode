@@ -1,10 +1,6 @@
-﻿using Arcen.AIW2.Core;
+﻿using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.Universal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SKCivilianIndustry
 {
@@ -43,27 +39,38 @@ namespace SKCivilianIndustry
         public ArcenSparseLookup<int, int> ShipCapacity = new ArcenSparseLookup<int, int>();
 
         /// <summary>
-        /// Count the number of ships of a certain type that this militia controls.
+        /// Count the number of ships of a certain type that this militia controls, and purge any missing entities from their list.
         /// </summary>
-        /// <param name="entityTypeDataInternalName" >Internal Name of the Entity to count.</param>
+        /// <param name="typeData" >Type Data of the Entity to count.</param>
         /// <returns></returns>
-        public int GetShipCount(string entityTypeDataInternalName)
+        public int GetShipCount( GameEntityTypeData typeData, bool purgeDeadUnitsFromList = true )
         {
             int index = -1;
-            for (int x = 0; x < ShipTypeDataNames.GetPairCount(); x++)
-                if (ShipTypeDataNames[x] == entityTypeDataInternalName)
+            ShipTypeData.DoFor( pair =>
+            {
+                if ( typeData == pair.Value )
                 {
-                    index = x;
-                    break;
+                    index = pair.Key;
+                    return DelReturn.Break;
                 }
-            if (index == -1)
+
+                return DelReturn.Continue;
+            } );
+            if ( index == -1 )
                 return 0;
             int shipCount = 0;
-            for (int x = 0; x < Ships[index].Count; x++)
+            for ( int x = 0; x < Ships[index].Count; x++ )
             {
-                GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad(Ships[index][x]);
-                if (squad == null)
+                GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( Ships[index][x] );
+                if ( squad == null )
+                {
+                    if ( purgeDeadUnitsFromList )
+                    {
+                        Ships[index].RemoveAt( x );
+                        x--;
+                    }
                     continue;
+                }
                 shipCount++;
                 shipCount += squad.ExtraStackedSquadsInThis;
             }
@@ -83,11 +90,11 @@ namespace SKCivilianIndustry
             this.Status = CivilianMilitiaStatus.Idle;
             this.PlanetFocus = -1;
             this.EntityFocus = -1;
-            for (int x = 0; x < (int)CivilianResource.Length; x++)
+            for ( int x = 0; x < (int)CivilianResource.Length; x++ )
             {
-                this.ShipTypeDataNames.AddPair(x, "none");
-                this.Ships.AddPair(x, new List<int>());
-                this.ShipCapacity.AddPair(x, 0);
+                this.ShipTypeDataNames.AddPair( x, "none" );
+                this.Ships.AddPair( x, new List<int>() );
+                this.ShipCapacity.AddPair( x, 0 );
             }
             this.CostMultiplier = 100; // 100%
             this.CapMultiplier = 100; // 100%
@@ -97,7 +104,7 @@ namespace SKCivilianIndustry
         /// Used to save our data to buffer.
         /// </summary>
         /// <param name="Buffer"></param>
-        public void SerializeTo(ArcenSerializationBuffer Buffer)
+        public void SerializeTo( ArcenSerializationBuffer Buffer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 2 );
             Buffer.AddInt32( ReadStyle.Signed, this.Centerpiece );
@@ -106,9 +113,9 @@ namespace SKCivilianIndustry
             Buffer.AddInt32( ReadStyle.Signed, this.EntityFocus );
             int count = (int)CivilianResource.Length;
             Buffer.AddInt32( ReadStyle.NonNeg, count );
-            for (int x = 0; x < count; x++)
+            for ( int x = 0; x < count; x++ )
             {
-                Buffer.AddString_Condensed(this.ShipTypeDataNames[x]);
+                Buffer.AddString_Condensed( this.ShipTypeDataNames[x] );
                 int subCount = this.Ships[x].Count;
                 Buffer.AddInt32( ReadStyle.NonNeg, subCount );
                 for ( int y = 0; y < subCount; y++ )
@@ -116,54 +123,54 @@ namespace SKCivilianIndustry
                 Buffer.AddInt32( ReadStyle.NonNeg, this.ShipCapacity[x] );
             }
             Buffer.AddInt32( ReadStyle.NonNeg, this.CostMultiplier );
-            Buffer.AddInt32( ReadStyle.NonNeg, this.CapMultiplier );   
+            Buffer.AddInt32( ReadStyle.NonNeg, this.CapMultiplier );
         }
 
         /// <summary>
         /// Used to load our data from buffer.
         /// </summary>
         /// <param name="Buffer"></param>
-        public CivilianMilitia(ArcenDeserializationBuffer Buffer)
+        public CivilianMilitia( ArcenDeserializationBuffer Buffer )
         {
-            this.Version = Buffer.ReadInt32(ReadStyle.NonNeg );
-            this.Centerpiece = Buffer.ReadInt32(ReadStyle.Signed);
+            this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
+            this.Centerpiece = Buffer.ReadInt32( ReadStyle.Signed );
             this.Status = (CivilianMilitiaStatus)Buffer.ReadByte( ReadStyleByte.Normal );
             if ( this.Version < 2 )
                 this.PlanetFocus = (short)Buffer.ReadInt32( ReadStyle.Signed );
             else
                 this.PlanetFocus = Buffer.ReadInt16( ReadStyle.Signed );
-            this.EntityFocus = Buffer.ReadInt32(ReadStyle.Signed);
-            int count = Buffer.ReadInt32(ReadStyle.NonNeg );
-            for (int x = 0; x < count; x++)
+            this.EntityFocus = Buffer.ReadInt32( ReadStyle.Signed );
+            int count = Buffer.ReadInt32( ReadStyle.NonNeg );
+            for ( int x = 0; x < count; x++ )
             {
-                this.ShipTypeDataNames.AddPair(x, Buffer.ReadString_Condensed());
+                this.ShipTypeDataNames.AddPair( x, Buffer.ReadString_Condensed() );
                 this.Ships[x] = new List<int>();
-                int subCount = Buffer.ReadInt32(ReadStyle.NonNeg );
-                for (int y = 0; y < subCount; y++)
-                    this.Ships[x].Add(Buffer.ReadInt32(ReadStyle.NonNeg ) );
-                this.ShipCapacity[x] = Buffer.ReadInt32(ReadStyle.NonNeg );
+                int subCount = Buffer.ReadInt32( ReadStyle.NonNeg );
+                for ( int y = 0; y < subCount; y++ )
+                    this.Ships[x].Add( Buffer.ReadInt32( ReadStyle.NonNeg ) );
+                this.ShipCapacity[x] = Buffer.ReadInt32( ReadStyle.NonNeg );
             }
-            if (this.ShipTypeDataNames.GetPairCount() < (int)CivilianResource.Length)
+            if ( this.ShipTypeDataNames.GetPairCount() < (int)CivilianResource.Length )
             {
-                for (int x = count; x < (int)CivilianResource.Length; x++)
+                for ( int x = count; x < (int)CivilianResource.Length; x++ )
                 {
-                    this.ShipTypeDataNames.AddPair(x, "none");
-                    this.Ships.AddPair(x, new List<int>());
-                    this.ShipCapacity.AddPair(x, 0);
+                    this.ShipTypeDataNames.AddPair( x, "none" );
+                    this.Ships.AddPair( x, new List<int>() );
+                    this.ShipCapacity.AddPair( x, 0 );
                 }
             }
-            this.CostMultiplier = Buffer.ReadInt32(ReadStyle.NonNeg );
-            this.CapMultiplier = Buffer.ReadInt32(ReadStyle.NonNeg );
+            this.CostMultiplier = Buffer.ReadInt32( ReadStyle.NonNeg );
+            this.CapMultiplier = Buffer.ReadInt32( ReadStyle.NonNeg );
         }
 
         public GameEntity_Squad getMine()
         {
-            return World_AIW2.Instance.GetEntityByID_Squad(this.EntityFocus);
+            return World_AIW2.Instance.GetEntityByID_Squad( this.EntityFocus );
         }
 
         public GameEntity_Other getWormhole()
         {
-            return World_AIW2.Instance.GetEntityByID_Other(this.EntityFocus);
+            return World_AIW2.Instance.GetEntityByID_Other( this.EntityFocus );
         }
     }
 }

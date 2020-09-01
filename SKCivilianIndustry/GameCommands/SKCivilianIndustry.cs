@@ -16,4 +16,16 @@ namespace SKCivilianIndustry.GameCommands
             }
         }
     }
+
+    public class RemoveUnitFromMilitiaByIndex : BaseGameCommand
+    {
+        public override void Execute (GameCommand command, ArcenSimContext context )
+        {
+            for(int x = 0; x < command.RelatedEntityIDs.Count; x++ )
+            {
+                GameEntity_Squad entity = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[x] );
+                entity.GetCivilianMilitiaExt().Ships[command.RelatedIntegers[x]].Remove( command.RelatedIntegers2[x] );
+            }
+        }
+    }
 }

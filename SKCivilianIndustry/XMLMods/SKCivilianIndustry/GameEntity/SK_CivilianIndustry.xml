@@ -233,28 +233,28 @@
     <!--    Ships and turrets spawnt by the militia part of the faction.
     -->
     <entity name="CivSniper" display_name="Civilian Sniper" skip_export="true" copy_from="Sniper"
-            tags="CivAmbushMobile,CivMobile"
+            tags="CivAmbushMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivRaptor" display_name="Civilian Raptor" skip_export="true" copy_from="Raptor"
-            tags="CivAmbushMobile,CivMobile"
+            tags="CivAmbushMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivAmbushTurret" display_name="Civilian Ambush Turret" skip_export="true" copy_from="AmbushTurret"
-            tags="CivAmbushTurret,CivTurret"
+            tags="CivAmbushTurret,CivTurret,CivMilitiaSpawn"
             multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
             damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
             multiplier_to_all_scales="2"
     >
     </entity>
     <entity name="CrackerJack" display_name="Cracker Jack Protector" skip_export="true" copy_from="RaidFrigate"
-                tags="CivAmbushProtector,CivProtector"
+                tags="CivAmbushProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Ambush technology. This ship is an expert at taking down any forces that have recently arrived on its planet."
                 hull_points="1000000" shield_points="500000"
@@ -287,28 +287,28 @@
     </entity>
     
     <entity name="CivConcussionCorvette" display_name="Civilian Concussion Corvette" skip_export="true" copy_from="ConcussionCorvette"
-            tags="CivConcussionMobile,CivMobile"
+            tags="CivConcussionMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivSiegeFrigate" display_name="Civilian Siege Frigate" skip_export="true" copy_from="SiegeFrigate"
-            tags="CivConcussionMobile,CivMobile"
+            tags="CivConcussionMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivConcussionTurret" display_name="Civilian Concussion Turret" skip_export="true" copy_from="ConcussionTurret"
-            tags="CivConcussionTurret,CivTurret"
+            tags="CivConcussionTurret,CivTurret,CivMilitiaSpawn"
             multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
             damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
             multiplier_to_all_scales="2"
     >
     </entity>
     <entity name="Thunderstrike" display_name="Thunderstrike Protector" skip_export="true" copy_from="SiegeFrigate"
-                tags="CivConcussionProtector,CivProtector"
+                tags="CivConcussionProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Concussion technology. This ship is an expert at dividing enemy forces with powerful aoe knockback, and shredding low armor targets."
                 hull_points="1000000" shield_points="500000"
@@ -334,28 +334,28 @@
     </entity>
 
     <entity name="CivPikeCorvette" display_name="Civilian Pike Corvette" skip_export="true" copy_from="PikeCorvette"
-            tags="CivDisruptiveMobile,CivMobile"
+            tags="CivDisruptiveMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivAgravicPod" display_name="Civilian Agravic Pod" skip_export="true" copy_from="AgravicPod"
-            tags="CivDisruptiveMobile,CivMobile"
+            tags="CivDisruptiveMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivPikeTurret" display_name="Civilian Pike Turret" skip_export="true" copy_from="PikeTurret"
-            tags="CivDisruptiveTurret,CivTurret"
+            tags="CivDisruptiveTurret,CivTurret,CivMilitiaSpawn"
             multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
             damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
             multiplier_to_all_scales="2"
     >
     </entity>
     <entity name="Paladin" display_name="Paladin Protector" skip_export="true" copy_from="ForcefieldFrigate"
-                tags="CivDisruptiveProtector,CivProtector"
+                tags="CivDisruptiveProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Disruptive technology. This ship is the ultimate in protecting its allies with powerful debuffs, a potent forcefield, and self healing."
                 hull_points="500000" shield_points="1500000" shield_size_scale="6" my_forcefield_does_not_shrink="true"
@@ -371,28 +371,28 @@
     </entity>
 
     <entity name="CivPulsarTank" display_name="Civilian Pulsar Tank" skip_export="true" copy_from="PulsarTank"
-            tags="CivFusionMobile,CivMobile"
+            tags="CivFusionMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivAssaultFrigate" display_name="Civilian Assault Frigate" skip_export="true" copy_from="AssaultFrigate"
-            tags="CivFusionMobile,CivMobile"
+            tags="CivFusionMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivMLRSTurret" display_name="Civilian MLRS Turret" skip_export="true" copy_from="MLRSTurret"
-            tags="CivFusionTurret,CivTurret"
+            tags="CivFusionTurret,CivTurret,CivMilitiaSpawn"
             multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
             damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
             multiplier_to_all_scales="2"
     >
     </entity>
     <entity name="BrickBreaker" display_name="Brick Breaker Protector" skip_export="true" copy_from="AssaultFrigate"
-                tags="CivFusionProtector,CivProtector"
+                tags="CivFusionProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Fusion technology. This ship is an expert at taking down large hostiles."
                 hull_points="1000000" shield_points="500000"
@@ -412,28 +412,28 @@
     </entity>
     
     <entity name="CivVWing" display_name="Civilian V-Wing" skip_export="true" copy_from="VWing"
-            tags="CivGeneralistMobile,CivMobile"
+            tags="CivGeneralistMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivAutocannonMinipod" display_name="Civilian Autocannon Minipod" skip_export="true" copy_from="AutocannonMinipod"
-            tags="CivGeneralistMobile,CivMobile"
+            tags="CivGeneralistMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivTritiumSniperTurret" display_name="Civilian Tritium Sniper Turret" skip_export="true" copy_from="TritiumSniperTurret"
-            tags="CivGeneralistTurret,CivTurret"
+            tags="CivGeneralistTurret,CivTurret,CivMilitiaSpawn"
             multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
             damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
             multiplier_to_all_scales="2"
     >
     </entity>
 	<entity name="Hurricane" display_name="Hurricane Protector" skip_export="true" copy_from="TritiumSniperFrigate"
-                tags="CivGeneralistProtector,CivProtector"
+                tags="CivGeneralistProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Generalist technology. This ship provides a large radius gravity generator and powerful rapid fire sniper shots."
                 hull_points="1000000" shield_points="500000"
@@ -456,21 +456,21 @@
     </entity>
     
     <entity name="CivVampireClaw" display_name="Civilian Vampire Claw" skip_export="true" copy_from="VampireClaw"
-            tags="CivMeleeMobile,CivMobile"
+            tags="CivMeleeMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivMetabolizingGangsaw" display_name="Civilian Metabolizing Gangsaw" skip_export="true" copy_from="MetabolizingGangsaw"
-            tags="CivMeleeMobile,CivMobile"
+            tags="CivMeleeMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivKineticSpikeTurret" display_name="Civilian Kinetic Spike Turret" skip_export="true" copy_from="EnsnarerFortifiedTeslaTurret"
-            tags="CivMeleeTurret,CivTurret"
+            tags="CivMeleeTurret,CivTurret,CivMilitiaSpawn"
             description="An extremely simplistic turret, it comes with a single tractor beam and a kinetic spike shot that pierces all shields."
             multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
             damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
@@ -490,7 +490,7 @@
       </system>
     </entity>
 	<entity name="Excalibur" display_name="Excalibur Protector" skip_export="true" copy_from="VampireClaw"
-                tags="CivMeleeProtector,CivProtector"
+                tags="CivMeleeProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Melee technology. This ship is a slow moving and durable ship that can tractor an incredible number of enemy targets."
                 hull_points="1000000" shield_points="500000"
@@ -515,21 +515,21 @@
     </entity>
     
     <entity name="CivRaider" display_name="Civilian Raider" skip_export="true" copy_from="Raider"
-            tags="CivRaidMobile,CivMobile"
+            tags="CivRaidMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivRaidFrigate" display_name="Civilian Raid Frigate" skip_export="true" copy_from="RaidFrigate"
-            tags="CivRaidMobile,CivMobile"
+            tags="CivRaidMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivBlitzCannonTurret" display_name="Civilian Blitz Cannon Turret" skip_export="true" copy_from="TritiumSniperTurret"
-            tags="CivRaidTurret,CivTurret"
+            tags="CivRaidTurret,CivTurret,CivMilitiaSpawn"
             description="Hammers away at the hull of healthy ships from any range."
             multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
             damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
@@ -545,7 +545,7 @@
       </system>
     </entity>
 	<entity name="GrimReaper" display_name="Grim Reaper Protector" skip_export="true" copy_from="RaidFrigate"
-                tags="CivRaidProtector,CivProtector"
+                tags="CivRaidProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Raid technology. This ship is excellent at taking down weaker ships to fuel its rampage."
                 hull_points="1000000" shield_points="500000"
@@ -566,28 +566,28 @@
     </entity>
     
     <entity name="CivInhibitingTeslaCorvette" display_name="Civilian Inhibiting Tesla Corvette" skip_export="true" copy_from="InhibitingTeslaCorvette"
-            tags="CivSplashMobile,CivMobile"
+            tags="CivSplashMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivGrenadeLauncherCorvette" display_name="Civilian Grenade Launcher Corvette" skip_export="true" copy_from="GrenadeLauncherCorvette"
-            tags="CivSplashMobile,CivMobile"
+            tags="CivSplashMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivFortifiedTeslaTurret" display_name="Civilian Fortified Tesla Turret" skip_export="true" copy_from="FortifiedTeslaTurret"
-            tags="CivSplashTurret,CivTurret"
+            tags="CivSplashTurret,CivTurret,CivMilitiaSpawn"
             multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
             damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
             multiplier_to_all_scales="2"
     >
     </entity>
 	<entity name="Wildfire" display_name="Wildfire Protector" skip_export="true" copy_from="GrenadeLauncherCorvette"
-                tags="CivSplashProtector,CivProtector"
+                tags="CivSplashProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Splash technology. This ship fires off multiple types of slow moving grenades at hostile forces."
                 hull_points="1000000" shield_points="500000"
@@ -621,14 +621,14 @@
     </entity>
 
     <entity name="CivSpider" display_name="Civilian Spider" skip_export="true" copy_from="Spider"
-            tags="CivSubterfugeMobile,CivMobile"
+            tags="CivSubterfugeMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivWarbirdFrigate" display_name="Civilian Warbird Frigate" skip_export="true" copy_from="WarbirdFrigate"
-            tags="CivSubterfugeMobile,CivMobile"
+            tags="CivSubterfugeMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
@@ -636,14 +636,14 @@
       <system name="ParalysisBolt" shots_per_salvo="4" damage_per_shot="2240"></system>
     </entity>
     <entity name="CivSpiderTurret" display_name="Civilian Spider Turret" skip_export="true" copy_from="SpiderTurret"
-            tags="CivSubterfugeTurret,CivTurret"
+            tags="CivSubterfugeTurret,CivTurret,CivMilitiaSpawn"
             multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
             damage_multiplier_to_all_weapons="2" multiplier_to_all_fleet_caps="0.5" 
             multiplier_to_all_scales="2"
     >
     </entity>
 	<entity name="Tangler" display_name="Tangler Protector" skip_export="true" copy_from="WarbirdFrigate"
-                tags="CivSubterfugeProtector,CivProtector"
+                tags="CivSubterfugeProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Subterfuge technology. This ship is capable of rapidly vaporizing moving ships and paralyzing the rest."
                 hull_points="1000000" shield_points="500000"
@@ -669,21 +669,21 @@
     </entity>
     
     <entity name="CivSentinelGunboat" display_name="Civilian Sentinel Gunboat" skip_export="true" copy_from="SentinelGunboat"
-            tags="CivTechnologistMobile,CivMobile"
+            tags="CivTechnologistMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivEtherjet" display_name="Civilian Etherjet" skip_export="true" copy_from="Etherjet"
-            tags="CivTechnologistMobile,CivMobile"
+            tags="CivTechnologistMobile,CivMobile,CivMilitiaSpawn"
             multiplier_to_all_costs="0.5" multiplier_to_all_healths="0.5" 
             damage_multiplier_to_all_weapons="0.5" 
             multiplier_to_all_scales="0.5"
     >
     </entity>
     <entity name="CivTechnoBabbleTurret" display_name="Civilian Techno Babble Turret" skip_export="true" copy_from="PikeTurret"
-              tags="CivTechnologistTurret,CivTurret"
+              tags="CivTechnologistTurret,CivTurret,CivMilitiaSpawn"
 			  tech_upgrades_that_benefit_me="Technologist,Turret"
               description="Provides mid-ranged tachyon and a Plinker Cannon to offer some offensive use."
               multiplier_to_all_costs="2" multiplier_to_all_healths="2" 
@@ -704,7 +704,7 @@
       </system>
     </entity>
 	<entity name="Orchestrator" display_name="Orchestrator Protector" skip_export="true" copy_from="CarrierGuardian"
-                tags="CivTechnologistProtector,CivProtector"
+                tags="CivTechnologistProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Technologist technology. This ship spawns decoy drones, speeds up allied ships on its planet, and grants planet-wide tachyeon coverage."
                 hull_points="1000000" shield_points="500000"
