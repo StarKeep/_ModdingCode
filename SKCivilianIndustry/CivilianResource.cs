@@ -11,16 +11,16 @@ namespace SKCivilianIndustry
     /// </summary>
     public enum CivilianResource
     {
-        Ambuinum,
-        Steel,
-        Disrupeon,
-        Protium,
-        Tritium,
-        Tungsten,
-        Radium,
-        Splackon,
-        Silicon,
-        Techrackum,
-        Length
+        Atium,          //Ambush
+        Saronite,       //Concussion
+        Collapsium,     //Disruptive
+        Byzanium,       //Fusion
+        Orichalcum,     //Generalist
+        Carbonadium,    //Melee
+        Inerton,        //Raid
+        Naqahdah,       //Splash
+        Frinkonium,     //Subterfuge
+        Computronium,   //Technologist
+        Length      
     }
 }
