@@ -259,19 +259,19 @@
                 description="A potent Protector, built using advanced Ambush technology. This ship is an expert at taking down any forces that have recently arrived on its planet."
                 hull_points="1000000" shield_points="500000"
                 tech_upgrades_that_benefit_me="Ambush,Medium"
-				multiplier_to_all_scales="4"
+				multiplier_to_all_scales="4" 
     >
         <system name="FusionBolt" display_name="Cracker Bolt"
-                        category="Weapon" firing_timing="OnlyInRange" shots_per_salvo="3"
-                        damage_per_shot="5000" range="Normal3" shot_speed="Fast" rate_of_fire="High" fires_salvos_sequentially="true"
+                        category="Weapon" firing_timing="OnlyInRange" shots_per_salvo="15" fires_salvos_sequentially="true"
+                        damage_per_shot="1000" range="Normal3" shot_speed="Fast" rate_of_fire="High"
                         shot_type_data="FusionBolt"
-                        base_percent_damage_bypasses_personal_shields="0.9"
+                        base_percent_damage_bypasses_personal_shields="0.75"
         >
           <outgoing_damage_modifier based_on="TargetTimeAtPlanet" comparison_type="LessThan" compared_to="60" multiplier="5" />
         </system>
 		<system name="EngineJacker" display_name="Engine Jacker"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="1000" range="Normal3" shot_speed="Normal" rate_of_fire="Devourer"
+				damage_per_shot="100" range="Normal3" shot_speed="Normal" rate_of_fire="Misery"
 				shots_per_salvo="5" fires_salvos_sequentially="false"
 				stack_damage_multiplier="1.25"
 				shot_type_data="HeavyBeamInvisible"
@@ -363,11 +363,11 @@
                 tech_upgrades_that_benefit_me="Disruptive,Heavy"
 				multiplier_to_all_scales="2"
     >
-        <system name="BallisticCannon" damage_per_shot="40" rate_of_fire="Devourer" shots_per_salvo="16" range="AboveAverage3" fires_salvos_sequentially="true" display_name="Siphon Suppression Gatling"
+        <system name="BallisticCannon" damage_per_shot="160" rate_of_fire="Devourer" shots_per_salvo="32" range="AboveAverage3" fires_salvos_sequentially="true" display_name="Siphon Suppression Gatling"
                 base_enemy_weapon_reload_slowing_seconds_per_shot="2" added_enemy_weapon_reload_slowing_seconds_per_shot_per_mark="1" enemy_weapon_reload_slowing_to_armor_mm_less_than="80" max_enemy_weapon_reload_slowing_seconds="10" added_target_evaluator="WeaponJamAsPrimary"/>	
         <system name="TractorBeam" display_name="Tractor Beam"
                 category="Passive"
-                tractor_range="AboveAverage1" tractor_count="50" tractor_count_added_per_mark="10" tractor_hits_albedo_less_than="0.5" tractor_hits_engine_gx_less_than="14"/>
+                tractor_range="AboveAverage1" tractor_count="75" tractor_count_added_per_mark="25" tractor_hits_albedo_less_than="0.5" tractor_hits_engine_gx_less_than="15"/>
     </entity>
 
     <entity name="CivPulsarTank" display_name="Civilian Pulsar Tank" skip_export="true" copy_from="PulsarTank"
@@ -401,13 +401,13 @@
     >
         <system name="FusionBomb" display_name="Brick Bomb"
                 category="Weapon" firing_timing="OnlyInRange"
-                damage_per_shot="7000" range="VeryTiny1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
+                damage_per_shot="15000" range="VeryTiny1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="true"
                 shot_type_data="FusionBomb"	
                 base_percent_damage_bypasses_personal_shields="0"
         >
-            <outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtLeast" compared_to="90" multiplier="7" />
-            <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtLeast" compared_to="5" multiplier="7" />
-            <outgoing_damage_modifier based_on="Albedo" comparison_type="AtLeast" compared_to="0.7" multiplier="7" />
+            <outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtLeast" compared_to="90" multiplier="4" />
+            <outgoing_damage_modifier based_on="mass_tx" comparison_type="AtLeast" compared_to="5" multiplier="4" />
+            <outgoing_damage_modifier based_on="Albedo" comparison_type="AtLeast" compared_to="0.7" multiplier="4" />
         </system>
     </entity>
     
@@ -446,7 +446,7 @@
 				shots_per_salvo="8" fires_salvos_sequentially="false"
 				shot_type_data="ExtremeLongRangeRailgun"				
 				>
-		<outgoing_damage_modifier based_on="AttackDistance" comparison_type="MultiplesOf" compared_to="3000" multiplier="1" />
+		<outgoing_damage_modifier based_on="AttackDistance" comparison_type="MultiplesOf" compared_to="6000" multiplier="1" />
     </system>
 	<system name="GraviticCore" display_name="Storm Core"
 				category="Passive"
@@ -500,7 +500,7 @@
     >
 	<system name="Melee" display_name="Ranged Blade"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="2000" shots_per_salvo="50" range="Tiny1" shot_speed="Fast" rate_of_fire="Misery" fires_salvos_sequentially="false"
+				damage_per_shot="5000" shots_per_salvo="50" range="Tiny1" shot_speed="Fast" rate_of_fire="Misery" fires_salvos_sequentially="false"
 				shot_type_data="MeleeInvisible" added_target_evaluator="Melee"
 				>
     </system>
@@ -555,13 +555,13 @@
     >
 	<system name="FusionBolt" display_name="Reaper Bolt"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="1400" range="Normal3" shots_per_salvo="5" shot_speed="Fast" rate_of_fire="Devourer" fires_salvos_sequentially="false"
+				damage_per_shot="3000" range="Normal3" shots_per_salvo="5" shot_speed="Fast" rate_of_fire="Devourer" fires_salvos_sequentially="false"
 				shot_type_data="FusionBolt"
-				base_percent_damage_bypasses_personal_shields="0.9"
+				base_percent_damage_bypasses_personal_shields="0"
 				>
-				<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="7" />
-				<outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="7" />
-				<outgoing_damage_modifier based_on="Albedo" comparison_type="AtMost" compared_to="0.3" multiplier="7" />
+				<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="4" />
+				<outgoing_damage_modifier based_on="mass_tx" comparison_type="AtMost" compared_to="2" multiplier="4" />
+				<outgoing_damage_modifier based_on="Albedo" comparison_type="AtMost" compared_to="0.3" multiplier="4" />
     </system>
     </entity>
     
@@ -589,34 +589,20 @@
 	<entity name="Wildfire" display_name="Wildfire Protector" skip_export="true" copy_from="GrenadeLauncherCorvette"
                 tags="CivSplashProtector,CivProtector,CivMilitiaSpawn"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
-                description="A potent Protector, built using advanced Splash technology. This ship fires off multiple types of slow moving grenades at hostile forces."
+                description="A potent Protector, built using advanced Splash technology. This ship fires off a barrage of slow moving grenades at hostile forces."
                 hull_points="1000000" shield_points="500000"
                 tech_upgrades_that_benefit_me="Splash,Light"
 				is_strikecraft="false" multiplier_to_all_scales="6" multiplier_to_all_costs="100"
     >
 	<system name="Grenade" display_name="Flak Grenade"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="8000" range="EssentiallyInfinite" shot_speed="Grenade" rate_of_fire="ExtremelyLow" fires_salvos_sequentially="true"
+				damage_per_shot="8000" range="EssentiallyInfinite" shot_speed="Grenade" rate_of_fire="Normal" fires_salvos_sequentially="true"
 				shot_type_data="FlakShotAOEBurstAtEnd" shots_per_salvo="8"
 				area_of_effect_size="3200"
 				stack_damage_multiplier="2"
 				maximum_number_of_targets_hit_per_shot="8"
 				>
 				<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="5" />
-    </system>
-	<system name="Grenade2" display_name="Lightning Grenade"
-				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="8000" range="EssentiallyInfinite" shot_speed="Grenade" rate_of_fire="ExtremelyLow" fires_salvos_sequentially="true"
-				shot_type_data="LightningExplosionAOEShot" shots_per_salvo="8"
-				added_target_evaluator="WeaponJamAsPrimary"
-				area_of_effect_size="3200"				
-				maximum_number_of_targets_hit_per_shot="8"
-				stack_damage_multiplier="2"
-			base_enemy_weapon_reload_slowing_seconds_per_shot="2" added_enemy_weapon_reload_slowing_seconds_per_shot_per_mark="1"
-			max_enemy_weapon_reload_slowing_seconds="12"
-			enemy_weapon_reload_slowing_to_armor_mm_less_than="50"
-				>
-				<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtLeast" compared_to="50" multiplier="5" />
     </system>
     </entity>
 
@@ -652,16 +638,16 @@
     >
 	<system name="Railcannon" display_name="Vine Piercer"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="800" range="Normal4" shot_speed="VeryFast" rate_of_fire="Misery"
-				shots_per_salvo="16" added_shots_per_salvo_per_mark="6" fires_salvos_sequentially="false"				
+				damage_per_shot="7000" range="Normal4" shot_speed="VeryFast" rate_of_fire="Misery"
+				shots_per_salvo="14" fires_salvos_sequentially="false"				
 				shot_type_data="ParalysisProngedShot_Blue"				
 				>
-		<outgoing_damage_modifier based_on="CurrentSpeedIfMoving" comparison_type="AtLeast" compared_to="700" multiplier="14" />
+		<outgoing_damage_modifier based_on="CurrentSpeedIfMoving" comparison_type="AtLeast" compared_to="700" multiplier="7" />
     </system>
 	<system name="ParalysisBolt" display_name="Vine Sprayer"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="600" range="Normal4" shot_speed="Normal" rate_of_fire="Normal"
-				shots_per_salvo="16" fires_salvos_sequentially="false"
+				damage_per_shot="700" range="Tiny2" shot_speed="Normal" rate_of_fire="Normal"
+				shots_per_salvo="14" fires_salvos_sequentially="false"
 				shot_type_data="ParalysisProngedShot_Blue" added_target_evaluator="ParalyzerAsPrimary"
 				base_paralysis_seconds_per_shot="4" paralysis_to_ships_mass_tx_less_than="3" cloaking_percent_loss_from_firing="0.2"
 				>
