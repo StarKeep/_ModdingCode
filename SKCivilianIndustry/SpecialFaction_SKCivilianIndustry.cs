@@ -149,6 +149,61 @@ namespace SKCivilianIndustry
             }
         }
 
+        // Upgrade and kill units where applicable.
+        public void UpgradeAndPurgeUnitsAsNeeded( Faction faction, ArcenSimContext Context )
+        {
+            if ( PlayerAligned )
+                faction.InheritsTechUpgradesFromPlayerFactions = true;
+            else
+                faction.InheritsTechUpgradesFromPlayerFactions = false;
+            faction.RecalculateMarkLevelsAndInheritedTechUnlocks();
+
+            byte globalAIMark = BadgerFactionUtilityMethods.GetRandomAIFaction( Context ).CurrentGeneralMarkLevel;
+
+            faction.DoForEntities( delegate ( GameEntity_Squad entity )
+            {
+                if ( entity.TypeData.GetHasTag( "CivMilitiaSpawn" ) && World_AIW2.Instance.GetEntityByID_Squad( entity.MinorFactionStackingID ) == null )
+                {
+                    entity.Die( Context, true );
+                    return DelReturn.Continue;
+                }
+
+                byte requestedMark = faction.GetGlobalMarkLevelForShipLine( entity.TypeData );
+                if ( !PlayerAligned )
+                {
+                    requestedMark = Math.Max( requestedMark, globalAIMark );
+                    if ( !entity.TypeData.IsMobile )
+                        requestedMark = Math.Max( requestedMark, entity.Planet.MarkLevelForAIOnly.Ordinal );
+                    else if ( World_AIW2.Instance.GetEntityByID_Squad( entity.MinorFactionStackingID ) != null )
+                        requestedMark = Math.Max( requestedMark, World_AIW2.Instance.GetEntityByID_Squad( entity.MinorFactionStackingID ).Planet.MarkLevelForAIOnly.Ordinal );
+                }
+                entity.SetCurrentMarkLevel( requestedMark, Context );
+                return DelReturn.Continue;
+            } );
+
+            // Update resource ignoring.
+            // Figure out what resources we should be ignoring.
+            for ( int x = 0; x < IgnoreResource.Length; x++ )
+            {
+                List<TechUpgrade> upgrades = TechUpgradeTable.Instance.Rows;
+                for ( int i = 0; i < upgrades.Count; i++ )
+                {
+                    TechUpgrade upgrade = upgrades[i];
+                    if ( upgrade.InternalName == ((CivilianTech)x).ToString() )
+                    {
+                        int unlocked = faction.TechUnlocks[upgrade.RowIndexNonSim];
+                        unlocked += faction.FreeTechUnlocks[upgrade.RowIndexNonSim];
+                        unlocked += faction.CalculatedInheritedTechUnlocks[upgrade.RowIndexNonSim];
+                        if ( unlocked < MinTechToProcess )
+                            IgnoreResource[x] = true;
+                        else
+                            IgnoreResource[x] = false;
+                        break;
+                    }
+                }
+            }
+        }
+
         // Handle stack splitting logic.
         public override void DoOnStackSplit( GameEntity_Squad originalSquad, GameEntity_Squad newSquad )
         {
@@ -1777,50 +1832,7 @@ namespace SKCivilianIndustry
             // Update mark levels every now and than.
             if ( World_AIW2.Instance.GameSecond % SecondsBetweenMilitiaUpgrades == 0 )
             {
-                if ( PlayerAligned )
-                    faction.InheritsTechUpgradesFromPlayerFactions = true;
-                else
-                    faction.InheritsTechUpgradesFromPlayerFactions = false;
-                faction.RecalculateMarkLevelsAndInheritedTechUnlocks();
-
-                byte globalAIMark = BadgerFactionUtilityMethods.GetRandomAIFaction( Context ).CurrentGeneralMarkLevel;
-
-                faction.DoForEntities( delegate ( GameEntity_Squad entity )
-                {
-                    byte requestedMark = faction.GetGlobalMarkLevelForShipLine( entity.TypeData );
-                    if ( !PlayerAligned )
-                    {
-                        requestedMark = Math.Max( requestedMark, globalAIMark );
-                        if ( !entity.TypeData.IsMobile )
-                            requestedMark = Math.Max( requestedMark, entity.Planet.MarkLevelForAIOnly.Ordinal );
-                        else if ( World_AIW2.Instance.GetEntityByID_Squad( entity.MinorFactionStackingID ) != null )
-                            requestedMark = Math.Max( requestedMark, World_AIW2.Instance.GetEntityByID_Squad( entity.MinorFactionStackingID ).Planet.MarkLevelForAIOnly.Ordinal );
-                    }
-                    entity.SetCurrentMarkLevel( requestedMark, Context );
-                    return DelReturn.Continue;
-                } );
-
-                // Update resource ignoring.
-                // Figure out what resources we should be ignoring.
-                for ( int x = 0; x < IgnoreResource.Length; x++ )
-                {
-                    List<TechUpgrade> upgrades = TechUpgradeTable.Instance.Rows;
-                    for ( int i = 0; i < upgrades.Count; i++ )
-                    {
-                        TechUpgrade upgrade = upgrades[i];
-                        if ( upgrade.InternalName == ((CivilianTech)x).ToString() )
-                        {
-                            int unlocked = faction.TechUnlocks[upgrade.RowIndexNonSim];
-                            unlocked += faction.FreeTechUnlocks[upgrade.RowIndexNonSim];
-                            unlocked += faction.CalculatedInheritedTechUnlocks[upgrade.RowIndexNonSim];
-                            if ( unlocked < MinTechToProcess )
-                                IgnoreResource[x] = true;
-                            else
-                                IgnoreResource[x] = false;
-                            break;
-                        }
-                    }
-                }
+                UpgradeAndPurgeUnitsAsNeeded( faction, Context );
             }
 
             // If we don't yet have it, create our factionData.
