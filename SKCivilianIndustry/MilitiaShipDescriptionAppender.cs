@@ -61,6 +61,9 @@ namespace SKCivilianIndustry
                     Buffer.StartColor(CivilianResourceHexColors.Color[x]);
                     Buffer.Add($" ({(CivilianResource)x})");
                     Buffer.EndColor();
+                    Buffer.StartColor( UnityEngine.Color.magenta );
+                    Buffer.Add( $" [{(CivilianTech)x}" );
+                    Buffer.EndColor();
 
                     int cost;
                     if (RelatedEntityOrNull.TypeData.GetHasTag("BuildsProtectors"))
