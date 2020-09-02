@@ -490,7 +490,7 @@
       </system>
     </entity>
 	<entity name="Excalibur" display_name="Excalibur Protector" skip_export="true" copy_from="VampireClaw"
-                tags="CivMeleeProtector,CivProtector,CivMilitiaSpawn"
+                tags="CivMeleeProtector,CivProtector,CivMilitiaSpawn" icon_overlay="Overlays1/Starship_Assault"
 				should_never_be_captured_by_another_faction="true" armor_mm="180" albedo="0.6" engine_gx="25" mass_tx="25"	
                 description="A potent Protector, built using advanced Melee technology. This ship is a slow moving and durable ship that can tractor an incredible number of enemy targets."
                 hull_points="1000000" shield_points="500000"
@@ -500,7 +500,7 @@
     >
 	<system name="Melee" display_name="Ranged Blade"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5000" shots_per_salvo="50" range="Tiny1" shot_speed="Fast" rate_of_fire="Misery" fires_salvos_sequentially="false"
+				damage_per_shot="5000" shots_per_salvo="50" range="Small1" shot_speed="Fast" rate_of_fire="Misery" fires_salvos_sequentially="false"
 				shot_type_data="MeleeInvisible" added_target_evaluator="Melee"
 				>
     </system>
@@ -508,10 +508,10 @@
     </system>
 	<system name="TractorBeam" display_name="Tractor Blade"
 				category="Passive"
-				tractor_range="VeryTiny1" tractor_count="150" tractor_count_added_per_mark="30" tractor_hits_albedo_less_than="0.5" tractor_hits_engine_gx_less_than="18"
+				tractor_range="Tiny2" tractor_count="150" tractor_count_added_per_mark="30" tractor_hits_albedo_less_than="0.5" tractor_hits_engine_gx_less_than="18"
 				>
     </system>
-	<incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="500" multiplier="0.05" />
+	<incoming_damage_modifier based_on="AttackDistance" comparison_type="GreaterThan" compared_to="2000" multiplier="0.05" />
     </entity>
     
     <entity name="CivRaider" display_name="Civilian Raider" skip_export="true" copy_from="Raider"

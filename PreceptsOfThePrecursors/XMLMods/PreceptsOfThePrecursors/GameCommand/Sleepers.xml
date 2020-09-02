@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+ <!-- Unique commands. -->
+	<command name="SetPrimeTarget" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.SetPrimeTarget" />
+	<command name="SetSleeperTargets" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.SetSleeperTargets" />
+</root>

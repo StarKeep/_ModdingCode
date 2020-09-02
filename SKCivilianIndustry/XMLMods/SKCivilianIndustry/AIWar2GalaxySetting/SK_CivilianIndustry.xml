@@ -26,7 +26,7 @@
     description="How much of an investment must you have made into a tech for your civilians to process its respective resource? (Does not include Hull technology.)"
   />
   <galaxy_setting name="MilitiaStockpilePercentage" category="Civilians" display_name="Militia Stockpiling Capacity" type="IntSlider"
-    default="125" min="125" max="1000" changeable_during_gameplay="true"
+    default="300" min="300" max="1000" changeable_during_gameplay="true"
     description="When a Militia building is full on units, it will request this % of additional resources to attempt to counteract losses suffered. Raising this will make resources spread slower, but allow worlds you've owned for longer to better reinforce after large fights."
   />
   <galaxy_setting name="MilitiaExpandWithAllAllies" category="Civilians" display_name="Expands With All Allies" type="BoolToggle"

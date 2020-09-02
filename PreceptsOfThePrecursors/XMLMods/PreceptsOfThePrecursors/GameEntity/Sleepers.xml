@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<entity name="Sleeper" tags="Sleeper"
+			draw_in_galaxy_view="true"
+			visuals="assets/_finalgamemeshes/buildings/fortress/fortress.prefab"
+			icon_name="Ships1/Fortress" gimbal_icon_size_multiplier="1.5" icon_overlay="Overlays2/Guardian_Shield"
+			voice_group="Silent"
+			uses_large_health_bar="true"
+			category="Ship"
+            size_scale="6.2"
+			visuals_scale_multiplier="3"
+			y_offset_of_icon="30"
+			collision_priority="810"
+			display_name="Sleeper"
+			description="A powerful automatic defense structure, sleepers guard whatever it is they have been told to defend. They are armed with fortress missiles, a general purpose beam weapon and a sabot canon. This Sleeper is stationary, enabling both its Weapon and Construction modules."
+			starting_mark_level="Mark7" tech_upgrades_that_benefit_me="Unused" does_not_use_multipliers_from_mark_level="true"
+			cost_for_ai_to_purchase="37500"
+			hull_points="10000000" shield_points="10000000" behavior="Stationary" speed="Immobile"
+			metal_cost="50000000" energy_consumption="50000"
+			armor_mm="300" albedo="0.7" mass_tx="7"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			should_never_be_captured_by_another_faction="true"
+            priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
+			>
+		<system name="RuinMissiles" display_name="Ruin Missiles"
+					category="Weapon" firing_timing="OnlyInRange"
+					damage_per_shot="4500" range="AboveAverage2" shot_speed="Slow" rate_of_fire="SlightlyLow"
+					shot_type_data="GuidedMissile" shots_per_salvo="20"
+				>
+			<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="4" />
+		</system>
+		<system name="ArchaicBeam" display_name="Archaic Beam"
+					category="Weapon" firing_timing="OnlyInRange"
+					damage_per_shot="20000" range="AboveAverage4" shot_speed="Slow" rate_of_fire="SlightlyLow"
+					stack_damage_multiplier="2"
+					shot_type_data="HeavyBeamInvisible" beam_length_multiplier="1.5"
+					hits_all_intersecting_targets="true"
+					shots_detonate_immediately="true"
+					maximum_number_of_targets_hit_per_shot="20"
+				>
+		</system>
+		<system name="Ordovician" display_name="Ordovician"
+					category="Weapon" firing_timing="OnlyInRange"
+					damage_per_shot="1000" range="High2" shot_speed="Slow" rate_of_fire="VeryLow"
+					shot_type_data="Sabot"
+				>
+			<outgoing_damage_modifier based_on="mass_tx" comparison_type="AtLeast" compared_to="5" multiplier="100" />
+		</system>
+	</entity>
+	<entity
+		name="SleeperDerelict"
+		copy_from="Sleeper"
+		skip_export="true"
+		description="A powerful automatic defense structure, sleepers guard whatever it is they have been told to defend. They are armed with fortress missiles, a general purpose beam weapon and a sabot canon. This Sleeper has yet to awaken."
+		tags="SleeperDerelict"
+		speed="VeryVeryLittle4" engine_gx="20"
+		eligible_for_hacks="EternalRest,PopTheDreamBubble"
+		>	
+	</entity>
+	<entity
+		name="SleeperMobile" tags="Sleeper"
+		copy_from="Sleeper"
+		skip_export="true"
+		icon_name="Ships1/AstroTrain"
+		description="A powerful automatic defense structure, sleepers guard whatever it is they have been told to defend. They are armed with fortress missiles, a general purpose beam weapon and a sabot canon. This Sleeper has disabled its Weapon and Construction modules to power its ancient engines."
+		speed="VeryVeryLittle4" engine_gx="20" behavior="Attacker_Full"
+	>
+		<system name="RuinMissiles" max_mark_level_to_function="0"
+				>
+		</system>
+		<system name="ArchaicBeam" max_mark_level_to_function="0"
+				>
+		</system>
+		<system name="Ordovician" max_mark_level_to_function="0"
+				>
+		</system>
+	</entity>
+	<entity name="SleeperPrime" tags="SleeperPrime"
+			draw_in_galaxy_view="true"
+			visuals="assets/_finalgamemeshes/buildings/fortress/fortress.prefab"
+			icon_name="Ships1/Fortress" gimbal_icon_size_multiplier="1.5" icon_overlay="Overlays2/Guardian_Shield"
+			voice_group="Silent"
+			uses_large_health_bar="true"
+			category="Ship"
+            size_scale="6.2"
+			visuals_scale_multiplier="3"
+			y_offset_of_icon="30"
+			collision_priority="810"
+			display_name="Sleeper Prime"
+			description="Armed with fortress missiles, a powerful beam weapon, a MULTI SHOT SABOT, a rapid fire ion cannon, and a mk4 logistics and military command station aura. Sleeper Prime is currently stationary, and has redirected power from its Engines to its Ion Cannon and Speed Booster."
+			starting_mark_level="Mark7" tech_upgrades_that_benefit_me="Unused" does_not_use_multipliers_from_mark_level="true"
+			cost_for_ai_to_purchase="37500"
+			hull_points="20000000" shield_points="25000000" behavior="Stationary" speed="Immobile"
+			metal_cost="100000000" energy_consumption="100000"
+			armor_mm="400" albedo="1" mass_tx="7"
+			ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			should_never_be_captured_by_another_faction="true"
+            priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
+			allied_speed_multiplier="4.5"
+			allied_attack_multiplier="2"
+			>
+		<system name="RuinMissiles" display_name="Ruin Missiles"
+					category="Weapon" firing_timing="OnlyInRange"
+					damage_per_shot="9500" range="AboveAverage2" shot_speed="Slow" rate_of_fire="SlightlyLow"
+					shot_type_data="GuidedMissile" shots_per_salvo="30"
+				>
+			<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="5" />
+		</system>
+		<system name="ArchaicBeam" display_name="Archaic Beam"
+					category="Weapon" firing_timing="OnlyInRange"
+					damage_per_shot="100000" range="AboveAverage4" shot_speed="Slow" rate_of_fire="SlightlyLow"
+					stack_damage_multiplier="2"
+					shot_type_data="HeavyBeamInvisible" beam_length_multiplier="1.5"
+					hits_all_intersecting_targets="true"
+					shots_detonate_immediately="true"
+					maximum_number_of_targets_hit_per_shot="20"
+				>
+		</system>
+		<system name="Cambrian" display_name="Cambrian"
+					category="Weapon" firing_timing="OnlyInRange"
+					damage_per_shot="1000" range="High2" shot_speed="Slow" rate_of_fire="VeryLow"
+					shot_type_data="Sabot" shots_per_salvo="5"
+				>
+			<outgoing_damage_modifier based_on="mass_tx" comparison_type="AtLeast" compared_to="5" multiplier="100" />
+		</system>
+		<system name="IonCannon" display_name="Ion Cannon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="720" range="InsanelyHigh" shot_speed="Fast" rate_of_fire="High" fires_salvos_sequentially="true"
+				max_stacks_allowed_to_kill_per_shot="3"
+				shot_type_data="ExtremelyLongRangeIon" shots_per_salvo="4"
+				ion_percentage_per_mark_level_lower="0.9" ion_damage_to_albedo_less_than="0.4"
+				>
+		</system>
+	</entity>
+	<entity
+		name="SleeperPrimeMobile" tags="SleeperPrime"
+		copy_from="SleeperPrime"
+		skip_export="true"
+		icon_name="Ships1/AstroTrain"
+		description="Armed with fortress missiles, a powerful beam weapon, a MULTI SHOT SABOT, a rapid fire ion cannon, and a mk4 logistics and military command station aura. Sleeper Prime is currently mobile, and has redirected power from its Ion Cannon and Speed Booster to its Engines."
+		speed="VeryVeryLittle4" engine_gx="20" behavior="Attacker_Full"
+		allied_speed_multiplier="1"
+	>
+		<system name="IonCannon" max_mark_level_to_function="0"
+				>
+		</system>
+	</entity>
+</root>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<item name="EternalRest" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.EternalRest" 
+		  display_name="Neutralize Sleeper" 
+		  description="Hack away the thin barrier of a local Sleeper, and study its remains."
+	      hack_duration="15"
+	      cost_in_hacking_points="5"
+	      local_hacker_required="true"
+		  science_to_grant_on_completion="1000"
+		  destroy_hack_target_on_completion="true"
+		  primary_hacking_response_interval="1"
+		  primary_response_strength_per_interval="1"
+	/>
+	<item name="PopTheDreamBubble" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.PopTheDreamBubble"
+		  display_name="Awaken Sleeper Prime"
+		  description="Hack into the systems of the Sleeper and awaken it into a Prime. Expect the AI to respond harshly."
+	      hack_duration="2"
+	      cost_in_hacking_points="60"
+	      local_hacker_required="true"
+		  primary_hacking_response_interval="5"
+		  primary_response_strength_per_interval="8"
+		  secondary_hacking_response_interval="15"
+		  secondary_response_strength_per_interval="25"
+		  tertiary_hacking_response_interval="60"
+		  tertiary_response_strength_per_interval="65"
+		  response_strength_on_completion="100"
+	/>
+</root>

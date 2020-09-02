@@ -88,22 +88,27 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\AncestorsArks.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\FleetDesignTemplate\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\FleetDesignTemplate\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\HackingType\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\HackingType\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\HackingType\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\RoamingEnclave.xml" />
@@ -111,6 +116,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ModDescription.txt" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ModIsOffByDefault.txt.txt" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\DysonPrecursors.xml" />
@@ -119,14 +125,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CSharp\BulkPathfinding.cs" />
+    <Compile Include="CSharp\ExternalData\Sleepers.cs" />
     <Compile Include="CSharp\ExternalData\RoamingEnclave.cs" />
     <Compile Include="CSharp\ExternalData\AncestorsArks.cs" />
     <Compile Include="CSharp\ExternalData\DysonPrecursors.cs" />
+    <Compile Include="CSharp\GameCommands\Sleepers.cs" />
     <Compile Include="CSharp\GameCommands\AncestorsArks.cs" />
     <Compile Include="CSharp\GameCommands\RoamingEnclave.cs" />
     <Compile Include="CSharp\GameCommands\DysonPrecursors.cs" />
+    <Compile Include="CSharp\Hacking\Sleepers.cs" />
     <Compile Include="CSharp\Hacking\AncestorsArks.cs" />
     <Compile Include="CSharp\Hacking\DysonPrecursors.cs" />
+    <Compile Include="CSharp\Notifications\Sleepers.cs" />
+    <Compile Include="CSharp\SpecialFactions\Sleepers.cs" />
     <Compile Include="CSharp\SpecialFactions\DysonPrecursors.cs" />
     <Compile Include="CSharp\SpecialFactions\AncestorsArks.cs" />
     <Compile Include="CSharp\SpecialFactions\RoamingEnclave.cs" />
@@ -134,6 +145,7 @@
     <Compile Include="CSharp\Trust.cs" />
     <Compile Include="CSharp\Utilities.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>RD /S /Q "$(SolutionDir)Releases\$(ProjectName)"

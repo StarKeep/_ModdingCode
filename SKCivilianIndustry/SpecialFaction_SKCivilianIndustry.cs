@@ -4,7 +4,6 @@ using System.Linq;
 using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using Arcen.Universal.UnitermData;
 using SKCivilianIndustry.Notifications;
 using SKCivilianIndustry.Persistence;
 
@@ -94,6 +93,27 @@ namespace SKCivilianIndustry
             return alliedFaction;
         }
 
+        public override void UpdatePowerLevel( Faction faction )
+        {
+            faction.OverallPowerLevel = FInt.Zero;
+
+            if ( factionData == null )
+                return;
+
+            World_AIW2.Instance.DoForPlanets( false, planet =>
+            {
+                faction.OverallPowerLevel += planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Self].TotalStrength / 500000;
+
+                if ( faction.OverallPowerLevel >= 2 )
+                {
+                    faction.OverallPowerLevel = FInt.FromParts( 2, 000 );
+                    return DelReturn.Break;
+                }
+
+                return DelReturn.Continue;
+            } );
+        }
+
         // Set up initial relationships.
         public override void SetStartingFactionRelationships( Faction faction )
         {
@@ -122,6 +142,7 @@ namespace SKCivilianIndustry
                 SettingsInitialized = true;
                 MilitiaAttackMinimumStrength = AIWar2GalaxySettingTable.Instance.GetRowByName( "MilitiaAttackMinimumStrength" ).DefaultIntValue * 1000;
             }
+
             // Set relationships.
             switch ( faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance )
             {
@@ -1300,354 +1321,355 @@ namespace SKCivilianIndustry
             List<int> processed = new List<int>();
             for ( int x = 0; x < factionData.MilitiaLeaders.Count; x++ )
             {
-                // Load its ship and status.
-                GameEntity_Squad militiaShip = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[x] );
-                if ( militiaShip == null || processed.Contains( militiaShip.PrimaryKeyID ) )
+                int debugCode = 0;
+                try
                 {
-                    factionData.MilitiaLeaders.RemoveAt( x );
-                    x--;
-                    continue;
-                }
-                CivilianMilitia militiaStatus = militiaShip.GetCivilianMilitiaExt();
-                CivilianCargo militiaCargo = militiaShip.GetCivilianCargoExt();
-                if ( militiaStatus.Status != CivilianMilitiaStatus.Defending && militiaStatus.Status != CivilianMilitiaStatus.Patrolling )
-                {
-                    // Load its goal.
-                    GameEntity_Squad goalStation = null;
-                    // Get its planet.
-                    Planet planet = World_AIW2.Instance.GetPlanetByIndex( militiaStatus.PlanetFocus );
-                    // If planet not found, and not already deployed, idle the militia ship.
-                    if ( planet == null && militiaShip.TypeData.IsMobile )
+                    // Load its ship and status.
+                    GameEntity_Squad militiaShip = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[x] );
+                    if ( militiaShip == null || processed.Contains( militiaShip.PrimaryKeyID ) )
                     {
-                        militiaStatus.Status = CivilianMilitiaStatus.Idle;
-                        militiaShip.SetCivilianMilitiaExt( militiaStatus );
+                        factionData.MilitiaLeaders.RemoveAt( x );
+                        x--;
                         continue;
                     }
-                    // Skip if not at planet yet.
-                    if ( militiaShip.Planet.Index != militiaStatus.PlanetFocus )
-                        continue;
-                    // Get its goal's station.
-                    planet.DoForEntities( delegate ( GameEntity_Squad entity )
+                    CivilianMilitia militiaStatus = militiaShip.GetCivilianMilitiaExt();
+                    CivilianCargo militiaCargo = militiaShip.GetCivilianCargoExt();
+                    if ( militiaStatus.Status != CivilianMilitiaStatus.Defending && militiaStatus.Status != CivilianMilitiaStatus.Patrolling )
                     {
-                        // If we find its index in our records, thats our goal station.
-                        if ( factionData.TradeStations.Contains( entity.PrimaryKeyID ) )
+                        // Load its goal.
+                        GameEntity_Squad goalStation = null;
+                        // Get its planet.
+                        Planet planet = World_AIW2.Instance.GetPlanetByIndex( militiaStatus.PlanetFocus );
+                        // If planet not found, and not already deployed, idle the militia ship.
+                        if ( planet == null && militiaShip.TypeData.IsMobile )
                         {
-                            goalStation = entity;
-                            return DelReturn.Break;
+                            militiaStatus.Status = CivilianMilitiaStatus.Idle;
+                            militiaShip.SetCivilianMilitiaExt( militiaStatus );
+                            continue;
+                        }
+                        // Skip if not at planet yet.
+                        if ( militiaShip.Planet.Index != militiaStatus.PlanetFocus )
+                            continue;
+                        // Get its goal's station.
+                        planet.DoForEntities( delegate ( GameEntity_Squad entity )
+                        {
+                            // If we find its index in our records, thats our goal station.
+                            if ( factionData.TradeStations.Contains( entity.PrimaryKeyID ) )
+                            {
+                                goalStation = entity;
+                                return DelReturn.Break;
+                            }
+
+                            return DelReturn.Continue;
+                        } );
+                        // If goal station not found, and not already deployed, idle the militia ship.
+                        if ( goalStation == null && militiaShip.TypeData.IsMobile )
+                        {
+                            militiaStatus.Status = CivilianMilitiaStatus.Idle;
+                            militiaShip.SetCivilianMilitiaExt( militiaStatus );
+                            continue;
                         }
 
-                        return DelReturn.Continue;
-                    } );
-                    // If goal station not found, and not already deployed, idle the militia ship.
-                    if ( goalStation == null && militiaShip.TypeData.IsMobile )
-                    {
-                        militiaStatus.Status = CivilianMilitiaStatus.Idle;
-                        militiaShip.SetCivilianMilitiaExt( militiaStatus );
-                        continue;
-                    }
-
-                    // If pathing, check for arrival.
-                    if ( militiaStatus.Status == CivilianMilitiaStatus.PathingForMine )
-                    {
-                        // If nearby, advance status.
-                        if ( militiaShip.GetDistanceTo_ExpensiveAccurate( goalStation.WorldLocation, true, true ) < 500 )
+                        // If pathing, check for arrival.
+                        if ( militiaStatus.Status == CivilianMilitiaStatus.PathingForMine )
                         {
-                            militiaStatus.Status = CivilianMilitiaStatus.EnrouteMine;
+                            // If nearby, advance status.
+                            if ( militiaShip.GetDistanceTo_ExpensiveAccurate( goalStation.WorldLocation, true, true ) < 500 )
+                            {
+                                militiaStatus.Status = CivilianMilitiaStatus.EnrouteMine;
+                            }
+                        }
+                        else if ( militiaStatus.Status == CivilianMilitiaStatus.PathingForWormhole )
+                        {
+                            // If nearby, advance status.
+                            if ( militiaShip.GetDistanceTo_ExpensiveAccurate( goalStation.WorldLocation, true, true ) < 500 )
+                            {
+                                militiaStatus.Status = CivilianMilitiaStatus.EnrouteWormhole;
+                            }
+                        }
+                        else if ( militiaStatus.Status == CivilianMilitiaStatus.PathingForShipyard )
+                        {
+                            if ( militiaShip.GetDistanceTo_ExpensiveAccurate( goalStation.WorldLocation, true, true ) < 500 )
+                            {
+                                // Prepare its old id to be removed.
+                                toRemove.Add( militiaShip.PrimaryKeyID );
+
+                                // Converting to an Advanced Civilian Shipyard, upgrade the fleet status to a mobile patrol status.
+                                militiaStatus.Status = CivilianMilitiaStatus.Patrolling;
+
+                                // Load its station data.
+                                GameEntityTypeData outpostData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "AdvancedCivilianShipyard" );
+
+                                // Transform it.
+                                GameEntity_Squad newMilitiaShip = militiaShip.TransformInto( Context, outpostData, 1 );
+
+                                // Make sure its not overlapping.
+                                newMilitiaShip.SetWorldLocation( newMilitiaShip.Planet.GetSafePlacementPoint( Context, outpostData, newMilitiaShip.WorldLocation, 0, 1000 ) );
+
+                                // Update centerpiece to it.
+                                militiaStatus.Centerpiece = newMilitiaShip.PrimaryKeyID;
+
+                                // Move the information to our new ship.
+                                newMilitiaShip.SetCivilianMilitiaExt( militiaStatus );
+
+                                // Prepare its new id to be added.
+                                toAdd.Add( newMilitiaShip.PrimaryKeyID );
+                            }
+                        }
+                        // If enroute, check for sweet spot.
+                        if ( militiaStatus.Status == CivilianMilitiaStatus.EnrouteWormhole )
+                        {
+                            int stationDist = militiaShip.GetDistanceTo_ExpensiveAccurate( goalStation.WorldLocation, true, true );
+                            int wormDist = militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getWormhole().WorldLocation, true, true );
+                            int range = MinimumOutpostDeploymentRange;
+                            if ( stationDist > range || wormDist < range )
+                            {
+                                // Prepare its old id to be removed.
+                                toRemove.Add( militiaShip.PrimaryKeyID );
+
+                                // Optimal distance. Transform the ship and update its status.
+                                militiaStatus.Status = CivilianMilitiaStatus.Defending;
+
+                                // Load its station data.
+                                GameEntityTypeData outpostData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "MilitiaOutpost" );
+
+                                // Transform it.
+                                GameEntity_Squad newMilitiaShip = militiaShip.TransformInto( Context, outpostData, 1 );
+
+                                // Update centerpiece to it.
+                                militiaStatus.Centerpiece = newMilitiaShip.PrimaryKeyID;
+
+                                // Move the information to our new ship.
+                                newMilitiaShip.SetCivilianMilitiaExt( militiaStatus );
+
+                                // Prepare its new id to be added.
+                                toAdd.Add( newMilitiaShip.PrimaryKeyID );
+                            }
+                        }
+                        // If enroute, check for sweet spot.
+                        else if ( militiaStatus.Status == CivilianMilitiaStatus.EnrouteMine )
+                        {
+                            int mineDist = militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getMine().WorldLocation, true, true );
+                            int range = 1000;
+                            if ( mineDist < range )
+                            {
+                                // Prepare its old id to be removed.
+                                toRemove.Add( militiaShip.PrimaryKeyID );
+
+                                // Converting to a Patrol Post, upgrade the fleet status to a mobile patrol status.
+                                militiaStatus.Status = CivilianMilitiaStatus.Patrolling;
+
+                                // Load its station data.
+                                GameEntityTypeData outpostData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "MilitiaPatrolPost" );
+
+                                // Transform it.
+                                GameEntity_Squad newMilitiaShip = militiaShip.TransformInto( Context, outpostData, 1 );
+
+                                // Make sure its not overlapping.
+                                newMilitiaShip.SetWorldLocation( newMilitiaShip.Planet.GetSafePlacementPoint( Context, outpostData, newMilitiaShip.WorldLocation, 0, 1000 ) );
+
+                                // Update centerpiece to it.
+                                militiaStatus.Centerpiece = newMilitiaShip.PrimaryKeyID;
+
+                                // Move the information to our new ship.
+                                newMilitiaShip.SetCivilianMilitiaExt( militiaStatus );
+
+                                // Prepare its new id to be added.
+                                toAdd.Add( newMilitiaShip.PrimaryKeyID );
+                            }
                         }
                     }
-                    else if ( militiaStatus.Status == CivilianMilitiaStatus.PathingForWormhole )
+                    else if ( militiaStatus.Status == CivilianMilitiaStatus.Defending ) // Do turret spawning.
                     {
-                        // If nearby, advance status.
-                        if ( militiaShip.GetDistanceTo_ExpensiveAccurate( goalStation.WorldLocation, true, true ) < 500 )
+                        if ( militiaStatus.getWormhole() == null )
                         {
-                            militiaStatus.Status = CivilianMilitiaStatus.EnrouteWormhole;
+                            militiaShip.Die( Context, true );
+                            continue;
+                        }
+                        // For each type of unit, process.
+                        for ( int y = 0; y < (int)CivilianResource.Length; y++ )
+                        {
+                            if ( militiaCargo.Amount[y] <= 0 )
+                                continue;
+
+                            // Skip if we're under the minimum tech requirement.
+                            if ( IgnoreResource[y] )
+                                continue;
+
+                            if ( militiaStatus.ShipTypeDataNames[y] == "none" )
+                            {
+                                // Get our tag to search for based on resource type.
+                                string typeTag = "Civ" + ((CivilianTech)y).ToString() + "Turret";
+                                // Attempt to find entitydata for our type.
+                                if ( GameEntityTypeDataTable.Instance.RowsByTag.GetHasKey( typeTag ) )
+                                {
+                                    GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, typeTag );
+                                    if ( typeData != null )
+                                        militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
+                                }
+                                else
+                                {
+                                    // No matching tag; get a random turret type.
+                                    GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "CivTurret" );
+                                    if ( typeData != null )
+                                        militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
+                                }
+                            }
+
+                            if ( !militiaStatus.ShipTypeData.GetHasKey( y ) )
+                                militiaStatus.ShipTypeData.AddPair( y, GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] ) );
+
+                            GameEntityTypeData turretData = militiaStatus.ShipTypeData[y];
+
+                            int count = militiaStatus.GetShipCount( turretData );
+                            if ( count < militiaStatus.ShipCapacity[y] )
+                            {
+                                int baseCost = turretData.CostForAIToPurchase;
+                                int cost = (CostIntensityModifier( faction ) * baseCost).GetNearestIntPreferringHigher();
+
+                                if ( militiaCargo.Capacity[y] < cost )
+                                    militiaCargo.Capacity[y] = (int)(cost * MilitiaStockpilePercentage); // Stockpile some resources.
+
+                                if ( militiaCargo.Amount[y] >= cost )
+                                {
+                                    // Remove cost.
+                                    militiaCargo.Amount[y] -= cost;
+                                    // Spawn turret.
+                                    // Get a focal point directed towards the wormhole.
+                                    ArcenPoint basePoint = militiaShip.WorldLocation.GetPointAtAngleAndDistance( militiaShip.WorldLocation.GetAngleToDegrees( militiaStatus.getWormhole().WorldLocation ), Math.Min( 5000, militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getWormhole().WorldLocation, true, true ) / 2 ) );
+                                    // Get a point around it, as close as possible.
+                                    ArcenPoint spawnPoint = basePoint.GetRandomPointWithinDistance( Context.RandomToUse, Math.Min( 500, militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getWormhole().WorldLocation, true, true ) / 4 ), Math.Min( 2500, militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getWormhole().WorldLocation, true, true ) / 2 ) );
+
+                                    // Get the planet faction to spawn it in as.
+                                    PlanetFaction pFaction = militiaShip.Planet.GetPlanetFactionForFaction( faction );
+
+                                    // Spawn in the ship.
+                                    GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, turretData, faction.GetGlobalMarkLevelForShipLine( turretData ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
+
+                                    // Only let it stack with its own fleet.
+                                    entity.MinorFactionStackingID = militiaShip.PrimaryKeyID;
+
+                                    // Add the turret to our militia's fleet.
+                                    militiaStatus.Ships[y].Add( entity.PrimaryKeyID );
+                                }
+                            }
+                            else if ( count > militiaStatus.ShipCapacity[y] && militiaStatus.Ships[y].Count > 0 )
+                            {
+                                GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( militiaStatus.Ships[y][0] );
+                                if ( squad == null )
+                                    militiaStatus.Ships[y].RemoveAt( 0 );
+                                else
+                                {
+                                    squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
+                                    militiaStatus.Ships[y].RemoveAt( 0 );
+                                }
+                            }
                         }
                     }
-                    else if ( militiaStatus.Status == CivilianMilitiaStatus.PathingForShipyard )
+                    else if ( militiaStatus.Status == CivilianMilitiaStatus.Patrolling ) // If patrolling, do unit spawning.
                     {
-                        if ( militiaShip.GetDistanceTo_ExpensiveAccurate( goalStation.WorldLocation, true, true ) < 500 )
+                        // For each type of unit, get ship count.
+                        for ( int y = 0; y < (int)CivilianResource.Length; y++ )
                         {
-                            // Prepare its old id to be removed.
-                            toRemove.Add( militiaShip.PrimaryKeyID );
+                            if ( militiaCargo.Amount[y] <= 0 )
+                                continue;
 
-                            // Converting to an Advanced Civilian Shipyard, upgrade the fleet status to a mobile patrol status.
-                            militiaStatus.Status = CivilianMilitiaStatus.Patrolling;
+                            // Skip if we're under the minimum tech requirement.
+                            if ( IgnoreResource[y] )
+                                continue;
 
-                            // Load its station data.
-                            GameEntityTypeData outpostData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "AdvancedCivilianShipyard" );
+                            // If we're an advanced shipyard, use alternate logic.
+                            bool buildingProtectors = false;
+                            if ( militiaShip.TypeData.GetHasTag( "BuildsProtectors" ) )
+                                buildingProtectors = true;
 
-                            // Transform it.
-                            GameEntity_Squad newMilitiaShip = militiaShip.TransformInto( Context, outpostData, 1 );
+                            if ( militiaStatus.ShipTypeDataNames[y] == "none" )
+                            {
+                                // Get our tag to search for based on resource type.
+                                string typeTag = "Civ" + ((CivilianTech)y).ToString() + "Mobile";
+                                if ( buildingProtectors )
+                                    typeTag = "Civ" + ((CivilianTech)y).ToString() + "Protector";
+                                // Attempt to find entitydata for our type.
+                                if ( GameEntityTypeDataTable.Instance.RowsByTag.GetHasKey( typeTag ) )
+                                {
+                                    GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, typeTag );
+                                    if ( typeData != null )
+                                        militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
+                                }
+                                else
+                                {
+                                    // No matching tag; get a random turret type.
+                                    GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "CivMobile" );
+                                    if ( typeData != null )
+                                        militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
+                                }
 
-                            // Make sure its not overlapping.
-                            newMilitiaShip.SetWorldLocation( newMilitiaShip.Planet.GetSafePlacementPoint( Context, outpostData, newMilitiaShip.WorldLocation, 0, 1000 ) );
+                            }
 
-                            // Update centerpiece to it.
-                            militiaStatus.Centerpiece = newMilitiaShip.PrimaryKeyID;
+                            if ( !militiaStatus.ShipTypeData.GetHasKey( y ) )
+                                militiaStatus.ShipTypeData.AddPair( y, GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] ) );
 
-                            // Move the information to our new ship.
-                            newMilitiaShip.SetCivilianMilitiaExt( militiaStatus );
+                            GameEntityTypeData shipData = militiaStatus.ShipTypeData[y];
 
-                            // Prepare its new id to be added.
-                            toAdd.Add( newMilitiaShip.PrimaryKeyID );
+                            int count = militiaStatus.GetShipCount( shipData );
+                            if ( count < militiaStatus.ShipCapacity[y] )
+                            {
+                                int cost = 0;
+                                if ( buildingProtectors )
+                                    cost = (int)(7000 * CostIntensityModifier( faction ));
+                                else
+                                {
+                                    int baseCost = shipData.CostForAIToPurchase;
+                                    cost = (CostIntensityModifier( faction ) * baseCost).GetNearestIntPreferringHigher();
+                                }
+
+                                if ( militiaCargo.Capacity[y] < cost )
+                                    militiaCargo.Capacity[y] = (int)(cost * MilitiaStockpilePercentage); // Stockpile some resources.
+
+                                if ( militiaCargo.Amount[y] >= cost )
+                                {
+                                    // Remove cost.
+                                    militiaCargo.Amount[y] -= cost;
+
+                                    // Get the planet faction to spawn it in as.
+                                    PlanetFaction pFaction = militiaShip.Planet.GetPlanetFactionForFaction( faction );
+
+                                    // Spawn in the ship.
+                                    GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, shipData, faction.GetGlobalMarkLevelForShipLine( shipData ), pFaction.FleetUsedAtPlanet, 0, militiaShip.WorldLocation, Context );
+
+                                    // Only let it stack with its own fleet.
+                                    entity.MinorFactionStackingID = militiaShip.PrimaryKeyID;
+
+                                    // Make it attack nearby hostiles.
+                                    entity.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
+
+                                    // Add the turret to our militia's fleet.
+                                    militiaStatus.Ships[y].Add( entity.PrimaryKeyID );
+
+                                }
+                            }
+                            else if ( count > militiaStatus.ShipCapacity[y] && militiaStatus.Ships[y].Count > 0 )
+                            {
+                                GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( militiaStatus.Ships[y][0] );
+                                if ( squad == null )
+                                    militiaStatus.Ships[y].RemoveAt( 0 );
+                                else
+                                {
+                                    squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
+                                    militiaStatus.Ships[y].RemoveAt( 0 );
+                                }
+                            }
                         }
                     }
-                    // If enroute, check for sweet spot.
-                    if ( militiaStatus.Status == CivilianMilitiaStatus.EnrouteWormhole )
-                    {
-                        int stationDist = militiaShip.GetDistanceTo_ExpensiveAccurate( goalStation.WorldLocation, true, true );
-                        int wormDist = militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getWormhole().WorldLocation, true, true );
-                        int range = MinimumOutpostDeploymentRange;
-                        if ( stationDist > range || wormDist < range )
-                        {
-                            // Prepare its old id to be removed.
-                            toRemove.Add( militiaShip.PrimaryKeyID );
 
-                            // Optimal distance. Transform the ship and update its status.
-                            militiaStatus.Status = CivilianMilitiaStatus.Defending;
-
-                            // Load its station data.
-                            GameEntityTypeData outpostData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "MilitiaOutpost" );
-
-                            // Transform it.
-                            GameEntity_Squad newMilitiaShip = militiaShip.TransformInto( Context, outpostData, 1 );
-
-                            // Update centerpiece to it.
-                            militiaStatus.Centerpiece = newMilitiaShip.PrimaryKeyID;
-
-                            // Move the information to our new ship.
-                            newMilitiaShip.SetCivilianMilitiaExt( militiaStatus );
-
-                            // Prepare its new id to be added.
-                            toAdd.Add( newMilitiaShip.PrimaryKeyID );
-                        }
-                    }
-                    // If enroute, check for sweet spot.
-                    else if ( militiaStatus.Status == CivilianMilitiaStatus.EnrouteMine )
-                    {
-                        int mineDist = militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getMine().WorldLocation, true, true );
-                        int range = 1000;
-                        if ( mineDist < range )
-                        {
-                            // Prepare its old id to be removed.
-                            toRemove.Add( militiaShip.PrimaryKeyID );
-
-                            // Converting to a Patrol Post, upgrade the fleet status to a mobile patrol status.
-                            militiaStatus.Status = CivilianMilitiaStatus.Patrolling;
-
-                            // Load its station data.
-                            GameEntityTypeData outpostData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "MilitiaPatrolPost" );
-
-                            // Transform it.
-                            GameEntity_Squad newMilitiaShip = militiaShip.TransformInto( Context, outpostData, 1 );
-
-                            // Make sure its not overlapping.
-                            newMilitiaShip.SetWorldLocation( newMilitiaShip.Planet.GetSafePlacementPoint( Context, outpostData, newMilitiaShip.WorldLocation, 0, 1000 ) );
-
-                            // Update centerpiece to it.
-                            militiaStatus.Centerpiece = newMilitiaShip.PrimaryKeyID;
-
-                            // Move the information to our new ship.
-                            newMilitiaShip.SetCivilianMilitiaExt( militiaStatus );
-
-                            // Prepare its new id to be added.
-                            toAdd.Add( newMilitiaShip.PrimaryKeyID );
-                        }
-                    }
+                    processed.Add( militiaShip.PrimaryKeyID );
                 }
-                else if ( militiaStatus.Status == CivilianMilitiaStatus.Defending ) // Do turret spawning.
+                catch ( Exception e )
                 {
-                    if ( militiaStatus.getWormhole() == null )
-                    {
-                        militiaShip.Die( Context, true );
-                        continue;
-                    }
-                    // For each type of unit, process.
-                    for ( int y = 0; y < (int)CivilianResource.Length; y++ )
-                    {
-                        if ( militiaCargo.Amount[y] <= 0 )
-                            continue;
+                    factionData.MilitiaLeaders.Remove( factionData.MilitiaLeaders[x] );
 
-                        // Skip if we're under the minimum tech requirement.
-                        if ( IgnoreResource[y] )
-                            continue;
-
-                        if ( militiaStatus.ShipTypeDataNames[y] == "none" )
-                        {
-                            // Get our tag to search for based on resource type.
-                            string typeTag = "Civ" + ((CivilianTech)y).ToString() + "Turret";
-                            // Attempt to find entitydata for our type.
-                            if ( GameEntityTypeDataTable.Instance.RowsByTag.GetHasKey( typeTag ) )
-                            {
-                                GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, typeTag );
-                                if ( typeData != null )
-                                    militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
-                            }
-                            else
-                            {
-                                // No matching tag; get a random turret type.
-                                GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "CivTurret" );
-                                if ( typeData != null )
-                                    militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
-                            }
-                        }
-
-                        if ( !militiaStatus.ShipTypeData.GetHasKey( y ) )
-                            militiaStatus.ShipTypeData.AddPair( y, GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] ) );
-
-                        GameEntityTypeData turretData = militiaStatus.ShipTypeData[y];
-
-                        int count = militiaStatus.GetShipCount( turretData );
-                        if ( count < militiaStatus.ShipCapacity[y] )
-                        {
-                            FInt countCostModifier = FInt.One + (FInt.One - ((militiaStatus.ShipCapacity[y] - count + FInt.One) / militiaStatus.ShipCapacity[y]));
-                            int baseCost = turretData.CostForAIToPurchase;
-                            int cost = (CostIntensityModifier( faction ) * (baseCost * countCostModifier * (militiaStatus.CostMultiplier / (FInt.One * 100)))).GetNearestIntPreferringHigher();
-
-                            if ( militiaCargo.Capacity[y] < cost )
-                                militiaCargo.Capacity[y] = (int)(cost * MilitiaStockpilePercentage); // Stockpile some resources.
-
-                            if ( militiaCargo.Amount[y] >= cost )
-                            {
-                                // Remove cost.
-                                militiaCargo.Amount[y] -= cost;
-                                // Spawn turret.
-                                // Get a focal point directed towards the wormhole.
-                                ArcenPoint basePoint = militiaShip.WorldLocation.GetPointAtAngleAndDistance( militiaShip.WorldLocation.GetAngleToDegrees( militiaStatus.getWormhole().WorldLocation ), Math.Min( 5000, militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getWormhole().WorldLocation, true, true ) / 2 ) );
-                                // Get a point around it, as close as possible.
-                                ArcenPoint spawnPoint = basePoint.GetRandomPointWithinDistance( Context.RandomToUse, Math.Min( 500, militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getWormhole().WorldLocation, true, true ) / 4 ), Math.Min( 2500, militiaShip.GetDistanceTo_ExpensiveAccurate( militiaStatus.getWormhole().WorldLocation, true, true ) / 2 ) );
-
-                                // Get the planet faction to spawn it in as.
-                                PlanetFaction pFaction = militiaShip.Planet.GetPlanetFactionForFaction( faction );
-
-                                // Spawn in the ship.
-                                GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, turretData, faction.GetGlobalMarkLevelForShipLine( turretData ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
-
-                                // Only let it stack with its own fleet.
-                                entity.MinorFactionStackingID = militiaShip.PrimaryKeyID;
-
-                                // Add the turret to our militia's fleet.
-                                militiaStatus.Ships[y].Add( entity.PrimaryKeyID );
-                            }
-                        }
-                        else if ( count > militiaStatus.ShipCapacity[y] && militiaStatus.Ships[y].Count > 0 )
-                        {
-                            GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( militiaStatus.Ships[y][0] );
-                            if ( squad == null )
-                                militiaStatus.Ships[y].RemoveAt( 0 );
-                            else
-                            {
-                                squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
-                                militiaStatus.Ships[y].RemoveAt( 0 );
-                            }
-                        }
-                    }
-                    // Save our militia's status.
-                    militiaShip.SetCivilianMilitiaExt( militiaStatus );
-                    militiaShip.SetCivilianCargoExt( militiaCargo );
+                    ArcenDebugging.SingleLineQuickDebug( $"Error in DoMilitiaDeployment, marking entity for removal." );
                 }
-                else if ( militiaStatus.Status == CivilianMilitiaStatus.Patrolling ) // If patrolling, do unit spawning.
-                {
-                    // For each type of unit, get ship count.
-                    for ( int y = 0; y < (int)CivilianResource.Length; y++ )
-                    {
-                        if ( militiaCargo.Amount[y] <= 0 )
-                            continue;
-
-                        // Skip if we're under the minimum tech requirement.
-                        if ( IgnoreResource[y] )
-                            continue;
-
-                        // If we're an advanced shipyard, use alternate logic.
-                        bool buildingProtectors = false;
-                        if ( militiaShip.TypeData.GetHasTag( "BuildsProtectors" ) )
-                            buildingProtectors = true;
-
-                        if ( militiaStatus.ShipTypeDataNames[y] == "none" )
-                        {
-                            // Get our tag to search for based on resource type.
-                            string typeTag = "Civ" + ((CivilianTech)y).ToString() + "Mobile";
-                            if ( buildingProtectors )
-                                typeTag = "Civ" + ((CivilianTech)y).ToString() + "Protector";
-                            // Attempt to find entitydata for our type.
-                            if ( GameEntityTypeDataTable.Instance.RowsByTag.GetHasKey( typeTag ) )
-                            {
-                                GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, typeTag );
-                                if ( typeData != null )
-                                    militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
-                            }
-                            else
-                            {
-                                // No matching tag; get a random turret type.
-                                GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "CivMobile" );
-                                if ( typeData != null )
-                                    militiaStatus.ShipTypeDataNames[y] = typeData.InternalName;
-                            }
-
-                        }
-
-                        if ( !militiaStatus.ShipTypeData.GetHasKey( y ) )
-                            militiaStatus.ShipTypeData.AddPair( y, GameEntityTypeDataTable.Instance.GetRowByName( militiaStatus.ShipTypeDataNames[y] ) );
-
-                        GameEntityTypeData shipData = militiaStatus.ShipTypeData[y];
-
-                        int count = militiaStatus.GetShipCount( shipData );
-                        if ( count < militiaStatus.ShipCapacity[y] )
-                        {
-                            int cost = 0;
-                            if ( buildingProtectors )
-                                cost = (int)(7000 * CostIntensityModifier( faction ));
-                            else
-                            {
-                                FInt countCostModifier = FInt.One + (FInt.One - ((militiaStatus.ShipCapacity[y] - count + FInt.One) / militiaStatus.ShipCapacity[y]));
-                                int baseCost = shipData.CostForAIToPurchase;
-                                cost = (CostIntensityModifier( faction ) * (baseCost * countCostModifier * (militiaStatus.CostMultiplier / (FInt.One * 100)))).GetNearestIntPreferringHigher();
-                            }
-
-                            if ( militiaCargo.Capacity[y] < cost )
-                                militiaCargo.Capacity[y] = (int)(cost * MilitiaStockpilePercentage); // Stockpile some resources.
-
-                            if ( militiaCargo.Amount[y] >= cost )
-                            {
-                                // Remove cost.
-                                militiaCargo.Amount[y] -= cost;
-
-                                // Get the planet faction to spawn it in as.
-                                PlanetFaction pFaction = militiaShip.Planet.GetPlanetFactionForFaction( faction );
-
-                                // Spawn in the ship.
-                                GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, shipData, faction.GetGlobalMarkLevelForShipLine( shipData ), pFaction.FleetUsedAtPlanet, 0, militiaShip.WorldLocation, Context );
-
-                                // Only let it stack with its own fleet.
-                                entity.MinorFactionStackingID = militiaShip.PrimaryKeyID;
-
-                                // Make it attack nearby hostiles.
-                                entity.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
-
-                                // Add the turret to our militia's fleet.
-                                militiaStatus.Ships[y].Add( entity.PrimaryKeyID );
-
-                            }
-                        }
-                        else if ( count > militiaStatus.ShipCapacity[y] && militiaStatus.Ships[y].Count > 0 )
-                        {
-                            GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( militiaStatus.Ships[y][0] );
-                            if ( squad == null )
-                                militiaStatus.Ships[y].RemoveAt( 0 );
-                            else
-                            {
-                                squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
-                                militiaStatus.Ships[y].RemoveAt( 0 );
-                            }
-                        }
-                    }
-                    // Save our militia's status.
-                    militiaShip.SetCivilianMilitiaExt( militiaStatus );
-                    militiaShip.SetCivilianCargoExt( militiaCargo );
-                }
-
-
-                processed.Add( militiaShip.PrimaryKeyID );
             }
             for ( int x = 0; x < toRemove.Count; x++ )
             {
@@ -3168,24 +3190,7 @@ namespace SKCivilianIndustry
             factionData.RemoveCargoShip( entity.PrimaryKeyID );
 
             if ( factionData.MilitiaLeaders.Contains( entity.PrimaryKeyID ) )
-            {
-                // Try to scrap all of its units.
-                CivilianMilitia militiaData = entity.GetCivilianMilitiaExt();
-                militiaData.Ships.DoFor( pair =>
-                {
-                    for ( int x = 0; x < pair.Value.Count; x++ )
-                    {
-                        GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( pair.Value[x] );
-                        if ( squad != null )
-                            squad.Despawn( Context, true, InstancedRendererDeactivationReason.SelfDestructOnTooHighOfCap );
-                        pair.Value.RemoveAt( x );
-                        x--;
-                    }
-
-                    return DelReturn.Continue;
-                } );
                 factionData.MilitiaLeaders.Remove( entity.PrimaryKeyID );
-            }
 
             // Save any changes.
             entity.PlanetFaction.Faction.SetCivilianFactionExt( factionData );

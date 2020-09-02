@@ -2208,7 +2208,7 @@ namespace PreceptsOfThePrecursors
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
                  if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
-                     fromFaction += FInt.FromParts( 0, 250 ) * planet.GetProtoSphereData().Level;
+                     fromFaction += FInt.FromParts( 0, 150 ) * planet.GetProtoSphereData().Level;
 
                  if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                      for ( int x = 0; x < 7; x++ )

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <faction name="Sleepers"
+           display_name="The Sleepers"
+           dll_name="PreceptsOfThePrecursors"
+           type_name="PreceptsOfThePrecursors.Sleepers"
+           team_center_color="Gray" team_border_color="Gray"
+           type="SpecialFaction"
+           description="IN PROGRESS, do not enable.
+		   
+Large ancient structures that appear to serve a defensive purpose, but are inactive for now. The ai has considered integrating them into its defenses, but will only do so when the humans have actually made themselves known as a threat to it."
+  >
+	   <custom_field name="Intensity" display_name="Impact" description="How much should this faction impact the game?"
+            sort_group="200" setting_type="IntSlider" default="5" min="1" max="10" />
+  </faction>
+	<faction name="Dreamers"
+         display_name="Dreamers"
+         dll_name="PreceptsOfThePrecursors"
+         type_name="PreceptsOfThePrecursors.Dreamers"
+         team_center_color="Blue" team_border_color="Gold"
+         type="SpecialFaction"
+         should_not_be_shown="true"
+         player_discoverable="true"
+         auto_add_one_of_faction_if_missing_on_save_load="true"
+         can_be_targeted_by_annoyed_non_human_units="true"
+         description="Sleepers aligned to Humans."
+  >
+	</faction>
+</root>
