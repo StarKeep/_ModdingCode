@@ -1078,9 +1078,20 @@ namespace PreceptsOfThePrecursors
             int totalStrength = 0;
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                var data = planet.GetPlanetFactionForFaction( faction ).DataByStance;
-                if ( data[FactionStance.Friendly].TotalStrength > 1000 )
-                    potentialPlanets.AddPair( planet, data[FactionStance.Friendly].TotalStrength );
+                int strength = planet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Friendly].TotalStrength;
+                World_AIW2.Instance.DoForFactions( otherFaction =>
+                {
+                    if ( otherFaction.Implementation is SpecialFaction_ZenithTraitor )
+                        strength -= planet.GetPlanetFactionForFaction( otherFaction ).DataByStance[FactionStance.Self].TotalStrength;
+
+                    return DelReturn.Continue;
+                } );
+
+                if ( strength > 50 )
+                {
+                    potentialPlanets.AddPair( planet, strength );
+                    totalStrength += strength;
+                }
                 return DelReturn.Continue;
             } );
 
@@ -1126,12 +1137,6 @@ namespace PreceptsOfThePrecursors
     {
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            if ( !EnclavesGloballyEnabled )
-                return;
-
-            if ( !EnclaveSettings.GetIsEnabled( faction ) )
-                return;
-
             enemyThisFactionToAll( faction );
 
             FInt pseudoAIP = CalculateFactionOwnership( faction );
@@ -1245,12 +1250,6 @@ namespace PreceptsOfThePrecursors
             faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Minor Faction Team Red";
             allyThisFactionToMinorFactionTeam( faction, "Minor Faction Team Red" );
 
-            if ( !EnclavesGloballyEnabled )
-                return;
-
-            if ( !EnclaveSettings.GetIsEnabled( faction ) )
-                return;
-
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
     }
@@ -1261,12 +1260,6 @@ namespace PreceptsOfThePrecursors
         {
             faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Minor Faction Team Blue";
             allyThisFactionToMinorFactionTeam( faction, "Minor Faction Team Blue" );
-
-            if ( !EnclavesGloballyEnabled )
-                return;
-
-            if ( !EnclaveSettings.GetIsEnabled( faction ) )
-                return;
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
@@ -1279,12 +1272,6 @@ namespace PreceptsOfThePrecursors
             faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Minor Faction Team Green";
             allyThisFactionToMinorFactionTeam( faction, "Minor Faction Team Green" );
 
-            if ( !EnclavesGloballyEnabled )
-                return;
-
-            if ( !EnclaveSettings.GetIsEnabled( faction ) )
-                return;
-
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
     }
@@ -1293,14 +1280,22 @@ namespace PreceptsOfThePrecursors
     {
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Dark Alliance";
-            allyThisFactionToMinorFactionTeam( faction, "Dark Alliance" );
+            enemyThisFactionToAll( faction );
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance == "DarkAlliance" )
+                allyThisFactionToMinorFactionTeam( faction, "Dark Alliance" );
+            else
+                World_AIW2.Instance.DoForFactions( otherFaction =>
+                {
+                    if ( otherFaction.Implementation is SpecialFaction_DarkSpire || otherFaction.Implementation is SpecialFaction_DarkZenith )
+                    {
+                        faction.MakeFriendlyTo( otherFaction );
+                        otherFaction.MakeFriendlyTo( faction );
+                        if ( otherFaction.Ex_MinorFactionCommon_GetPrimitives().Allegiance == "DarkAlliance" )
+                            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Dark Alliance";
+                    }
 
-            if ( !EnclavesGloballyEnabled )
-                return;
-
-            if ( !EnclaveSettings.GetIsEnabled( faction ) )
-                return;
+                    return DelReturn.Continue;
+                } );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
@@ -1330,12 +1325,6 @@ namespace PreceptsOfThePrecursors
         {
             allyThisFactionToAI( faction );
 
-            if ( !EnclavesGloballyEnabled )
-                return;
-
-            if ( !EnclaveSettings.GetIsEnabled( faction ) )
-                return;
-
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
         public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
@@ -1354,12 +1343,6 @@ namespace PreceptsOfThePrecursors
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             allyThisFactionToHumans( faction );
-
-            if ( !EnclavesGloballyEnabled )
-                return;
-
-            if ( !EnclaveSettings.GetIsEnabled( faction ) )
-                return;
 
             if ( !Initialized )
             {
