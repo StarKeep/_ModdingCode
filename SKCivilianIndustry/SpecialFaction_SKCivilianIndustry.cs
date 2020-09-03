@@ -1827,7 +1827,8 @@ namespace SKCivilianIndustry
             for ( int x = 0; x < factionData.CargoShips.Count && raidBudget > 0; x++ )
             {
                 GameEntity_Squad target = World_AIW2.Instance.GetEntityByID_Squad( factionData.CargoShips[x] );
-                SpawnRaidGroup( target, factionData.NextRaidWormholes, ref attackedTargets, ref raidBudget, aiFaction, faction, Context );
+                if (target != null)
+                    SpawnRaidGroup( target, factionData.NextRaidWormholes, ref attackedTargets, ref raidBudget, aiFaction, faction, Context );
             }
 
 
@@ -3180,6 +3181,9 @@ namespace SKCivilianIndustry
             // Things like spawnt patrol ships and turrets don't need to be processed for death here.
             if ( !entity.TypeData.GetHasTag( "CivilianIndustryEntity" ) )
                 return;
+
+            if ( factionData == null && entity.PlanetFaction.Faction.Implementation is SpecialFaction_SKCivilianIndustry )
+                factionData = entity.PlanetFaction.Faction.GetCivilianFactionExt();
 
             // Deal with its death.
             if ( factionData.GrandStation == entity.PrimaryKeyID )
