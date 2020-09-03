@@ -1072,6 +1072,36 @@ namespace PreceptsOfThePrecursors
                 } );
         }
 
+        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
+        {
+            ArcenSparseLookup<Planet, int> potentialPlanets = new ArcenSparseLookup<Planet, int>();
+            int totalStrength = 0;
+            World_AIW2.Instance.DoForPlanets( false, planet =>
+            {
+                var data = planet.GetPlanetFactionForFaction( faction ).DataByStance;
+                if ( data[FactionStance.Friendly].TotalStrength > 1000 )
+                    potentialPlanets.AddPair( planet, data[FactionStance.Friendly].TotalStrength );
+                return DelReturn.Continue;
+            } );
+
+            if ( potentialPlanets.GetPairCount() == 0 )
+                return null;
+
+            int avgStrength = totalStrength / potentialPlanets.GetPairCount();
+            potentialPlanets.DoFor( pair =>
+            {
+                if ( potentialPlanets.GetPairCount() < 5 )
+                    return DelReturn.Break;
+
+                if ( pair.Value < avgStrength )
+                    return DelReturn.RemoveAndContinue;
+
+                return DelReturn.Continue;
+            } );
+
+            return potentialPlanets.GetPairByIndex( Context.RandomToUse.Next( potentialPlanets.GetPairCount() ) ).Key;
+        }
+
         public override Planet BulkSpawn( Faction faction, ArcenSimContext Context )
         {
             Planet spawnPlanet = GetPlanetForBulkSpawn( faction, Context );
@@ -1223,33 +1253,6 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
-        {
-            // Spawn in a bunch of hives and enclaves based on intensity.
-            int toSpawn = Intensity;
-
-            List<Planet> potentialPlanets = new List<Planet>();
-            World_AIW2.Instance.DoForFactions( otherFaction =>
-            {
-                if ( otherFaction.GetIsFriendlyTowards( faction ) )
-                {
-                    otherFaction.DoForEntities( ( GameEntity_Squad entity ) =>
-                    {
-                        if ( potentialPlanets.Count < 5 && !potentialPlanets.Contains( entity.Planet ) )
-                            potentialPlanets.Add( entity.Planet );
-
-                        return DelReturn.Continue;
-                    } );
-                }
-
-                return DelReturn.Continue;
-            } );
-
-            if ( potentialPlanets.Count == 0 )
-                return null;
-
-            return potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
-        }
     }
 
     public class RoamingEnclaveBlueTeam : RoamingEnclaveNPC
@@ -1267,30 +1270,6 @@ namespace PreceptsOfThePrecursors
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
         }
-        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
-        {
-            List<Planet> potentialPlanets = new List<Planet>();
-            World_AIW2.Instance.DoForFactions( otherFaction =>
-            {
-                if ( otherFaction.GetIsFriendlyTowards( faction ) )
-                {
-                    otherFaction.DoForEntities( ( GameEntity_Squad entity ) =>
-                    {
-                        if ( potentialPlanets.Count < 5 && !potentialPlanets.Contains( entity.Planet ) )
-                            potentialPlanets.Add( entity.Planet );
-
-                        return DelReturn.Continue;
-                    } );
-                }
-
-                return DelReturn.Continue;
-            } );
-
-            if ( potentialPlanets.Count == 0 )
-                return null;
-
-            return potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
-        }
     }
 
     public class RoamingEnclaveGreenTeam : RoamingEnclaveNPC
@@ -1307,30 +1286,6 @@ namespace PreceptsOfThePrecursors
                 return;
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
-        }
-        public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
-        {
-            List<Planet> potentialPlanets = new List<Planet>();
-            World_AIW2.Instance.DoForFactions( otherFaction =>
-            {
-                if ( otherFaction.GetIsFriendlyTowards( faction ) )
-                {
-                    otherFaction.DoForEntities( ( GameEntity_Squad entity ) =>
-                    {
-                        if ( potentialPlanets.Count < 5 && !potentialPlanets.Contains( entity.Planet ) )
-                            potentialPlanets.Add( entity.Planet );
-
-                        return DelReturn.Continue;
-                    } );
-                }
-
-                return DelReturn.Continue;
-            } );
-
-            if ( potentialPlanets.Count == 0 )
-                return null;
-
-            return potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
         }
     }
 
@@ -1361,25 +1316,9 @@ namespace PreceptsOfThePrecursors
 
                     return DelReturn.Continue;
                 } );
-            if ( potentialPlanets.Count == 0 )
-                World_AIW2.Instance.DoForFactions( otherFaction =>
-                {
-                    if ( otherFaction.GetIsFriendlyTowards( faction ) )
-                    {
-                        otherFaction.DoForEntities( ( GameEntity_Squad entity ) =>
-                        {
-                            if ( potentialPlanets.Count < 5 && !potentialPlanets.Contains( entity.Planet ) )
-                                potentialPlanets.Add( entity.Planet );
-
-                            return DelReturn.Continue;
-                        } );
-                    }
-
-                    return DelReturn.Continue;
-                } );
 
             if ( potentialPlanets.Count == 0 )
-                return null;
+                return base.GetPlanetForBulkSpawn( faction, Context );
 
             return potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
         }
