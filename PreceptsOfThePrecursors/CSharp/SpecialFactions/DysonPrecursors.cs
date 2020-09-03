@@ -877,10 +877,11 @@ namespace PreceptsOfThePrecursors
                     if ( Mothership.Planet.GetControllingOrInfluencingFaction().GetIsFriendlyTowards( faction ) && mineCount <= 5 )
                     {
                         GameEntity_Squad king = BadgerFactionUtilityMethods.findKing( Mothership.Planet.GetControllingOrInfluencingFaction() );
-                        if ( king.Planet.Index == Mothership.Planet.Index )
-                            allyMod = -20;
-                        else
-                            allyMod = -5;
+                        if ( king != null )
+                            if ( king.Planet.Index == Mothership.Planet.Index )
+                                allyMod = -20;
+                            else
+                                allyMod = -5;
                     }
                     int roll = Context.RandomToUse.Next( 0, 100 );
                     bool consume = roll < baseChance + trustMod + allyMod;
@@ -1134,8 +1135,8 @@ namespace PreceptsOfThePrecursors
             //
             //if ( totalNodeMarkCount < 50 )
             //{
-                ExoData.CurrentExoStrength = FInt.Zero;
-                ExoData.StrengthRequiredForNextExo = FInt.One * 1000;
+            ExoData.CurrentExoStrength = FInt.Zero;
+            ExoData.StrengthRequiredForNextExo = FInt.One * 1000;
             //}
             //else
             //{
