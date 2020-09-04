@@ -1,4 +1,3 @@
-using Arcen.AIW2.Core;
 using Arcen.Universal;
 
 namespace SKCivilianIndustry.Persistence
@@ -10,10 +9,7 @@ namespace SKCivilianIndustry.Persistence
 
         public static int PatternIndex;
 
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "World";
-
-        public void ReceivePatternIndex(int Index)
+        public void ReceivePatternIndex( int Index )
         {
             PatternIndex = Index;
         }
@@ -21,28 +17,37 @@ namespace SKCivilianIndustry.Persistence
         {
             return 1;
         }
-        public bool GetShouldInitializeOn(string ParentTypeName)
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, World)
-            return ArcenStrings.Equals(ParentTypeName, RelatedParentTypeName);
-        }
 
-        public void InitializeData(object ParentObject, object[] Target)
+        public World ParentWorld;
+        public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentWorld = ParentObject as World;
+            if ( this.ParentWorld == null && ParentObject != null )
+                ArcenDebugging.ArcenDebugLogSingleLine( "CivilianCargoExternalData: Tried to initialize Parent object as World, but type was " + ParentObject.GetType(), Verbosity.ShowAsError );
+
             this.Data = new CivilianWorld();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData(object[] Source, ArcenSerializationBuffer Buffer)
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             CivilianWorld data = (CivilianWorld)Source[0];
-            data.SerializeTo(Buffer);
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData(object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer)
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new CivilianWorld(Buffer);
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as CivilianWorld).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new CivilianWorld( Buffer );
+            }
         }
     }
- 
+
 }

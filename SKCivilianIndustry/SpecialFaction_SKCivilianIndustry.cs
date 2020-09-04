@@ -184,7 +184,7 @@ namespace SKCivilianIndustry
                 faction.InheritsTechUpgradesFromPlayerFactions = false;
             faction.RecalculateMarkLevelsAndInheritedTechUnlocks();
 
-            byte globalAIMark = BadgerFactionUtilityMethods.GetRandomAIFaction( Context ).CurrentGeneralMarkLevel;
+            byte globalAIMark = World_AIW2.GetRandomAIFaction( Context ).CurrentGeneralMarkLevel;
 
             faction.DoForEntities( delegate ( GameEntity_Squad entity )
             {
@@ -267,7 +267,7 @@ namespace SKCivilianIndustry
 
                 AIRaidNotifier notifier = new AIRaidNotifier();
                 notifier.raidingWormholes = factionData.NextRaidWormholes;
-                notifier.faction = BadgerFactionUtilityMethods.GetRandomAIFaction( Context );
+                notifier.faction = World_AIW2.GetRandomAIFaction( Context );
                 notifier.SecondsLeft = factionData.NextRaidInThisSeconds;
 
                 NotificationNonSim notification = Engine_AIW2.NonSimNotificationList_Building.GetOrAddEntry();
@@ -1698,7 +1698,7 @@ namespace SKCivilianIndustry
             GameEntity_Squad targetStation = World_AIW2.Instance.GetEntityByID_Squad( factionData.TradeStations[Context.RandomToUse.Next( factionData.TradeStations.Count )] );
             if ( targetStation != null )
             {
-                Faction aifaction = BadgerFactionUtilityMethods.GetRandomAIFaction( Context );
+                Faction aifaction = World_AIW2.GetRandomAIFaction( Context );
                 if ( aifaction == null )
                     return;
 
@@ -1811,7 +1811,7 @@ namespace SKCivilianIndustry
                 PrepareAIRaid( faction, Context );
                 return;
             }
-            Faction aiFaction = BadgerFactionUtilityMethods.GetRandomAIFaction( Context );
+            Faction aiFaction = World_AIW2.GetRandomAIFaction( Context );
 
             // Don't attempt to send multiple fleets after a single target.
             List<int> attackedTargets = new List<int>();
@@ -1827,7 +1827,7 @@ namespace SKCivilianIndustry
             for ( int x = 0; x < factionData.CargoShips.Count && raidBudget > 0; x++ )
             {
                 GameEntity_Squad target = World_AIW2.Instance.GetEntityByID_Squad( factionData.CargoShips[x] );
-                if (target != null)
+                if ( target != null )
                     SpawnRaidGroup( target, factionData.NextRaidWormholes, ref attackedTargets, ref raidBudget, aiFaction, faction, Context );
             }
 

@@ -1,9 +1,5 @@
-﻿using Arcen.Universal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Arcen.AIW2.Core;
+using Arcen.Universal;
 
 namespace SKCivilianIndustry.Persistence
 {
@@ -13,39 +9,45 @@ namespace SKCivilianIndustry.Persistence
         private CivilianPlanet Data;
 
         public static int PatternIndex;
-
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "Planet";
-
-        public void ReceivePatternIndex(int Index)
+        public void ReceivePatternIndex( int Index )
         {
-            PatternIndex = Index;
+            PatternIndex = Index; //for internal use with the ExternalData code in the game engine itself
         }
         public int GetNumberOfItems()
         {
-            return 1;
-        }
-        public bool GetShouldInitializeOn(string ParentTypeName)
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, Faction)
-            return ArcenStrings.Equals(ParentTypeName, RelatedParentTypeName);
+            return 1; //for internal use with the ExternalData code in the game engine itself
         }
 
-        public void InitializeData(object ParentObject, object[] Target)
+        public Planet ParentPlanet;
+        public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentPlanet = ParentObject as Planet;
+            if ( this.ParentPlanet == null && ParentObject != null )
+                ArcenDebugging.ArcenDebugLogSingleLine( "CivilianCargoExternalData: Tried to initialize Parent object as Planet, but type was " + ParentObject.GetType(), Verbosity.ShowAsError );
+
+            //this initialization is handled by the data structure itself
             this.Data = new CivilianPlanet();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData(object[] Source, ArcenSerializationBuffer Buffer)
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             CivilianPlanet data = (CivilianPlanet)Source[0];
-            data.SerializeTo(Buffer);
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData(object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer)
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new CivilianPlanet(Buffer);
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as CivilianPlanet).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new CivilianPlanet( Buffer );
+            }
         }
     }
 }

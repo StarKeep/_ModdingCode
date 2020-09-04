@@ -269,6 +269,12 @@ namespace SKCivilianIndustry
             this.ImportRequests = new List<TradeRequest>();
             this.ExportRequests = new List<TradeRequest>();
         }
+
+        public CivilianFaction( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+
         // Serialize a list.
         private void SerializeList( List<int> list, ArcenSerializationBuffer Buffer )
         {
@@ -292,7 +298,7 @@ namespace SKCivilianIndustry
             } );
         }
         // Saving our data.
-        public void SerializeTo( ArcenSerializationBuffer Buffer )
+        public void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 2 );
             Buffer.AddInt32( ReadStyle.Signed, this.GrandStation );
@@ -343,7 +349,7 @@ namespace SKCivilianIndustry
             return newLookup;
         }
         // Loading our data. Make sure the loading order is the same as the saving order.
-        public CivilianFaction( ArcenDeserializationBuffer Buffer )
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             this.GrandStation = Buffer.ReadInt32( ReadStyle.Signed );
@@ -367,10 +373,17 @@ namespace SKCivilianIndustry
             this.NextRaidInThisSeconds = Buffer.ReadInt32( ReadStyle.Signed );
             this.NextRaidWormholes = DeserializeList( Buffer );
 
+            if ( this.ThreatReports == null )
+                this.ThreatReports = new List<ThreatReport>();
+            if ( this.ImportRequests == null )
+                this.ImportRequests = new List<TradeRequest>();
+            if ( this.ExportRequests == null )
+                this.ExportRequests = new List<TradeRequest>();
+
             // Recreate an empty list on load. Will be populated when needed.
-            this.ThreatReports = new List<ThreatReport>();
-            this.ImportRequests = new List<TradeRequest>();
-            this.ExportRequests = new List<TradeRequest>();
+            this.ThreatReports.Clear();
+            this.ImportRequests.Clear();
+            this.ExportRequests.Clear();
         }
     }
 }

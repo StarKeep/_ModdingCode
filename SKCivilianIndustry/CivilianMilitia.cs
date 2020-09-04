@@ -33,10 +33,10 @@ namespace SKCivilianIndustry
         public int EntityFocus;
 
         // GameEntityTypeData that this militia builds, a list of every ship of that type under their control, and their capacity.
-        public ArcenSparseLookup<int, string> ShipTypeDataNames = new ArcenSparseLookup<int, string>();
-        public ArcenSparseLookup<int, GameEntityTypeData> ShipTypeData = new ArcenSparseLookup<int, GameEntityTypeData>();
-        public ArcenSparseLookup<int, List<int>> Ships = new ArcenSparseLookup<int, List<int>>();
-        public ArcenSparseLookup<int, int> ShipCapacity = new ArcenSparseLookup<int, int>();
+        public ArcenSparseLookup<int, string> ShipTypeDataNames;
+        public ArcenSparseLookup<int, GameEntityTypeData> ShipTypeData;
+        public ArcenSparseLookup<int, List<int>> Ships;
+        public ArcenSparseLookup<int, int> ShipCapacity;
 
         /// <summary>
         /// Count the number of ships of a certain type that this militia controls, and purge any missing entities from their list.
@@ -86,6 +86,11 @@ namespace SKCivilianIndustry
         // Default values. Called on creation, NOT on load.
         public CivilianMilitia()
         {
+            ShipTypeDataNames = new ArcenSparseLookup<int, string>();
+            ShipTypeData = new ArcenSparseLookup<int, GameEntityTypeData>();
+            Ships = new ArcenSparseLookup<int, List<int>>();
+            ShipCapacity = new ArcenSparseLookup<int, int>();
+
             this.Centerpiece = -1;
             this.Status = CivilianMilitiaStatus.Idle;
             this.PlanetFocus = -1;
@@ -100,11 +105,12 @@ namespace SKCivilianIndustry
             this.CapMultiplier = 100; // 100%
         }
 
-        /// <summary>
-        /// Used to save our data to buffer.
-        /// </summary>
-        /// <param name="Buffer"></param>
-        public void SerializeTo( ArcenSerializationBuffer Buffer )
+        public CivilianMilitia( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+
+        public void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 2 );
             Buffer.AddInt32( ReadStyle.Signed, this.Centerpiece );
@@ -126,12 +132,25 @@ namespace SKCivilianIndustry
             Buffer.AddInt32( ReadStyle.NonNeg, this.CapMultiplier );
         }
 
-        /// <summary>
-        /// Used to load our data from buffer.
-        /// </summary>
-        /// <param name="Buffer"></param>
-        public CivilianMilitia( ArcenDeserializationBuffer Buffer )
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            if ( ShipTypeDataNames == null )
+                ShipTypeDataNames = new ArcenSparseLookup<int, string>();
+            if ( ShipTypeData == null )
+                ShipTypeData = new ArcenSparseLookup<int, GameEntityTypeData>();
+            if ( Ships == null )
+                Ships = new ArcenSparseLookup<int, List<int>>();
+            if ( ShipCapacity == null )
+                ShipCapacity = new ArcenSparseLookup<int, int>();
+
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                ShipTypeDataNames.Clear();
+                ShipTypeData.Clear();
+                Ships.Clear();
+                ShipCapacity.Clear();
+            }
+
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             this.Centerpiece = Buffer.ReadInt32( ReadStyle.Signed );
             this.Status = (CivilianMilitiaStatus)Buffer.ReadByte( ReadStyleByte.Normal );

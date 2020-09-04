@@ -1,9 +1,4 @@
 ﻿using Arcen.Universal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SKCivilianIndustry
 {
@@ -12,27 +7,25 @@ namespace SKCivilianIndustry
     /// </summary>
     public class CivilianCargo
     {
-        /// <summary>
-        /// Version of this class.
-        /// </summary>
         public int Version;
 
         // We have three arrays here.
         // One for current amount, one for capacity, and one for per second change.
-        public int[] Amount { get; } = new int[(int)CivilianResource.Length];
-        public int[] Capacity { get; } = new int[(int)CivilianResource.Length];
-        /// <remarks>
-        /// Positive is generation, negative is drain.
-        /// </remarks>
-        public int[] PerSecond { get; } = new int[(int)CivilianResource.Length];
+        public int[] Amount { get; set; }
+        public int[] Capacity { get; set; }
+
+        public int[] PerSecond { get; set; }
 
         // Following three functions are used for initializing, saving, and loading data.
         // Initialization function.
         // Default values. Called on creation, NOT on load.
         public CivilianCargo()
         {
+            Amount = new int[(int)CivilianResource.Length];
+            Capacity = new int[(int)CivilianResource.Length];
+            PerSecond = new int[(int)CivilianResource.Length];
             // Values are set to the default for ships. Stations will manually initialize theirs.
-            for (int x = 0; x < this.Amount.Length; x++)
+            for ( int x = 0; x < this.Amount.Length; x++ )
             {
                 this.Amount[x] = 0;
                 this.Capacity[x] = 100;
@@ -40,11 +33,12 @@ namespace SKCivilianIndustry
             }
         }
 
-        /// <summary>
-        /// Used to save our data.
-        /// </summary>
-        /// <param name="Buffer"></param>
-        public void SerializeTo(ArcenSerializationBuffer Buffer)
+        public CivilianCargo( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+
+        public void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 1 );
             // Arrays
@@ -53,7 +47,7 @@ namespace SKCivilianIndustry
             // As we have one entry for each resource, we'll only have to get the count once.
             int count = this.Amount.Length;
             Buffer.AddInt32( ReadStyle.NonNeg, count );
-            for (int x = 0; x < count; x++)
+            for ( int x = 0; x < count; x++ )
             {
                 Buffer.AddInt32( ReadStyle.NonNeg, this.Amount[x] );
                 Buffer.AddInt32( ReadStyle.NonNeg, this.Capacity[x] );
@@ -61,14 +55,15 @@ namespace SKCivilianIndustry
             }
         }
 
-        /// <summary>
-        /// Used to load our data from the buffer.
-        /// </summary>
-        /// <remarks>
-        /// Make sure that laoding order is the same as the saving order.</remarks>
-        /// <param name="Buffer"></param>
-        public CivilianCargo( ArcenDeserializationBuffer Buffer )
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                Amount = new int[(int)CivilianResource.Length];
+                Capacity = new int[(int)CivilianResource.Length];
+                PerSecond = new int[(int)CivilianResource.Length];
+            }
+
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             // Lists require a special touch to load.
             // We'll have saved the number of items stored up above to be used here to determine the number of items to load.

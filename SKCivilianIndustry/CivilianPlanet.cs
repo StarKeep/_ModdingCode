@@ -1,9 +1,4 @@
 ﻿using Arcen.Universal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SKCivilianIndustry
 {
@@ -21,18 +16,18 @@ namespace SKCivilianIndustry
 
         public CivilianPlanet() { }
 
-        /// <summary>
-        /// Used to save data
-        /// </summary>
-        public void SerializeTo(ArcenSerializationBuffer Buffer)
+        public CivilianPlanet( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+
+        public void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, this.Version );
             Buffer.AddByte( ReadStyleByte.Normal, (byte)this.Resource );
         }
-        /// <summary>
-        /// Used to load data. Make sure the loading order is the same as the saving order.
-        /// </summary>
-        public CivilianPlanet(ArcenDeserializationBuffer Buffer)
+
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             this.Resource = (CivilianResource)Buffer.ReadByte( ReadStyleByte.Normal );

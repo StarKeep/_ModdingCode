@@ -1,11 +1,4 @@
-﻿using Arcen.AIW2.Core;
-using Arcen.Universal;
-using SKCivilianIndustry.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Arcen.Universal;
 
 namespace SKCivilianIndustry
 {
@@ -27,25 +20,20 @@ namespace SKCivilianIndustry
         // Following two functions are used for saving, and loading data.
         public CivilianWorld() { }
 
-        /// <summary>
-        /// Used to save data to buffer.
-        /// </summary>
-        public void SerializeTo(ArcenSerializationBuffer Buffer)
+        public CivilianWorld( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+
+        public void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 1 );
             Buffer.AddItem( GeneratedResources );
         }
 
-        /// <summary>
-        /// Used to load our data.
-        /// </summary>
-        /// <remarks>
-        /// Make sure that loading order is the same as the saving order.
-        /// </remarks>
-        /// <param name="Buffer"></param>
-        public CivilianWorld(ArcenDeserializationBuffer Buffer)
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            Version = Buffer.ReadInt32(ReadStyle.NonNeg );
+            Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             this.GeneratedResources = Buffer.ReadBool();
         }
     }
