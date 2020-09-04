@@ -10,6 +10,7 @@
     type="SpecialFaction"
     can_be_targeted_by_annoyed_non_human_units="true"
     must_be_at_most_one="true"
+    player_discoverable="true"
     description="A (relatively) small Dyson Mothership is scouring the galaxy looking for resources. It appears weak, but whoes to say what would happen if this ship manages to achieve its goal?
     
 This Mothership will work to gather resources and rebuild Zenith control over the galaxy, completely consuming Metal Generators to produce defensive structures to secure territory it considers its own. Time will tell if you'll have a place in this new Zenith takeover.
@@ -20,8 +21,6 @@ This Mothership will work to gather resources and rebuild Zenith control over th
     <custom_field name="ExtraStrongMode" display_name="Fully Awakened" description="Enable this setting to unleash the full power of the Mothership. With this enabled, she will become a major player early on, even at Intensity 1.
 This is dedicated to people who like unfair challenges. She will ignore many of her normal restrictions, and will quickly carve out sections of the galaxy for her own use. Be warned."
               sort_group="250" setting_type="CustomDropdownArbitraryOptions" arbitrary_options="Enabled,Disabled" default_option="Disabled" />
-	  <custom_field name="ImmediateAppearance" display_name="Active" description="If disabled, the Mothership starts the game sleeping. You must find and hack the Ancient Node in order to awaken her."
-                    sort_group="300" setting_type="BoolToggle" default="true" />
   </faction>
   <!-- Protectors are a subfaction that are placed by the Precursors on planets that need protected.
   They are not as strong as the Suppressors, but allow the existence of aliens the Dyson consider friendly. -->
