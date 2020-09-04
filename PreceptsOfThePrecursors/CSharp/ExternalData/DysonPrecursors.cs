@@ -1,8 +1,5 @@
 ﻿using Arcen.AIW2.Core;
-using Arcen.AIW2.External;
 using Arcen.Universal;
-using System;
-using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -66,7 +63,12 @@ namespace PreceptsOfThePrecursors
             IsLosingTrust = false;
             MetalGainedOrLostLastSecond = 0;
         }
-        public void SerializeTo( ArcenSerializationBuffer buffer )
+        public DysonMothershipData( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+
+        public void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             buffer.AddByte( ReadStyleByte.Normal, Level );
             buffer.AddInt32( ReadStyle.NonNeg, Resources );
@@ -89,29 +91,32 @@ namespace PreceptsOfThePrecursors
             buffer.AddInt32( ReadStyle.PosExceptNeg1, planetToBuildOn );
             buffer.AddInt32( ReadStyle.PosExceptNeg1, LastWaveGameSecond );
         }
-        public DysonMothershipData( ArcenDeserializationBuffer buffer ) : this()
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            if ( JournalEntries == null )
+                JournalEntries = new ArcenSparseLookup<string, string>();
+
             Level = buffer.ReadByte( ReadStyleByte.Normal );
-            Resources = buffer.ReadInt32( ReadStyle.NonNeg);
+            Resources = buffer.ReadInt32( ReadStyle.NonNeg );
             Mines = buffer.ReadInt16( ReadStyle.NonNeg );
             SecondsUntilRespawn = buffer.ReadInt32( ReadStyle.Signed );
-            HullWhenEnteredPlanet = buffer.ReadInt32(ReadStyle.NonNeg);
+            HullWhenEnteredPlanet = buffer.ReadInt32( ReadStyle.NonNeg );
             IsNearMine = buffer.ReadBool();
-            LastGameSecondSpawnt = buffer.ReadInt32(ReadStyle.PosExceptNeg1);
+            LastGameSecondSpawnt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             Trust = new DysonTrust( buffer );
-            int count = buffer.ReadInt32(ReadStyle.NonNeg);
+            int count = buffer.ReadInt32( ReadStyle.NonNeg );
             JournalEntries = new ArcenSparseLookup<string, string>();
             for ( int x = 0; x < count; x++ )
                 JournalEntries.AddPair( buffer.ReadString_Condensed(), buffer.ReadString_Condensed() );
 
             ReadyToMoveOn = buffer.ReadBool();
-            planetToBuildOn = buffer.ReadInt32(ReadStyle.PosExceptNeg1 );
-            LastWaveGameSecond = buffer.ReadInt32(ReadStyle.PosExceptNeg1 );
+            planetToBuildOn = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            LastWaveGameSecond = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
 
             IsGainingTrust = false;
             IsLosingTrust = false;
             MetalGainedOrLostLastSecond = 0;
-        }    
+        }
     }
     public class DysonMothershipExternalData : IArcenExternalDataPatternImplementation
     {
@@ -120,38 +125,45 @@ namespace PreceptsOfThePrecursors
 
         public static int PatternIndex;
 
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "Faction";
-
         public void ReceivePatternIndex( int Index )
         {
-            PatternIndex = Index;
+            PatternIndex = Index; //for internal use with the ExternalData code in the game engine itself
         }
         public int GetNumberOfItems()
         {
-            return 1;
-        }
-        public bool GetShouldInitializeOn( string ParentTypeName )
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, Faction)
-            return ArcenStrings.Equals( ParentTypeName, RelatedParentTypeName );
+            return 1; //for internal use with the ExternalData code in the game engine itself
         }
 
+        public Faction ParentFaction;
         public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentFaction = ParentObject as Faction;
+            if ( this.ParentFaction == null && ParentObject != null )
+                return;
+
+            //this initialization is handled by the data structure itself
             this.Data = new DysonMothershipData();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             DysonMothershipData data = (DysonMothershipData)Source[0];
-            data.SerializeTo( Buffer );
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new DysonMothershipData( Buffer );
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as DysonMothershipData).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new DysonMothershipData( Buffer );
+            }
         }
     }
     public static class DysonMothershipExternalDataExtensions
@@ -207,7 +219,12 @@ namespace PreceptsOfThePrecursors
             GameSecondBigUnitDied = 0;
             HasBeenHacked = false;
         }
-        public void SerializeTo( ArcenSerializationBuffer buffer )
+        public DysonProtoSphereData( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+
+        public void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             buffer.AddByte( ReadStyleByte.Normal, Level );
             buffer.AddInt32( ReadStyle.PosExceptNeg1, Resources );
@@ -216,13 +233,13 @@ namespace PreceptsOfThePrecursors
             buffer.AddInt32( ReadStyle.PosExceptNeg1, GameSecondBigUnitDied );
             buffer.AddItem( HasBeenHacked );
         }
-        public DysonProtoSphereData( ArcenDeserializationBuffer buffer )
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Level = buffer.ReadByte( ReadStyleByte.Normal );
-            Resources = buffer.ReadInt32(ReadStyle.PosExceptNeg1 );
+            Resources = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             Type = (ProtoSphereType)buffer.ReadByte( ReadStyleByte.Normal );
             buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            GameSecondBigUnitDied = buffer.ReadInt32(ReadStyle.PosExceptNeg1 );
+            GameSecondBigUnitDied = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             HasBeenHacked = buffer.ReadBool();
         }
     }
@@ -233,39 +250,45 @@ namespace PreceptsOfThePrecursors
         private DysonProtoSphereData Data;
 
         public static int PatternIndex;
-
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "Planet";
-
         public void ReceivePatternIndex( int Index )
         {
-            PatternIndex = Index;
+            PatternIndex = Index; //for internal use with the ExternalData code in the game engine itself
         }
         public int GetNumberOfItems()
         {
-            return 1;
-        }
-        public bool GetShouldInitializeOn( string ParentTypeName )
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, Faction)
-            return ArcenStrings.Equals( ParentTypeName, RelatedParentTypeName );
+            return 1; //for internal use with the ExternalData code in the game engine itself
         }
 
+        public Planet ParentPlanet;
         public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentPlanet = ParentObject as Planet;
+            if ( this.ParentPlanet == null && ParentObject != null )
+                return;
+
+            //this initialization is handled by the data structure itself
             this.Data = new DysonProtoSphereData();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             DysonProtoSphereData data = (DysonProtoSphereData)Source[0];
-            data.SerializeTo( Buffer );
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new DysonProtoSphereData( Buffer );
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as DysonProtoSphereData).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new DysonProtoSphereData( Buffer );
+            }
         }
     }
     public static class DysonProtoSphereExternalDataExtensions

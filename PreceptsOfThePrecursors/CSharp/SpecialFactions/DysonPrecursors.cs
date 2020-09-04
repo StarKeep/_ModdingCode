@@ -370,7 +370,7 @@ namespace PreceptsOfThePrecursors
                 if ( ExoData.StrengthRequiredForNextExo == 0 )
                 {
                     ExoData.FactionIndexOfOriginFaction = faction.FactionIndex;
-                    ExoData.FactionIndexOfExoSpawnFaction = BadgerFactionUtilityMethods.GetRandomAIFaction( Context ).FactionIndex;
+                    ExoData.FactionIndexOfExoSpawnFaction = World_AIW2.GetRandomAIFaction( Context ).FactionIndex;
                     ExoData.CurrentExoStrength = FInt.Zero;
                     ExoData.NumExosSoFar = 0;
                     ExoData.PercentToStartWarning = 75;

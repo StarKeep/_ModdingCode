@@ -1,7 +1,7 @@
-﻿using Arcen.AIW2.Core;
+﻿using System;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using System;
 
 namespace PreceptsOfThePrecursors
 {
@@ -17,14 +17,23 @@ namespace PreceptsOfThePrecursors
             TeamsAimedAtPlanet = new ArcenSparseLookup<Planet, FireteamRegiment>();
             SecondsUntilNextRespawn = 11;
         }
-        public void SerializeTo( ArcenSerializationBuffer buffer )
+        public EnclaveFactionData( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+        public void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             FireteamUtility.SerializeFireteams( buffer, Teams );
             buffer.AddInt32( ReadStyle.PosExceptNeg1, SecondsUntilNextRespawn );
         }
-        public EnclaveFactionData( ArcenDeserializationBuffer buffer ) : this()
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            FireteamUtility.DeserializeFireteams( buffer, Teams, "Roaming Enclave" );
+            if ( Teams == null )
+                Teams = new ArcenLessLinkedList<Fireteam>();
+            if ( TeamsAimedAtPlanet == null )
+                TeamsAimedAtPlanet = new ArcenSparseLookup<Planet, FireteamRegiment>();
+
+            FireteamUtility.DeserializeFireteamsAndDiscardAnyExtraLeftovers( buffer, Teams, "Roaming Enclave" );
             SecondsUntilNextRespawn = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
         }
     }
@@ -35,38 +44,45 @@ namespace PreceptsOfThePrecursors
 
         public static int PatternIndex;
 
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "Faction";
-
         public void ReceivePatternIndex( int Index )
         {
-            PatternIndex = Index;
+            PatternIndex = Index; //for internal use with the ExternalData code in the game engine itself
         }
         public int GetNumberOfItems()
         {
-            return 1;
-        }
-        public bool GetShouldInitializeOn( string ParentTypeName )
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, Faction)
-            return ArcenStrings.Equals( ParentTypeName, RelatedParentTypeName );
+            return 1; //for internal use with the ExternalData code in the game engine itself
         }
 
+        public Faction ParentFaction;
         public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentFaction = ParentObject as Faction;
+            if ( this.ParentFaction == null && ParentObject != null )
+                return;
+
+            //this initialization is handled by the data structure itself
             this.Data = new EnclaveFactionData();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             EnclaveFactionData data = (EnclaveFactionData)Source[0];
-            data.SerializeTo( Buffer );
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new EnclaveFactionData( Buffer );
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as EnclaveFactionData).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new EnclaveFactionData( Buffer );
+            }
         }
     }
     public static class EnclaveFactionExternalDataExtensions
@@ -92,11 +108,15 @@ namespace PreceptsOfThePrecursors
         {
             SecondsUntilNextInflux = 900;
         }
-        public void SerializeTo( ArcenSerializationBuffer buffer )
+        public EnclaveWorldData( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+        public void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             buffer.AddInt32( ReadStyle.NonNeg, SecondsUntilNextInflux );
         }
-        public EnclaveWorldData( ArcenDeserializationBuffer buffer ) : this()
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             SecondsUntilNextInflux = buffer.ReadInt32( ReadStyle.NonNeg );
         }
@@ -108,9 +128,6 @@ namespace PreceptsOfThePrecursors
 
         public static int PatternIndex;
 
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "World";
-
         public void ReceivePatternIndex( int Index )
         {
             PatternIndex = Index;
@@ -119,27 +136,36 @@ namespace PreceptsOfThePrecursors
         {
             return 1;
         }
-        public bool GetShouldInitializeOn( string ParentTypeName )
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, Faction)
-            return ArcenStrings.Equals( ParentTypeName, RelatedParentTypeName );
-        }
 
+        public World ParentWorld;
         public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentWorld = ParentObject as World;
+            if ( this.ParentWorld == null && ParentObject != null )
+                return;
+
             this.Data = new EnclaveWorldData();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             EnclaveWorldData data = (EnclaveWorldData)Source[0];
-            data.SerializeTo( Buffer );
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new EnclaveWorldData( Buffer );
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as EnclaveWorldData).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new EnclaveWorldData( Buffer );
+            }
         }
     }
     public static class EnclaveWorldExternalDataExtensions
@@ -294,7 +320,7 @@ namespace PreceptsOfThePrecursors
             Faction spawnFaction = enclave.PlanetFaction.Faction.Type == FactionType.SpecialFaction ? enclave.PlanetFaction.Faction : World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( RoamingEnclavePlayerTeam ) );
             for ( int x = 0; x < StoredYounglings.GetPairCount(); x++ )
             {
-                StoredYounglings.GetPairByIndex( x ).Value.DeployYounglings( StoredYounglings.GetPairByIndex(x).Key, enclave, spawnFaction, Context );
+                StoredYounglings.GetPairByIndex( x ).Value.DeployYounglings( StoredYounglings.GetPairByIndex( x ).Key, enclave, spawnFaction, Context );
             }
             StoredYounglings = new ArcenSparseLookup<YounglingUnit, YounglingCollection>();
         }
@@ -331,7 +357,11 @@ namespace PreceptsOfThePrecursors
         {
             StoredYounglings = new ArcenSparseLookup<YounglingUnit, YounglingCollection>();
         }
-        public void SerializeTo( ArcenSerializationBuffer buffer )
+        public StoredYounglingsData( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+        public void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             int count = StoredYounglings.GetPairCount();
             buffer.AddInt32( ReadStyle.NonNeg, count );
@@ -342,8 +372,11 @@ namespace PreceptsOfThePrecursors
                 pair.Value.SerializeTo( buffer );
             }
         }
-        public StoredYounglingsData( ArcenDeserializationBuffer buffer ) : this()
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            if ( StoredYounglings == null )
+                StoredYounglings = new ArcenSparseLookup<YounglingUnit, YounglingCollection>();
+
             int count = buffer.ReadInt32( ReadStyle.NonNeg );
             for ( int x = 0; x < count; x++ )
                 StoredYounglings.AddPair( (YounglingUnit)buffer.ReadByte( ReadStyleByte.Normal ), new YounglingCollection( buffer ) );
@@ -356,39 +389,45 @@ namespace PreceptsOfThePrecursors
         private StoredYounglingsData Data;
 
         public static int PatternIndex;
-
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "GameEntity_Squad";
-
         public void ReceivePatternIndex( int Index )
         {
-            PatternIndex = Index;
+            PatternIndex = Index; //for internal use with the ExternalData code in the game engine itself
         }
         public int GetNumberOfItems()
         {
-            return 1;
-        }
-        public bool GetShouldInitializeOn( string ParentTypeName )
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, Faction)
-            return ArcenStrings.Equals( ParentTypeName, RelatedParentTypeName );
+            return 1; //for internal use with the ExternalData code in the game engine itself
         }
 
+        public GameEntity_Squad ParentSquad;
         public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentSquad = ParentObject as GameEntity_Squad;
+            if ( this.ParentSquad == null && ParentObject != null )
+                return;
+
+            //this initialization is handled by the data structure itself
             this.Data = new StoredYounglingsData();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             StoredYounglingsData data = (StoredYounglingsData)Source[0];
-            data.SerializeTo( Buffer );
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new StoredYounglingsData( Buffer );
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as StoredYounglingsData).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new StoredYounglingsData( Buffer );
+            }
         }
     }
     public static class StoredYounglingsExternalDataExtensions

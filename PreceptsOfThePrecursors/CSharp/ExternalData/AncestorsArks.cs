@@ -13,7 +13,12 @@ namespace PreceptsOfThePrecursors
         {
             JournalEntries = new ArcenSparseLookup<string, string>();
         }
-        public void SerializeTo( ArcenSerializationBuffer buffer )
+        public AncestorsArksData( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+
+        public void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             int count = JournalEntries.GetPairCount();
             buffer.AddInt32( ReadStyle.NonNeg, count );
@@ -24,7 +29,7 @@ namespace PreceptsOfThePrecursors
                 buffer.AddString_Condensed( pair.Value );
             }
         }
-        public AncestorsArksData( ArcenDeserializationBuffer buffer )
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             int count = buffer.ReadInt32( ReadStyle.NonNeg );
             JournalEntries = new ArcenSparseLookup<string, string>();
@@ -39,9 +44,6 @@ namespace PreceptsOfThePrecursors
 
         public static int PatternIndex;
 
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "World";
-
         public void ReceivePatternIndex( int Index )
         {
             PatternIndex = Index;
@@ -50,27 +52,36 @@ namespace PreceptsOfThePrecursors
         {
             return 1;
         }
-        public bool GetShouldInitializeOn( string ParentTypeName )
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, Faction)
-            return ArcenStrings.Equals( ParentTypeName, RelatedParentTypeName );
-        }
 
+        public World ParentWorld;
         public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentWorld = ParentObject as World;
+            if ( this.ParentWorld == null && ParentObject != null )
+                ArcenDebugging.ArcenDebugLogSingleLine( "DarkSpireExternalData: Tried to initialize Parent object as World, but type was " + ParentObject.GetType(), Verbosity.ShowAsError );
+
             this.Data = new AncestorsArksData();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             AncestorsArksData data = (AncestorsArksData)Source[0];
-            data.SerializeTo( Buffer );
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new AncestorsArksData( Buffer );
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as AncestorsArksData).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new AncestorsArksData( Buffer );
+            }
         }
     }
     public static class AncestorsArksExternalDataExtensions
@@ -100,15 +111,22 @@ namespace PreceptsOfThePrecursors
         {
             ships = new string[3];
         }
-        public void SerializeTo( ArcenSerializationBuffer buffer )
+        public ScrapyardData( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+
+        public void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             byte count = (byte)ships.Length;
             buffer.AddByte( ReadStyleByte.Normal, count );
             for ( byte x = 0; x < count; x++ )
                 buffer.AddString_Condensed( ships[x] );
         }
-        public ScrapyardData( ArcenDeserializationBuffer buffer ) : this()
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            if ( ships == null )
+                ships = new string[3];
             byte count = buffer.ReadByte( ReadStyleByte.Normal );
             for ( byte x = 0; x < count; x++ )
                 ships[x] = buffer.ReadString_Condensed();
@@ -120,39 +138,45 @@ namespace PreceptsOfThePrecursors
         private ScrapyardData Data;
 
         public static int PatternIndex;
-
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "GameEntity_Squad";
-
         public void ReceivePatternIndex( int Index )
         {
-            PatternIndex = Index;
+            PatternIndex = Index; //for internal use with the ExternalData code in the game engine itself
         }
         public int GetNumberOfItems()
         {
-            return 1;
-        }
-        public bool GetShouldInitializeOn( string ParentTypeName )
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, Faction)
-            return ArcenStrings.Equals( ParentTypeName, RelatedParentTypeName );
+            return 1; //for internal use with the ExternalData code in the game engine itself
         }
 
+        public GameEntity_Squad ParentSquad;
         public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentSquad = ParentObject as GameEntity_Squad;
+            if ( this.ParentSquad == null && ParentObject != null )
+                return;
+
+            //this initialization is handled by the data structure itself
             this.Data = new ScrapyardData();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             ScrapyardData data = (ScrapyardData)Source[0];
-            data.SerializeTo( Buffer );
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new ScrapyardData( Buffer );
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as ScrapyardData).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new ScrapyardData( Buffer );
+            }
         }
     }
     public static class ScrapyardExternalDataExtensions

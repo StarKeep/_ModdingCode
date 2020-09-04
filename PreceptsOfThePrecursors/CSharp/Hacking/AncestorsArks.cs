@@ -18,7 +18,7 @@ namespace PreceptsOfThePrecursors
         {
             Faction spawnFaction = World_AIW2.Instance.GetFactionByIndex( planet.InitialOwningAIFactionIndex );
             if ( spawnFaction == null )
-                spawnFaction = BadgerFactionUtilityMethods.GetRandomAIFaction( Context );
+                spawnFaction = World_AIW2.GetRandomAIFaction( Context );
             FInt mult = GetHackingLevelMultiplier( spawnFaction );
 
             FInt budget = FInt.Zero;
@@ -39,7 +39,7 @@ namespace PreceptsOfThePrecursors
         {
             Faction spawnFaction = World_AIW2.Instance.GetFactionByIndex( planet.InitialOwningAIFactionIndex );
             if ( spawnFaction == null )
-                spawnFaction = BadgerFactionUtilityMethods.GetRandomAIFaction( Context );
+                spawnFaction = World_AIW2.GetRandomAIFaction( Context );
             FInt mult = GetHackingLevelMultiplier( spawnFaction );
             ExoGalacticAttackManager.SendExoGalacticAttack( ExoOptions.CreateWithDefaults( Hacker, (type.ResponseStrengthOnCompletion * mult * 1000).GetNearestIntPreferringHigher(), spawnFaction, Hacker.PlanetFaction.Faction ), Context );
 

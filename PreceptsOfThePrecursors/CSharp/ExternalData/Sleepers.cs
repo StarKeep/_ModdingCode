@@ -20,13 +20,17 @@ namespace PreceptsOfThePrecursors
             SecondEnteredPlanet = 0;
             SecondLastTransformed = 0;
         }
-        public void SerializeTo( ArcenSerializationBuffer buffer )
+        public SleeperData( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializedIntoSelf( Buffer, false );
+        }
+        public void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             buffer.AddInt16( ReadStyle.PosExceptNeg1, planet );
             buffer.AddInt32( ReadStyle.NonNeg, SecondEnteredPlanet );
             buffer.AddInt32( ReadStyle.NonNeg, SecondLastTransformed );
         }
-        public SleeperData( ArcenDeserializationBuffer buffer ) : this()
+        public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             planet = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
             SecondEnteredPlanet = buffer.ReadInt32( ReadStyle.NonNeg );
@@ -39,39 +43,45 @@ namespace PreceptsOfThePrecursors
         private SleeperData Data;
 
         public static int PatternIndex;
-
-        // So this is essentially what type of thing we're going to 'attach' our class to.
-        public static string RelatedParentTypeName = "GameEntity_Squad";
-
         public void ReceivePatternIndex( int Index )
         {
-            PatternIndex = Index;
+            PatternIndex = Index; //for internal use with the ExternalData code in the game engine itself
         }
         public int GetNumberOfItems()
         {
-            return 1;
-        }
-        public bool GetShouldInitializeOn( string ParentTypeName )
-        {
-            // Figure out which object type has this sort of ExternalData (in this case, Faction)
-            return ArcenStrings.Equals( ParentTypeName, RelatedParentTypeName );
+            return 1; //for internal use with the ExternalData code in the game engine itself
         }
 
+        public GameEntity_Squad ParentSquad;
         public void InitializeData( object ParentObject, object[] Target )
         {
+            this.ParentSquad = ParentObject as GameEntity_Squad;
+            if ( this.ParentSquad == null && ParentObject != null )
+                return;
+
+            //this initialization is handled by the data structure itself
             this.Data = new SleeperData();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer )
+        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             SleeperData data = (SleeperData)Source[0];
-            data.SerializeTo( Buffer );
+            data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer )
+        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //reverses SerializeData; gets the date out of the buffer and populates the variables
-            Target[0] = new SleeperData( Buffer );
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                //this is a partial sync, so use existing object and write into it
+                (Target[0] as SleeperData).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
+            }
+            else
+            {
+                //this is a full sync, so create a new object
+                Target[0] = new SleeperData( Buffer );
+            }
         }
     }
     public static class SleeperExternalDataExtensions
