@@ -416,7 +416,7 @@ namespace PreceptsOfThePrecursors
 
                     chronicler.Planet.GetPlanetFactionForFaction( otherFaction ).Entities.DoForEntities( EntityRollupType.MobileCombatants, entity =>
                     {
-                        if ( entity.TypeData.IsDrone || entity.TypeData.SelfAttritionsXPercentPerSecondIfParentShipNotOnPlanet != 0 || entity.TypeData.GetHasTag( Tags.NeinzulWarChronicler.ToString() )
+                        if ( entity.TypeData.IsDrone || entity.TypeData.SelfAttritionsXPercentPerSecondIfParentShipNotOnPlanet != 0 || entity.TypeData.GetHasTag( Tags.NeinzulWarChronicler.ToString() ) )
                             return DelReturn.Continue;
 
                         switch ( entity.TypeData.SpecialType )
