@@ -32,9 +32,25 @@ namespace PreceptsOfThePrecursors
         }
         public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            planet = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
-            SecondEnteredPlanet = buffer.ReadInt32( ReadStyle.NonNeg );
-            SecondLastTransformed = buffer.ReadInt32( ReadStyle.NonNeg );
+            if ( IsForPartialSyncDuringMultiplayer )
+                DeserializedChangedValuesIntoSelf( buffer );
+            else
+            {
+                planet = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
+                SecondEnteredPlanet = buffer.ReadInt32( ReadStyle.NonNeg );
+                SecondLastTransformed = buffer.ReadInt32( ReadStyle.NonNeg );
+            }
+        }
+        public void DeserializedChangedValuesIntoSelf( ArcenDeserializationBuffer buffer )
+        {
+            short readShort = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
+            planet = planet != readShort ? readShort : planet;
+
+            int readInt = buffer.ReadInt32( ReadStyle.NonNeg );
+            SecondEnteredPlanet = SecondEnteredPlanet != readInt ? readInt : SecondEnteredPlanet;
+
+            readInt = buffer.ReadInt32( ReadStyle.NonNeg );
+            SecondLastTransformed = SecondLastTransformed != readInt ? readInt : SecondLastTransformed;
         }
     }
     public class SleeperExternalData : IArcenExternalDataPatternImplementation

@@ -855,6 +855,16 @@ namespace PreceptsOfThePrecursors
         protected override string TracingName => "RoamingEnclave";
         protected override bool EverNeedsToRunLongRangePlanning => false;
 
+        public override void WriteTextToSecondLineOfLeftSidebarInLobby( ConfigurationForFaction FactionConfig, Faction FactionOrNull, ArcenDoubleCharacterBuffer buffer )
+        {
+            string value = FactionConfig.GetValueForCustomFieldOrDefaultValue( "Intensity" );
+            bool hasAdded = false;
+            if ( value != null )
+            {
+                hasAdded = true;
+                buffer.Add( "Strength: " ).Add( value );
+            }
+        }
         public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             if ( BaseRoamingEnclave.SecondsPerUnitProduction == null )

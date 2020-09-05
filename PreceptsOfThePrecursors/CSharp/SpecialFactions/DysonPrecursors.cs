@@ -226,6 +226,26 @@ namespace PreceptsOfThePrecursors
         protected override string TracingName => "DysonPrecursors";
         protected override bool EverNeedsToRunLongRangePlanning => true;
 
+        public override void WriteTextToSecondLineOfLeftSidebarInLobby( ConfigurationForFaction FactionConfig, Faction FactionOrNull, ArcenDoubleCharacterBuffer buffer )
+        {
+            string value = FactionConfig.GetValueForCustomFieldOrDefaultValue( "Intensity" );
+            bool hasAdded = false;
+            if ( value != null )
+            {
+                hasAdded = true;
+                buffer.Add( "Strength: " ).Add( value );
+            }
+            value = FactionConfig.GetValueForCustomFieldOrDefaultValue( "ExtraStrongMode" );
+            if ( value != null  )
+            {
+                if ( hasAdded )
+                    buffer.Add( "    " );
+                else
+                    hasAdded = true;
+                buffer.Add( "Fully Awoken: " ).Add( value );
+            }
+        }
+
         public ArcenSparseLookup<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>> WormholeCommands { get; set; }
         public ArcenSparseLookup<Planet, ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>> MovementCommands { get; set; }
 

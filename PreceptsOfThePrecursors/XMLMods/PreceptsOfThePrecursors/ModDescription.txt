@@ -1,15 +1,27 @@
-A fan made expansion pack consisting of three parts: The Dyson Precursors, The Roaming Enclaves, and The Goon Squad.
+A fan made expansion pack.
 
 Dyson Precursors:
-A (relatively) small Dyson Mothership is scouring the galaxy looking for resources. It appears weak, but whoes to say what would happen if this ship manages to achieve its goal?
-This Mothership will work to gather resources and rebuild Zenith control over the galaxy, completely consuming Metal Generators to produce Dyson Nodes to secure territory it considers its own.
-Time will tell if you'll have a place in this new Zenith empire.
+An initially weak Dyson Mothership will scour the galaxy, consuming mines whole in order to expand its area of influence.
 
 Neinzul Enclave Migration:
-A grand migration, the Neinzul are returning to the galaxy. Lead by individually weak Enclaves, these Neinzul desire to continue their legacy, and will stake their claim to the galaxy with various Hives.
-Should you deem the cost worthy, you'll find yourself housing a new species within your borders, using vast swarms of Younglings and Clanlings to bolster your empire.
-Be wary, for you are not the Enclaves' only potential ally.
+Roaming Enclaves have arrived into the galaxy, and will build Hives and protect whatever faction they have called their home.
 
 Ancestors' Arks:
-While war has been a fairly to the point business throughout human history, there have been many outliers in the traditional design sense.
-A large number of exotic centerpieces have been found in the galaxy. It is up to us to claim them for our own use.
+A large quantity of exceptionally odd Arks can be found all around the galaxy. In addition, the brand new Scrapyard will allow you a greater choice in what Arks you desire.
+
+Sleepers:
+A large number of defensive powerhouses, inactive at first. Can be awoken by you or your enemies in order to gain a powerful defensive ally.
+
+Neinzul War Chroniclers:
+Drawn to conflict, these Neinzul will warp into fights between opposing factions, and base future fleet layouts on the ships they see.
+
+Credits:
+Programmer and Lead Developer: StarKelp
+Developer: !YCARCOMED ?YCARCOMED
+
+Thanks to:
+RocketAssistedPuffin; feedback and balance assistance
+CRZgatecrusher; inspiration for Neinzul War Chroniclers
+
+Additional thanks to the many testers that helped in many different aspects;
+Oryutzen, gigastar, ArnaudB, ANGRYABOUTELVES

@@ -31,10 +31,31 @@ namespace PreceptsOfThePrecursors
         }
         public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            if ( IsForPartialSyncDuringMultiplayer )
+                DeserializedChangedValuesIntoSelf( buffer );
+            else
+            {
+                int count = buffer.ReadInt32( ReadStyle.NonNeg );
+                JournalEntries = new ArcenSparseLookup<string, string>();
+                for ( int x = 0; x < count; x++ )
+                    JournalEntries.AddPair( buffer.ReadString_Condensed(), buffer.ReadString_Condensed() );
+            }
+        }
+        public void DeserializedChangedValuesIntoSelf( ArcenDeserializationBuffer buffer )
+        {
+            if ( JournalEntries == null )
+                JournalEntries = new ArcenSparseLookup<string, string>();
+
             int count = buffer.ReadInt32( ReadStyle.NonNeg );
-            JournalEntries = new ArcenSparseLookup<string, string>();
             for ( int x = 0; x < count; x++ )
-                JournalEntries.AddPair( buffer.ReadString_Condensed(), buffer.ReadString_Condensed() );
+            {
+                string key = buffer.ReadString_Condensed();
+                string value = buffer.ReadString_Condensed();
+                if ( JournalEntries.GetHasKey( key ) && JournalEntries[key] != value )
+                    JournalEntries[key] = value;
+                else
+                    JournalEntries.AddPair( key, value );
+            }
         }
     }
     public class AncestorsArksExternalData : IArcenExternalDataPatternImplementation
@@ -58,7 +79,7 @@ namespace PreceptsOfThePrecursors
         {
             this.ParentWorld = ParentObject as World;
             if ( this.ParentWorld == null && ParentObject != null )
-                ArcenDebugging.ArcenDebugLogSingleLine( "DarkSpireExternalData: Tried to initialize Parent object as World, but type was " + ParentObject.GetType(), Verbosity.ShowAsError );
+                ArcenDebugging.ArcenDebugLogSingleLine( "AncestorsArksExternalData: Tried to initialize Parent object as World, but type was " + ParentObject.GetType(), Verbosity.ShowAsError );
 
             this.Data = new AncestorsArksData();
             Target[0] = this.Data;
@@ -125,11 +146,28 @@ namespace PreceptsOfThePrecursors
         }
         public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            if ( ships == null )
+            if ( IsForPartialSyncDuringMultiplayer )
+                DeserializedChangedValuesIntoSelf( buffer );
+            else
+            {
                 ships = new string[3];
+                byte count = buffer.ReadByte( ReadStyleByte.Normal );
+                for ( byte x = 0; x < count; x++ )
+                    ships[x] = buffer.ReadString_Condensed();
+            }
+        }
+        public void DeserializedChangedValuesIntoSelf( ArcenDeserializationBuffer buffer )
+        {
             byte count = buffer.ReadByte( ReadStyleByte.Normal );
+            if ( ships == null || ships.Length != count )
+                ships = new string[count];
+
             for ( byte x = 0; x < count; x++ )
-                ships[x] = buffer.ReadString_Condensed();
+            {
+                string value = buffer.ReadString_Condensed();
+                if ( ships[x] != value )
+                    ships[x] = value;
+            }
         }
     }
     public class ScrapyardExternalData : IArcenExternalDataPatternImplementation

@@ -28,13 +28,30 @@ namespace PreceptsOfThePrecursors
         }
         public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            if ( IsForPartialSyncDuringMultiplayer )
+                DeserializedChangedValuesIntoSelf( buffer );
+            else
+            {
+                if ( Teams == null )
+                    Teams = new ArcenLessLinkedList<Fireteam>();
+                if ( TeamsAimedAtPlanet == null )
+                    TeamsAimedAtPlanet = new ArcenSparseLookup<Planet, FireteamRegiment>();
+
+                FireteamUtility.DeserializeFireteamsAndDiscardAnyExtraLeftovers( buffer, Teams, "Roaming Enclave" );
+                SecondsUntilNextRespawn = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            }
+        }
+        public void DeserializedChangedValuesIntoSelf( ArcenDeserializationBuffer buffer )
+        {
             if ( Teams == null )
                 Teams = new ArcenLessLinkedList<Fireteam>();
             if ( TeamsAimedAtPlanet == null )
                 TeamsAimedAtPlanet = new ArcenSparseLookup<Planet, FireteamRegiment>();
 
             FireteamUtility.DeserializeFireteamsAndDiscardAnyExtraLeftovers( buffer, Teams, "Roaming Enclave" );
-            SecondsUntilNextRespawn = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+
+            int readInt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            SecondsUntilNextRespawn = SecondsUntilNextRespawn != readInt ? readInt : SecondsUntilNextRespawn;
         }
     }
     public class EnclaveFactionExternalData : IArcenExternalDataPatternImplementation
@@ -118,7 +135,15 @@ namespace PreceptsOfThePrecursors
         }
         public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            SecondsUntilNextInflux = buffer.ReadInt32( ReadStyle.NonNeg );
+            if ( IsForPartialSyncDuringMultiplayer )
+                DeserializedChangedValuesIntoSelf( buffer );
+            else
+                SecondsUntilNextInflux = buffer.ReadInt32( ReadStyle.NonNeg );
+        }
+        public void DeserializedChangedValuesIntoSelf( ArcenDeserializationBuffer buffer )
+        {
+            int readInt = buffer.ReadInt32( ReadStyle.NonNeg );
+            SecondsUntilNextInflux = SecondsUntilNextInflux != readInt ? readInt : SecondsUntilNextInflux;
         }
     }
     public class EnclaveWorldExternalData : IArcenExternalDataPatternImplementation
@@ -287,6 +312,8 @@ namespace PreceptsOfThePrecursors
                 UnitsByMark.AddPair( buffer.ReadByte( ReadStyleByte.Normal ), buffer.ReadInt32( ReadStyle.NonNeg ) );
             strength = buffer.ReadInt32( ReadStyle.NonNeg );
         }
+
+
     }
 
     public class StoredYounglingsData
@@ -372,6 +399,7 @@ namespace PreceptsOfThePrecursors
                 pair.Value.SerializeTo( buffer );
             }
         }
+        // TODO - This one will require more work to take the sync into account. If it ends up being a chonker; we'll deal with it.
         public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             if ( StoredYounglings == null )

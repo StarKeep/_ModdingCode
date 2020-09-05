@@ -14,6 +14,17 @@ namespace PreceptsOfThePrecursors
         protected override bool EverNeedsToRunLongRangePlanning => true;
         protected override int MinimumSecondsBetweenLongRangePlannings => 5;
 
+        public override void WriteTextToSecondLineOfLeftSidebarInLobby( ConfigurationForFaction FactionConfig, Faction FactionOrNull, ArcenDoubleCharacterBuffer buffer )
+        {
+            string value = FactionConfig.GetValueForCustomFieldOrDefaultValue( "Intensity" );
+            bool hasAdded = false;
+            if ( value != null )
+            {
+                hasAdded = true;
+                buffer.Add( "Strength: " ).Add( value );
+            }
+        }
+
         public enum UNIT_NAMES
         {
             Sleeper,

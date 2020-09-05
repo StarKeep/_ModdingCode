@@ -9,7 +9,7 @@ namespace PreceptsOfThePrecursors
 	// Considers how much trust a faction holds for players on a per planet basis.
 	public class Trust
 	{
-		private ArcenSparseLookup<short, short> trustPerPlanet;
+		protected ArcenSparseLookup<short, short> trustPerPlanet;
 		// Limit our trust values.
 		protected short maxTrust = 3000;
 		public virtual short MaxTrust( Planet planet )
@@ -166,5 +166,28 @@ namespace PreceptsOfThePrecursors
 			base.SerializeTo( buffer );
 		}
 		public DysonTrust( ArcenDeserializationBuffer buffer ) : base( buffer ) { }
+		public void PartialSync(ArcenDeserializationBuffer buffer )
+        {
+			if ( trustPerPlanet == null )
+				trustPerPlanet = new ArcenSparseLookup<short, short>();
+
+			int count = buffer.ReadInt32( ReadStyle.NonNeg );
+			for(int x = 0; x < count; x++ )
+            {
+				short key = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
+				short value = buffer.ReadInt16( ReadStyle.Signed );
+
+				if ( !trustPerPlanet.GetHasKey( key ) )
+					trustPerPlanet.AddPair( key, value );
+				else if ( trustPerPlanet[key] != value )
+					trustPerPlanet[key] = value;
+            }
+
+			short readShort = buffer.ReadInt16( ReadStyle.Signed );
+			maxTrust = maxTrust != readShort ? readShort : maxTrust;
+
+			readShort = buffer.ReadInt16( ReadStyle.Signed );
+			minTrust = minTrust != readShort ? readShort : minTrust;
+		}
 	}
 }

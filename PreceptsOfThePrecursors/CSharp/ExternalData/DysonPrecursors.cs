@@ -93,29 +93,85 @@ namespace PreceptsOfThePrecursors
         }
         public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            if ( IsForPartialSyncDuringMultiplayer )
+                DeserializedChangedValuesIntoSelf( buffer );
+            else
+            {
+                if ( JournalEntries == null )
+                    JournalEntries = new ArcenSparseLookup<string, string>();
+
+                Level = buffer.ReadByte( ReadStyleByte.Normal );
+                Resources = buffer.ReadInt32( ReadStyle.NonNeg );
+                Mines = buffer.ReadInt16( ReadStyle.NonNeg );
+                SecondsUntilRespawn = buffer.ReadInt32( ReadStyle.Signed );
+                HullWhenEnteredPlanet = buffer.ReadInt32( ReadStyle.NonNeg );
+                IsNearMine = buffer.ReadBool();
+                LastGameSecondSpawnt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+                Trust = new DysonTrust( buffer );
+                int count = buffer.ReadInt32( ReadStyle.NonNeg );
+                JournalEntries = new ArcenSparseLookup<string, string>();
+                for ( int x = 0; x < count; x++ )
+                    JournalEntries.AddPair( buffer.ReadString_Condensed(), buffer.ReadString_Condensed() );
+
+                ReadyToMoveOn = buffer.ReadBool();
+                planetToBuildOn = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+                LastWaveGameSecond = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+
+                IsGainingTrust = false;
+                IsLosingTrust = false;
+                MetalGainedOrLostLastSecond = 0;
+            }
+        }
+        public void DeserializedChangedValuesIntoSelf( ArcenDeserializationBuffer buffer )
+        {
+            byte readByte = buffer.ReadByte( ReadStyleByte.Normal );
+            Level = Level != readByte ? readByte : Level;
+
+            int readInt = buffer.ReadInt32( ReadStyle.NonNeg );
+            Resources = Resources != readInt ? readInt : Resources;
+
+            short readShort = buffer.ReadInt16( ReadStyle.NonNeg );
+            Mines = Mines != readShort ? readShort : Mines;
+
+            readInt = buffer.ReadInt32( ReadStyle.Signed );
+            SecondsUntilRespawn = SecondsUntilRespawn != readInt ? readInt : SecondsUntilRespawn;
+
+            readInt = buffer.ReadInt32( ReadStyle.NonNeg );
+            HullWhenEnteredPlanet = HullWhenEnteredPlanet != readInt ? readInt : HullWhenEnteredPlanet;
+
+            bool readBool = buffer.ReadBool();
+            IsNearMine = IsNearMine != readBool ? readBool : IsNearMine;
+
+            readInt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            LastGameSecondSpawnt = LastGameSecondSpawnt != readInt ? readInt : LastGameSecondSpawnt;
+
+            if ( Trust == null )
+                Trust = new DysonTrust( buffer );
+            else
+                Trust.PartialSync( buffer );
+
             if ( JournalEntries == null )
                 JournalEntries = new ArcenSparseLookup<string, string>();
 
-            Level = buffer.ReadByte( ReadStyleByte.Normal );
-            Resources = buffer.ReadInt32( ReadStyle.NonNeg );
-            Mines = buffer.ReadInt16( ReadStyle.NonNeg );
-            SecondsUntilRespawn = buffer.ReadInt32( ReadStyle.Signed );
-            HullWhenEnteredPlanet = buffer.ReadInt32( ReadStyle.NonNeg );
-            IsNearMine = buffer.ReadBool();
-            LastGameSecondSpawnt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            Trust = new DysonTrust( buffer );
             int count = buffer.ReadInt32( ReadStyle.NonNeg );
-            JournalEntries = new ArcenSparseLookup<string, string>();
-            for ( int x = 0; x < count; x++ )
-                JournalEntries.AddPair( buffer.ReadString_Condensed(), buffer.ReadString_Condensed() );
+            for(int x = 0; x < count; x++ )
+            {
+                string key = buffer.ReadString_Condensed();
+                string value = buffer.ReadString_Condensed();
+                if ( !JournalEntries.GetHasKey( key ) )
+                    JournalEntries.AddPair( key, value );
+                else if ( JournalEntries[key] != value )
+                    JournalEntries[key] = value;
+            }
 
-            ReadyToMoveOn = buffer.ReadBool();
-            planetToBuildOn = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            LastWaveGameSecond = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            readBool = buffer.ReadBool();
+            ReadyToMoveOn = ReadyToMoveOn != readBool ? readBool : ReadyToMoveOn;
 
-            IsGainingTrust = false;
-            IsLosingTrust = false;
-            MetalGainedOrLostLastSecond = 0;
+            readInt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            planetToBuildOn = planetToBuildOn != readInt ? readInt : planetToBuildOn;
+
+            readInt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            LastWaveGameSecond = LastWaveGameSecond != readInt ? readInt : LastWaveGameSecond;
         }
     }
     public class DysonMothershipExternalData : IArcenExternalDataPatternImplementation
@@ -235,12 +291,36 @@ namespace PreceptsOfThePrecursors
         }
         public void DeserializedIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            Level = buffer.ReadByte( ReadStyleByte.Normal );
-            Resources = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            Type = (ProtoSphereType)buffer.ReadByte( ReadStyleByte.Normal );
+            if ( IsForPartialSyncDuringMultiplayer )
+                DeserializedChangedValuesIntoSelf( buffer );
+            {
+                Level = buffer.ReadByte( ReadStyleByte.Normal );
+                Resources = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+                Type = (ProtoSphereType)buffer.ReadByte( ReadStyleByte.Normal );
+                buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+                GameSecondBigUnitDied = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+                HasBeenHacked = buffer.ReadBool();
+            }
+        }
+        public void DeserializedChangedValuesIntoSelf( ArcenDeserializationBuffer buffer )
+        {
+            byte readByte = buffer.ReadByte( ReadStyleByte.Normal );
+            Level = Level != readByte ? readByte : Level;
+
+            int readInt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            Resources = Resources != readInt ? readInt : Resources;
+
+            readByte = buffer.ReadByte( ReadStyleByte.Normal );
+            ProtoSphereType type = (ProtoSphereType)readByte;
+            Type = Type != type ? type : Type;
+
             buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            GameSecondBigUnitDied = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            HasBeenHacked = buffer.ReadBool();
+
+            readInt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            GameSecondBigUnitDied = GameSecondBigUnitDied != readInt ? readInt : GameSecondBigUnitDied;
+
+            bool readBool = buffer.ReadBool();
+            HasBeenHacked = HasBeenHacked != readBool ? readBool : HasBeenHacked;
         }
     }
 
