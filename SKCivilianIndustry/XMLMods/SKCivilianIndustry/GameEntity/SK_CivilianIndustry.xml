@@ -41,7 +41,7 @@
     -->
     <entity name="TradeStation" display_name="Trade Station"
             description="The center of trade for this planet. Upgraded by Economic and Logistic Command and Metal Generation Tech."
-            tags="CivilianIndustryEntity,TradeStation,ShowsOnNormalDisplayMode"
+            tags="CivilianIndustryEntity,TradeStation,ShowsOnNormalDisplayMode,CenterOfTrade"
             visuals="assets/_finalgamemeshes/humanbuildings/spacedock/spacedock.prefab"
             gimbal_name="AstroTrainStation"
             icon_name="Ships1/AstroTrainStation" gimbal_icon_size_multiplier="1.5"
@@ -71,7 +71,7 @@
                     Build by player-controlled Battlestations and Citadels
                     Acts like partial-potency trade stations.
     -->
-    <entity name="TradePost" display_name="Trade Post" copy_from="TradeStation" tags="CivilianIndustryEntity,TradePost"
+    <entity name="TradePost" display_name="Trade Post" copy_from="TradeStation" tags="CivilianIndustryEntity,TradePost,CenterOfTrade"
                 build_sidebar_categories_i_am_part_of="MilitiaBuildings"
                 special_entity_type="NPCFactionCenterpiece"
                 description="A military funded trade post. Upgraded by Economic and Logistic Command and Metal Generation Tech."

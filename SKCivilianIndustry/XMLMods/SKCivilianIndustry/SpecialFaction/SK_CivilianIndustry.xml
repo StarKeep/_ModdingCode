@@ -13,6 +13,6 @@
           sort_group="200" setting_type="IntSlider" default="5" min="1" max="10" />
     <custom_field name="Allegiance" display_name="Allegiance" description="What team will this industry support?"
           sort_group="250" setting_type="CustomDropdownArbitraryOptions" 
-          arbitrary_options="Player Team,Minor Faction Team Red,Minor Faction Team Blue,Minor Faction Team Green" default_option="Player Team" />
+          arbitrary_options="Player Team,AI Team,Minor Faction Team Red,Minor Faction Team Blue,Minor Faction Team Green" default_option="Player Team" />
   </faction>
 </root>
