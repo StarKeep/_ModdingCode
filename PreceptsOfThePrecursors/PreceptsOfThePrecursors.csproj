@@ -92,8 +92,10 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\NeinzulWarChroniclers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\NeinzulWarChroniclers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\AncestorsArks.xml" />
@@ -104,6 +106,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\NeinzulWarChroniclers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameEntity\AncestorsArks.xml" />
@@ -116,6 +119,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ModDescription.txt" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ModIsOffByDefault.txt.txt" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\NeinzulWarChroniclers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\RoamingEnclave.xml" />
@@ -125,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CSharp\BulkPathfinding.cs" />
+    <Compile Include="CSharp\ExternalData\NeinzulWarChroniclers.cs" />
     <Compile Include="CSharp\ExternalData\Sleepers.cs" />
     <Compile Include="CSharp\ExternalData\RoamingEnclave.cs" />
     <Compile Include="CSharp\ExternalData\AncestorsArks.cs" />
@@ -136,7 +141,9 @@
     <Compile Include="CSharp\Hacking\Sleepers.cs" />
     <Compile Include="CSharp\Hacking\AncestorsArks.cs" />
     <Compile Include="CSharp\Hacking\DysonPrecursors.cs" />
+    <Compile Include="CSharp\Notifications\NeinzulWarChroniclers.cs" />
     <Compile Include="CSharp\Notifications\Sleepers.cs" />
+    <Compile Include="CSharp\SpecialFactions\NeinzulWarChroniclers.cs" />
     <Compile Include="CSharp\SpecialFactions\Sleepers.cs" />
     <Compile Include="CSharp\SpecialFactions\DysonPrecursors.cs" />
     <Compile Include="CSharp\SpecialFactions\AncestorsArks.cs" />

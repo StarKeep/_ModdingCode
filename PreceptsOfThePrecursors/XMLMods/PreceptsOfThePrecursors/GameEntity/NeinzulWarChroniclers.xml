@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<entity name="NeinzulWarChronicler"
+			tags="NeinzulWarChronicler,ShowsOnNormalDisplayMode"
+			draw_in_galaxy_view="true"
+			cannot_be_stacked="true"
+			special_entity_type="LargeShipNotStackable"
+			gimbal_icon_size_multiplier="2"
+			visuals="Assets/_FinalGameMeshes/Macrophage/Harvester/MacrophageHarvester.prefab"
+			icon_name="Ships1/MacrophageHarvester"
+			uses_large_health_bar="true"
+			category="Ship"
+			size_scale="14"
+			visuals_scale_multiplier="6"
+			y_offset_of_icon="10"
+			collision_priority="100"
+			display_name="Neinzul War Chronicler"
+			description="This notably durable ship was sent by a War Chronicler faction. Its primary purpose is to study the conflict on this planet, and it has been built in order to facilitate this. The sooner you kill this, the less data they will receive."
+			starting_mark_level="Mark1"
+			cost_for_ai_to_purchase="18000"
+			hull_points="300000" shield_points="1800000" 
+			speed="BelowAverage1" shield_size_scale="3"
+			metal_cost="1000000" energy_consumption="10000"
+			armor_mm="140" albedo="0.8" engine_gx="28" mass_tx="8"
+			health_change_per_damage_dealt="5"
+			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			voice_group="Silent" should_never_be_captured_by_another_faction="true"
+			priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="SlightlyLessExpendable"
+			>
+		<system name="SuppressionWhip" display_name="Suppression Whip"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="3000" range="AboveAverage1" shot_speed="Normal" rate_of_fire="Low"
+				shot_type_data="HeavyBeamInvisible" shots_per_salvo="3" fires_salvos_sequentially="true"
+				beam_length_multiplier="1.8"
+				hits_all_intersecting_targets="true"
+				shots_detonate_immediately="true"
+				maximum_number_of_targets_hit_per_shot="3"
+				base_paralysis_seconds_per_shot="1" paralysis_to_ships_mass_tx_less_than="8" added_target_evaluator="ParalyzerAsPrimary"
+				number_beams_to_fire="60"
+				degrees_offset_per_beam="2"	
+				>
+		</system>
+		<system name="RubberMallet" display_name="Rubber Mallet" system_is_hidden_for_ui="true"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1" range="VeryTiny1" shot_speed="Fast" rate_of_fire="High" fires_salvos_sequentially="false"
+				shot_type_data="MeleeInvisible"
+				>
+		</system>
+	</entity>
+</root>

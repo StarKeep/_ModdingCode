@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- The Roaming Enclave -->
+  <faction  
+    name="NeinzulWarChroniclers"
+    display_name="Neinzul War Chroniclers"
+    dll_name="PreceptsOfThePrecursors"
+    type_name="PreceptsOfThePrecursors.NeinzulWarChroniclers"
+    team_center_color="Black" team_border_color="Purple"
+    type="SpecialFaction"
+	impact="Moderate"
+    CanBeFriendlyToPlayer="true"
+    CanBeHostileToAll="true"
+    CanBeOnMinorFactionTeam="true"
+    description="An ancient subgroup of Neinzul have noticed the large collection of races and technology located within our galaxy, and it has peaked their interest.
+	
+They will periodically invade planets with fights occuring on them, attempting to cause chaos to mask their true intentions: To study how others make war.
+
+&lt;color=#f25e1c&gt;MEDIUM IMPACT:&lt;/color&gt; This faction can never truly hold territory, and seeks to simply sow chaos in the galaxy for its own study.
+They will send progressively larger waves to impact fights throughout the galaxy, slowly copying the makeup of ships they find.
+They are only drawn to conflict; and will rarely show their faces on peaceful worlds.">
+    <custom_field name="Intensity" display_name="Strength" description="Just how effective is this faction?"
+      sort_group="200" setting_type="IntSlider" default="5" min="1" max="10" />
+	<custom_field name="Allegiance" display_name="Allegiance" description="Is this faction friendly to the AI(s), humans, or nobody?"
+      sort_group="250" setting_type="CustomDropdownArbitraryOptions" arbitrary_options="Hostile To All,Friendly To Players,Hostile To Players Only,Minor Faction Team Red,Minor Faction Team Blue,Minor Faction Team Green" default_option="Hostile To All" />
+  </faction>
+</root>
