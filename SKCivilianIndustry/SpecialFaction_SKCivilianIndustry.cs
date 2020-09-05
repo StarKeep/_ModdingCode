@@ -432,6 +432,11 @@ namespace SKCivilianIndustry
                             return DelReturn.Continue;
                     }
 
+                    // Skip if we can't safely reach it.
+                    GameEntity_Squad grandStation = World_AIW2.Instance.GetEntityByID_Squad( factionData.GrandStation );
+                    if ( grandStation == null || Fireteam.GetDangerOfPath( faction, Context, grandStation.Planet, planet, true, out short _ ) > 10000 )
+                        return DelReturn.Continue;
+
                     // No trade station found for this planet. Create one.
                     // Load in our trade station's data.
                     GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "TradeStation" );
@@ -501,6 +506,11 @@ namespace SKCivilianIndustry
                     }
 
                     if ( alreadyBuilt )
+                        return DelReturn.Continue;
+
+                    // Skip if we can't safely reach it.
+                    GameEntity_Squad grandStation = World_AIW2.Instance.GetEntityByID_Squad( factionData.GrandStation );
+                    if ( grandStation == null || Fireteam.GetDangerOfPath( faction, Context, grandStation.Planet, workingPlanet, true, out short _ ) > 10000 )
                         return DelReturn.Continue;
 
                     LongRangePlanningData_PlanetFaction workingData = workingPlanet.LongRangePlanningData.PlanetFactionDataByIndex[alignedFaction.FactionIndex];
