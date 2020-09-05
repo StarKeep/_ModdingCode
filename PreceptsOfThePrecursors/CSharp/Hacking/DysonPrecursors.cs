@@ -259,6 +259,7 @@ namespace PreceptsOfThePrecursors
     }
     public class Hacking_AwakenDysonPrecursors : BaseHackingImplementation
     {
+        public static bool IsActive = false;
         public override Hackable GetCanBeHacked( GameEntity_Squad Target, GameEntity_Squad HackerOrNull, Planet planet, Faction HackerFaction, HackingType Type, string RelatedStringOrNull, int RelatedIntOrNull, out string RejectionReasonDescription )
         {
             Hackable result = base.GetCanBeHacked( Target, HackerOrNull, planet, HackerFaction, Type, RelatedStringOrNull, RelatedIntOrNull, out RejectionReasonDescription );
@@ -271,6 +272,7 @@ namespace PreceptsOfThePrecursors
         }
         public override void DoOneSecondOfHackingLogic_AsPartOfMainSim( GameEntity_Squad Target, Planet planet, GameEntity_Squad Hacker, ArcenSimContext Context, HackingType type, HackingEvent Event )
         {
+            IsActive = true;
             // Spawn drones. small ones every second, big one every 10 seconds. Use the Suppressor faction.
             Faction spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
             GameEntityTypeData sentinelData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderDecaying" );

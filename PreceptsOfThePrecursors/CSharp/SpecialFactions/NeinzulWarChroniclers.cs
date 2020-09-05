@@ -325,8 +325,38 @@ namespace PreceptsOfThePrecursors
             if ( chronicler != null )
             {
                 chronicler.Despawn( Context, true, InstancedRendererDeactivationReason.IFinishedMyJob );
-                factionData.PersonalBudget += (1000000 / 10) * Intensity; // Refund based on intensity.
+                factionData.PersonalBudget += 1000000; // Refund.
             }
+
+            pFaction.Entities.DoForEntities( EntityRollupType.MobileCombatants, entity =>
+            {
+                if ( entity.TypeData.IsDrone )
+                    return DelReturn.Continue;
+
+                switch ( entity.TypeData.SpecialType )
+                {
+                    case SpecialEntityType.AIKingMobile:
+                    case SpecialEntityType.FactoryForPlayerMobileFleets:
+                    case SpecialEntityType.DroneGeneral:
+                    case SpecialEntityType.NPCFactionCenterpiece:
+                    case SpecialEntityType.MobileSupportFleetFlagship:
+                    case SpecialEntityType.MobileStrikeCombatFleetFlagship:
+                    case SpecialEntityType.DroneFrigate:
+                    case SpecialEntityType.MobileCustomStrikeCombatFleetFlagship:
+                    case SpecialEntityType.Minefield:
+                    case SpecialEntityType.Buttress:
+                    case SpecialEntityType.Length:
+                        return DelReturn.Continue;
+                    default:
+                        break;
+                }
+
+                // We spend 20% of each unit's cost, which is 10x the unit's strength, to send.
+                // If the unit survives, refund the 20%.
+                factionData.AddBudget( entity, entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 2 );
+
+                return DelReturn.Continue;
+            } );
 
             pFaction.Entities.DoForEntities( other =>
             {

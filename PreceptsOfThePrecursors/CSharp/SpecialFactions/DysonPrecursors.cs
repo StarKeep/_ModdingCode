@@ -236,7 +236,7 @@ namespace PreceptsOfThePrecursors
                 buffer.Add( "Strength: " ).Add( value );
             }
             value = FactionConfig.GetValueForCustomFieldOrDefaultValue( "ExtraStrongMode" );
-            if ( value != null  )
+            if ( value != null )
             {
                 if ( hasAdded )
                     buffer.Add( "    " );
@@ -261,6 +261,26 @@ namespace PreceptsOfThePrecursors
         public AntiMinorFactionWaveData WaveData;
         public ExoData ExoData;
         public static ArcenSparseLookup<Planet, GameEntity_Squad[]> DysonNodes;
+        public static bool Sleeping
+        {
+            get
+            {
+                {
+                    Faction faction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonPrecursors ) );
+                    if ( !faction.MustBeAwakenedByPlayer )
+                        return false;
+                    if ( faction.HasBeenAwakenedByPlayer )
+                        return false;
+                    if ( Hacking_AwakenDysonPrecursors.IsActive )
+                    {
+                        Hacking_AwakenDysonPrecursors.IsActive = false;
+                        return false;
+                    }
+
+                    return true;
+                }
+            }
+        }
 
         // Special. This will only ever be false once. Never set it back to false unless the game restarts.
         public static bool HeadersAppliedToOldJournals = false;
@@ -2069,6 +2089,8 @@ namespace PreceptsOfThePrecursors
         {
             enemyThisFactionToAll( faction );
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
+            if ( DysonPrecursors.Sleeping )
+                allyThisFactionToEveryoneButPlayers( faction );
         }
 
         public override void DoOnAnyDeathLogic( GameEntity_Squad entity, DamageSource Damage, EntitySystem FiringSystemOrNull, ArcenSimContext Context )

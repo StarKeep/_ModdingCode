@@ -6,8 +6,8 @@
 	custom_int_NeinzulWarChroniclers_SecondsPerMarkUpBase="3600"
 	custom_int_NeinzulWarChroniclers_SecondsPerMarkUpDecreasePerIntensity="150"
 	
-	custom_int_NeinzulWarChroniclers_BudgetPerSecondBase="100"
-	custom_int_NeinzulWarChroniclers_BudgetPerSecondIncreasePerIntensity="25"
+	custom_int_NeinzulWarChroniclers_BudgetPerSecondBase="50"
+	custom_int_NeinzulWarChroniclers_BudgetPerSecondIncreasePerIntensity="50"
 	
 	custom_int_NeinzulWarChroniclers_SecondsOfConflictRequiredForArrival="90"
 	custom_int_NeinzulWarChroniclers_SecondsOfPeaceRequiredForDeparture="30"
