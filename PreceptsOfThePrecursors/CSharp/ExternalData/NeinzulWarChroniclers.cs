@@ -61,7 +61,7 @@ namespace PreceptsOfThePrecursors
             if ( !BudgetGenerated[entity.TypeData.InternalName].GetHasKey( entity.CurrentMarkLevel ) )
                 BudgetGenerated[entity.TypeData.InternalName].AddPair( entity.CurrentMarkLevel, 0 );
 
-            int capacity = entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 1000;
+            int capacity = entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 500;
 
             BudgetGenerated[entity.TypeData.InternalName][entity.CurrentMarkLevel] = Math.Min( capacity, BudgetGenerated[entity.TypeData.InternalName][entity.CurrentMarkLevel] + budgetToAdd );
         }

@@ -168,13 +168,13 @@ namespace PreceptsOfThePrecursors
 
         public void UpdatePersonalBudget( Faction faction, ArcenSimContext Context )
         {
-            int baseIncrease = 1500;
-            int increaseFromIntensity = Intensity * 150;
-            int capacity = 1 + Intensity / 2;
+            int baseIncrease = 500;
+            int increaseFromIntensity = Intensity * 50;
+            int capacity = 1 + Intensity / 3;
             int budgetCapacity = 1000000 * capacity;
 
             // Infuse them with a free early game spawn. Free of charge.
-            if ( World_AIW2.Instance.GameSecond == 5 )
+            if ( World_AIW2.Instance.GameSecond == 30 )
                 factionData.PersonalBudget += 1000000;
 
             factionData.PersonalBudget = Math.Min( factionData.PersonalBudget + baseIncrease + increaseFromIntensity, budgetCapacity );
@@ -219,7 +219,26 @@ namespace PreceptsOfThePrecursors
             List<Planet> conflictPlanets = new List<Planet>();
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                if ( PlanetHasConflict( planet, faction ) && Context.RandomToUse.Next( 100 ) > 10 )
+                bool alreadyAimedAt = false;
+                World_AIW2.Instance.DoForFactions( otherFaction =>
+                {
+                    if ( faction == otherFaction )
+                        return DelReturn.Continue;
+
+                    if (otherFaction.Implementation is NeinzulWarChroniclers )
+                    {
+                        Planet factionAimedAt = (otherFaction.Implementation as NeinzulWarChroniclers).factionData.CurrentPlanetAimedAt;
+                        if (factionAimedAt != null && factionAimedAt == planet )
+                        {
+                            alreadyAimedAt = true;
+                            return DelReturn.Break;
+                        }
+                    }
+
+                    return DelReturn.Continue;
+                } );
+
+                if ( !alreadyAimedAt && PlanetHasConflict( planet, faction ) && Context.RandomToUse.Next( 100 ) > 10 )
                     conflictPlanets.Add( planet );
 
                 return DelReturn.Continue;
@@ -257,6 +276,12 @@ namespace PreceptsOfThePrecursors
                     int cost = entityData.GetForMark( subPair.Key ).StrengthPerSquad_CalculatedWithNullFleetMembership * 10;
                     int toSend = subPair.Value / cost;
 
+                    if (toSend > 50 )
+                    {
+                        toSend = 50;
+                        subPair.Value = cost * 50;
+                    }
+
                     for ( int x = 0; x < toSend; x++ )
                     {
                         GameEntity_Squad newSpawn = GameEntity_Squad.CreateNew( chronicler.PlanetFaction, entityData, subPair.Key, chronicler.PlanetFaction.FleetUsedAtPlanet, 0, chronicler.WorldLocation, Context );
@@ -264,10 +289,7 @@ namespace PreceptsOfThePrecursors
                     }
 
                     if ( toSend > 0 )
-                    {
-                        subPair.Value /= 5;
-                        subPair.Value *= 4;
-                    }
+                        subPair.Value /= 2;
 
                     return DelReturn.Continue;
                 } );
@@ -351,9 +373,9 @@ namespace PreceptsOfThePrecursors
                         break;
                 }
 
-                // We spend 20% of each unit's cost, which is 10x the unit's strength, to send.
-                // If the unit survives, refund the 20%.
-                factionData.AddBudget( entity, entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 2 );
+                // We spend 50% of each unit's cost, which is 1x the unit's strength, to send.
+                // If the unit survives, refund the 50%.
+                factionData.AddBudget( entity, entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 5 );
 
                 return DelReturn.Continue;
             } );
@@ -386,12 +408,12 @@ namespace PreceptsOfThePrecursors
             {
                 World_AIW2.Instance.DoForFactions( otherFaction =>
                 {
-                    if ( otherFaction.GetIsFriendlyTowards( faction ) )
+                    if ( otherFaction.GetIsFriendlyTowards( faction ) || otherFaction.Implementation is NeinzulWarChroniclers )
                         return DelReturn.Continue;
 
                     chronicler.Planet.GetPlanetFactionForFaction( otherFaction ).Entities.DoForEntities( EntityRollupType.MobileCombatants, entity =>
                     {
-                        if ( entity.TypeData.IsDrone )
+                        if ( entity.TypeData.IsDrone || entity.TypeData.SelfAttritionsXPercentPerSecondIfParentShipNotOnPlanet != 0 )
                             return DelReturn.Continue;
 
                         switch ( entity.TypeData.SpecialType )
