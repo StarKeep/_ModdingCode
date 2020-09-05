@@ -1146,10 +1146,11 @@ namespace SKCivilianIndustry
         // Handle assigning militia to our ThreatReports.
         public void DoMilitiaAssignment( Faction faction, ArcenSimContext Context )
         {
-            Engine_Universal.NewTimingsBeingBuilt.StartRememberingFrame( FramePartTimings.TimingType.MainSimThreadNormal, "DoMilitiaAssignment" );
-            // Skip if no threat.
-            if ( factionData.ThreatReports == null || factionData.ThreatReports.Count == 0 )
+            Planet grandPlanet = World_AIW2.Instance.GetEntityByID_Squad( factionData.GrandStation )?.Planet;
+            if ( grandPlanet == null )
                 return;
+
+            Engine_Universal.NewTimingsBeingBuilt.StartRememberingFrame( FramePartTimings.TimingType.MainSimThreadNormal, "DoMilitiaAssignment" );
 
             // Get a list of free militia leaders.
             List<GameEntity_Squad> freeMilitia = new List<GameEntity_Squad>();
@@ -1170,43 +1171,27 @@ namespace SKCivilianIndustry
             }
 
             // Deal with militia requests.
-            for ( int x = 0; x < factionData.ThreatReports.Count; x++ )
+            World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                var threatReport = factionData.ThreatReports[x].GetThreat();
-
                 // If we ran out of free militia, update our request.
                 if ( freeMilitia.Count == 0 )
                 {
                     factionData.MilitiaCounter += factionData.TradeStations.Count;
-                    break;
+                    return DelReturn.Break;
                 }
 
-                // Skip if we don't have a post on the planet.
-                GameEntity_Squad foundTradePost = null;
-                // See if we have a trade station or post on the planet.
-                for ( int y = 0; y < factionData.TradeStations.Count; y++ )
-                {
-                    GameEntity_Squad workingStation = World_AIW2.Instance.GetEntityByID_Squad( factionData.TradeStations[y] );
-                    if ( workingStation.Planet.Index != factionData.ThreatReports[x].Planet.Index )
-                        continue;
-
-                    if ( workingStation == null || workingStation.SecondsSpentAsRemains > 0 ||
-                        workingStation.SelfBuildingMetalRemaining > 0 )
-                        continue;
-
-                    foundTradePost = workingStation;
-                    break;
-                }
+                // Skip if we don't have a post on this  planet.
+                GameEntity_Squad foundTradePost = planet.GetFirstMatching( "CenterOfTrade", null, false, false );
 
                 if ( foundTradePost == null )
-                    continue;
+                    return DelReturn.Continue;
 
-                // See if any wormholes are still unassigned.
+                // If we're on a trade planet, see if any wormholes are still unassigned.
                 GameEntity_Other foundWormhole = null;
-                factionData.ThreatReports[x].Planet.DoForLinkedNeighbors( false, delegate ( Planet otherPlanet )
+                planet.DoForLinkedNeighbors( false, delegate ( Planet otherPlanet )
                 {
                     // Get its wormhole.
-                    GameEntity_Other wormhole = factionData.ThreatReports[x].Planet.GetWormholeTo( otherPlanet );
+                    GameEntity_Other wormhole = planet.GetWormholeTo( otherPlanet );
                     if ( wormhole == null )
                         return DelReturn.Continue;
 
@@ -1241,9 +1226,10 @@ namespace SKCivilianIndustry
                 } );
 
 
+
                 // If no free wormhole, try to find a free mine.
                 GameEntity_Squad foundMine = null;
-                factionData.ThreatReports[x].Planet.DoForEntities( EntityRollupType.MetalProducers, delegate ( GameEntity_Squad mineEntity )
+                planet.DoForEntities( EntityRollupType.MetalProducers, delegate ( GameEntity_Squad mineEntity )
                 {
                     if ( mineEntity.TypeData.GetHasTag( "MetalGenerator" ) )
                     {
@@ -1268,19 +1254,20 @@ namespace SKCivilianIndustry
 
                 bool advancedShipyardBuilt = false;
                 // If no free mine, see if we already have an advanced technology center on the planet, or queued to be built.
-                for ( int y = 0; y < factionData.MilitiaLeaders.Count && !advancedShipyardBuilt; y++ )
-                {
-                    GameEntity_Squad workingMilitia = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[y] );
-                    if ( workingMilitia != null &&
-                        (workingMilitia.Planet.Index == factionData.ThreatReports[x].Planet.Index && workingMilitia.TypeData.GetHasTag( "AdvancedCivilianShipyard" ))
-                        || (workingMilitia.GetCivilianMilitiaExt().Status == CivilianMilitiaStatus.PathingForShipyard &&
-                        workingMilitia.GetCivilianMilitiaExt().PlanetFocus == factionData.ThreatReports[x].Planet.Index) )
-                        advancedShipyardBuilt = true;
-                }
+                if ( foundTradePost != null )
+                    for ( int y = 0; y < factionData.MilitiaLeaders.Count && !advancedShipyardBuilt; y++ )
+                    {
+                        GameEntity_Squad workingMilitia = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[y] );
+                        if ( workingMilitia != null &&
+                            (workingMilitia.Planet == planet && workingMilitia.TypeData.GetHasTag( "AdvancedCivilianShipyard" ))
+                            || (workingMilitia.GetCivilianMilitiaExt().Status == CivilianMilitiaStatus.PathingForShipyard &&
+                            workingMilitia.GetCivilianMilitiaExt().PlanetFocus == planet.Index) )
+                            advancedShipyardBuilt = true;
+                    }
 
                 // Stop if nothing is free.
                 if ( foundWormhole == null && foundMine == null && advancedShipyardBuilt )
-                    continue;
+                    return DelReturn.Continue;
 
                 // Find the closest militia ship. Default to first in the list.
                 GameEntity_Squad militia = freeMilitia[0];
@@ -1289,7 +1276,7 @@ namespace SKCivilianIndustry
                 {
                     for ( int y = 1; y < freeMilitia.Count; y++ )
                     {
-                        if ( freeMilitia[y].Planet.GetHopsTo( factionData.ThreatReports[x].Planet ) < militia.Planet.GetHopsTo( factionData.ThreatReports[x].Planet ) )
+                        if ( freeMilitia[y].Planet.GetHopsTo( planet ) < militia.Planet.GetHopsTo( planet ) )
                             militia = freeMilitia[y];
                     }
                 }
@@ -1298,7 +1285,7 @@ namespace SKCivilianIndustry
 
                 // Update the militia's status.
                 CivilianMilitia militiaStatus = militia.GetCivilianMilitiaExt();
-                militiaStatus.PlanetFocus = factionData.ThreatReports[x].Planet.Index;
+                militiaStatus.PlanetFocus = planet.Index;
 
                 // Assign our mine or wormhole.
                 if ( foundWormhole != null )
@@ -1311,14 +1298,16 @@ namespace SKCivilianIndustry
                     militiaStatus.EntityFocus = foundMine.PrimaryKeyID;
                     militiaStatus.Status = CivilianMilitiaStatus.PathingForMine;
                 }
-                else
+                else if ( foundTradePost != null )
                 {
                     militiaStatus.Status = CivilianMilitiaStatus.PathingForShipyard;
                 }
 
                 // Save its status.
                 militia.SetCivilianMilitiaExt( militiaStatus );
-            }
+
+                return DelReturn.Continue;
+            } );
             Engine_Universal.NewTimingsBeingBuilt.FinishRememberingFrame( FramePartTimings.TimingType.MainSimThreadNormal, "DoMilitiaAssignment" );
         }
 
@@ -1358,7 +1347,7 @@ namespace SKCivilianIndustry
                     if ( militiaShip.Planet.Index != militiaStatus.PlanetFocus )
                         continue;
                     // Get its goal's station.
-                    planet.DoForEntities( delegate ( GameEntity_Squad entity )
+                    planet.DoForEntities( "CenterOfTrade", delegate ( GameEntity_Squad entity )
                     {
                         // If we find its index in our records, thats our goal station.
                         if ( factionData.TradeStations.Contains( entity.PrimaryKeyID ) )
