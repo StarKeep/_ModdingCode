@@ -175,6 +175,32 @@ namespace PreceptsOfThePrecursors
             readInt = buffer.ReadInt32( ReadStyle.NonNeg );
             SentAttacks = SentAttacks != readInt ? readInt : SentAttacks;
         }
+
+        public override string ToString()
+        {
+            if ( BudgetGenerated == null || BudgetGenerated.GetPairCount() == 0 )
+                return "No budget generated";
+
+            string output = string.Empty;
+            BudgetGenerated.DoFor( pair =>
+            {
+                output += $"Budget for {pair.Key}: ";
+                int total = 0;
+
+                pair.Value.DoFor( subPair =>
+                {
+                    output += $"{subPair.Key} - {subPair.Value}; ";
+                    total += subPair.Value;
+                    return DelReturn.Continue;
+                } );
+
+                output += $" Total: {total}\n";
+
+                return DelReturn.Continue;
+            } );
+
+            return output;
+        }
     }
     public class NeinzulWarChroniclersExternalData : IArcenExternalDataPatternImplementation
     {

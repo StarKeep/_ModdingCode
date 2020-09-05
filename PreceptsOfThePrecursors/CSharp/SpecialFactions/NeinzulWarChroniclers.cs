@@ -155,6 +155,9 @@ namespace PreceptsOfThePrecursors
 
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
+            if ( factionData != null )
+                ArcenDebugging.ArcenDebugLog( factionData.ToString(), Verbosity.DoNotShow );
+
             UpdateAllegiance( faction );
 
             UpdatePersonalBudget( faction, Context );
@@ -267,6 +270,9 @@ namespace PreceptsOfThePrecursors
 
             factionData.BudgetGenerated.DoFor( pair =>
             {
+                if ( pair.Key == Tags.NeinzulWarChronicler.ToString() )
+                    return DelReturn.RemoveAndContinue;
+
                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( pair.Key );
                 if ( entityData == null )
                     return DelReturn.RemoveAndContinue;
@@ -410,7 +416,7 @@ namespace PreceptsOfThePrecursors
 
                     chronicler.Planet.GetPlanetFactionForFaction( otherFaction ).Entities.DoForEntities( EntityRollupType.MobileCombatants, entity =>
                     {
-                        if ( entity.TypeData.IsDrone || entity.TypeData.SelfAttritionsXPercentPerSecondIfParentShipNotOnPlanet != 0 )
+                        if ( entity.TypeData.IsDrone || entity.TypeData.SelfAttritionsXPercentPerSecondIfParentShipNotOnPlanet != 0 || entity.TypeData.GetHasTag( Tags.NeinzulWarChronicler.ToString() )
                             return DelReturn.Continue;
 
                         switch ( entity.TypeData.SpecialType )
