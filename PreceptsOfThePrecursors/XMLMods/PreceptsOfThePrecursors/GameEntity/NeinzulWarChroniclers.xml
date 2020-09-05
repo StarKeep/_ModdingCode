@@ -31,13 +31,13 @@
 			>
 		<system name="SuppressionWhip" display_name="Suppression Whip"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5000" range="AboveAverage1" shot_speed="Normal" rate_of_fire="High"
+				damage_per_shot="5000" range="AboveAverage1" shot_speed="Normal" rate_of_fire="ExtremelyLow"
 				shot_type_data="HeavyBeamInvisible"
 				beam_length_multiplier="1.2"
 				hits_all_intersecting_targets="true"
 				shots_detonate_immediately="true"
-				maximum_number_of_targets_hit_per_shot="3"
-				base_paralysis_seconds_per_shot="1" paralysis_to_ships_mass_tx_less_than="8" added_target_evaluator="ParalyzerAsPrimary"
+				maximum_number_of_targets_hit_per_shot="10"
+				base_paralysis_seconds_per_shot="1" paralysis_to_ships_mass_tx_less_than="6" added_target_evaluator="ParalyzerAsPrimary"
 				number_beams_to_fire="30"
 				degrees_offset_per_beam="3"	
 				>

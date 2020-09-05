@@ -14,8 +14,8 @@
 	
 	custom_int_NeinzulWarChroniclers_SoftStrengthCapBase="20000"
 	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerAttack="500"
-	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerAttackPerIntensity="150"
+	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerAttackPerIntensity="50"
 	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerHour="5000"
-	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerHourPerIntensity="1500"
+	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerHourPerIntensity="500"
 >
 </root>

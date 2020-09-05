@@ -225,10 +225,10 @@ namespace PreceptsOfThePrecursors
                     if ( faction == otherFaction )
                         return DelReturn.Continue;
 
-                    if (otherFaction.Implementation is NeinzulWarChroniclers )
+                    if ( otherFaction.Implementation is NeinzulWarChroniclers )
                     {
                         Planet factionAimedAt = (otherFaction.Implementation as NeinzulWarChroniclers).factionData.CurrentPlanetAimedAt;
-                        if (factionAimedAt != null && factionAimedAt == planet )
+                        if ( factionAimedAt != null && factionAimedAt == planet )
                         {
                             alreadyAimedAt = true;
                             return DelReturn.Break;
@@ -276,7 +276,7 @@ namespace PreceptsOfThePrecursors
                     int cost = entityData.GetForMark( subPair.Key ).StrengthPerSquad_CalculatedWithNullFleetMembership * 10;
                     int toSend = subPair.Value / cost;
 
-                    if (toSend > 50 )
+                    if ( toSend > 50 )
                     {
                         toSend = 50;
                         subPair.Value = cost * 50;
@@ -343,13 +343,6 @@ namespace PreceptsOfThePrecursors
         {
             PlanetFaction pFaction = factionData.CurrentPlanetWeAreDepartingFrom.GetPlanetFactionForFaction( faction );
 
-            GameEntity_Squad chronicler = pFaction.Entities.GetFirstMatching( Tags.NeinzulWarChronicler.ToString(), false, false );
-            if ( chronicler != null )
-            {
-                chronicler.Despawn( Context, true, InstancedRendererDeactivationReason.IFinishedMyJob );
-                factionData.PersonalBudget += 1000000; // Refund.
-            }
-
             pFaction.Entities.DoForEntities( EntityRollupType.MobileCombatants, entity =>
             {
                 if ( entity.TypeData.IsDrone )
@@ -373,10 +366,14 @@ namespace PreceptsOfThePrecursors
                         break;
                 }
 
-                // We spend 50% of each unit's cost, which is 1x the unit's strength, to send.
-                // If the unit survives, refund the 50%.
-                factionData.AddBudget( entity, entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 5 );
+                if ( entity.TypeData.GetHasTag( Tags.NeinzulWarChronicler.ToString() ) )
+                    factionData.PersonalBudget += 1000000; // Refund.
+                else
+                    // We spend 50% of each unit's cost, which is 1x the unit's strength, to send.
+                    // If the unit survives, refund the 50%.
+                    factionData.AddBudget( entity, entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 5 );
 
+                entity.Despawn( Context, true, InstancedRendererDeactivationReason.IFinishedMyJob );
                 return DelReturn.Continue;
             } );
 
@@ -401,7 +398,7 @@ namespace PreceptsOfThePrecursors
             strengthCap += SoftStrengthCapIncreasePerAttackPerIntensity * factionData.SentAttacks * Intensity;
             strengthCap += (World_AIW2.Instance.GameSecond * PerSecondStrengthCapIncrease).GetNearestIntPreferringHigher();
 
-            if ( factionData.EstimatedStrengthOfAttack( faction ) / 1000 > strengthCap )
+            if ( factionData.EstimatedStrengthOfAttack( faction ) > strengthCap )
                 return;
 
             faction.DoForEntities( Tags.NeinzulWarChronicler.ToString(), chronicler =>
