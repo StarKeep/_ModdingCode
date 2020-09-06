@@ -1237,11 +1237,10 @@
 			priority_as_ai_target="MidNasty"
             priority_as_frd_target="MidNasty"
             priority_to_protect="SlightlyLessExpendable"
-			strength_multiplier="50"
 			>
 		<system name="SpawnPacket" display_name="Spawn Level 10 Packet"
 				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="ExtremelyLow" fires_salvos_sequentially="true"
+				damage_per_shot="5" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Normal" fires_salvos_sequentially="true"
 				shot_type_data="DysonPacket10"
 				system_is_hidden_for_ui="true"
 				>
