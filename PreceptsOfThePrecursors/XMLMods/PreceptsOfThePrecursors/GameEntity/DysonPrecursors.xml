@@ -48,7 +48,7 @@
     shows_on_galaxy_map_for_explored_planets="true"
     pushes_enemy_shields="true"
     >
-    <system name="DysonImmurementCannon" display_name="Zenith Immurement Cannon"
+    <system name="DysonImmurementCannon" display_name="Zenith Immurement Cannon" min_mark_level_to_function="5"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="14000" range="High1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="false"
 				shot_type_data="LaserPulse_DeepBlue" shots_per_salvo="14"
@@ -57,7 +57,7 @@
 				max_enemy_weapon_reload_slowing_seconds="14"
 				>
     </system>
-    <system name="DysonDesedimentationCannon" display_name="Zenith Desedimentation Cannon"
+    <system name="DysonDesedimentationCannon" display_name="Zenith Desedimentation Cannon" min_mark_level_to_function="3"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="7000" range="EssentiallyInfinite" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
 				shot_type_data="LaserPulse_DeepBlue" shots_per_salvo="7" only_targets_static_units="true"

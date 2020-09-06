@@ -726,7 +726,7 @@ namespace PreceptsOfThePrecursors
             }
             // If we recently entered a new planet, regenerate our shields.
             if ( Mothership.GetSecondsSinceEnteringThisPlanet() < 30 )
-                Mothership.TakeShieldRepair( Mothership.CurrentMarkLevel * 250000 );
+                Mothership.TakeShieldRepair( Mothership.CurrentMarkLevel * 100000 );
 
             Faction darkSpire = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( SpecialFaction_DarkSpire ) );
             if ( darkSpire != null )
