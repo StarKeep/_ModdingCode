@@ -158,6 +158,8 @@ namespace PreceptsOfThePrecursors
             if ( factionData != null )
                 ArcenDebugging.ArcenDebugLog( factionData.ToString(), Verbosity.DoNotShow );
 
+            ClearCrippledUnits( faction, Context );
+
             UpdateAllegiance( faction );
 
             UpdatePersonalBudget( faction, Context );
@@ -167,6 +169,17 @@ namespace PreceptsOfThePrecursors
             DepartureLogic( faction, Context );
 
             StudyLogic( faction, Context );
+        }
+
+        public void ClearCrippledUnits(Faction faction, ArcenSimContext Context )
+        {
+            faction.DoForEntities( ( GameEntity_Squad entity ) =>
+            {
+                if ( entity.GetIsCrippled() || entity.SecondsSpentAsRemains > 5 )
+                    entity.Despawn( Context, true, InstancedRendererDeactivationReason.IFinishedMyJob );
+
+                return DelReturn.Continue;
+            } );
         }
 
         public void UpdatePersonalBudget( Faction faction, ArcenSimContext Context )
