@@ -582,11 +582,8 @@ namespace PreceptsOfThePrecursors
                 Faction otherFaction = BaseDysonSubfaction.FactionsToAllyTo[i];
                 if ( faction == otherFaction )
                     continue;
-                if ( otherFaction.GetDisplayName().ToLower().Contains( "dyson" ) )
-                {
-                    faction.MakeFriendlyTo( otherFaction );
-                    otherFaction.MakeFriendlyTo( faction );
-                }
+                faction.MakeFriendlyTo( otherFaction );
+                otherFaction.MakeFriendlyTo( faction );
             }
         }
         private void GenerateResource( Faction faction, ArcenSimContext Context )
@@ -1918,18 +1915,15 @@ namespace PreceptsOfThePrecursors
         }
         private void GetFactionsToAllyTo( Faction faction, ArcenSimContext Context )
         {
-            // Set up our factions that we should ally to list.
-            if ( FactionsToAllyTo == null )
+            FactionsToAllyTo = new List<Faction>();
+            // Ally ourselves (and our mothership) to other dyson/zenith factions.
+            for ( int i = 0; i < World_AIW2.Instance.Factions.Count; i++ )
             {
-                FactionsToAllyTo = new List<Faction>();
-                // Ally ourselves (and our mothership) to other dyson/zenith factions.
-                for ( int i = 0; i < World_AIW2.Instance.Factions.Count; i++ )
+                Faction otherFaction = World_AIW2.Instance.Factions[i];
+                if ( otherFaction.Implementation is SpecialFaction_Devourer || otherFaction.Implementation is SpecialFaction_ZenithTraitor ||
+                    ((otherFaction.GetDisplayName().ToLower().Contains( "dyson" ) || otherFaction.GetDisplayName().ToLower().Contains( "zenith" )) && !otherFaction.GetDisplayName().ToLower().Contains( "dark" )) )
                 {
-                    Faction otherFaction = World_AIW2.Instance.Factions[i];
-                    if ( (otherFaction.GetDisplayName().ToLower().Contains( "dyson" ) || otherFaction.GetDisplayName().ToLower().Contains( "zenith" )) && !otherFaction.GetDisplayName().ToLower().Contains( "dark" ) )
-                    {
-                        FactionsToAllyTo.Add( otherFaction );
-                    }
+                    FactionsToAllyTo.Add( otherFaction );
                 }
             }
         }
