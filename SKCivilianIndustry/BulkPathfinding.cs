@@ -1,7 +1,7 @@
-﻿using Arcen.AIW2.Core;
+﻿using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
-using System.Collections.Generic;
 
 namespace SKCivilianIndustry
 {
@@ -23,6 +23,9 @@ namespace SKCivilianIndustry
         public static Planet QueueWormholeCommand( this GameEntity_Squad entity, Planet destination, ArcenLongTermIntermittentPlanningContext ContextForSmartPathfindingOrNullForDumb = null, bool forResultOnlyDoNotActuallyQueue = false )
         {
             if ( !(entity.PlanetFaction.Faction.Implementation is IBulkPathfinding) )
+                return null;
+
+            if ( destination == null )
                 return null;
 
             IBulkPathfinding BPFaction = entity.PlanetFaction.Faction.Implementation as IBulkPathfinding;

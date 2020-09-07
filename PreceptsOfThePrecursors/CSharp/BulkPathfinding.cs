@@ -25,6 +25,9 @@ namespace PreceptsOfThePrecursors
             if ( !(entity.PlanetFaction.Faction.Implementation is IBulkPathfinding) )
                 return null;
 
+            if ( destination == null )
+                return null;
+
             IBulkPathfinding BPFaction = entity.PlanetFaction.Faction.Implementation as IBulkPathfinding;
 
             if ( BPFaction.WormholeCommands == null )
