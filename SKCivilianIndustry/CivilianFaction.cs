@@ -348,6 +348,29 @@ namespace SKCivilianIndustry
             }
             return newLookup;
         }
+        public void UpdateList( ref List<int> listToUpdate, ArcenDeserializationBuffer Buffer )
+        {
+            int count = Buffer.ReadInt32( ReadStyle.NonNeg );
+            for ( int x = 0; x < count; x++ )
+            {
+                int value = Buffer.ReadInt32( ReadStyle.Signed );
+                if ( !listToUpdate.Contains( value ) )
+                    listToUpdate.Add( value );
+            }
+        }
+        public void UpdateLookup( ref ArcenSparseLookup<int, int> lookupToUpdate, ArcenDeserializationBuffer Buffer )
+        {
+            int count = Buffer.ReadInt32( ReadStyle.NonNeg );
+            for ( int x = 0; x < count; x++ )
+            {
+                int key = Buffer.ReadInt32( ReadStyle.NonNeg );
+                int value = Buffer.ReadInt32( ReadStyle.Signed );
+                if ( !lookupToUpdate.GetHasKey( key ) )
+                    lookupToUpdate.AddPair( key, value );
+                else if ( lookupToUpdate[key] != value )
+                    lookupToUpdate[key] = value;
+            }
+        }
         // Loading our data. Make sure the loading order is the same as the saving order.
         public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {

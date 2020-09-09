@@ -1181,7 +1181,18 @@ namespace SKCivilianIndustry
                 }
 
                 // Skip if we don't have a post on this  planet.
-                GameEntity_Squad foundTradePost = planet.GetFirstMatching( "CenterOfTrade", null, false, false );
+                GameEntity_Squad foundTradePost = null;
+
+                planet.DoForEntities( "CenterOfTrade", entity =>
+                {
+                    if ( entity.PlanetFaction.Faction.GetIsFriendlyTowards( faction ) )
+                    {
+                        foundTradePost = entity;
+                        return DelReturn.Break;
+                    }
+
+                    return DelReturn.Continue;
+                } );
 
                 if ( foundTradePost == null )
                     return DelReturn.Continue;

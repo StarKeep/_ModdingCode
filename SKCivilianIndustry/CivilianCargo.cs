@@ -56,14 +56,8 @@ namespace SKCivilianIndustry
         }
 
         public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
-        {
-            if ( IsForPartialSyncDuringMultiplayer )
-            {
-                Amount = new int[(int)CivilianResource.Length];
-                Capacity = new int[(int)CivilianResource.Length];
-                PerSecond = new int[(int)CivilianResource.Length];
-            }
 
+        {
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             // Lists require a special touch to load.
             // We'll have saved the number of items stored up above to be used here to determine the number of items to load.
@@ -72,6 +66,12 @@ namespace SKCivilianIndustry
             // Its more important to be accurate than it is to be update safe here, so we'll always use our stored value to figure out the number of resources.
             int savedCount = Buffer.ReadInt32( ReadStyle.NonNeg );
             int resourceTypeCount = (int)CivilianResource.Length;
+            if ( this.Amount == null || this.Amount.Length != resourceTypeCount )
+                this.Amount = new int[resourceTypeCount];
+            if ( this.Capacity == null || this.Capacity.Length != resourceTypeCount )
+                this.Capacity = new int[resourceTypeCount];
+            if ( this.PerSecond == null || this.PerSecond.Length != resourceTypeCount )
+                this.PerSecond = new int[resourceTypeCount];
             for ( int x = 0; x < resourceTypeCount; x++ )
             {
                 if ( x >= savedCount )
@@ -87,6 +87,7 @@ namespace SKCivilianIndustry
                     this.PerSecond[x] = Buffer.ReadInt32( ReadStyle.Signed );
                 }
             }
+            
         }
     }
 }

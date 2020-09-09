@@ -143,14 +143,6 @@ namespace SKCivilianIndustry
             if ( ShipCapacity == null )
                 ShipCapacity = new ArcenSparseLookup<int, int>();
 
-            if ( IsForPartialSyncDuringMultiplayer )
-            {
-                ShipTypeDataNames.Clear();
-                ShipTypeData.Clear();
-                Ships.Clear();
-                ShipCapacity.Clear();
-            }
-
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             this.Centerpiece = Buffer.ReadInt32( ReadStyle.Signed );
             this.Status = (CivilianMilitiaStatus)Buffer.ReadByte( ReadStyleByte.Normal );
