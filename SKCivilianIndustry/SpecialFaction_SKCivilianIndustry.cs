@@ -262,7 +262,7 @@ namespace SKCivilianIndustry
             if ( !PlayerAligned || World_AIW2.Instance.GameSecond < 5 )
                 return;
 
-            if ( factionData.NextRaidInThisSeconds < 120 )
+            if ( factionData.NextRaidInThisSeconds < 300 )
             {
 
                 AIRaidNotifier notifier = new AIRaidNotifier();
@@ -1712,29 +1712,11 @@ namespace SKCivilianIndustry
                 // Set up raiding wormholes.
                 targetStation.Planet.DoForLinkedNeighborsAndSelf( false, delegate ( Planet planet )
                 {
-                    // Toss down 2-4 wormholes.
-                    int count = Context.RandomToUse.Next( 2, 5 );
+                    // Toss down a wormhole on each planet.
+                    GameEntity_Squad wormhole = planet.Mapgen_SeedEntity( Context, aifaction, GameEntityTypeDataTable.Instance.GetRowByName( "AIRaidingWormhole" ), PlanetSeedingZone.OuterSystem );
 
-                    for ( int x = 0; x < count; x++ )
-                    {
-                        AngleDegrees angle = AngleDegrees.Create( Context.RandomToUse.NextFloat( x * (360 / count), (x + 1) * (360 / count) ) );
-                        if ( angle == null )
-                            continue;
-                        GameEntityTypeData wormholeData = GameEntityTypeDataTable.Instance.GetRowByName( "AIRaidingWormhole" );
-                        if ( wormholeData == null )
-                        {
-                            ArcenDebugging.ArcenDebugLogSingleLine( "Unable to find wormhole entitydata.", Verbosity.ShowAsError );
-                            continue;
-                        }
-                        ArcenPoint wormholePoint = Engine_AIW2.Instance.CombatCenter.GetPointAtAngleAndDistance( angle,
-                            (ExternalConstants.Instance.DistanceScale_GravwellRadius * FInt.FromParts( 0, 900 )).IntValue );
-                        if ( wormholePoint == ArcenPoint.ZeroZeroPoint )
-                            continue;
-                        GameEntity_Squad newWormhole = GameEntity_Squad.CreateNew( planet.GetPlanetFactionForFaction( aifaction ), wormholeData,
-                            0, planet.GetPlanetFactionForFaction( aifaction ).FleetUsedAtPlanet, 0, wormholePoint, Context );
-
-                        factionData.NextRaidWormholes.Add( newWormhole.PrimaryKeyID );
-                    }
+                    if ( wormhole != null )
+                        factionData.NextRaidWormholes.Add( wormhole.PrimaryKeyID );
 
                     return DelReturn.Continue;
                 } );
@@ -1742,7 +1724,7 @@ namespace SKCivilianIndustry
                     World_AIW2.Instance.QueueChatMessageOrCommand( $"The AI is preparing to raid cargo ships on planets near {targetStation.Planet.Name}.", ChatType.ShowToEveryone, Context );
 
                 // Start timer.
-                factionData.NextRaidInThisSeconds = 119;
+                factionData.NextRaidInThisSeconds = 299;
             }
         }
 
@@ -1826,8 +1808,8 @@ namespace SKCivilianIndustry
             // Raid strength increases based on the AI's normal wave budget, increased by the number of trade stations we have.
             int timeFactor = 900; // Minimum delay between raid waves.
             int budgetFactor = SpecialFaction_AI.Instance.GetSpecificBudgetAIPurchaseCostGainPerSecond( aiFaction, AIBudgetType.Wave, true, true ).GetNearestIntPreferringHigher();
-            int tradeFactor = factionData.TradeStations.Count * 3;
-            FInt intensityMult = FInt.FromParts( 0, 800 ) + (FInt.FromParts( 0, 040 ) * faction.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+            int tradeFactor = factionData.TradeStations.Count * 2;
+            FInt intensityMult = FInt.FromParts( 0, 500 ) + ((FInt.FromParts( 0, 050 ) * faction.Ex_MinorFactionCommon_GetPrimitives().Intensity));
             int raidBudget = ((budgetFactor + tradeFactor) * timeFactor * intensityMult).GetNearestIntPreferringHigher();
 
             // Stop once we're over budget. (Though allow our last wave to exceed it if needed.)
@@ -2243,13 +2225,13 @@ namespace SKCivilianIndustry
             // Handle AI response. Have some variation on wave timers.
             if ( faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance != "AI Team" )
             {
-                if ( factionData.NextRaidInThisSeconds > 120 )
-                    factionData.NextRaidInThisSeconds = Math.Max( 120, factionData.NextRaidInThisSeconds - Context.RandomToUse.Next( 1, 3 ) );
+                if ( factionData.NextRaidInThisSeconds > 300 )
+                    factionData.NextRaidInThisSeconds = Math.Max( 300, factionData.NextRaidInThisSeconds - Context.RandomToUse.Next( 1, 3 ) );
                 else if ( factionData.NextRaidInThisSeconds > 0 )
                     factionData.NextRaidInThisSeconds -= Context.RandomToUse.Next( 1, 3 );
 
                 // Prepare (and warn the player about) an upcoming raid.
-                if ( factionData.NextRaidInThisSeconds == 120 )
+                if ( factionData.NextRaidInThisSeconds == 300 )
                     PrepareAIRaid( faction, Context );
 
                 // Raid!

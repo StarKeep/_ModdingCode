@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Policy;
 using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
@@ -14,7 +13,7 @@ namespace SKCivilianIndustry.Notifications
         public Faction faction;
         public int SecondsLeft;
 
-        public List<Planet> RaidedPlanets { get { List<Planet> raidedPlanets = new List<Planet>(); for ( int x = 0; x < raidingWormholes.Count; x++ ) if ( !raidedPlanets.Contains( RaidingWormholes[x].Planet ) ) raidedPlanets.Add( RaidingWormholes[x].Planet); return raidedPlanets; } }
+        public List<Planet> RaidedPlanets { get { List<Planet> raidedPlanets = new List<Planet>(); for ( int x = 0; x < raidingWormholes.Count; x++ ) if ( !raidedPlanets.Contains( RaidingWormholes[x].Planet ) ) raidedPlanets.Add( RaidingWormholes[x].Planet ); return raidedPlanets; } }
 
         public enum Mode
         {
@@ -25,14 +24,12 @@ namespace SKCivilianIndustry.Notifications
 
         //these are just data from asset bundles, that's definitely okay to be static
         private static bool hasInitialized = false;
-        public static int LastPlanetIndexCentered = 0;
+        public int LastPlanetIndexCentered = 0;
 
         public static void InitIfNeeded()
         {
             if ( hasInitialized )
                 return;
-
-            LastPlanetIndexCentered = 0;
 
             hasInitialized = true;
         }
@@ -41,6 +38,8 @@ namespace SKCivilianIndustry.Notifications
         {
             if ( RaidedPlanets != null && RaidedPlanets.Count > 0 )
             {
+                if ( LastPlanetIndexCentered >= RaidedPlanets.Count )
+                    LastPlanetIndexCentered = 0;
                 if ( Engine_AIW2.Instance.CurrentGameViewMode == GameViewMode.GalaxyMapView )
                 {
                     LastPlanetIndexCentered++;
@@ -75,10 +74,12 @@ namespace SKCivilianIndustry.Notifications
         {
             tooltipBuffer.Clear();
 
+            if ( LastPlanetIndexCentered >= RaidedPlanets.Count )
+                LastPlanetIndexCentered = 0;
             Planet.SetCurrentlySecondaryHoveredOver( RaidedPlanets[LastPlanetIndexCentered] );
 
             string planetsList = string.Empty;
-            for(int x = 0; x < RaidedPlanets.Count; x++ )
+            for ( int x = 0; x < RaidedPlanets.Count; x++ )
             {
                 if ( x > 0 )
                     planetsList += ", ";
@@ -115,7 +116,7 @@ namespace SKCivilianIndustry.Notifications
                 buffer = SubTexts[1].Text.StartWritingToBuffer();
                 debugStage = 6;
                 debugStage = 9;
-                int perc = 100 - ((FInt.FromParts( SecondsLeft, 000 ) / 120) * 100).GetNearestIntPreferringHigher();
+                int perc = 100 - ((FInt.FromParts( SecondsLeft, 000 ) / 300) * 100).GetNearestIntPreferringHigher();
                 buffer.Add( $"{perc}%" );
                 debugStage = 12;
                 buffer.Add( "\n" );
