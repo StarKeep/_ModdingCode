@@ -21,11 +21,14 @@ namespace SKCivilianIndustry
                 return;
 
             // Load our cargo data.
-            CivilianCargo cargoData = RelatedEntityOrNull.GetCivilianCargoExt();
+            CivilianCargo cargoData = RelatedEntityOrNull.GetCivilianCargoExt(ExternalDataRetrieval.ReturnNullIfNotFound);
             // Load our status data.
-            CivilianStatus shipStatus = RelatedEntityOrNull.GetCivilianStatusExt();
+            CivilianStatus shipStatus = RelatedEntityOrNull.GetCivilianStatusExt( ExternalDataRetrieval.ReturnNullIfNotFound );
             // Load our faction data.
-            CivilianFaction factionData = RelatedEntityOrNull.PlanetFaction.Faction.GetCivilianFactionExt();
+            CivilianFaction factionData = RelatedEntityOrNull.PlanetFaction.Faction.GetCivilianFactionExt( ExternalDataRetrieval.ReturnNullIfNotFound );
+
+            if ( cargoData == null || shipStatus == null || factionData == null )
+                return;
 
             // Inform them what the ship is currently doing.
             Buffer.Add( "\nThis ship is currently " );

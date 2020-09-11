@@ -120,7 +120,7 @@ namespace SKCivilianIndustry
         public int GetResourceCost( Faction faction )
         {
             // 51 - (Intensity ^ 1.5)
-            return 51 - (int)Math.Pow( faction.Ex_MinorFactionCommon_GetPrimitives().Intensity, 1.5 );
+            return 51 - (int)Math.Pow( faction.Ex_MinorFactionCommon_GetPrimitives(ExternalDataRetrieval.CreateIfNotFound).Intensity, 1.5 );
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace SKCivilianIndustry
         public int GetCap( Faction faction )
         {
             int baseCap = 10;
-            int intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
+            int intensity = faction.Ex_MinorFactionCommon_GetPrimitives(ExternalDataRetrieval.CreateIfNotFound).Intensity;
             int intensityBonus = intensity > 5 ? intensity * 2 : 0;
             FInt intensityMult = FInt.FromParts( 0, 750 ) + (FInt.FromParts( 0, 050 ) * intensity);
             int stationBonus = 2 * TradeStations.Count;
@@ -229,7 +229,9 @@ namespace SKCivilianIndustry
                 if ( militia.Planet.Index == planet.Index )
                     return true; // Planet has a militia leader on it, its friendly.
 
-                CivilianMilitia militiaData = militia.GetCivilianMilitiaExt();
+                CivilianMilitia militiaData = militia.GetCivilianMilitiaExt(ExternalDataRetrieval.ReturnNullIfNotFound);
+                if ( militiaData == null )
+                    continue;
                 if ( militiaData.Centerpiece == -1 )
                     continue;
                 GameEntity_Squad centerpiece = World_AIW2.Instance.GetEntityByID_Squad( militiaData.Centerpiece );

@@ -15,7 +15,10 @@ namespace SKCivilianIndustry
             if ( RelatedEntityOrNull == null )
                 return;
             // Load our cargo data.
-            CivilianCargo cargoData = RelatedEntityOrNull.GetCivilianCargoExt();
+            CivilianCargo cargoData = RelatedEntityOrNull.GetCivilianCargoExt( ExternalDataRetrieval.ReturnNullIfNotFound );
+
+            if ( cargoData == null )
+                return;
 
             SpecialFaction_SKCivilianIndustry civFaction;
             if ( RelatedEntityOrNull.PlanetFaction.Faction.Implementation is SpecialFaction_SKCivilianIndustry )

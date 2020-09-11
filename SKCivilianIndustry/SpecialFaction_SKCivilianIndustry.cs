@@ -68,7 +68,7 @@ namespace SKCivilianIndustry
         // Scale ship costs based on intensity. 5 is 100%, with a 10% step up or down based on intensity.
         public static FInt CostIntensityModifier( Faction faction )
         {
-            int intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
+            int intensity = faction.Ex_MinorFactionCommon_GetPrimitives(ExternalDataRetrieval.CreateIfNotFound ).Intensity;
             return FInt.FromParts( 1, 500 ) - (intensity * FInt.FromParts( 0, 100 ));
         }
 
@@ -147,7 +147,7 @@ namespace SKCivilianIndustry
             }
 
             // Set relationships.
-            switch ( faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance )
+            switch ( faction.Ex_MinorFactionCommon_GetPrimitives(ExternalDataRetrieval.CreateIfNotFound).Allegiance )
             {
                 case "AI Team":
                     allyThisFactionToAI( faction );
@@ -156,7 +156,7 @@ namespace SKCivilianIndustry
                 case "Minor Faction Team Red":
                 case "Minor Faction Team Blue":
                 case "Minor Faction Team Green":
-                    allyThisFactionToMinorFactionTeam( faction, faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance );
+                    allyThisFactionToMinorFactionTeam( faction, faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance );
                     PlayerAligned = false;
                     break;
                 default:
@@ -242,7 +242,7 @@ namespace SKCivilianIndustry
                     GameEntity_Squad militiaLeader = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[y] );
                     if ( militiaLeader == null )
                         continue;
-                    CivilianMilitia militiaData = militiaLeader.GetCivilianMilitiaExt();
+                    CivilianMilitia militiaData = militiaLeader.GetCivilianMilitiaExt(ExternalDataRetrieval.CreateIfNotFound);
                     if ( militiaData.Ships != null )
                     {
                         for ( int z = 0; z < militiaData.Ships.GetPairCount(); z++ )
@@ -464,7 +464,7 @@ namespace SKCivilianIndustry
                     factionData.TradeStations.Add( tradeStation.PrimaryKeyID );
 
                     // Initialize cargo.
-                    CivilianCargo tradeCargo = tradeStation.GetCivilianCargoExt();
+                    CivilianCargo tradeCargo = tradeStation.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
                     // Large capacity.
                     for ( int y = 0; y < tradeCargo.Capacity.Length; y++ )
                         tradeCargo.Capacity[y] *= 25;
@@ -477,7 +477,7 @@ namespace SKCivilianIndustry
 
                         return DelReturn.Continue;
                     } );
-                    tradeCargo.PerSecond[(int)planet.GetCivilianPlanetExt().Resource] = (int)(mines * 1.5);
+                    tradeCargo.PerSecond[(int)planet.GetCivilianPlanetExt( ExternalDataRetrieval.CreateIfNotFound ).Resource] = (int)(mines * 1.5);
 
                     // Remove rebuild counter, if applicable.
                     if ( factionData.TradeStationRebuildTimerInSecondsByPlanet.GetHasKey( commandStation.Planet.Index ) )
@@ -587,7 +587,7 @@ namespace SKCivilianIndustry
                         factionData.TradeStations.Add( tradeStation.PrimaryKeyID );
 
                         // Initialize cargo.
-                        CivilianCargo tradeCargo = tradeStation.GetCivilianCargoExt();
+                        CivilianCargo tradeCargo = tradeStation.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
                         // Large capacity.
                         for ( int y = 0; y < tradeCargo.Capacity.Length; y++ )
                             tradeCargo.Capacity[y] *= 25;
@@ -600,7 +600,7 @@ namespace SKCivilianIndustry
 
                             return DelReturn.Continue;
                         } );
-                        tradeCargo.PerSecond[(int)workingPlanet.GetCivilianPlanetExt().Resource] = (int)(mines * 1.5);
+                        tradeCargo.PerSecond[(int)workingPlanet.GetCivilianPlanetExt( ExternalDataRetrieval.CreateIfNotFound ).Resource] = (int)(mines * 1.5);
 
                         // Remove rebuild counter, if applicable.
                         if ( factionData.TradeStationRebuildTimerInSecondsByPlanet.GetHasKey( bestEntity.Planet.Index ) )
@@ -675,7 +675,7 @@ namespace SKCivilianIndustry
                         factionData.TradeStations.Add( entity.PrimaryKeyID );
 
                         // Initialize cargo.
-                        CivilianCargo tradeCargo = entity.GetCivilianCargoExt();
+                        CivilianCargo tradeCargo = entity.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
                         // Large capacity.
                         for ( int y = 0; y < tradeCargo.Capacity.Length; y++ )
                             tradeCargo.Capacity[y] *= 25;
@@ -688,7 +688,7 @@ namespace SKCivilianIndustry
 
                             return DelReturn.Continue;
                         } );
-                        tradeCargo.PerSecond[(int)entity.Planet.GetCivilianPlanetExt().Resource] = mines;
+                        tradeCargo.PerSecond[(int)entity.Planet.GetCivilianPlanetExt( ExternalDataRetrieval.CreateIfNotFound ).Resource] = mines;
 
                         entity.SetCivilianCargoExt( tradeCargo );
                     }
@@ -699,7 +699,7 @@ namespace SKCivilianIndustry
                             // Miltia Headquarters. Add it to our militia list and set it to patrol logic
                             factionData.MilitiaLeaders.Add( entity.PrimaryKeyID );
 
-                            CivilianMilitia militiaStatus = entity.GetCivilianMilitiaExt();
+                            CivilianMilitia militiaStatus = entity.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound );
 
                             militiaStatus.Centerpiece = entity.FleetMembership.Fleet.Centerpiece.PrimaryKeyID;
                             militiaStatus.CapMultiplier = 300; // 300%
@@ -718,7 +718,7 @@ namespace SKCivilianIndustry
                             // Militia Protector Shipyards. Add it to our militia list and set it to patrol logic.
                             factionData.MilitiaLeaders.Add( entity.PrimaryKeyID );
 
-                            CivilianMilitia militiaStatus = entity.GetCivilianMilitiaExt();
+                            CivilianMilitia militiaStatus = entity.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound );
 
                             militiaStatus.Centerpiece = entity.FleetMembership.Fleet.Centerpiece.PrimaryKeyID;
                             militiaStatus.Status = CivilianMilitiaStatus.Patrolling;
@@ -745,7 +745,7 @@ namespace SKCivilianIndustry
                     x--;
                     continue;
                 }
-                CivilianCargo entityCargo = entity.GetCivilianCargoExt();
+                CivilianCargo entityCargo = entity.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Deal with its per second values.
                 for ( int y = 0; y < entityCargo.PerSecond.Length; y++ )
@@ -843,7 +843,7 @@ namespace SKCivilianIndustry
                     continue;
 
                 // Load the cargo ship's status.
-                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt();
+                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Heading towards destination station
                 // Confirm its destination station still exists.
@@ -889,7 +889,7 @@ namespace SKCivilianIndustry
                     continue;
 
                 // Load the cargo ship's status.
-                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt();
+                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Heading towads origin station.
                 // Confirm its origin station still exists.
@@ -930,13 +930,13 @@ namespace SKCivilianIndustry
                     continue;
 
                 // Load the cargo ship's status.
-                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt();
+                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Decrease its wait timer.
                 shipStatus.LoadTimer--;
 
                 // Load the cargo ship's cargo.
-                CivilianCargo shipCargo = cargoShip.GetCivilianCargoExt();
+                CivilianCargo shipCargo = cargoShip.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Load the origin station and its cargo.
                 GameEntity_Squad originStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Origin );
@@ -947,7 +947,7 @@ namespace SKCivilianIndustry
                     x--;
                     continue;
                 }
-                CivilianCargo originCargo = originStation.GetCivilianCargoExt();
+                CivilianCargo originCargo = originStation.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Load the destination station and its cargo.
                 GameEntity_Squad destinationStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Destination );
@@ -958,7 +958,7 @@ namespace SKCivilianIndustry
                     x--;
                     continue;
                 }
-                CivilianCargo destinationCargo = destinationStation.GetCivilianCargoExt();
+                CivilianCargo destinationCargo = destinationStation.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Send the resources, if the station has any left.
                 for ( int y = 0; y < (int)CivilianResource.Length; y++ )
@@ -1035,10 +1035,10 @@ namespace SKCivilianIndustry
                     continue;
 
                 // Load the cargo ship's status.
-                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt();
+                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Load the cargo ship's cargo.
-                CivilianCargo shipCargo = cargoShip.GetCivilianCargoExt();
+                CivilianCargo shipCargo = cargoShip.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Load the destination station and its cargo.
                 GameEntity_Squad destinationStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Destination );
@@ -1049,7 +1049,7 @@ namespace SKCivilianIndustry
                     x--;
                     continue;
                 }
-                CivilianCargo destinationCargo = destinationStation.GetCivilianCargoExt();
+                CivilianCargo destinationCargo = destinationStation.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Send the resources, if the ship has any left.
                 // Check for completion as well here.
@@ -1095,10 +1095,10 @@ namespace SKCivilianIndustry
                     continue;
 
                 // Load the cargo ship's status.
-                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt();
+                CivilianStatus shipStatus = cargoShip.GetCivilianStatusExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Load the cargo ship's cargo.
-                CivilianCargo shipCargo = cargoShip.GetCivilianCargoExt();
+                CivilianCargo shipCargo = cargoShip.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Load the destination station and its cargo.
                 GameEntity_Squad destinationStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Destination );
@@ -1109,7 +1109,7 @@ namespace SKCivilianIndustry
                     x--;
                     continue;
                 }
-                CivilianCargo destinationCargo = destinationStation.GetCivilianCargoExt();
+                CivilianCargo destinationCargo = destinationStation.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
 
                 // Send the resources, if the ship has any left.
                 // Check for completion as well here.
@@ -1162,7 +1162,7 @@ namespace SKCivilianIndustry
                 if ( militiaLeader == null )
                     continue;
 
-                CivilianMilitia militiaStatus = militiaLeader.GetCivilianMilitiaExt();
+                CivilianMilitia militiaStatus = militiaLeader.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound );
                 if ( militiaStatus == null )
                     continue;
 
@@ -1217,7 +1217,7 @@ namespace SKCivilianIndustry
                         GameEntity_Squad tempSquad = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[y] );
                         if ( tempSquad == null )
                             continue;
-                        if ( tempSquad.GetCivilianMilitiaExt().EntityFocus == wormhole.PrimaryKeyID )
+                        if ( tempSquad.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).EntityFocus == wormhole.PrimaryKeyID )
                             claimed = true;
                     }
                     if ( !claimed )
@@ -1250,7 +1250,7 @@ namespace SKCivilianIndustry
                             GameEntity_Squad tempSquad = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[y] );
                             if ( tempSquad == null )
                                 continue;
-                            if ( tempSquad.GetCivilianMilitiaExt().EntityFocus == mineEntity.PrimaryKeyID )
+                            if ( tempSquad.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).EntityFocus == mineEntity.PrimaryKeyID )
                                 claimed = true;
                         }
                         if ( !claimed )
@@ -1271,8 +1271,8 @@ namespace SKCivilianIndustry
                         GameEntity_Squad workingMilitia = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[y] );
                         if ( workingMilitia != null &&
                             (workingMilitia.Planet == planet && workingMilitia.TypeData.GetHasTag( "AdvancedCivilianShipyard" ))
-                            || (workingMilitia.GetCivilianMilitiaExt().Status == CivilianMilitiaStatus.PathingForShipyard &&
-                            workingMilitia.GetCivilianMilitiaExt().PlanetFocus == planet.Index) )
+                            || (workingMilitia.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).Status == CivilianMilitiaStatus.PathingForShipyard &&
+                            workingMilitia.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).PlanetFocus == planet.Index) )
                             advancedShipyardBuilt = true;
                     }
 
@@ -1295,7 +1295,7 @@ namespace SKCivilianIndustry
                 freeMilitia.Remove( militia );
 
                 // Update the militia's status.
-                CivilianMilitia militiaStatus = militia.GetCivilianMilitiaExt();
+                CivilianMilitia militiaStatus = militia.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound );
                 militiaStatus.PlanetFocus = planet.Index;
 
                 // Assign our mine or wormhole.
@@ -1339,8 +1339,8 @@ namespace SKCivilianIndustry
                     x--;
                     continue;
                 }
-                CivilianMilitia militiaStatus = militiaShip.GetCivilianMilitiaExt();
-                CivilianCargo militiaCargo = militiaShip.GetCivilianCargoExt();
+                CivilianMilitia militiaStatus = militiaShip.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound );
+                CivilianCargo militiaCargo = militiaShip.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
                 if ( militiaStatus.Status != CivilianMilitiaStatus.Defending && militiaStatus.Status != CivilianMilitiaStatus.Patrolling )
                 {
                     // Load its goal.
@@ -1809,7 +1809,7 @@ namespace SKCivilianIndustry
             int timeFactor = 900; // Minimum delay between raid waves.
             int budgetFactor = SpecialFaction_AI.Instance.GetSpecificBudgetAIPurchaseCostGainPerSecond( aiFaction, AIBudgetType.Wave, true, true ).GetNearestIntPreferringHigher();
             int tradeFactor = factionData.TradeStations.Count * 2;
-            FInt intensityMult = FInt.FromParts( 0, 500 ) + ((FInt.FromParts( 0, 050 ) * faction.Ex_MinorFactionCommon_GetPrimitives().Intensity));
+            FInt intensityMult = FInt.FromParts( 0, 500 ) + ((FInt.FromParts( 0, 050 ) * faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity));
             int raidBudget = ((budgetFactor + tradeFactor) * timeFactor * intensityMult).GetNearestIntPreferringHigher();
 
             // Stop once we're over budget. (Though allow our last wave to exceed it if needed.)
@@ -1875,12 +1875,12 @@ namespace SKCivilianIndustry
                     continue;
                 }
 
-                if ( militia.GetCivilianMilitiaExt().Status != CivilianMilitiaStatus.Defending && militia.GetCivilianMilitiaExt().Status != CivilianMilitiaStatus.Patrolling )
+                if ( militia.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).Status != CivilianMilitiaStatus.Defending && militia.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).Status != CivilianMilitiaStatus.Patrolling )
                     continue;
 
                 // Don't request resources we're full on, or that we are ignoring.
                 List<CivilianResource> toIgnore = new List<CivilianResource>();
-                CivilianCargo militiaCargo = militia.GetCivilianCargoExt();
+                CivilianCargo militiaCargo = militia.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
                 for ( int y = 0; y < militiaCargo.Amount.Length; y++ )
                     if ( IgnoreResource[y] || (militiaCargo.Amount[y] > 0 && militiaCargo.Amount[y] >= militiaCargo.Capacity[y]) )
                         toIgnore.Add( (CivilianResource)y );
@@ -1914,7 +1914,7 @@ namespace SKCivilianIndustry
                     x--;
                     continue;
                 }
-                CivilianCargo requesterCargo = requester.GetCivilianCargoExt();
+                CivilianCargo requesterCargo = requester.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
                 if ( requesterCargo == null )
                     continue;
 
@@ -2025,7 +2025,7 @@ namespace SKCivilianIndustry
                     continue;
                 // If the cargo ship over 75% of the resource already on it, skip the origin station search, and just have it start heading right towards our requesting station.
                 bool hasEnough = false;
-                CivilianCargo foundCargo = foundCargoShip.GetCivilianCargoExt();
+                CivilianCargo foundCargo = foundCargoShip.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
                 for ( int y = 0; y < (int)CivilianResource.Length; y++ )
                     if ( (importRequest.Requested == CivilianResource.Length && !importRequest.Declined.Contains( (CivilianResource)y )) || importRequest.Requested == (CivilianResource)y )
                         if ( foundCargo.Amount[y] > foundCargo.Capacity[y] * 0.75 )
@@ -2036,7 +2036,7 @@ namespace SKCivilianIndustry
 
                 if ( hasEnough )
                 {
-                    CivilianStatus cargoShipStatus = foundCargoShip.GetCivilianStatusExt();
+                    CivilianStatus cargoShipStatus = foundCargoShip.GetCivilianStatusExt( ExternalDataRetrieval.CreateIfNotFound );
                     cargoShipStatus.Origin = -1;    // No origin station required.
                     cargoShipStatus.Destination = requestingEntity.PrimaryKeyID;
                     factionData.ChangeCargoShipStatus( foundCargoShip, Status.Enroute );
@@ -2071,7 +2071,7 @@ namespace SKCivilianIndustry
                 }
                 if ( otherStation != null )
                 {
-                    CivilianStatus cargoShipStatus = foundCargoShip.GetCivilianStatusExt();
+                    CivilianStatus cargoShipStatus = foundCargoShip.GetCivilianStatusExt( ExternalDataRetrieval.CreateIfNotFound );
                     cargoShipStatus.Origin = otherStation.PrimaryKeyID;
                     cargoShipStatus.Destination = requestingEntity.PrimaryKeyID;
                     factionData.ChangeCargoShipStatus( foundCargoShip, Status.Pathing );
@@ -2103,7 +2103,7 @@ namespace SKCivilianIndustry
             UpdateAllegianceAndSettings( faction );
 
             // Load our global data.
-            CivilianWorld worldData = World.Instance.GetCivilianWorldExt();
+            CivilianWorld worldData = World.Instance.GetCivilianWorldExt( ExternalDataRetrieval.CreateIfNotFound );
 
             // Update mark levels every now and than.
             if ( World_AIW2.Instance.GameSecond % SecondsBetweenMilitiaUpgrades == 0 )
@@ -2115,7 +2115,7 @@ namespace SKCivilianIndustry
             if ( factionData == null )
             {
                 // Load our data.
-                factionData = faction.GetCivilianFactionExt();
+                factionData = faction.GetCivilianFactionExt( ExternalDataRetrieval.CreateIfNotFound );
             }
 
             // If we have not yet done so, generate resources for planets.
@@ -2125,7 +2125,7 @@ namespace SKCivilianIndustry
                 {
                     tempFaction.DoForControlledPlanets( delegate ( Planet planet )
                     {
-                        CivilianPlanet planetData = planet.GetCivilianPlanetExt();
+                        CivilianPlanet planetData = planet.GetCivilianPlanetExt( ExternalDataRetrieval.CreateIfNotFound );
                         if ( planetData.Resource == CivilianResource.Length )
                             planetData.Resource = (CivilianResource)Context.RandomToUse.Next( (int)CivilianResource.Length );
                         planet.SetCivilianPlanetExt( planetData );
@@ -2223,7 +2223,7 @@ namespace SKCivilianIndustry
             DoMilitiaDeployment( faction, Context );
 
             // Handle AI response. Have some variation on wave timers.
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance != "AI Team" )
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance != "AI Team" )
             {
                 if ( factionData.NextRaidInThisSeconds > 300 )
                     factionData.NextRaidInThisSeconds = Math.Max( 300, factionData.NextRaidInThisSeconds - Context.RandomToUse.Next( 1, 3 ) );
@@ -2268,7 +2268,7 @@ namespace SKCivilianIndustry
                 for ( int j = 0; j < World_AIW2.Instance.AIFactions.Count; j++ )
                 {
                     Faction aiFaction = World_AIW2.Instance.AIFactions[j];
-                    List<PlannedWave> QueuedWaves = aiFaction.GetWaveList();
+                    List<PlannedWave> QueuedWaves = aiFaction.GetWaveList( ExternalDataRetrieval.CreateIfNotFound );
                     for ( int k = 0; k < QueuedWaves.Count; k++ )
                     {
                         PlannedWave wave = QueuedWaves[k];
@@ -2350,7 +2350,7 @@ namespace SKCivilianIndustry
                 GameEntity_Squad ship = World_AIW2.Instance.GetEntityByID_Squad( ships[x] );
                 if ( ship == null )
                     continue;
-                int target = ship.GetCivilianStatusExt().Origin;
+                int target = ship.GetCivilianStatusExt( ExternalDataRetrieval.CreateIfNotFound ).Origin;
                 if ( !AnsweringExport.GetHasKey( target ) )
                     AnsweringExport.AddPair( target, 1 );
                 else
@@ -2365,7 +2365,7 @@ namespace SKCivilianIndustry
                 GameEntity_Squad ship = World_AIW2.Instance.GetEntityByID_Squad( ships[x] );
                 if ( ship == null )
                     continue;
-                int target = ship.GetCivilianStatusExt().Destination;
+                int target = ship.GetCivilianStatusExt( ExternalDataRetrieval.CreateIfNotFound ).Destination;
                 if ( !AnsweringImport.GetHasKey( target ) )
                     AnsweringImport.AddPair( target, 1 );
                 else
@@ -2393,7 +2393,7 @@ namespace SKCivilianIndustry
                 GameEntity_Squad ship = World_AIW2.Instance.GetEntityByID_Squad( ships[x] );
                 if ( ship == null )
                     continue;
-                CivilianStatus shipStatus = ship.GetCivilianStatusExt();
+                CivilianStatus shipStatus = ship.GetCivilianStatusExt(ExternalDataRetrieval.ReturnNullIfNotFound);
                 if ( shipStatus == null )
                     continue;
                 // Enroute movement.
@@ -2430,7 +2430,7 @@ namespace SKCivilianIndustry
                 GameEntity_Squad ship = World_AIW2.Instance.GetEntityByID_Squad( ships[x] );
                 if ( ship == null )
                     continue;
-                CivilianStatus shipStatus = ship.GetCivilianStatusExt();
+                CivilianStatus shipStatus = ship.GetCivilianStatusExt( ExternalDataRetrieval.ReturnNullIfNotFound );
                 if ( shipStatus == null )
                     continue;
                 // Ship currently moving towards origin station.
@@ -2472,7 +2472,7 @@ namespace SKCivilianIndustry
                 GameEntity_Squad ship = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[x] );
                 if ( ship == null || !ship.TypeData.IsMobile )
                     continue;
-                CivilianMilitia shipStatus = ship.GetCivilianMilitiaExt();
+                CivilianMilitia shipStatus = ship.GetCivilianMilitiaExt( ExternalDataRetrieval.ReturnNullIfNotFound );
                 if ( shipStatus == null )
                     continue;
                 Planet planet = World_AIW2.Instance.GetPlanetByIndex( shipStatus.PlanetFocus );
@@ -2582,10 +2582,14 @@ namespace SKCivilianIndustry
             for ( int x = 0; x < factionData.MilitiaLeaders.Count; x++ )
             {
                 GameEntity_Squad post = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[x] );
-                if ( post == null || post.GetCivilianMilitiaExt().Status != CivilianMilitiaStatus.Patrolling )
+                
+                if ( post == null )
                     continue;
 
-                CivilianMilitia militiaData = post.GetCivilianMilitiaExt();
+                CivilianMilitia militiaData = post.GetCivilianMilitiaExt( ExternalDataRetrieval.ReturnNullIfNotFound );
+
+                if ( militiaData == null || militiaData.Status != CivilianMilitiaStatus.Patrolling )
+                    continue;
 
                 GameEntity_Squad centerpiece = World_AIW2.Instance.GetEntityByID_Squad( militiaData.Centerpiece );
                 if ( centerpiece == null )
@@ -2791,10 +2795,14 @@ namespace SKCivilianIndustry
                         break;
 
                     GameEntity_Squad post = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[x] );
-                    if ( post == null || post.GetCivilianMilitiaExt().Status != CivilianMilitiaStatus.Patrolling )
+
+                    if ( post == null )
                         continue;
 
-                    CivilianMilitia militiaData = post.GetCivilianMilitiaExt();
+                    CivilianMilitia militiaData = post.GetCivilianMilitiaExt( ExternalDataRetrieval.ReturnNullIfNotFound );
+
+                    if ( militiaData == null || militiaData.Status != CivilianMilitiaStatus.Patrolling )
+                        continue;
 
                     GameEntity_Squad centerpiece = World_AIW2.Instance.GetEntityByID_Squad( militiaData.Centerpiece );
                     if ( centerpiece == null )
@@ -2869,10 +2877,13 @@ namespace SKCivilianIndustry
                     for ( int x = 0; x < factionData.MilitiaLeaders.Count; x++ )
                     {
                         GameEntity_Squad post = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[x] );
-                        if ( post == null || post.GetCivilianMilitiaExt().Status != CivilianMilitiaStatus.Patrolling )
+                        if ( post == null )
                             continue;
 
-                        CivilianMilitia militiaData = post.GetCivilianMilitiaExt();
+                        CivilianMilitia militiaData = post.GetCivilianMilitiaExt( ExternalDataRetrieval.ReturnNullIfNotFound );
+
+                        if ( militiaData == null || militiaData.Status != CivilianMilitiaStatus.Patrolling )
+                            continue;
 
                         GameEntity_Squad centerpiece = World_AIW2.Instance.GetEntityByID_Squad( militiaData.Centerpiece );
                         if ( centerpiece == null )
@@ -2967,10 +2978,13 @@ namespace SKCivilianIndustry
             for ( int x = 0; x < factionData.MilitiaLeaders.Count; x++ )
             {
                 GameEntity_Squad post = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[x] );
-                if ( post == null || post.GetCivilianMilitiaExt().Status != CivilianMilitiaStatus.Patrolling )
+                if ( post == null )
                     continue;
 
-                CivilianMilitia militiaData = post.GetCivilianMilitiaExt();
+                CivilianMilitia militiaData = post.GetCivilianMilitiaExt( ExternalDataRetrieval.ReturnNullIfNotFound );
+
+                if ( militiaData == null || militiaData.Status != CivilianMilitiaStatus.Patrolling )
+                    continue;
 
                 GameEntity_Squad centerpiece = World_AIW2.Instance.GetEntityByID_Squad( militiaData.Centerpiece );
                 if ( centerpiece == null )
@@ -3045,7 +3059,9 @@ namespace SKCivilianIndustry
                 GameEntity_Squad militiaShip = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[x] );
                 if ( militiaShip == null )
                     continue;
-                CivilianMilitia militiaStatus = militiaShip.GetCivilianMilitiaExt();
+                CivilianMilitia militiaStatus = militiaShip.GetCivilianMilitiaExt( ExternalDataRetrieval.ReturnNullIfNotFound );
+                if ( militiaStatus == null )
+                    continue;
                 if ( militiaStatus.Status == CivilianMilitiaStatus.Defending )
                 {
                     // For each type of unit, process.
@@ -3168,7 +3184,7 @@ namespace SKCivilianIndustry
                 return;
 
             if ( factionData == null && entity.PlanetFaction.Faction.Implementation is SpecialFaction_SKCivilianIndustry )
-                factionData = entity.PlanetFaction.Faction.GetCivilianFactionExt();
+                factionData = entity.PlanetFaction.Faction.GetCivilianFactionExt( ExternalDataRetrieval.CreateIfNotFound );
 
             // Deal with its death.
             if ( factionData.GrandStation == entity.PrimaryKeyID )
