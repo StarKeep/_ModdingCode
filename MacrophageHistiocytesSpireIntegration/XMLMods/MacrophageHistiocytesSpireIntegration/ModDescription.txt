@@ -1,0 +1,4 @@
+Adds in Histiocyte to Spire Macrophage.
+Requires base Macrophage Histiocytes mod enabled.
+
+Allows Spire Harvesters and Spire Telium to also have Histiocytes at double the normal rate and capacity.

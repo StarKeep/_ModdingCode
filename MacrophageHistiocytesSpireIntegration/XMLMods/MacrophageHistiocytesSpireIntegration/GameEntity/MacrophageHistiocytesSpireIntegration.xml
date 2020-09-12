@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>	
+	<entity skip_export="true" name="SpireMacrophageHarvester" is_partial_record="true"
+			starting_mark_level="Mark1"
+			fleet_design_template_i_use_for_drones="SpireTeliumHistiocytesDrones"
+			drone_starting_behavior_type="Attacker_Full"	
+			>
+		<metal_flow purpose="BuildingDronesInternally" throughput="2000" />
+	</entity>
+
+
+	<entity skip_export="true" name="SpireTelium" is_partial_record="true"
+			starting_mark_level="Mark1"
+			fleet_design_template_i_use_for_drones="SpireHarvesterHistiocytesDrones"
+			drone_starting_behavior_type="Attacker_Full"	
+			>	
+		<metal_flow purpose="BuildingDronesInternally" throughput="2000" />
+	</entity>
+</root>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <!-- Civilian Industries -->
+  <galaxy_setting name="MacrophageDarkSpireRivalry" category="Histiocytes" display_name="Macrophage Dark Spire Rivalry" type="BoolToggle"
+    default="false" changeable_during_gameplay="true"
+    description="Enable Dark Spire integration. Telium adjacent to Dark Spire planets will wither away, and Histiocyte drones will slowly consume Dark Spire Vengence Generators.
+Be warned. The Dark Spire do not appreciate being eaten."
+  />
+</root>
