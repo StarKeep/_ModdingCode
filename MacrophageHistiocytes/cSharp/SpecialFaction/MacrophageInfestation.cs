@@ -758,7 +758,7 @@ namespace MacrophageHistiocytes.SpecialFaction
             faction.DoForEntities( HarvesterTag, harvester =>
             {
                 bool converted = false;
-                harvester.Planet.GetPlanetFactionForFaction( World_AIW2.Instance.GetNeutralFaction() ).Entities.DoForEntities( "MetalGenerator", metalGenerator =>
+                harvester.Planet.DoForEntities( "MetalGenerator", metalGenerator =>
                 {
                     if ( metalGenerator.TypeData.GetHasTag( "MetalGeneratorInfested" ) )
                         return DelReturn.Continue; // Skip already infested ones.
