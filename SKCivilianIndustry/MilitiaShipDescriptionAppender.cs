@@ -19,9 +19,7 @@ namespace SKCivilianIndustry
             CivilianMilitia militiaData = RelatedEntityOrNull.GetCivilianMilitiaExt( ExternalDataRetrieval.ReturnNullIfNotFound );
             CivilianCargo cargoData = RelatedEntityOrNull.GetCivilianCargoExt( ExternalDataRetrieval.ReturnNullIfNotFound );
 
-            CivilianFaction factionData = RelatedEntityOrNull.PlanetFaction.Faction.GetCivilianFactionExt( ExternalDataRetrieval.ReturnNullIfNotFound );
-
-            if ( militiaData == null || cargoData == null || factionData == null )
+            if ( militiaData == null || cargoData == null )
                 return;
 
             // Inform them about any focus the ship may have.
