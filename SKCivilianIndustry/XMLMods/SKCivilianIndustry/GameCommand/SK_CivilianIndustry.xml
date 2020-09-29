@@ -3,6 +3,6 @@
   <command name="SetWormholePath_CivilianIndustryBulk" core_function="SetWormholePath_NPCDirectedMob" audio_cue="SetWormholePath" dll_name="AIWarExternalCode" type_name="Arcen.AIW2.External.GameCommand_SetWormholePath" />
   <command name="MoveManyToOnePoint_CivilianIndustryBulk" core_function="MoveManyToOnePoint" audio_cue="Move" dll_name="AIWarExternalCode" type_name="Arcen.AIW2.External.GameCommand_MoveManyToOnePoint" />
   <command name="SetMilitiaCaps" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.SetMilitiaCaps" />
-  <command name="RemoveUnitFromMilitiaByIndex" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.RemoveUnitFromMilitiaByIndex" />
-  <command name="UpdateCargoShips" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.UpdateCargoShips" />
+  <command name="SetMilitiaAtEase" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.SetMilitiaAtEase" />
+  <command name="AttemptedToStoreAtEaseUnit" core_function="None" audio_cue="Move" dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.GameCommands.AttemptedToStoreAtEaseUnit" />
 </root>

@@ -12,24 +12,20 @@ namespace SKCivilianIndustry
         public int Version;
 
         /// <summary>
-        /// The centerpiece of the fleet.
+        /// The leading unit for this Militia group. If -1, its whatever entity has this data assigned.
         /// </summary>
         public int Centerpiece;
 
-        /// <summary>
-        /// Status of the fleet.
-        /// </summary>
         public CivilianMilitiaStatus Status;
 
         /// <summary>
-        /// The planet that this fleet is focused on.
-        /// It will only interact to hostile forces on or adjacent to this.
+        /// If patrolling, this determins if it should or shouldn't have its units docked within.
+        /// Occurs if there is no threat that it can currently deal with nearby.
         /// </summary>
+        public bool AtEase;
+
         public short PlanetFocus;
 
-        /// <summary>
-        /// Wormhole that this fleet has been asigned to. If -1 then it will instead find an unclaimed mine on the planet.
-        /// </summary>
         public int EntityFocus;
 
         // GameEntityTypeData that this militia builds, a list of every ship of that type under their control, and their capacity.
@@ -38,12 +34,20 @@ namespace SKCivilianIndustry
         public ArcenSparseLookup<int, List<int>> Ships;
         public ArcenSparseLookup<int, int> ShipCapacity;
 
+        // Units currently stored inside of the base.
+        public ArcenSparseLookup<int, int> StoredShips;
+
+        // Multipliers for various things.
+        public int CostMultiplier;
+        public int CapMultiplier;
+
         /// <summary>
-        /// Count the number of ships of a certain type that this militia controls, and purge any missing entities from their list.
+        /// Count the number of ships of a certain type that this militia controls.
+        /// If called from a SimSafe thread, this will also handle purging of units as needed.
         /// </summary>
         /// <param name="typeData" >Type Data of the Entity to count.</param>
         /// <returns></returns>
-        public int GetShipCount( GameEntityTypeData typeData, bool purgeDeadUnitsFromList = true )
+        public int GetShipCount( GameEntityTypeData typeData, bool calledFromSimSafeThread = true )
         {
             int index = -1;
             ShipTypeData.DoFor( pair =>
@@ -64,7 +68,7 @@ namespace SKCivilianIndustry
                 GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( Ships[index][x] );
                 if ( squad == null )
                 {
-                    if ( purgeDeadUnitsFromList )
+                    if ( calledFromSimSafeThread )
                     {
                         Ships[index].RemoveAt( x );
                         x--;
@@ -74,12 +78,9 @@ namespace SKCivilianIndustry
                 shipCount++;
                 shipCount += squad.ExtraStackedSquadsInThis;
             }
+            shipCount += StoredShips[index];
             return shipCount;
         }
-
-        // Multipliers for various things.
-        public int CostMultiplier;
-        public int CapMultiplier;
 
         // Following three functions are used for initializing, saving, and loading data.
         // Initialization function.
@@ -90,9 +91,11 @@ namespace SKCivilianIndustry
             ShipTypeData = new ArcenSparseLookup<int, GameEntityTypeData>();
             Ships = new ArcenSparseLookup<int, List<int>>();
             ShipCapacity = new ArcenSparseLookup<int, int>();
+            StoredShips = new ArcenSparseLookup<int, int>();
 
             this.Centerpiece = -1;
             this.Status = CivilianMilitiaStatus.Idle;
+            this.AtEase = false;
             this.PlanetFocus = -1;
             this.EntityFocus = -1;
             for ( int x = 0; x < (int)CivilianResource.Length; x++ )
@@ -100,6 +103,7 @@ namespace SKCivilianIndustry
                 this.ShipTypeDataNames.AddPair( x, "none" );
                 this.Ships.AddPair( x, new List<int>() );
                 this.ShipCapacity.AddPair( x, 0 );
+                this.StoredShips.AddPair( x, 0 );
             }
             this.CostMultiplier = 100; // 100%
             this.CapMultiplier = 100; // 100%
@@ -112,9 +116,10 @@ namespace SKCivilianIndustry
 
         public override void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            Buffer.AddInt32( ReadStyle.NonNeg, 2 );
+            Buffer.AddInt32( ReadStyle.NonNeg, 3 );
             Buffer.AddInt32( ReadStyle.Signed, this.Centerpiece );
             Buffer.AddByte( ReadStyleByte.Normal, (byte)this.Status );
+            Buffer.AddItem( this.AtEase );
             Buffer.AddInt16( ReadStyle.Signed, this.PlanetFocus );
             Buffer.AddInt32( ReadStyle.Signed, this.EntityFocus );
             int count = (int)CivilianResource.Length;
@@ -127,6 +132,7 @@ namespace SKCivilianIndustry
                 for ( int y = 0; y < subCount; y++ )
                     Buffer.AddInt32( ReadStyle.NonNeg, this.Ships[x][y] );
                 Buffer.AddInt32( ReadStyle.NonNeg, this.ShipCapacity[x] );
+                Buffer.AddInt32( ReadStyle.NonNeg, this.StoredShips[x] );
             }
             Buffer.AddInt32( ReadStyle.NonNeg, this.CostMultiplier );
             Buffer.AddInt32( ReadStyle.NonNeg, this.CapMultiplier );
@@ -142,6 +148,8 @@ namespace SKCivilianIndustry
                 Ships = new ArcenSparseLookup<int, List<int>>();
             if ( ShipCapacity == null )
                 ShipCapacity = new ArcenSparseLookup<int, int>();
+            if ( StoredShips == null )
+                StoredShips = new ArcenSparseLookup<int, int>();
 
             if ( IsForPartialSyncDuringMultiplayer )
             {
@@ -154,6 +162,10 @@ namespace SKCivilianIndustry
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             this.Centerpiece = Buffer.ReadInt32( ReadStyle.Signed );
             this.Status = (CivilianMilitiaStatus)Buffer.ReadByte( ReadStyleByte.Normal );
+            if ( this.Version < 3 )
+                this.AtEase = false;
+            else
+                this.AtEase = Buffer.ReadBool();
             if ( this.Version < 2 )
                 this.PlanetFocus = (short)Buffer.ReadInt32( ReadStyle.Signed );
             else
@@ -162,12 +174,19 @@ namespace SKCivilianIndustry
             int count = Buffer.ReadInt32( ReadStyle.NonNeg );
             for ( int x = 0; x < count; x++ )
             {
-                this.ShipTypeDataNames.AddPair( x, Buffer.ReadString_Condensed() );
+                this.ShipTypeDataNames[x] = Buffer.ReadString_Condensed();
                 this.Ships[x] = new List<int>();
+
                 int subCount = Buffer.ReadInt32( ReadStyle.NonNeg );
                 for ( int y = 0; y < subCount; y++ )
                     this.Ships[x].Add( Buffer.ReadInt32( ReadStyle.NonNeg ) );
+
                 this.ShipCapacity[x] = Buffer.ReadInt32( ReadStyle.NonNeg );
+
+                if ( this.Version < 3 )
+                    this.StoredShips[x] = 0;
+                else
+                    this.StoredShips[x] = Buffer.ReadInt32( ReadStyle.NonNeg );
             }
             if ( this.ShipTypeDataNames.GetPairCount() < (int)CivilianResource.Length )
             {

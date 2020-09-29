@@ -39,7 +39,7 @@
             Auto builds on non homeworld planets.
             Resources are always inported or exported through this station.
     -->
-    <entity name="TradeStation" display_name="Trade Station"
+    <entity name="TradeStation" display_name="Trade Station" draw_in_galaxy_view="true"
             description="The center of trade for this planet. Upgraded by Economic and Logistic Command and Metal Generation Tech."
             tags="CivilianIndustryEntity,TradeStation,ShowsOnNormalDisplayMode,CenterOfTrade"
             visuals="assets/_finalgamemeshes/humanbuildings/spacedock/spacedock.prefab"
@@ -71,7 +71,7 @@
                     Build by player-controlled Battlestations and Citadels
                     Acts like partial-potency trade stations.
     -->
-    <entity name="TradePost" display_name="Trade Post" copy_from="TradeStation" tags="CivilianIndustryEntity,TradePost,CenterOfTrade"
+    <entity name="TradePost" display_name="Trade Post" copy_from="TradeStation" tags="CivilianIndustryEntity,TradePost,CenterOfTrade" draw_in_galaxy_view="true"
                 build_sidebar_categories_i_am_part_of="MilitiaBuildings"
                 special_entity_type="NPCFactionCenterpiece"
                 description="A military funded trade post. Upgraded by Economic and Logistic Command and Metal Generation Tech."

@@ -35,6 +35,9 @@ namespace SKCivilianIndustry
                     Buffer.Add( " This ship is currently waiting for a protection request." );
             }
 
+            if ( militiaData.Status == CivilianMilitiaStatus.Patrolling && militiaData.AtEase )
+                Buffer.Add( " This station's forces are currently At Ease, and are returning to dock." );
+
             if ( militiaData.Ships.GetPairCount() > 0 )
             {
                 for ( int x = 0; x < (int)CivilianResource.Length; x++ )

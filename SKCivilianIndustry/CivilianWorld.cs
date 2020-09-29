@@ -10,7 +10,7 @@ namespace SKCivilianIndustry
     {
         public int Version;
 
-        public bool GeneratedResources = false;
+        public bool Unused = false;
 
         public ArcenSparseLookup<short, CivilianResource> ResourceByPlanet;
 
@@ -48,7 +48,7 @@ namespace SKCivilianIndustry
         public override void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 1 );
-            Buffer.AddItem( GeneratedResources );
+            Buffer.AddItem( Unused );
 
             int count = ResourceByPlanet.GetPairCount();
             Buffer.AddInt32( ReadStyle.NonNeg, count );
@@ -63,7 +63,7 @@ namespace SKCivilianIndustry
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Version = Buffer.ReadInt32( ReadStyle.NonNeg );
-            this.GeneratedResources = Buffer.ReadBool();
+            this.Unused = Buffer.ReadBool();
 
             if ( this.ResourceByPlanet == null )
                 this.ResourceByPlanet = new ArcenSparseLookup<short, CivilianResource>();
