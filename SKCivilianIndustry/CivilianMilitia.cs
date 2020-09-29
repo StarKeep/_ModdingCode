@@ -7,7 +7,7 @@ namespace SKCivilianIndustry
     /// <summary>
     /// Used on militia fleets. Tells us what their focus is.
     /// </summary>
-    public class CivilianMilitia
+    public class CivilianMilitia : ArcenExternalSubManagedData
     {
         public int Version;
 
@@ -107,10 +107,10 @@ namespace SKCivilianIndustry
 
         public CivilianMilitia( ArcenDeserializationBuffer Buffer ) : this()
         {
-            this.DeserializedIntoSelf( Buffer, false );
+            this.DeserializeIntoSelf( Buffer, false );
         }
 
-        public void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        public override void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 2 );
             Buffer.AddInt32( ReadStyle.Signed, this.Centerpiece );
@@ -132,7 +132,7 @@ namespace SKCivilianIndustry
             Buffer.AddInt32( ReadStyle.NonNeg, this.CapMultiplier );
         }
 
-        public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        public override void DeserializeIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             if ( ShipTypeDataNames == null )
                 ShipTypeDataNames = new ArcenSparseLookup<int, string>();
@@ -142,6 +142,14 @@ namespace SKCivilianIndustry
                 Ships = new ArcenSparseLookup<int, List<int>>();
             if ( ShipCapacity == null )
                 ShipCapacity = new ArcenSparseLookup<int, int>();
+
+            if ( IsForPartialSyncDuringMultiplayer )
+            {
+                this.ShipTypeDataNames.Clear();
+                this.ShipTypeData.Clear();
+                this.Ships.Clear();
+                this.ShipCapacity.Clear();
+            }
 
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             this.Centerpiece = Buffer.ReadInt32( ReadStyle.Signed );

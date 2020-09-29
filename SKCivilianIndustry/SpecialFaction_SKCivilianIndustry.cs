@@ -477,7 +477,7 @@ namespace SKCivilianIndustry
 
                         return DelReturn.Continue;
                     } );
-                    tradeCargo.PerSecond[(int)planet.GetCivilianPlanetExt( ExternalDataRetrieval.CreateIfNotFound ).Resource] = (int)(mines * 1.5);
+                    tradeCargo.PerSecond[(int)planet.GetCivResourceForPlanet(Context)] = (int)(mines * 1.5);
 
                     // Remove rebuild counter, if applicable.
                     if ( factionData.TradeStationRebuildTimerInSecondsByPlanet.GetHasKey( commandStation.Planet.Index ) )
@@ -600,7 +600,7 @@ namespace SKCivilianIndustry
 
                             return DelReturn.Continue;
                         } );
-                        tradeCargo.PerSecond[(int)workingPlanet.GetCivilianPlanetExt( ExternalDataRetrieval.CreateIfNotFound ).Resource] = (int)(mines * 1.5);
+                        tradeCargo.PerSecond[(int)workingPlanet.GetCivResourceForPlanet( Context )] = (int)(mines * 1.5);
 
                         // Remove rebuild counter, if applicable.
                         if ( factionData.TradeStationRebuildTimerInSecondsByPlanet.GetHasKey( bestEntity.Planet.Index ) )
@@ -688,7 +688,7 @@ namespace SKCivilianIndustry
 
                             return DelReturn.Continue;
                         } );
-                        tradeCargo.PerSecond[(int)entity.Planet.GetCivilianPlanetExt( ExternalDataRetrieval.CreateIfNotFound ).Resource] = mines;
+                        tradeCargo.PerSecond[(int)entity.Planet.GetCivResourceForPlanet( Context )] = mines;
 
                         entity.SetCivilianCargoExt( tradeCargo );
                     }
@@ -1217,7 +1217,10 @@ namespace SKCivilianIndustry
                         GameEntity_Squad tempSquad = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[y] );
                         if ( tempSquad == null )
                             continue;
-                        if ( tempSquad.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).EntityFocus == wormhole.PrimaryKeyID )
+                        CivilianMilitia tempStatus = tempSquad.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound );
+                        if ( tempStatus == null )
+                            continue;
+                        if ( tempStatus.EntityFocus == wormhole.PrimaryKeyID )
                             claimed = true;
                     }
                     if ( !claimed )
@@ -1250,7 +1253,10 @@ namespace SKCivilianIndustry
                             GameEntity_Squad tempSquad = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[y] );
                             if ( tempSquad == null )
                                 continue;
-                            if ( tempSquad.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).EntityFocus == mineEntity.PrimaryKeyID )
+                            CivilianMilitia tempStatus = tempSquad.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound );
+                            if ( tempStatus == null )
+                                continue;
+                            if ( tempStatus.EntityFocus == mineEntity.PrimaryKeyID )
                                 claimed = true;
                         }
                         if ( !claimed )
@@ -1269,10 +1275,13 @@ namespace SKCivilianIndustry
                     for ( int y = 0; y < factionData.MilitiaLeaders.Count && !advancedShipyardBuilt; y++ )
                     {
                         GameEntity_Squad workingMilitia = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[y] );
-                        if ( workingMilitia != null &&
-                            (workingMilitia.Planet == planet && workingMilitia.TypeData.GetHasTag( "AdvancedCivilianShipyard" ))
-                            || (workingMilitia.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).Status == CivilianMilitiaStatus.PathingForShipyard &&
-                            workingMilitia.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).PlanetFocus == planet.Index) )
+                        if ( workingMilitia == null )
+                            continue;
+                        CivilianMilitia workingStatus = workingMilitia.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound );
+                        if ( workingStatus == null )
+                            continue;
+                        if ( (workingMilitia.Planet == planet && workingMilitia.TypeData.GetHasTag( "AdvancedCivilianShipyard" ))
+                            || workingStatus.Status == CivilianMilitiaStatus.PathingForShipyard && workingStatus.PlanetFocus == planet.Index)
                             advancedShipyardBuilt = true;
                     }
 
@@ -1291,11 +1300,14 @@ namespace SKCivilianIndustry
                             militia = freeMilitia[y];
                     }
                 }
+
                 // Remove our found militia from our list.
                 freeMilitia.Remove( militia );
 
                 // Update the militia's status.
                 CivilianMilitia militiaStatus = militia.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound );
+                if ( militiaStatus == null )
+                    return DelReturn.Continue;
                 militiaStatus.PlanetFocus = planet.Index;
 
                 // Assign our mine or wormhole.
@@ -1721,7 +1733,7 @@ namespace SKCivilianIndustry
                     return DelReturn.Continue;
                 } );
                 if ( PlayerAligned )
-                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The AI is preparing to raid cargo ships on planets near {targetStation.Planet.Name}.", ChatType.ShowToEveryone, Context );
+                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The AI is preparing to raid cargo ships on planets near {targetStation.Planet.Name}.", ChatType.LogToCentralChat, Context );
 
                 // Start timer.
                 factionData.NextRaidInThisSeconds = 299;
@@ -1823,7 +1835,7 @@ namespace SKCivilianIndustry
 
             // Let the player know they're about to lose money.
             if ( PlayerAligned )
-                World_AIW2.Instance.QueueChatMessageOrCommand( "The AI has begun their raid.", ChatType.ShowToEveryone, Context );
+                World_AIW2.Instance.QueueChatMessageOrCommand( "The AI has begun their raid.", ChatType.LogToCentralChat, Context );
 
             // Reset raid information.
             factionData.NextRaidInThisSeconds = 1800;
@@ -2121,16 +2133,9 @@ namespace SKCivilianIndustry
             // If we have not yet done so, generate resources for planets.
             if ( !worldData.GeneratedResources )
             {
-                World_AIW2.Instance.DoForFactions( delegate ( Faction tempFaction )
+                World_AIW2.Instance.DoForPlanets( true, planet =>
                 {
-                    tempFaction.DoForControlledPlanets( delegate ( Planet planet )
-                    {
-                        CivilianPlanet planetData = planet.GetCivilianPlanetExt( ExternalDataRetrieval.CreateIfNotFound );
-                        if ( planetData.Resource == CivilianResource.Length )
-                            planetData.Resource = (CivilianResource)Context.RandomToUse.Next( (int)CivilianResource.Length );
-                        planet.SetCivilianPlanetExt( planetData );
-                        return DelReturn.Continue;
-                    } );
+                    worldData.SetResourceForPlanet( planet, (CivilianResource)Context.RandomToUse.Next( (int)CivilianResource.Length ) );
 
                     return DelReturn.Continue;
                 } );
@@ -2914,7 +2919,7 @@ namespace SKCivilianIndustry
                                 LastGameSecondForMessageAboutThisPlanet.AddPair( assessment.Target, 0 );
                             if ( World_AIW2.Instance.GameSecond - LastGameSecondForMessageAboutThisPlanet[assessment.Target] > 30 )
                             {
-                                World_AIW2.Instance.QueueChatMessageOrCommand( $"Civilian Militia are attacking {assessment.Target.Name}.", ChatType.ShowToEveryone, Context );
+                                World_AIW2.Instance.QueueChatMessageOrCommand( $"Civilian Militia are attacking {assessment.Target.Name}.", ChatType.LogToCentralChat, Context );
                                 LastGameSecondForMessageAboutThisPlanet[assessment.Target] = World_AIW2.Instance.GameSecond;
                             }
                         }

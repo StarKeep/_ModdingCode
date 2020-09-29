@@ -103,7 +103,7 @@ namespace SKCivilianIndustry.Notifications
 
                 debugStage = 0;
                 string colorString = string.Empty;
-                colorString = faction.TeamCenterColor.ColorHexBrighter;
+                colorString = faction.FactionCenterColor.ColorHexBrighter;
                 debugStage = 1;
 
                 debugStage = 3;

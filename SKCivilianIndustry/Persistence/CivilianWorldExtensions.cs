@@ -1,4 +1,6 @@
-﻿using Arcen.Universal;
+﻿using Arcen.AIW2.Core;
+using Arcen.Universal;
+using SKCivilianIndustry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,23 +9,41 @@ using System.Threading.Tasks;
 
 namespace SKCivilianIndustry.Persistence
 {
-    /// <summary>
-    /// The following is a helper function , designed to allow us to save and load data on demand.
-    /// </summary>
     public static class CivilianWorldExtensions
     {
-        // This loads the data assigned to whatever ParentObject you pass. So, say, you could assign the same class to different ships, and each would be able to get back the values assigned to it.
-        // In our specific case here, we're going to be assigning a dictionary to every faction.
-        public static CivilianWorld GetCivilianWorldExt(this World ParentObject, ExternalDataRetrieval rule )
+        public static CivilianWorld GetCivilianWorldExt( this World ParentObject, ExternalDataRetrieval RetrievalRules )
         {
-            return (CivilianWorld)ParentObject.ExternalData.GetCollectionByPatternIndex((int)CivilianWorldExternalData.PatternIndex, rule )?.Data[0];
+            ArcenExternalData extData = ParentObject.ExternalData.GetCollectionByPatternIndex( ParentObject, CivilianWorldExternalData.PatternIndex, RetrievalRules );
+            if ( extData == null )
+                return null;
+            return (CivilianWorld)extData.Data[0];
         }
-        /// <summary>
-        /// This meanwhile saves the data, assigning it to whatever ParentObject you pass.
-        /// </summary>
-        public static void SetCivilianWorldExt(this World ParentObject, CivilianWorld data)
+        public static void SetCivilianWorldExt( this World ParentObject, CivilianWorld data )
         {
-            ParentObject.ExternalData.GetCollectionByPatternIndex((int)CivilianWorldExternalData.PatternIndex, ExternalDataRetrieval.CreateIfNotFound ).Data[0] = data;
+            ParentObject.ExternalData.GetCollectionByPatternIndex( ParentObject, (int)CivilianWorldExternalData.PatternIndex, ExternalDataRetrieval.CreateIfNotFound ).Data[0] = data;
+        }
+
+        /// <summary>
+        /// Returns the Civilian Resource that a planet generates.
+        /// If no Context is passed, such as in the ui, it can potentially return an invalid value.
+        /// </summary>
+        /// <param name="planet"></param>
+        /// <param name="ContextForNewResourceGenerationOrNull"></param>
+        /// <returns></returns>
+        public static CivilianResource GetCivResourceForPlanet(this Planet planet, ArcenSimContext ContextForNewResourceGenerationOrNull)
+        {
+            CivilianWorld worldData = World.Instance.GetCivilianWorldExt( ExternalDataRetrieval.ReturnNullIfNotFound );
+            if ( worldData == null )
+                return CivilianResource.Length;
+
+            CivilianResource resource = worldData.GetResourceForPlanet( planet );
+            if (resource == CivilianResource.Length && ContextForNewResourceGenerationOrNull != null)
+            {
+                resource = (CivilianResource)ContextForNewResourceGenerationOrNull.RandomToUse.Next( (int)CivilianResource.Length );
+                worldData.SetResourceForPlanet( planet, resource );
+            }
+
+            return resource;
         }
     }
 }

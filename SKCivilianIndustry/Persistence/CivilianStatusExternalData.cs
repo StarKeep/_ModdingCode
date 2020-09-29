@@ -3,51 +3,34 @@ using Arcen.Universal;
 
 namespace SKCivilianIndustry.Persistence
 {
-    public class CivilianStatusExternalData : IArcenExternalDataPatternImplementation
+    public class CivilianStatusExternalData : ArcenExternalDataPatternImplementationBase_Squad
     {
-        // Make sure you use the same class name that you use for whatever data you want saved here.
         private CivilianStatus Data;
-
         public static int PatternIndex;
-        public void ReceivePatternIndex( int Index )
+
+        public override void ReceivePatternIndex( int Index )
         {
-            PatternIndex = Index; //for internal use with the ExternalData code in the game engine itself
+            PatternIndex = Index;
         }
-        public int GetNumberOfItems()
+        public override int GetNumberOfItems()
         {
-            return 1; //for internal use with the ExternalData code in the game engine itself
+            return 1;
         }
 
-        public GameEntity_Squad ParentSquad;
-        public void InitializeData( object ParentObject, object[] Target )
+        protected override void InitializeData( GameEntity_Squad Parent, object[] Target )
         {
-            this.ParentSquad = ParentObject as GameEntity_Squad;
-            if ( this.ParentSquad == null && ParentObject != null )
-                ArcenDebugging.ArcenDebugLogSingleLine( "CivilianStatusExternalData: Tried to initialize Parent object as GameEntity_Squad, but type was " + ParentObject.GetType(), Verbosity.ShowAsError );
-
-            //this initialization is handled by the data structure itself
             this.Data = new CivilianStatus();
             Target[0] = this.Data;
         }
-        public void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        public override void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
             CivilianStatus data = (CivilianStatus)Source[0];
             data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
-        public void DeserializeExternalData( object ParentObject, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        protected override void DeserializeExternalData( GameEntity_Squad Parent, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            //reverses SerializeData; gets the date out of the buffer and populates the variables
-            if ( IsForPartialSyncDuringMultiplayer )
-            {
-                //this is a partial sync, so use existing object and write into it
-                (Target[0] as CivilianStatus).DeserializedIntoSelf( Buffer, IsForPartialSyncDuringMultiplayer );
-            }
-            else
-            {
-                //this is a full sync, so create a new object
-                Target[0] = new CivilianStatus( Buffer );
-            }
+            this.DeserializeExternalDataAsArcenExternalSubManagedData<CivilianStatus>( Target, Buffer, IsForPartialSyncDuringMultiplayer );
         }
     }
 }

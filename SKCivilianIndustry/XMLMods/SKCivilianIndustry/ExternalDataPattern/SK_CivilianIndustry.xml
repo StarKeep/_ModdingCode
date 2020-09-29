@@ -9,5 +9,4 @@
   <item name="CivilianCargo"    dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.Persistence.CivilianCargoExternalData" /> 
   <item name="CivilianStatus"   dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.Persistence.CivilianStatusExternalData" />
   <item name="CivilianMilitia"  dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.Persistence.CivilianMilitiaExternalData" /> 
-  <item name="CivilianPlanet"   dll_name="SKCivilianIndustry" type_name="SKCivilianIndustry.Persistence.CivilianPlanetExternalData" /> 
 </root>

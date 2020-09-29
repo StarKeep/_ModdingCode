@@ -48,9 +48,6 @@
     <Compile Include="Persistence\CivilianMilitiaExtensions.cs" />
     <Compile Include="Persistence\CivilianMilitiaExternalData.cs" />
     <Compile Include="CivilianMilitiaStatus.cs" />
-    <Compile Include="CivilianPlanet.cs" />
-    <Compile Include="Persistence\CivilianPlanetExtensions.cs" />
-    <Compile Include="Persistence\CivilianPlanetExternalData.cs" />
     <Compile Include="CivilianResource.cs" />
     <Compile Include="CivilianResourceHexColors.cs" />
     <Compile Include="CivilianStatus.cs" />

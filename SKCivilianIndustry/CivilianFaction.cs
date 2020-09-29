@@ -11,7 +11,7 @@ namespace SKCivilianIndustry
     /// <summary>
     /// Invidual storage class for each faction.
     /// </summary>
-    public class CivilianFaction
+    public class CivilianFaction : ArcenExternalSubManagedData
     {
         // Version of this class.
         public int Version;
@@ -274,7 +274,7 @@ namespace SKCivilianIndustry
 
         public CivilianFaction( ArcenDeserializationBuffer Buffer ) : this()
         {
-            this.DeserializedIntoSelf( Buffer, false );
+            this.DeserializeIntoSelf( Buffer, false );
         }
 
         // Serialize a list.
@@ -300,7 +300,7 @@ namespace SKCivilianIndustry
             } );
         }
         // Saving our data.
-        public void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        public override void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 2 );
             Buffer.AddInt32( ReadStyle.Signed, this.GrandStation );
@@ -323,72 +323,53 @@ namespace SKCivilianIndustry
             SerializeList( this.NextRaidWormholes, Buffer );
         }
         // Deserialize a list.
-        public List<int> DeserializeList( ArcenDeserializationBuffer Buffer )
+        public void DeserializeList( ref List<int> list, ArcenDeserializationBuffer Buffer )
         {
             // Lists require a special touch to load.
             // We'll have saved the number of items stored up above to be used here to determine the number of items to load.
             // ADDITIONALLY we'll need to recreate a blank list beforehand, as loading does not call the Initialization function.
             // Can't add values to a list that doesn't exist, after all.
+            if ( list != null )
+                list.Clear();
+            else
+                list = new List<int>();
             int count = Buffer.ReadInt32( ReadStyle.NonNeg );
-            List<int> newList = new List<int>();
             for ( int x = 0; x < count; x++ )
-                newList.Add( Buffer.ReadInt32( ReadStyle.Signed ) );
-            return newList;
+                list.Add( Buffer.ReadInt32( ReadStyle.Signed ) );
         }
-        public ArcenSparseLookup<int, int> DeserializeLookup( ArcenDeserializationBuffer Buffer )
+        public void DeserializeLookup( ref ArcenSparseLookup<int, int> lookup, ArcenDeserializationBuffer Buffer )
         {
+            if ( lookup != null )
+                lookup.Clear();
+            else
+                lookup = new ArcenSparseLookup<int, int>();
             int count = Buffer.ReadInt32( ReadStyle.NonNeg );
-            ArcenSparseLookup<int, int> newLookup = new ArcenSparseLookup<int, int>();
             for ( int x = 0; x < count; x++ )
             {
                 int key = Buffer.ReadInt32( ReadStyle.NonNeg );
                 int value = Buffer.ReadInt32( ReadStyle.Signed );
-                if ( !newLookup.GetHasKey( key ) )
-                    newLookup.AddPair( key, value );
+                if ( !lookup.GetHasKey( key ) )
+                    lookup.AddPair( key, value );
                 else
-                    newLookup[key] = value;
-            }
-            return newLookup;
-        }
-        public void UpdateList( ref List<int> listToUpdate, ArcenDeserializationBuffer Buffer )
-        {
-            int count = Buffer.ReadInt32( ReadStyle.NonNeg );
-            for ( int x = 0; x < count; x++ )
-            {
-                int value = Buffer.ReadInt32( ReadStyle.Signed );
-                if ( !listToUpdate.Contains( value ) )
-                    listToUpdate.Add( value );
-            }
-        }
-        public void UpdateLookup( ref ArcenSparseLookup<int, int> lookupToUpdate, ArcenDeserializationBuffer Buffer )
-        {
-            int count = Buffer.ReadInt32( ReadStyle.NonNeg );
-            for ( int x = 0; x < count; x++ )
-            {
-                int key = Buffer.ReadInt32( ReadStyle.NonNeg );
-                int value = Buffer.ReadInt32( ReadStyle.Signed );
-                if ( !lookupToUpdate.GetHasKey( key ) )
-                    lookupToUpdate.AddPair( key, value );
-                else if ( lookupToUpdate[key] != value )
-                    lookupToUpdate[key] = value;
+                    lookup[key] = value;
             }
         }
         // Loading our data. Make sure the loading order is the same as the saving order.
-        public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        public override void DeserializeIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             this.GrandStation = Buffer.ReadInt32( ReadStyle.Signed );
             this.GrandStationRebuildTimerInSeconds = Buffer.ReadInt32( ReadStyle.Signed );
-            this.TradeStations = DeserializeList( Buffer );
-            this.TradeStationRebuildTimerInSecondsByPlanet = DeserializeLookup( Buffer );
-            this.CargoShips = DeserializeList( Buffer );
-            this.MilitiaLeaders = DeserializeList( Buffer );
-            this.CargoShipsIdle = DeserializeList( Buffer );
-            this.CargoShipsLoading = DeserializeList( Buffer );
-            this.CargoShipsUnloading = DeserializeList( Buffer );
-            this.CargoShipsBuilding = DeserializeList( Buffer );
-            this.CargoShipsPathing = DeserializeList( Buffer );
-            this.CargoShipsEnroute = DeserializeList( Buffer );
+            DeserializeList( ref this.TradeStations, Buffer );
+            DeserializeLookup( ref this.TradeStationRebuildTimerInSecondsByPlanet, Buffer );
+            DeserializeList( ref this.CargoShips, Buffer );
+            DeserializeList( ref this.MilitiaLeaders, Buffer );
+            DeserializeList( ref this.CargoShipsIdle, Buffer );
+            DeserializeList( ref this.CargoShipsLoading, Buffer );
+            DeserializeList( ref this.CargoShipsUnloading, Buffer );
+            DeserializeList( ref this.CargoShipsBuilding, Buffer );
+            DeserializeList( ref this.CargoShipsPathing, Buffer );
+            DeserializeList( ref this.CargoShipsEnroute, Buffer );
             this.BuildCounter = Buffer.ReadInt32( ReadStyle.Signed );
             if ( this.Version >= 2 )
                 this.FailedCounter = (Buffer.ReadInt32( ReadStyle.NonNeg ), Buffer.ReadInt32( ReadStyle.NonNeg ));
@@ -396,7 +377,7 @@ namespace SKCivilianIndustry
                 this.FailedCounter = (0, 0);
             this.MilitiaCounter = Buffer.ReadInt32( ReadStyle.Signed );
             this.NextRaidInThisSeconds = Buffer.ReadInt32( ReadStyle.Signed );
-            this.NextRaidWormholes = DeserializeList( Buffer );
+            DeserializeList( ref this.NextRaidWormholes, Buffer );
 
             if ( this.ThreatReports == null )
                 this.ThreatReports = new List<ThreatReport>();

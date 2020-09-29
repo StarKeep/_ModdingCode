@@ -10,16 +10,16 @@ namespace SKCivilianIndustry.Persistence
 {
     public static class CivilianStatusExtensions
     {
-        // This loads the data assigned to whatever ParentObject you pass. So, say, you could assign the same class to different ships, and each would be able to get back the values assigned to it.
-        // In our specific case here, we're going to be assigning a dictionary to every faction.
-        public static CivilianStatus GetCivilianStatusExt(this GameEntity_Squad ParentObject, ExternalDataRetrieval rule )
+        public static CivilianStatus GetCivilianStatusExt( this GameEntity_Squad ParentObject, ExternalDataRetrieval RetrievalRules )
         {
-            return (CivilianStatus)ParentObject.ExternalData.GetCollectionByPatternIndex((int)CivilianStatusExternalData.PatternIndex, rule )?.Data[0];
+            ArcenExternalData extData = ParentObject.ExternalData.GetCollectionByPatternIndex( ParentObject, CivilianStatusExternalData.PatternIndex, RetrievalRules );
+            if ( extData == null )
+                return null;
+            return (CivilianStatus)extData.Data[0];
         }
-        // This meanwhile saves the data, assigning it to whatever ParentObject you pass.
-        public static void SetCivilianStatusExt(this GameEntity_Squad ParentObject, CivilianStatus data)
+        public static void SetCivilianStatusExt( this GameEntity_Squad ParentObject, CivilianStatus data )
         {
-            ParentObject.ExternalData.GetCollectionByPatternIndex((int)CivilianStatusExternalData.PatternIndex, ExternalDataRetrieval.CreateIfNotFound ).Data[0] = data;
+            ParentObject.ExternalData.GetCollectionByPatternIndex( ParentObject, (int)CivilianStatusExternalData.PatternIndex, ExternalDataRetrieval.CreateIfNotFound ).Data[0] = data;
         }
     }
 }

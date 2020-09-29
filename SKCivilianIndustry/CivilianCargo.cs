@@ -5,7 +5,7 @@ namespace SKCivilianIndustry
     /// <summary>
     /// Used on any entity which has resources.
     /// </summary>
-    public class CivilianCargo
+    public class CivilianCargo : ArcenExternalSubManagedData
     {
         public int Version;
 
@@ -35,10 +35,10 @@ namespace SKCivilianIndustry
 
         public CivilianCargo( ArcenDeserializationBuffer Buffer ) : this()
         {
-            this.DeserializedIntoSelf( Buffer, false );
+            this.DeserializeIntoSelf( Buffer, false );
         }
 
-        public void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        public override void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 1 );
             // Arrays
@@ -55,7 +55,7 @@ namespace SKCivilianIndustry
             }
         }
 
-        public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        public override void DeserializeIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
 
         {
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );

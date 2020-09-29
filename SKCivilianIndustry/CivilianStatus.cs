@@ -15,7 +15,7 @@ namespace SKCivilianIndustry
     /// <summary>
     /// Used on mobile ships. Tells us what they're currently doing.
     /// </summary>
-    public class CivilianStatus
+    public class CivilianStatus : ArcenExternalSubManagedData
     {
         public int Version { get; private set; }
 
@@ -43,10 +43,10 @@ namespace SKCivilianIndustry
 
         public CivilianStatus( ArcenDeserializationBuffer Buffer ) : this()
         {
-            this.DeserializedIntoSelf( Buffer, false );
+            this.DeserializeIntoSelf( Buffer, false );
         }
 
-        public void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        public override void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Buffer.AddInt32( ReadStyle.NonNeg, 2 );
             Buffer.AddInt32( ReadStyle.Signed, this.Origin );
@@ -54,7 +54,7 @@ namespace SKCivilianIndustry
             Buffer.AddInt32( ReadStyle.Signed, this.LoadTimer );
         }
 
-        public void DeserializedIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
+        public override void DeserializeIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
             if ( this.Version < 2 )
