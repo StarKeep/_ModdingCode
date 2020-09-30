@@ -2913,11 +2913,10 @@ namespace SKCivilianIndustry
                                     entity.QueueWormholeCommand( centerpiece.Planet, Context );
                                 }
                             }
-                            else if ( wormhole != null && wormhole.WorldLocation.GetExtremelyRoughDistanceTo( entity.WorldLocation ) > 5000
-                                && (entity.Orders.QueuedOrders.Count == 0 || entity.Orders.QueuedOrders[0].RelatedPoint != wormhole.WorldLocation) )
+                            else if ( wormhole != null && wormhole.WorldLocation.GetExtremelyRoughDistanceTo( entity.WorldLocation ) > 5000 )
                             {
                                 // Create and add all required parts of a move to point command.
-                                if ( wormhole != null )
+                                if ( (entity.Orders.QueuedOrders.Count == 0 || entity.Orders.QueuedOrders[0].RelatedPoint != wormhole.WorldLocation) )
                                 {
                                     entity.QueueMovementCommand( wormhole.WorldLocation );
                                 }
@@ -2928,8 +2927,11 @@ namespace SKCivilianIndustry
                         }
                     }
                 }
-                // If 66% all of our ships are ready, or we're already raiding, its raiding time.
-                if ( ready > total * 0.66 || alreadyAttacking )
+
+                ArcenDebugging.SingleLineQuickDebug( $"Ready: {ready} Total: {total}" );
+
+                // If 66% all of our ships are ready,  its raiding time.
+                if ( ready > total * 0.66 )
                 {
                     for ( int x = 0; x < factionData.MilitiaLeaders.Count; x++ )
                     {
