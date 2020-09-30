@@ -1610,6 +1610,8 @@ namespace SKCivilianIndustry
                 }
                 else if ( militiaStatus.Status == CivilianMilitiaStatus.Patrolling ) // If patrolling, do unit spawning.
                 {
+                    // Reset strength bonus.
+                    militiaShip.AdditionalStrengthFromFactions = 0;
                     // For each type of unit, get ship count.
                     for ( int y = 0; y < (int)CivilianResource.Length; y++ )
                     {
@@ -1654,7 +1656,6 @@ namespace SKCivilianIndustry
                         GameEntityTypeData shipData = militiaStatus.ShipTypeData[y];
 
                         // Update strength to account for any stored entities.
-                        militiaShip.AdditionalStrengthFromFactions = 0;
                         if ( militiaStatus.StoredShips[y] > 0 )
                             militiaShip.AdditionalStrengthFromFactions = militiaStatus.StoredShips[y] * shipData.GetForMark( faction.GetGlobalMarkLevelForShipLine( shipData ) ).StrengthPerSquad_CalculatedWithNullFleetMembership;
 
@@ -2839,7 +2840,7 @@ namespace SKCivilianIndustry
                     alreadyAttacking = true;
 
                 // Stop the attack if too many ships aren't ready, unless we're already attacking.
-                int notReady = 0, ready = 0;
+                int total = 0, ready = 0;
 
                 for ( int x = 0; x < factionData.MilitiaLeaders.Count; x++ )
                 {
@@ -2877,11 +2878,16 @@ namespace SKCivilianIndustry
                     if ( !isAttacker )
                         continue;
 
+                    isPatrolling.Add( centerpiece.Planet );
+
                     // Prepare a movement command to gather our ships around a wormhole.
                     GameEntity_Other wormhole = centerpiece.Planet.GetWormholeTo( assessment.Target );
 
                     for ( int y = 0; y < militiaData.Ships.GetPairCount() && !alreadyAttacking; y++ )
                     {
+                        if ( militiaData.ShipTypeData[y] != null )
+                            total += militiaData.GetShipCount( militiaData.ShipTypeData[y] );
+
                         for ( int z = 0; z < militiaData.Ships[y].Count; z++ )
                         {
                             GameEntity_Squad entity = World_AIW2.Instance.GetEntityByID_Squad( militiaData.Ships[y][z] );
@@ -2902,7 +2908,6 @@ namespace SKCivilianIndustry
                             // Get them moving if needed.
                             if ( entity.Planet.Index != centerpiece.Planet.Index )
                             {
-                                notReady++;
                                 if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex != centerpiece.Planet.Index )
                                 {
                                     entity.QueueWormholeCommand( centerpiece.Planet, Context );
@@ -2911,7 +2916,6 @@ namespace SKCivilianIndustry
                             else if ( wormhole != null && wormhole.WorldLocation.GetExtremelyRoughDistanceTo( entity.WorldLocation ) > 5000
                                 && (entity.Orders.QueuedOrders.Count == 0 || entity.Orders.QueuedOrders[0].RelatedPoint != wormhole.WorldLocation) )
                             {
-                                notReady++;
                                 // Create and add all required parts of a move to point command.
                                 if ( wormhole != null )
                                 {
@@ -2919,13 +2923,13 @@ namespace SKCivilianIndustry
                                 }
                             }
                             else
-                                ready++;
+                                ready += 1 + entity.ExtraStackedSquadsInThis;
 
                         }
                     }
                 }
-                // If 33% all of our ships are ready, or we're already raiding, its raiding time.
-                if ( ready > notReady * 2 || alreadyAttacking )
+                // If 66% all of our ships are ready, or we're already raiding, its raiding time.
+                if ( ready > total * 0.66 || alreadyAttacking )
                 {
                     for ( int x = 0; x < factionData.MilitiaLeaders.Count; x++ )
                     {
@@ -2972,7 +2976,6 @@ namespace SKCivilianIndustry
                             }
                         }
 
-                        isPatrolling.Add( centerpiece.Planet );
                         for ( int y = 0; y < militiaData.Ships.GetPairCount(); y++ )
                         {
                             for ( int z = 0; z < militiaData.Ships[y].Count; z++ )
