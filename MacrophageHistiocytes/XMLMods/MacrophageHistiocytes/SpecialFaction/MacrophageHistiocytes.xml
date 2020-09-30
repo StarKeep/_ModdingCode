@@ -1,54 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!--  Hide the vanilla one; and remove any of its implementation. -->
-    <faction name="MacrophageInfestation" is_partial_record="true"
-			 type_name="Arcen.AIW2.External.SpecialFaction_Missing" 			 
-			 should_not_be_shown="true" should_not_be_shown_even_as_separate_line_items_in_game_factions_menu="true"
-            >
-  </faction>
-  <faction name="TamedMacrophage" is_partial_record="true"
+	<faction name="HistiocytesLogicFaction"
+           display_name="Hictiocytes Logic Faction"
            dll_name="MacrophageHistiocytes"
-           type_name="MacrophageHistiocytes.SpecialFaction.MacrophageInfestationTamedHistiocytes"
-           >
-   </faction>
-
-<faction name="MacrophageHistiocytes"
-           display_name="Macrophage Infestation"
-           dll_name="MacrophageHistiocytes"
-            type_name="MacrophageHistiocytes.SpecialFaction.MacrophageInfestationHistiocytes"
-           team_center_color="c50C878" team_border_color="cC41E3A"
+           type_name="MacrophageHistiocytes.MacrophageHistiocytes"
+           team_center_color="Blue" team_border_color="Gold"
            type="SpecialFaction"
-           ai_threat_against_this_faction_goes_back_to_guarding="true"
 		   can_be_targeted_by_annoyed_non_human_units="true"
-           description="The galaxy is being invaded by enormous biological Macrophages. They prey on the AI for metal, and will try to eat your ships too.
-		   
-&lt;color=#f25e1c&gt;VARIABLE IMPACT:&lt;/color&gt; This faction plays differently, being capable of expanding but not in a traditional manner. Depending on their start, they can be extremely strong, or a bit more low impact."
-           ai_can_send_waves_against_this="false"
-	       can_use_spire_debris="true"
-           impact="Moderate"
-           CanBeFriendlyToPlayer="true"
-           CanBeHostileToAll="true"
-           CanBeOnMinorFactionTeam="true"
-           >
-      <custom_field name="Intensity" display_name="Intensity" description="Just how terrifying is this faction?"
-          sort_group="200" setting_type="IntSlider" default="5" min="1" max="10"/>
-	  <custom_field name="NumberToSeed" display_name="Hive Galaxy Percent" description="What percent of the galaxy should be claimed by Macrophage Hives? Setting this too high may result in some... interesting map layouts.
-
-Only used for the Hives spawning option."
-                  sort_group="250" setting_type="IntSlider" default="20" min="1" max="50"/>
-      <custom_field name="Allegiance" display_name="Allegiance" description="Is this faction friendly to the AI(s), or nobody?"
-          sort_group="300" setting_type="CustomDropdownArbitraryOptions" arbitrary_options="Hostile To All,Hostile To Players Only,Minor Faction Team Red,Minor Faction Team Blue,Minor Faction Team Green" default_option="Hostile To All" />
-       <custom_field name="SpawningOptions" display_name="Spawning Options" description="Modifies the spawning style of this faction.
-					 
-Default spawns a single Telium on a scaling number of planets based on Intensity.
-
-Lone Telium spawns a single angry Telium that never expands but has vastly increased production capabilities.
-
-Clustered Telia spawns Telia in groups of 2 across the galaxy based on Intensity.
-
-Hives spawns a large number of Telium, along with a bunch of extra mines, on planets with minimal ai presence. These planets can be claimed at no AIP cost, if you can scrub them clean.
-You can adjust the Hives spawn percentage above."
-          sort_group="350" setting_type="CustomDropdownArbitraryOptions" arbitrary_options="Default,Lone Telium,Clustered Telia,Hives" default_option="Default" />
-  </faction>	
-	
+           should_not_be_shown="true"
+           player_discoverable="true"
+           auto_add_one_of_faction_if_missing_on_save_load="true"
+           description="Background logic faction for the Histioctyes mod."
+  >
+	</faction>
 </root>

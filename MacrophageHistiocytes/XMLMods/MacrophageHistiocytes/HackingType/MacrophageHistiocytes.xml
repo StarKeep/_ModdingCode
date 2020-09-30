@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-	<item name="TameTelium" is_partial_record="true"
-        dll_name="MacrophageHistiocytes"
-        type_name="MacrophageHistiocytes.Hacking.Hacking_TameTelium"
-/>
-
+	<!-- Nothing here! File kept in so that people won't have to purge existing installs to update. -->
 </root>

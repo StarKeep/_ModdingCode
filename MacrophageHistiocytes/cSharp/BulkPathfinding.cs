@@ -20,15 +20,15 @@ namespace MacrophageHistiocytes
         /// <param name="destination"></param>
         /// <param name="ContextForSmartPathfindingOrNullForDumb"></param>
         /// <returns>The next planet the entity will move to.</returns>
-        public static Planet QueueWormholeCommand( this GameEntity_Squad entity, Planet destination, ArcenLongTermIntermittentPlanningContext ContextForSmartPathfindingOrNullForDumb = null, bool forResultOnlyDoNotActuallyQueue = false )
+        public static Planet QueueWormholeCommand( this Faction faction, GameEntity_Squad entity, Planet destination, ArcenLongTermIntermittentPlanningContext ContextForSmartPathfindingOrNullForDumb = null, bool forResultOnlyDoNotActuallyQueue = false )
         {
-            if ( !(entity.PlanetFaction.Faction.Implementation is IBulkPathfinding) )
+            if ( !(faction.Implementation is IBulkPathfinding) )
                 return null;
 
             if ( destination == null )
                 return null;
 
-            IBulkPathfinding BPFaction = entity.PlanetFaction.Faction.Implementation as IBulkPathfinding;
+            IBulkPathfinding BPFaction = faction.Implementation as IBulkPathfinding;
 
             if ( BPFaction.WormholeCommands == null )
                 BPFaction.WormholeCommands = new ArcenSparseLookup<Planet, ArcenSparseLookup<Planet, List<GameEntity_Squad>>>();
@@ -109,12 +109,12 @@ namespace MacrophageHistiocytes
 
             BPFaction.WormholeCommands = null;
         }
-        public static void QueueMovementCommand( this GameEntity_Squad entity, ArcenPoint destination )
+        public static void QueueMovementCommand( this Faction faction, GameEntity_Squad entity, ArcenPoint destination )
         {
-            if ( !(entity.PlanetFaction.Faction.Implementation is IBulkPathfinding) )
+            if ( !(faction.Implementation is IBulkPathfinding) )
                 return;
 
-            IBulkPathfinding BPFaction = entity.PlanetFaction.Faction.Implementation as IBulkPathfinding;
+            IBulkPathfinding BPFaction = faction.Implementation as IBulkPathfinding;
 
             if ( BPFaction.MovementCommands == null )
                 BPFaction.MovementCommands = new ArcenSparseLookup<Planet, ArcenSparseLookup<ArcenPoint, List<GameEntity_Squad>>>();

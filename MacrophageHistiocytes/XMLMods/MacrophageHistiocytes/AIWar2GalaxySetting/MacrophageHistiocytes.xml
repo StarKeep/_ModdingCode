@@ -1,9 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
-  <!-- Civilian Industries -->
-  <galaxy_setting name="MacrophageDarkSpireRivalry" category="Histiocytes" display_name="Macrophage Dark Spire Rivalry" type="BoolToggle"
-    default="false" changeable_during_gameplay="true"
-    description="Enable Dark Spire integration. Telium adjacent to Dark Spire planets will wither away, and Histiocyte drones will slowly consume Dark Spire Vengence Generators.
+    <galaxy_setting name="TeliumRegen" category="Histiocytes" display_name="Telium Regen Over Time" type="BoolToggle"
+        default="false" changeable_during_gameplay="true"
+        description="Allows Telium to slowly regenerate health when there are no hostiles on their planet."
+    />
+    <galaxy_setting name="MacrophageDarkSpireRivalry" category="Histiocytes" display_name="Macrophage Dark Spire Rivalry" type="BoolToggle"
+        default="false" changeable_during_gameplay="true"
+        description="Enable Dark Spire integration. Telium adjacent to Dark Spire planets will wither away, and Histiocyte drones will slowly consume Dark Spire Vengence Generators.
 Be warned. The Dark Spire do not appreciate being eaten."
-  />
+    />
+    <galaxy_setting name="AIMacrophageSpray" category="Histiocytes" display_name="AI Has Macrophage Spray" type="BoolToggle"
+        default="true" changeable_during_gameplay="true"
+        description="Allows AI Extragalactic War Units to slowly wither Telium on planets they're on."
+    />
+    <galaxy_setting name="SporeModule" category="Histiocytes" display_name="Spore Module" type="BoolToggle"
+        default="true" changeable_during_gameplay="true"
+        description="Enables integration with Spores.
+Infested Metal Generators will output Spores over time if they are on a planet with a friendly Telium.
+Spores will additionally infest any Metal Generators they come in contact with."
+    />
+	<galaxy_setting name="ChillOutPhage" category="Histiocytes" display_name="Chill Out Phage" type="BoolToggle"
+        default="false" changeable_during_gameplay="true"
+        description="Effectively removes the Enrage mechanic by setting the Macrophage capacity before enraging to 9999.
+
+Can be enabled at any time. 
+If you wish to disable this, it will require a full GAME restart after being disabled to take effect."
+    />
 </root>
