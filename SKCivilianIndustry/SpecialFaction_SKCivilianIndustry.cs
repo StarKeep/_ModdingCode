@@ -2844,10 +2844,6 @@ namespace SKCivilianIndustry
 
                 for ( int x = 0; x < factionData.MilitiaLeaders.Count; x++ )
                 {
-                    // Skip checks if we're already attacking or have already gotten enough strength.
-                    if ( alreadyAttacking )
-                        break;
-
                     GameEntity_Squad post = World_AIW2.Instance.GetEntityByID_Squad( factionData.MilitiaLeaders[x] );
 
                     if ( post == null )
@@ -2879,6 +2875,10 @@ namespace SKCivilianIndustry
                         continue;
 
                     isPatrolling.Add( centerpiece.Planet );
+
+                    // Skip checks if we're already attacking or have already gotten enough strength.
+                    if ( alreadyAttacking )
+                        break;
 
                     // Prepare a movement command to gather our ships around a wormhole.
                     GameEntity_Other wormhole = centerpiece.Planet.GetWormholeTo( assessment.Target );
