@@ -2,9 +2,18 @@
 <root>
     <!--    File contains stations and ships for the PlayerTrains faction.
     -->
-  
-    <!--    Following units are core to the function of the mod.          
-    -->
+	<!--    Beacon
+	        Can be Hacked to awaken the faction -->
+	<entity skip_export="true" copy_from="MinorFactionBeacon" name="CivilianIndustryBeacon"
+            tags="Beacon,CivilianIndustryBeacon"
+            display_name="Enslaved Human Settlement"
+            description="The AI have captured a large number of our population during the war, and have put them to work.
+			
+Should we manage to hack this prison, we can reawaken our Civilian Industry."
+			target_type_for_player="NeverTarget"
+	        eligible_for_hacks="PrepareCivilianEscape"
+        >
+	</entity>
     <!--    The main station of our faction.
             Auto builds on player homeworlds.
             Builds Cargo Ships and Militia Construction Ships

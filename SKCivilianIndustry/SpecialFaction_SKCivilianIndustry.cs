@@ -164,6 +164,47 @@ namespace SKCivilianIndustry
             }
         }
 
+        public override void SeedStartingEntities_LaterEverythingElse( Faction faction, Galaxy galaxy, ArcenSimContext Context, MapTypeData mapType )
+        {
+            if ( faction.MustBeAwakenedByPlayer )
+            {
+                Mapgen_Base.Mapgen_SeedSpecialEntities( Context, galaxy, faction, SpecialEntityType.None, "CivilianIndustryBeacon", SeedingType.HardcodedCount, 1,
+                    MapGenCountPerPlanet.One, MapGenSeedStyle.SmallGood, 3, 3, PlanetSeedingZone.MostAnywhere, SeedingExpansionType.ComplicatedOriginal );
+            }
+        }
+
+        // Yoinked from Scourge.
+        public override void ReactToHacking_AsPartOfMainSim( GameEntity_Squad entityBeingHacked, FInt WaveMultiplier, ArcenSimContext Context, Faction overrideFaction = null )
+        {
+            Faction aiFaction = World_AIW2.GetRandomAIFaction( Context );
+            SpecialFaction_AI implementationAsType = aiFaction.Implementation as SpecialFaction_AI;
+            if ( implementationAsType != null )
+            {
+                //First compute the base strength of the hacking response
+                AISentinelsExternalData factionExternal = aiFaction.GetSentinelsExternal( ExternalDataRetrieval.ReturnNullIfNotFound );
+                AICommonExternalData aiFactionExternal = aiFaction.GetAICommonExternalData( ExternalDataRetrieval.ReturnNullIfNotFound );
+                int HackingWaveSize = factionExternal.AIDifficulty.BaseHackingWaveSize;
+                int strength = (WaveMultiplier * HackingWaveSize).IntValue;
+
+                //if there's an AIP multiplier, handle that now
+                //If the AIP multiplier is .01 and the AIP is 200 then we do
+                //newStrength = oldStrength + (oldStrength * AIPMultiplier*AIP)
+                //a straight multiplier would allow the resulting waves to have too much variance
+                FInt aipMultiplier = factionExternal.AIDifficulty.HackingAipMultiplier;
+                int bonusStrength = 0;
+                if ( aipMultiplier > FInt.Zero )
+                {
+                    FInt AIP = aiFactionExternal.AIProgress_Effective;
+                    bonusStrength = (aipMultiplier * AIP * strength).IntValue;
+                    strength += bonusStrength;
+                }
+
+                bool allowedGuardians = true;
+                implementationAsType.SendWave( Context, aiFaction, strength, entityBeingHacked, null, -1, allowedGuardians );
+                return;
+            }
+        }
+
         // Upgrade and kill units where applicable.
         public void UpgradeAndPurgeUnitsAsNeeded( Faction faction, ArcenSimContext Context )
         {
@@ -248,12 +289,14 @@ namespace SKCivilianIndustry
 
         public override void DoPerSecondNonSimNotificationUpdates_OnBackgroundNonSimThread_NonBlocking( Faction faction, ArcenSimContext Context, bool IsFirstCallToFactionOfThisTypeThisCycle )
         {
-            if ( !PlayerAligned || World_AIW2.Instance.GameSecond < 5 )
+            if ( faction.MustBeAwakenedByPlayer && !faction.HasBeenAwakenedByPlayer )
+                return;
+
+            if ( !PlayerAligned || factionData == null )
                 return;
 
             if ( factionData.NextRaidInThisSeconds < 300 )
             {
-
                 AIRaidNotifier notifier = new AIRaidNotifier();
                 notifier.raidingWormholes = factionData.NextRaidWormholes;
                 notifier.faction = World_AIW2.GetRandomAIFaction( Context );
@@ -2276,6 +2319,10 @@ namespace SKCivilianIndustry
             // Handle AI response. Have some variation on wave timers.
             if ( faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance != "AI Team" )
             {
+                // Delay raids for the first hour of the game.
+                if (World_AIW2.Instance.GameSecond < 3600)
+                    factionData.NextRaidInThisSeconds = 1800;
+
                 if ( factionData.NextRaidInThisSeconds > 300 )
                     factionData.NextRaidInThisSeconds = Math.Max( 300, factionData.NextRaidInThisSeconds - Context.RandomToUse.Next( 1, 3 ) );
                 else if ( factionData.NextRaidInThisSeconds > 0 )

@@ -38,6 +38,7 @@
     <Compile Include="CargoShipDescriptionAppender.cs" />
     <Compile Include="CivilianCargo.cs" />
     <Compile Include="GameCommands\SKCivilianIndustry.cs" />
+    <Compile Include="Hacking\PrepareCivilianEscape.cs" />
     <Compile Include="Notifications\SKCivilianIndustry.cs" />
     <Compile Include="Persistence\CivilianCargoExtensions.cs" />
     <Compile Include="Persistence\CivilianCargoExternalData.cs" />
@@ -71,6 +72,7 @@
     <Content Include="XMLMods\SKCivilianIndustry\ExternalDataPattern\SK_CivilianIndustry.xml" />
     <Content Include="XMLMods\SKCivilianIndustry\GameCommand\SK_CivilianIndustry.xml" />
     <Content Include="XMLMods\SKCivilianIndustry\GameEntity\SK_CivilianIndustry.xml" />
+    <Content Include="XMLMods\SKCivilianIndustry\HackingType\SK_CivilianIndustry.xml" />
     <Content Include="XMLMods\SKCivilianIndustry\ModDescription.txt" />
     <Content Include="XMLMods\SKCivilianIndustry\ModIsOffByDefault.txt.txt" />
     <Content Include="XMLMods\SKCivilianIndustry\SpecialFaction\SK_CivilianIndustry.xml" />
