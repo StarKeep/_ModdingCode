@@ -509,7 +509,7 @@ namespace SKCivilianIndustry
 
                         return DelReturn.Continue;
                     } );
-                    tradeCargo.PerSecond[(int)planet.GetCivResourceForPlanet( Context )] = (int)(mines * 1.5);
+                    tradeCargo.PerSecond[(int)planet.GetCivResourceForPlanet()] = (int)(mines * 1.5);
 
                     // Remove rebuild counter, if applicable.
                     if ( factionData.TradeStationRebuildTimerInSecondsByPlanet.GetHasKey( commandStation.Planet.Index ) )
@@ -632,7 +632,7 @@ namespace SKCivilianIndustry
 
                             return DelReturn.Continue;
                         } );
-                        tradeCargo.PerSecond[(int)workingPlanet.GetCivResourceForPlanet( Context )] = (int)(mines * 1.5);
+                        tradeCargo.PerSecond[(int)workingPlanet.GetCivResourceForPlanet()] = (int)(mines * 1.5);
 
                         // Remove rebuild counter, if applicable.
                         if ( factionData.TradeStationRebuildTimerInSecondsByPlanet.GetHasKey( bestEntity.Planet.Index ) )
@@ -720,7 +720,7 @@ namespace SKCivilianIndustry
 
                             return DelReturn.Continue;
                         } );
-                        tradeCargo.PerSecond[(int)entity.Planet.GetCivResourceForPlanet( Context )] = mines;
+                        tradeCargo.PerSecond[(int)entity.Planet.GetCivResourceForPlanet()] = mines;
 
                         entity.SetCivilianCargoExt( tradeCargo );
                     }
@@ -777,11 +777,15 @@ namespace SKCivilianIndustry
                     x--;
                     continue;
                 }
+
+                if ( entity.SecondsSpentAsRemains > 0 )
+                    continue; // Skip crippled stations.
+
                 CivilianCargo entityCargo = entity.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
                 if ( entityCargo == null )
                     continue;
 
-                CivilianResource resourceOnPlanet = entity.Planet.GetCivResourceForPlanet( Context );
+                CivilianResource resourceOnPlanet = entity.Planet.GetCivResourceForPlanet();
 
                 // Deal with its per second values.
                 for ( int y = 0; y < entityCargo.PerSecond.Length; y++ )
@@ -905,8 +909,8 @@ namespace SKCivilianIndustry
                 // Confirm its destination station still exists.
                 GameEntity_Squad destinationStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Destination );
 
-                // If station not found, idle the cargo ship.
-                if ( destinationStation == null )
+                // If station not found or is crippled, idle the cargo ship.
+                if ( destinationStation == null || destinationStation.SecondsSpentAsRemains > 0 )
                 {
                     factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
@@ -951,8 +955,8 @@ namespace SKCivilianIndustry
                 // Confirm its origin station still exists.
                 GameEntity_Squad originStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Origin );
 
-                // If station not found, idle the cargo ship.
-                if ( originStation == null )
+                // If station not found or is crippled, idle the cargo ship.
+                if ( originStation == null || originStation.SecondsSpentAsRemains > 0 )
                 {
                     factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
@@ -996,8 +1000,8 @@ namespace SKCivilianIndustry
 
                 // Load the origin station and its cargo.
                 GameEntity_Squad originStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Origin );
-                // If the station has died, free the cargo ship.
-                if ( originStation == null )
+                // If the station has died or been crippled, free the cargo ship.
+                if ( originStation == null || originStation.SecondsSpentAsRemains > 0 )
                 {
                     factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
@@ -1007,8 +1011,8 @@ namespace SKCivilianIndustry
 
                 // Load the destination station and its cargo.
                 GameEntity_Squad destinationStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Destination );
-                // If the station has died, free the cargo ship.
-                if ( destinationStation == null )
+                // If the station has died or been crippled, free the cargo ship.
+                if ( destinationStation == null || destinationStation.SecondsSpentAsRemains > 0 )
                 {
                     factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
@@ -1098,8 +1102,8 @@ namespace SKCivilianIndustry
 
                 // Load the destination station and its cargo.
                 GameEntity_Squad destinationStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Destination );
-                // If the station has died, free the cargo ship.
-                if ( destinationStation == null )
+                // If the station has died or been crippled, free the cargo ship.
+                if ( destinationStation == null || destinationStation.SecondsSpentAsRemains > 0 )
                 {
                     factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
@@ -1158,8 +1162,8 @@ namespace SKCivilianIndustry
 
                 // Load the destination station and its cargo.
                 GameEntity_Squad destinationStation = World_AIW2.Instance.GetEntityByID_Squad( shipStatus.Destination );
-                // If the station has died, free the cargo ship.
-                if ( destinationStation == null )
+                // If the station has died or been crippled, free the cargo ship.
+                if ( destinationStation == null || destinationStation.SecondsSpentAsRemains > 0 )
                 {
                     factionData.ChangeCargoShipStatus( cargoShip, Status.Idle );
                     x--;
@@ -2018,6 +2022,8 @@ namespace SKCivilianIndustry
                     x--;
                     continue;
                 }
+                if ( requester.SecondsSpentAsRemains > 0 )
+                    continue; // Skip crippled stations.
                 CivilianCargo requesterCargo = requester.GetCivilianCargoExt( ExternalDataRetrieval.CreateIfNotFound );
                 if ( requesterCargo == null )
                     continue;
@@ -2206,9 +2212,6 @@ namespace SKCivilianIndustry
             // Update faction relations and game settings.
             UpdateAllegianceAndSettings( faction );
 
-            // Load our global data.
-            CivilianWorld worldData = World.Instance.GetCivilianWorldExt( ExternalDataRetrieval.CreateIfNotFound );
-
             // Update mark levels every now and than.
             if ( World_AIW2.Instance.GameSecond % SecondsBetweenMilitiaUpgrades == 0 )
             {
@@ -2221,15 +2224,6 @@ namespace SKCivilianIndustry
                 // Load our data.
                 factionData = faction.GetCivilianFactionExt( ExternalDataRetrieval.CreateIfNotFound );
             }
-
-            // If we have not yet done so, generate resources for planets.
-            World_AIW2.Instance.DoForPlanets( true, planet =>
-            {
-                if ( planet.GetCivResourceForPlanet( Context ) >= CivilianResource.Length )
-                    worldData.SetResourceForPlanet( planet, (CivilianResource)Context.RandomToUse.Next( (int)CivilianResource.Length ) );
-
-                return DelReturn.Continue;
-            } );
 
             // If not currently active, create the faction's starting station.
             if ( World_AIW2.Instance.GetEntityByID_Squad( factionData.GrandStation ) == null )
@@ -2320,7 +2314,7 @@ namespace SKCivilianIndustry
             if ( faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance != "AI Team" )
             {
                 // Delay raids for the first hour of the game.
-                if (World_AIW2.Instance.GameSecond < 3600)
+                if ( World_AIW2.Instance.GameSecond < 3600 )
                     factionData.NextRaidInThisSeconds = 1800;
 
                 if ( factionData.NextRaidInThisSeconds > 300 )
@@ -2339,9 +2333,6 @@ namespace SKCivilianIndustry
 
             // Save our faction data.
             faction.SetCivilianFactionExt( factionData );
-
-            // Save our world data.
-            World.Instance.SetCivilianWorldExt( worldData );
         }
 
         // Calculate threat values every planet.
@@ -2865,11 +2856,7 @@ namespace SKCivilianIndustry
                     // If they need our help, see if we can assist.
                     // Consider hostile strength less effective than regular for this purpose.
                     int effStr = threat.Total / 3;
-                    if ( effStr < threat.FriendlyGuard + threat.FriendlyMobile + assessment.AttackPower )
-                    {
-                        alreadyAttacking = true;
-                    }
-                    else
+                    if ( effStr > threat.FriendlyGuard + threat.FriendlyMobile + assessment.AttackPower )
                     {
                         attackAssessments.RemoveAt( 0 );
                         continue;
@@ -2975,10 +2962,8 @@ namespace SKCivilianIndustry
                     }
                 }
 
-                ArcenDebugging.SingleLineQuickDebug( $"Ready: {ready} Total: {total}" );
-
                 // If 66% all of our ships are ready,  its raiding time.
-                if ( ready > total * 0.66 )
+                if ( ready > total * 0.8 || alreadyAttacking )
                 {
                     for ( int x = 0; x < factionData.MilitiaLeaders.Count; x++ )
                     {

@@ -32,16 +32,12 @@ namespace SKCivilianIndustry.Hacking
         public override bool DoSuccessfulCompletionLogic( GameEntity_Squad Target, Planet planet, GameEntity_Squad Hacker, ArcenSimContext Context, HackingType type, HackingEvent Event )
         {
             base.DoSuccessfulCompletionLogic( Target, planet, Hacker, Context, type, Event );
-            for ( int i = 0; i < World_AIW2.Instance.Factions.Count; i++ )
-            {
-                Faction otherFaction = World_AIW2.Instance.Factions[i];
-                if ( otherFaction.Implementation as SpecialFaction_SKCivilianIndustry == null )
-                {
-                    continue;
-                }
-                otherFaction.HasBeenAwakenedByPlayer = true;
-                return true;
-            }
+
+            if ( !(Target.PlanetFaction.Faction.Implementation is SpecialFaction_SKCivilianIndustry) )
+                return false;
+
+            Target.PlanetFaction.Faction.HasBeenAwakenedByPlayer = true;
+
             return true;
         }
     }

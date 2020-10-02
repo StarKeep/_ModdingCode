@@ -25,25 +25,12 @@ namespace SKCivilianIndustry.Persistence
 
         /// <summary>
         /// Returns the Civilian Resource that a planet generates.
-        /// If no Context is passed, such as in the ui, it can potentially return an invalid value.
         /// </summary>
         /// <param name="planet"></param>
-        /// <param name="ContextForNewResourceGenerationOrNull"></param>
         /// <returns></returns>
-        public static CivilianResource GetCivResourceForPlanet(this Planet planet, ArcenSimContext ContextForNewResourceGenerationOrNull)
+        public static CivilianResource GetCivResourceForPlanet(this Planet planet)
         {
-            CivilianWorld worldData = World.Instance.GetCivilianWorldExt( ExternalDataRetrieval.ReturnNullIfNotFound );
-            if ( worldData == null )
-                return CivilianResource.Length;
-
-            CivilianResource resource = worldData.GetResourceForPlanet( planet );
-            if (resource == CivilianResource.Length && ContextForNewResourceGenerationOrNull != null)
-            {
-                resource = (CivilianResource)ContextForNewResourceGenerationOrNull.RandomToUse.Next( (int)CivilianResource.Length );
-                worldData.SetResourceForPlanet( planet, resource );
-            }
-
-            return resource;
+            return (CivilianResource)(planet.Index % (short)CivilianResource.Length); ;
         }
     }
 }

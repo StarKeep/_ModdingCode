@@ -74,7 +74,7 @@
     <Content Include="XMLMods\SKCivilianIndustry\GameEntity\SK_CivilianIndustry.xml" />
     <Content Include="XMLMods\SKCivilianIndustry\HackingType\SK_CivilianIndustry.xml" />
     <Content Include="XMLMods\SKCivilianIndustry\ModDescription.txt" />
-    <Content Include="XMLMods\SKCivilianIndustry\ModIsOffByDefault.txt.txt" />
+    <Content Include="XMLMods\SKCivilianIndustry\ModIsOffByDefault.txt" />
     <Content Include="XMLMods\SKCivilianIndustry\SpecialFaction\SK_CivilianIndustry.xml" />
   </ItemGroup>
   <ItemGroup>
