@@ -20,7 +20,8 @@ namespace SKCivilianIndustry
         // We index all of our faction ships so that they can be easily looped through based on what we're doing.
 
         // Index of this faction's Grand Station.
-        public int GrandStation;
+        private int GrandStationID;
+        public GameEntity_Squad GrandStation { get { return World_AIW2.Instance.GetEntityByID_Squad( GrandStationID ); } set { GrandStationID = value?.PrimaryKeyID ?? -1; } }
 
         // Rebuild timer for Grand Station.
         public int GrandStationRebuildTimerInSeconds;
@@ -85,6 +86,10 @@ namespace SKCivilianIndustry
 
         // Index of wormholes for the next raid.
         public List<int> NextRaidWormholes;
+
+        // The next entity to build a Trade Station next to.
+        private int NextTradeStationTargetID;
+        public GameEntity_Squad NextTradeStationTarget { get { return World_AIW2.Instance.GetEntityByID_Squad( NextTradeStationTargetID ); } set { NextTradeStationTargetID = value?.PrimaryKeyID ?? -1; } }
 
         // Unlike every other value, the follow values are not stored and saved. They are simply regenerated whenever needed.
         // Contains the calculated threat value on every planet.
@@ -250,7 +255,7 @@ namespace SKCivilianIndustry
         // Default values. Called on creation, NOT on load.
         public CivilianFaction()
         {
-            this.GrandStation = -1;
+            this.GrandStationID = -1;
             this.GrandStationRebuildTimerInSeconds = 0;
             this.TradeStations = new List<int>();
             this.TradeStationRebuildTimerInSecondsByPlanet = new ArcenSparseLookup<int, int>();
@@ -266,6 +271,7 @@ namespace SKCivilianIndustry
             this.MilitiaCounter = 0;
             this.NextRaidInThisSeconds = 1800;
             this.NextRaidWormholes = new List<int>();
+            this.NextTradeStationTarget = null;
 
             this.ThreatReports = new List<ThreatReport>();
             this.ImportRequests = new List<TradeRequest>();
@@ -302,8 +308,8 @@ namespace SKCivilianIndustry
         // Saving our data.
         public override void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            Buffer.AddInt32( ReadStyle.NonNeg, 2 );
-            Buffer.AddInt32( ReadStyle.Signed, this.GrandStation );
+            Buffer.AddInt32( ReadStyle.NonNeg, 3 );
+            Buffer.AddInt32( ReadStyle.Signed, this.GrandStationID );
             Buffer.AddInt32( ReadStyle.Signed, this.GrandStationRebuildTimerInSeconds );
             SerializeList( TradeStations, Buffer );
             SerializeSparseLookup( TradeStationRebuildTimerInSecondsByPlanet, Buffer );
@@ -321,6 +327,7 @@ namespace SKCivilianIndustry
             Buffer.AddInt32( ReadStyle.Signed, this.MilitiaCounter );
             Buffer.AddInt32( ReadStyle.Signed, this.NextRaidInThisSeconds );
             SerializeList( this.NextRaidWormholes, Buffer );
+            Buffer.AddInt32( ReadStyle.PosExceptNeg1, this.NextTradeStationTargetID );
         }
         // Deserialize a list.
         public void DeserializeList( ref List<int> list, ArcenDeserializationBuffer Buffer )
@@ -358,7 +365,7 @@ namespace SKCivilianIndustry
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             this.Version = Buffer.ReadInt32( ReadStyle.NonNeg );
-            this.GrandStation = Buffer.ReadInt32( ReadStyle.Signed );
+            this.GrandStationID = Buffer.ReadInt32( ReadStyle.Signed );
             this.GrandStationRebuildTimerInSeconds = Buffer.ReadInt32( ReadStyle.Signed );
             DeserializeList( ref this.TradeStations, Buffer );
             DeserializeLookup( ref this.TradeStationRebuildTimerInSecondsByPlanet, Buffer );
@@ -378,6 +385,11 @@ namespace SKCivilianIndustry
             this.MilitiaCounter = Buffer.ReadInt32( ReadStyle.Signed );
             this.NextRaidInThisSeconds = Buffer.ReadInt32( ReadStyle.Signed );
             DeserializeList( ref this.NextRaidWormholes, Buffer );
+
+            if ( this.Version < 3 )
+                this.NextTradeStationTargetID = -1;
+            else
+                this.NextTradeStationTargetID = Buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
 
             if ( this.ThreatReports == null )
                 this.ThreatReports = new List<ThreatReport>();

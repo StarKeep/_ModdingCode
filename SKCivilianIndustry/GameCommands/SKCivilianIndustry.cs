@@ -59,4 +59,20 @@ namespace SKCivilianIndustry.GameCommands
             }
         }
     }
+
+    public class SetNextTargetForTradeStation : BaseGameCommand
+    {
+        public override void Execute( GameCommand command, ArcenSimContext context )
+        {
+            Faction faction = World_AIW2.Instance.GetFactionByIndex( command.RelatedFactionIndex );
+            if ( faction == null || !(faction.Implementation is SpecialFaction_SKCivilianIndustry) )
+                return;
+
+            GameEntity_Squad target = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[0] );
+            if ( target == null )
+                return;
+
+            (faction.Implementation as SpecialFaction_SKCivilianIndustry).factionData.NextTradeStationTarget = target;
+        }
+    }
 }
