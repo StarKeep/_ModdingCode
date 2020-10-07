@@ -107,12 +107,12 @@ namespace PreceptsOfThePrecursors
             LastGameSecondSpawnt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
 
             if ( Trust == null )
-                Trust = new DysonTrust( buffer );
-            else if ( IsForPartialSyncDuringMultiplayer )
-                Trust.DeserializeIntoSelf( buffer, IsForPartialSyncDuringMultiplayer );
+                Trust = new DysonTrust();
+
+            Trust.DeserializeIntoSelf( buffer, IsForPartialSyncDuringMultiplayer );
+
             int count = buffer.ReadInt32( ReadStyle.NonNeg );
 
-            JournalEntries = new ArcenSparseLookup<string, string>();
             for ( int x = 0; x < count; x++ )
                 JournalEntries.AddPair( buffer.ReadString_Condensed(), buffer.ReadString_Condensed() );
 
@@ -178,14 +178,14 @@ namespace PreceptsOfThePrecursors
     {
         private ArcenSparseLookup<short, DysonProtoSphereData> SphereDataByPlanet;
 
-        public DysonProtoSphereData GetSphereDataForPlanet(Planet planet )
+        public DysonProtoSphereData GetSphereDataForPlanet( Planet planet )
         {
             if ( !SphereDataByPlanet.GetHasKey( planet.Index ) )
                 SphereDataByPlanet.AddPair( planet.Index, new DysonProtoSphereData() );
             return SphereDataByPlanet[planet.Index];
         }
 
-        public void SetSphereDataForPlanet(Planet planet, DysonProtoSphereData data )
+        public void SetSphereDataForPlanet( Planet planet, DysonProtoSphereData data )
         {
             if ( SphereDataByPlanet.GetHasKey( planet.Index ) )
                 SphereDataByPlanet[planet.Index] = data;
@@ -198,7 +198,7 @@ namespace PreceptsOfThePrecursors
             SphereDataByPlanet = new ArcenSparseLookup<short, DysonProtoSphereData>();
         }
 
-        public DysonProtoSphereWorldData(ArcenDeserializationBuffer Buffer) : this()
+        public DysonProtoSphereWorldData( ArcenDeserializationBuffer Buffer ) : this()
         {
             DeserializeIntoSelf( Buffer, false );
         }

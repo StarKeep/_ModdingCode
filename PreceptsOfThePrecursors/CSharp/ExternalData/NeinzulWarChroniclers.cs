@@ -29,6 +29,22 @@ namespace PreceptsOfThePrecursors
 
         public int CachedEstimatedStrengthOfAttack = -1;
         public int LastSecondCached = -1;
+        public int StrengthStoredForType( string typeName )
+        {
+            if ( !BudgetGenerated.GetHasKey( typeName ) )
+                return 0;
+            GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRowByName( typeName );
+            if ( typeName == null )
+                return 0;
+            int strength = 0;
+            BudgetGenerated[typeName].DoFor( pair =>
+            {
+                strength += typeData.GetForMark( pair.Key ).StrengthPerSquad_CalculatedWithNullFleetMembership * pair.Value;
+
+                return DelReturn.Continue;
+            } );
+            return strength;
+        }
         public int EstimatedStrengthOfAttack( Faction faction, bool isForDisplayOnly = true )
         {
             if ( World_AIW2.Instance.GameSecond - LastSecondCached < 10 && CachedEstimatedStrengthOfAttack > 0 )

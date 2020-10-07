@@ -32,14 +32,15 @@
 		<system name="SuppressionWhip" display_name="Suppression Whip"
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="5000" range="AboveAverage1" shot_speed="Normal" rate_of_fire="ExtremelyLow"
+				shots_per_salvo="2" added_shots_per_salvo_per_mark="2"
 				shot_type_data="HeavyBeamInvisible"
 				beam_length_multiplier="1.2"
 				hits_all_intersecting_targets="true"
 				shots_detonate_immediately="true"
 				maximum_number_of_targets_hit_per_shot="10"
-				base_paralysis_seconds_per_shot="1" paralysis_to_ships_mass_tx_less_than="6" added_target_evaluator="ParalyzerAsPrimary"
-				number_beams_to_fire="30"
-				degrees_offset_per_beam="3"	
+				base_enemy_weapon_reload_slowing_seconds_per_shot="1" enemy_weapon_reload_slowing_to_armor_mm_less_than="500" max_enemy_weapon_reload_slowing_seconds="30"
+				number_beams_to_fire="5"
+				degrees_offset_per_beam="2"	
 				>
 		</system>
 		<system name="RubberMallet" display_name="Rubber Mallet" system_is_hidden_for_ui="true"

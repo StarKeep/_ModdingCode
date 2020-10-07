@@ -417,9 +417,6 @@ namespace PreceptsOfThePrecursors
             strengthCap += SoftStrengthCapIncreasePerAttackPerIntensity * factionData.SentAttacks * Intensity;
             strengthCap += (World_AIW2.Instance.GameSecond * PerSecondStrengthCapIncrease).GetNearestIntPreferringHigher();
 
-            if ( factionData.EstimatedStrengthOfAttack( faction ) > strengthCap )
-                return;
-
             faction.DoForEntities( Tags.NeinzulWarChronicler.ToString(), chronicler =>
             {
                 World_AIW2.Instance.DoForFactions( otherFaction =>
@@ -430,6 +427,9 @@ namespace PreceptsOfThePrecursors
                     chronicler.Planet.GetPlanetFactionForFaction( otherFaction ).Entities.DoForEntities( EntityRollupType.MobileCombatants, entity =>
                     {
                         if ( entity.TypeData.IsDrone || entity.TypeData.SelfAttritionsXPercentPerSecondIfParentShipNotOnPlanet != 0 || entity.TypeData.GetHasTag( Tags.NeinzulWarChronicler.ToString() ) )
+                            return DelReturn.Continue;
+
+                        if ( factionData.StrengthStoredForType( entity.TypeData.InternalName ) > strengthCap )
                             return DelReturn.Continue;
 
                         switch ( entity.TypeData.SpecialType )

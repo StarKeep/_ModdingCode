@@ -12,10 +12,10 @@
 	custom_int_NeinzulWarChroniclers_SecondsOfConflictRequiredForArrival="90"
 	custom_int_NeinzulWarChroniclers_SecondsOfPeaceRequiredForDeparture="30"
 	
-	custom_int_NeinzulWarChroniclers_SoftStrengthCapBase="20000"
-	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerAttack="500"
-	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerAttackPerIntensity="50"
-	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerHour="5000"
+	custom_int_NeinzulWarChroniclers_SoftStrengthCapBase="1000"
+	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerAttack="100"
+	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerAttackPerIntensity="500"
+	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerHour="1000"
 	custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerHourPerIntensity="500"
 >
 </root>
