@@ -116,7 +116,7 @@ namespace SKCivilianIndustry
 
         public override void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            Buffer.AddInt32( ReadStyle.NonNeg, 3 );
+            Buffer.AddInt32( ReadStyle.NonNeg, 4 );
             Buffer.AddInt32( ReadStyle.Signed, this.Centerpiece );
             Buffer.AddByte( ReadStyleByte.Normal, (byte)this.Status );
             Buffer.AddItem( this.AtEase );
@@ -130,9 +130,9 @@ namespace SKCivilianIndustry
                 int subCount = this.Ships[x].Count;
                 Buffer.AddInt32( ReadStyle.NonNeg, subCount );
                 for ( int y = 0; y < subCount; y++ )
-                    Buffer.AddInt32( ReadStyle.NonNeg, this.Ships[x][y] );
-                Buffer.AddInt32( ReadStyle.NonNeg, this.ShipCapacity[x] );
-                Buffer.AddInt32( ReadStyle.NonNeg, this.StoredShips[x] );
+                    Buffer.AddInt32( ReadStyle.PosExceptNeg1, this.Ships[x][y] );
+                Buffer.AddInt32( ReadStyle.PosExceptNeg1, this.ShipCapacity[x] );
+                Buffer.AddInt32( ReadStyle.PosExceptNeg1, this.StoredShips[x] );
             }
             Buffer.AddInt32( ReadStyle.NonNeg, this.CostMultiplier );
             Buffer.AddInt32( ReadStyle.NonNeg, this.CapMultiplier );
@@ -178,15 +178,24 @@ namespace SKCivilianIndustry
                 this.Ships[x] = new List<int>();
 
                 int subCount = Buffer.ReadInt32( ReadStyle.NonNeg );
-                for ( int y = 0; y < subCount; y++ )
-                    this.Ships[x].Add( Buffer.ReadInt32( ReadStyle.NonNeg ) );
 
-                this.ShipCapacity[x] = Buffer.ReadInt32( ReadStyle.NonNeg );
+                for ( int y = 0; y < subCount; y++ )
+                    if ( this.Version < 4 )
+                        this.Ships[x].Add( Buffer.ReadInt32( ReadStyle.NonNeg ) );
+                    else
+                        this.Ships[x].Add( Buffer.ReadInt32( ReadStyle.PosExceptNeg1 ) );
+
+                if ( this.Version < 4 )
+                    this.ShipCapacity[x] = Buffer.ReadInt32( ReadStyle.NonNeg );
+                else
+                    this.ShipCapacity[x] = Buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
 
                 if ( this.Version < 3 )
                     this.StoredShips[x] = 0;
-                else
+                else if ( this.Version < 4 )
                     this.StoredShips[x] = Buffer.ReadInt32( ReadStyle.NonNeg );
+                else
+                    this.StoredShips[x] = Buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             }
             if ( this.ShipTypeDataNames.GetPairCount() < (int)CivilianResource.Length )
             {
