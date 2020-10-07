@@ -41,8 +41,8 @@ namespace PreceptsOfThePrecursors
 
             if ( goonData == null )
             {
-                goonData = World.Instance.GetAncestorsArksData();
-                World.Instance.SetAncestorsArksData( goonData );
+                goonData = faction.GetAncestorsArksData( ExternalDataRetrieval.CreateIfNotFound );
+                faction.SetAncestorsArksData( goonData );
             }
 
             if ( Ships == null )

@@ -5,5 +5,5 @@
       type_name is what you've called the storage class in your externaldata cs file.
 -->
   <item name="DysonMothershipData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.DysonMothershipExternalData" />
-  <item name="DysonProtoSphereData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.DysonProtoSphereExternalData" />
+  <item name="DysonProtoSphereWorldData" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.DysonProtoSphereWorldExternalData" />
 </root>

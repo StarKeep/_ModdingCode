@@ -57,14 +57,17 @@ namespace PreceptsOfThePrecursors
     {
         public override string GetDynamicDescription( GameEntity_Squad target, GameEntity_Squad hackerOrNull, Planet planet, Faction hackerFaction, HackingType hackingType )
         {
+            GameEntityTypeData typeData = target.GetScrapyardData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Alpha;
+            if ( typeData == null )
+                return string.Empty;
             ArcenDoubleCharacterBuffer buffer = new ArcenDoubleCharacterBuffer();
-            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, target.GetScrapyardData().Alpha, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailsInfo.AIPCostOnGrant );
+            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, typeData, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailsInfo.AIPCostOnGrant );
             return buffer.GetStringAndResetForNextUpdate();
         }
 
         public override bool DoSuccessfulCompletionLogic( GameEntity_Squad TargetOrNull, Planet planet, GameEntity_Squad Hacker, ArcenSimContext Context, HackingType type, HackingEvent Event )
         {
-            GameEntity_Squad centerpiece = planet.Mapgen_SeedEntity( Context, Hacker.PlanetFaction.Faction, TargetOrNull.GetScrapyardData().Alpha, PlanetSeedingZone.MostAnywhere );
+            GameEntity_Squad centerpiece = planet.Mapgen_SeedEntity( Context, Hacker.PlanetFaction.Faction, TargetOrNull.GetScrapyardData( ExternalDataRetrieval.CreateIfNotFound ).Alpha, PlanetSeedingZone.MostAnywhere );
             centerpiece.SetWorldLocation( TargetOrNull.WorldLocation );
 
             return base.DoSuccessfulCompletionLogic( TargetOrNull, planet, Hacker, Context, type, Event );
@@ -74,14 +77,17 @@ namespace PreceptsOfThePrecursors
     {
         public override string GetDynamicDescription( GameEntity_Squad target, GameEntity_Squad hackerOrNull, Planet planet, Faction hackerFaction, HackingType hackingType )
         {
+            GameEntityTypeData typeData = target.GetScrapyardData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Beta;
+            if ( typeData == null )
+                return string.Empty;
             ArcenDoubleCharacterBuffer buffer = new ArcenDoubleCharacterBuffer();
-            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, target.GetScrapyardData().Beta, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailsInfo.AIPCostOnGrant );
+            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, typeData, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailsInfo.AIPCostOnGrant );
             return buffer.GetStringAndResetForNextUpdate();
         }
 
         public override bool DoSuccessfulCompletionLogic( GameEntity_Squad TargetOrNull, Planet planet, GameEntity_Squad Hacker, ArcenSimContext Context, HackingType type, HackingEvent Event )
         {
-            GameEntity_Squad centerpiece = planet.Mapgen_SeedEntity( Context, Hacker.PlanetFaction.Faction, TargetOrNull.GetScrapyardData().Beta, PlanetSeedingZone.MostAnywhere );
+            GameEntity_Squad centerpiece = planet.Mapgen_SeedEntity( Context, Hacker.PlanetFaction.Faction, TargetOrNull.GetScrapyardData( ExternalDataRetrieval.CreateIfNotFound ).Beta, PlanetSeedingZone.MostAnywhere );
             centerpiece.SetWorldLocation( TargetOrNull.WorldLocation );
 
             return base.DoSuccessfulCompletionLogic( TargetOrNull, planet, Hacker, Context, type, Event );
@@ -91,14 +97,17 @@ namespace PreceptsOfThePrecursors
     {
         public override string GetDynamicDescription( GameEntity_Squad target, GameEntity_Squad hackerOrNull, Planet planet, Faction hackerFaction, HackingType hackingType )
         {
+            GameEntityTypeData typeData = target.GetScrapyardData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Gamma;
+            if ( typeData == null )
+                return string.Empty;
             ArcenDoubleCharacterBuffer buffer = new ArcenDoubleCharacterBuffer();
-            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, target.GetScrapyardData().Gamma, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailsInfo.AIPCostOnGrant );
+            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, typeData, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailsInfo.AIPCostOnGrant );
             return buffer.GetStringAndResetForNextUpdate();
         }
 
         public override bool DoSuccessfulCompletionLogic( GameEntity_Squad TargetOrNull, Planet planet, GameEntity_Squad Hacker, ArcenSimContext Context, HackingType type, HackingEvent Event )
         {
-            GameEntity_Squad centerpiece = planet.Mapgen_SeedEntity( Context, Hacker.PlanetFaction.Faction, TargetOrNull.GetScrapyardData().Gamma, PlanetSeedingZone.MostAnywhere );
+            GameEntity_Squad centerpiece = planet.Mapgen_SeedEntity( Context, Hacker.PlanetFaction.Faction, TargetOrNull.GetScrapyardData( ExternalDataRetrieval.CreateIfNotFound ).Gamma, PlanetSeedingZone.MostAnywhere );
             centerpiece.SetWorldLocation( TargetOrNull.WorldLocation );
 
             return base.DoSuccessfulCompletionLogic( TargetOrNull, planet, Hacker, Context, type, Event );

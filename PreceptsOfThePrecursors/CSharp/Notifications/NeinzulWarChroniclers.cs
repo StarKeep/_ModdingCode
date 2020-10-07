@@ -71,7 +71,7 @@ namespace PreceptsOfThePrecursors.Notifications
 
                 debugStage = 0;
                 string colorString = string.Empty;
-                colorString = faction.TeamCenterColor.ColorHexBrighter;
+                colorString = faction.FactionCenterColor.ColorHexBrighter;
                 debugStage = 1;
                 Image.UpdateWith( GameEntityTypeDataTable.Instance.GetRowByName(NeinzulWarChroniclers.Tags.NeinzulWarChronicler.ToString()).GUISprite_Icon );
 
@@ -180,7 +180,7 @@ namespace PreceptsOfThePrecursors.Notifications
 
                 debugStage = 0;
                 string colorString = string.Empty;
-                colorString = faction.TeamCenterColor.ColorHexBrighter;
+                colorString = faction.FactionCenterColor.ColorHexBrighter;
                 debugStage = 1;
                 Image.UpdateWith( GameEntityTypeDataTable.Instance.GetRowByName( NeinzulWarChroniclers.Tags.NeinzulWarChronicler.ToString() ).GUISprite_Icon );
 

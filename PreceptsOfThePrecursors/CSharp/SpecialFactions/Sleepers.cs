@@ -78,7 +78,7 @@ namespace PreceptsOfThePrecursors
         public override void SeedStartingEntities_LaterEverythingElse( Faction faction, Galaxy galaxy, ArcenSimContext Context, MapTypeData mapType )
         {
             int toSeedMinimum = 2;
-            FInt maxFromIntensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity * FInt.FromParts( 0, 800 );
+            FInt maxFromIntensity = faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity * FInt.FromParts( 0, 800 );
             int toSeed = Math.Max( toSeedMinimum, maxFromIntensity.GetNearestIntPreferringHigher() );
 
             Mapgen_Base.Mapgen_SeedSpecialEntities( Context, galaxy, SpecialEntityType.None, UNIT_TAGS.SleeperDerelict.ToString(), SeedingType.HardcodedCount, toSeed,
@@ -125,7 +125,7 @@ namespace PreceptsOfThePrecursors
                 return Mode.Defense;
         }
 
-        public bool PrimeCanMoveOn { get { return Prime != null && Prime.GetSleeperData().SecondsSinceEnteringPlanet > 120; } }
+        public bool PrimeCanMoveOn { get { return Prime != null && (Prime.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceEnteringPlanet ?? 0) > 120; } }
 
         public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
@@ -168,7 +168,7 @@ namespace PreceptsOfThePrecursors
 
         public void HandleSleeperPerSecondLogic_Helper( GameEntity_Squad sleeper, Faction faction, ArcenSimContext Context )
         {
-            SleeperData sData = sleeper.GetSleeperData();
+            SleeperData sData = sleeper.GetSleeperData( ExternalDataRetrieval.CreateIfNotFound );
             if ( sleeper.Planet != sData.Planet )
             {
                 sData.Planet = sleeper.Planet;
@@ -182,7 +182,7 @@ namespace PreceptsOfThePrecursors
             {
                 GameEntityTypeData primeMobile = GameEntityTypeDataTable.Instance.GetRowByName( Sleepers.UNIT_NAMES.SleeperPrimeMobile.ToString() );
                 GameEntityTypeData primeStationary = GameEntityTypeDataTable.Instance.GetRowByName( Sleepers.UNIT_NAMES.SleeperPrime.ToString() );
-                SleeperData spData = Prime.GetSleeperData();
+                SleeperData spData = Prime.GetSleeperData( ExternalDataRetrieval.CreateIfNotFound );
                 if ( !PrimeCanMoveOn || (Prime.Planet == PrimeTargetPlanet && Prime.WorldLocation.GetDistanceTo( PrimeTarget, true ) <= 4000) )
                 {
                     if ( Prime.TypeData != primeStationary )
@@ -201,14 +201,14 @@ namespace PreceptsOfThePrecursors
                 GameEntityTypeData sleeperStationary = GameEntityTypeDataTable.Instance.GetRowByName( Sleepers.UNIT_NAMES.Sleeper.ToString() );
                 sleepersByPlanet.DoFor( pair =>
                 {
-                    for(int x = 0; x < pair.Value.Count; x++ )
+                    for ( int x = 0; x < pair.Value.Count; x++ )
                     {
                         GameEntity_Squad sleeper = pair.Value[x];
                         ArcenSparseLookupPair<Planet, ArcenPoint> target = sleeperTargets.GetHasKey( sleeper ) ? sleeperTargets[sleeper] : null;
                         if ( target == null )
                             continue;
 
-                        SleeperData sData = sleeper.GetSleeperData();
+                        SleeperData sData = sleeper.GetSleeperData( ExternalDataRetrieval.CreateIfNotFound );
                         if ( Prime.TypeData.InternalName == Sleepers.UNIT_NAMES.SleeperPrime.ToString() && sleeper.Planet == target.Key && target.Value != ArcenPoint.OutOfRange
                         && sleeper.WorldLocation == target.Value )
                         {
@@ -235,7 +235,7 @@ namespace PreceptsOfThePrecursors
             if ( Prime == null || Prime.Planet != PrimeTargetPlanet || Prime.TypeData.InternalName == Sleepers.UNIT_NAMES.SleeperPrimeMobile.ToString() )
                 return;
 
-            if ( Prime.GetSleeperData().SecondsSinceLastTransformation < 300 )
+            if ( Prime.GetSleeperData( ExternalDataRetrieval.CreateIfNotFound ).SecondsSinceLastTransformation < 300 )
                 return;
 
             GameEntity_Squad derelict = Prime.Planet.GetFirstMatching( Sleepers.UNIT_TAGS.SleeperDerelict.ToString(), World_AIW2.Instance.GetNeutralFaction(), true, true );
@@ -340,7 +340,7 @@ namespace PreceptsOfThePrecursors
             Context.QueueCommandForSendingAtEndOfContext( command );
         }
 
-        public void ExecuteClaimingMovementForSleepers(Faction faction, ArcenLongTermIntermittentPlanningContext Context )
+        public void ExecuteClaimingMovementForSleepers( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
             sleeperTargets.DoFor( pair =>
             {

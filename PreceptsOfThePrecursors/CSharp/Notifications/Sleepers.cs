@@ -56,18 +56,18 @@ namespace PreceptsOfThePrecursors.Notifications
                 case Mode.Moving:
                     tooltipBuffer.Add( $"A Sleeper Prime on {planet.Name} is on the move! " );
                     if ( !(faction.Implementation as SleeperSubFaction).PrimeCanMoveOn )
-                        tooltipBuffer.Add( $"\nIt is currently recharging its engines after entering a wormhole, and will be ready to move in {(120 - entity.GetSleeperData().SecondsSinceEnteringPlanet) / 60}:{((120 - entity.GetSleeperData().SecondsSinceEnteringPlanet) % 60).ToString( "00" )}. " );
+                        tooltipBuffer.Add( $"\nIt is currently recharging its engines after entering a wormhole, and will be ready to move in {(120 - (entity.GetSleeperData(ExternalDataRetrieval.ReturnNullIfNotFound)?.SecondsSinceEnteringPlanet ?? 120)) / 60}:{((120 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceEnteringPlanet ?? 120)) % 60).ToString( "00" )}. " );
                     if ( nextPlanet != null )
                         tooltipBuffer.Add( $"\nIt will be moving to {nextPlanet.Name} next." );
                     break;
                 case Mode.Awakening:
                     tooltipBuffer.Add( $"A Sleeper Prime on {planet.Name} is attempting to awaken a Derelict Sleeper! " );
                     if ( !(faction.Implementation as SleeperSubFaction).PrimeCanMoveOn )
-                        tooltipBuffer.Add( $"\nIt is currently recharging its engines after entering a wormhole, and will be ready to move in {(120 - entity.GetSleeperData().SecondsSinceEnteringPlanet) / 60}:{((120 - entity.GetSleeperData().SecondsSinceEnteringPlanet) % 60).ToString( "00" )}. " );
+                        tooltipBuffer.Add( $"\nIt is currently recharging its engines after entering a wormhole, and will be ready to move in {(120 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceEnteringPlanet ?? 120)) / 60}:{((120 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceEnteringPlanet ?? 120)) % 60).ToString( "00" )}. " );
                     else if ( entity.TypeData.InternalName == Sleepers.UNIT_NAMES.SleeperPrimeMobile.ToString() )
                         tooltipBuffer.Add( $"\nIt is currently moving into position. " );
                     else
-                        tooltipBuffer.Add( $"\nIt will fully awaken a Derelict Sleeper in {(300 - entity.GetSleeperData().SecondsSinceLastTransformation) / 60}:{((300 - entity.GetSleeperData().SecondsSinceLastTransformation) % 60).ToString( "00" )}. " );
+                        tooltipBuffer.Add( $"\nIt will fully awaken a Derelict Sleeper in {(300 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceLastTransformation ?? 300)) / 60}:{((300 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceLastTransformation ?? 300)) % 60).ToString( "00" )}. " );
                     break;
                 default:
                     break;
@@ -86,7 +86,7 @@ namespace PreceptsOfThePrecursors.Notifications
 
                 debugStage = 0;
                 string colorString = string.Empty;
-                colorString = faction.TeamCenterColor.ColorHexBrighter;
+                colorString = faction.FactionCenterColor.ColorHexBrighter;
                 debugStage = 1;
                 Image.UpdateWith( entity.TypeData.GUISprite_Icon );
 
@@ -103,17 +103,17 @@ namespace PreceptsOfThePrecursors.Notifications
                 {
                     case Mode.Moving:
                         if ( !(faction.Implementation as SleeperSubFaction).PrimeCanMoveOn )
-                            buffer.Add( $"{ (120 - entity.GetSleeperData().SecondsSinceEnteringPlanet) / 60}:{ ((120 - entity.GetSleeperData().SecondsSinceEnteringPlanet) % 60).ToString( "00" )}" );
+                            buffer.Add( $"{ (120 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceEnteringPlanet ?? 120)) / 60}:{ ((120 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceEnteringPlanet ?? 120)) % 60).ToString( "00" )}" );
                         else
                             buffer.Add( "Moving" );
                         break;
                     case Mode.Awakening:
                         if ( !(faction.Implementation as SleeperSubFaction).PrimeCanMoveOn )
-                            buffer.Add( $"{ (120 - entity.GetSleeperData().SecondsSinceEnteringPlanet) / 60}:{ ((120 - entity.GetSleeperData().SecondsSinceEnteringPlanet) % 60).ToString( "00" )}" );
+                            buffer.Add( $"{ (120 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceEnteringPlanet ?? 120)) / 60}:{ ((120 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceEnteringPlanet ?? 120)) % 60).ToString( "00" )}" );
                         else if ( entity.TypeData.InternalName == Sleepers.UNIT_NAMES.SleeperPrimeMobile.ToString() )
                             buffer.Add( "Moving" );
                         else
-                            buffer.Add( $"{(300 - entity.GetSleeperData().SecondsSinceLastTransformation) / 60}:{((300 - entity.GetSleeperData().SecondsSinceLastTransformation) % 60).ToString( "00" )}" );
+                            buffer.Add( $"{(300 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceLastTransformation ?? 300)) / 60}:{((300 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceLastTransformation ?? 300)) % 60).ToString( "00" )}" );
                         break;
                     default:
                         break;

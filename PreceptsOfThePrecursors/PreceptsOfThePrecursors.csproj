@@ -118,7 +118,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\JournalEntries\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ModDescription.txt" />
-    <Content Include="XMLMods\PreceptsOfThePrecursors\ModIsOffByDefault.txt.txt" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ModIsOffByDefault.txt" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\NeinzulWarChroniclers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\SpecialFaction\AncestorsArks.xml" />

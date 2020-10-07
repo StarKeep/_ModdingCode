@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace PreceptsOfThePrecursors
 {
 	// Considers how much trust a faction holds for players on a per planet basis.
-	public class Trust
+	public class Trust : ArcenExternalSubManagedData
 	{
 		protected ArcenSparseLookup<short, short> trustPerPlanet;
 		// Limit our trust values.
@@ -60,7 +60,11 @@ namespace PreceptsOfThePrecursors
 			maxTrust = 3000;
 			minTrust = -3000;
 		}
-		public virtual void SerializeTo( ArcenSerializationBuffer buffer )
+		public Trust( ArcenDeserializationBuffer Buffer ) : this()
+		{
+			this.DeserializeIntoSelf( Buffer, false );
+		}
+		public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
 		{
 			int count = trustPerPlanet.GetPairCount();
 			buffer.AddInt32( ReadStyle.NonNeg, count );
@@ -74,8 +78,13 @@ namespace PreceptsOfThePrecursors
 			buffer.AddInt16( ReadStyle.Signed, maxTrust );
 			buffer.AddInt16( ReadStyle.Signed, minTrust );
 		}
-		public Trust( ArcenDeserializationBuffer buffer ) : this()
+		public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
 		{
+			if ( trustPerPlanet == null )
+				trustPerPlanet = new ArcenSparseLookup<short, short>();
+			else if ( IsForPartialSyncDuringMultiplayer )
+				trustPerPlanet.Clear();
+
 			int count = buffer.ReadInt32( ReadStyle.NonNeg );
 			for ( int x = 0; x < count; x++ )
 				trustPerPlanet.AddPair( buffer.ReadInt16(ReadStyle.PosExceptNeg1), buffer.ReadInt16(ReadStyle.Signed ) );
@@ -88,10 +97,15 @@ namespace PreceptsOfThePrecursors
 	// Trust unique to the Dyson Precursors Faction.
 	public class DysonTrust : Trust
 	{
+		public DysonTrust() : base() { }
+		public DysonTrust( ArcenDeserializationBuffer Buffer ) : base( Buffer ) { }
+
 		public override short MaxTrust( Planet planet )
 		{
 			short baseTrust = GetTrust( planet );
-			DysonProtoSphereData.ProtoSphereType sphereType = planet.GetProtoSphereData().Type;
+			DysonProtoSphereData.ProtoSphereType? sphereType = planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type;
+			if ( sphereType == null )
+				return maxTrust;
 			if ( (sphereType == DysonProtoSphereData.ProtoSphereType.Protecter || sphereType == DysonProtoSphereData.ProtoSphereType.Suppressor) && baseTrust < 1000 )
 				return -2000;
 			if ( DysonPrecursors.DysonNodes.GetHasKey( planet ) && baseTrust < 0 )
@@ -102,7 +116,9 @@ namespace PreceptsOfThePrecursors
 		public override short MinTrust( Planet planet )
 		{
 			short baseTrust = GetTrust( planet );
-			DysonProtoSphereData.ProtoSphereType sphereType = planet.GetProtoSphereData().Type;
+			DysonProtoSphereData.ProtoSphereType? sphereType = planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type;
+			if ( sphereType == null )
+				return minTrust;
 			if ( (sphereType == DysonProtoSphereData.ProtoSphereType.Protecter || sphereType == DysonProtoSphereData.ProtoSphereType.Suppressor) && baseTrust > 1000 )
 				return 2000;
 			if ( DysonPrecursors.DysonNodes.GetHasKey( planet ) && baseTrust > 0 )
@@ -139,7 +155,7 @@ namespace PreceptsOfThePrecursors
 					}
 					trustedPlanets.Add( planet );
 				}
-				if ( ((trust > -1000 && planet.GetIsControlledByFactionType( FactionType.Player )) || planet.GetProtoSphereData().Level > 0) && hops <= humanHops )
+				if ( ((trust > -1000 && planet.GetIsControlledByFactionType( FactionType.Player )) || (planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Level ?? 0) > 0) && hops <= humanHops )
 				{
 					if ( hops < humanHops )
 					{
@@ -157,37 +173,6 @@ namespace PreceptsOfThePrecursors
 			if ( backupPlanets.Count > 0 )
 				return backupPlanets[World_AIW2.Instance.GameSecond % backupPlanets.Count];
 			return origin.GetRandomNeighbor( false, Context );
-		}
-
-		public DysonTrust() : base() { }
-
-		public override void SerializeTo( ArcenSerializationBuffer buffer )
-		{
-			base.SerializeTo( buffer );
-		}
-		public DysonTrust( ArcenDeserializationBuffer buffer ) : base( buffer ) { }
-		public void PartialSync(ArcenDeserializationBuffer buffer )
-        {
-			if ( trustPerPlanet == null )
-				trustPerPlanet = new ArcenSparseLookup<short, short>();
-
-			int count = buffer.ReadInt32( ReadStyle.NonNeg );
-			for(int x = 0; x < count; x++ )
-            {
-				short key = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
-				short value = buffer.ReadInt16( ReadStyle.Signed );
-
-				if ( !trustPerPlanet.GetHasKey( key ) )
-					trustPerPlanet.AddPair( key, value );
-				else if ( trustPerPlanet[key] != value )
-					trustPerPlanet[key] = value;
-            }
-
-			short readShort = buffer.ReadInt16( ReadStyle.Signed );
-			maxTrust = maxTrust != readShort ? readShort : maxTrust;
-
-			readShort = buffer.ReadInt16( ReadStyle.Signed );
-			minTrust = minTrust != readShort ? readShort : minTrust;
 		}
 	}
 }

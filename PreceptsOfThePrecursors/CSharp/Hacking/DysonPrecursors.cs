@@ -145,7 +145,7 @@ namespace PreceptsOfThePrecursors
             Hackable result = base.GetCanBeHacked( Target, HackerOrNull, planet, HackerFaction, Type, RelatedStringOrNull, RelatedIntOrNull, out RejectionReasonDescription );
             if ( result != Hackable.CanBeHacked )
                 return result;
-            if ( !Target.PlanetFaction.Faction.GetIsFriendlyTowards( HackerFaction ) || Target.Planet.GetProtoSphereData().Type != DysonProtoSphereData.ProtoSphereType.Protecter || Target.Planet.GetProtoSphereData().HasBeenHacked )
+            if ( !Target.PlanetFaction.Faction.GetIsFriendlyTowards( HackerFaction ) || Target.Planet.GetProtoSphereData(ExternalDataRetrieval.ReturnNullIfNotFound)?.Type != DysonProtoSphereData.ProtoSphereType.Protecter || Target.Planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.HasBeenHacked == true )
                 return Hackable.NeverCanBeHacked_Hide;
             return Hackable.CanBeHacked;
         }
@@ -317,7 +317,7 @@ namespace PreceptsOfThePrecursors
                     if ( highestMarkNode < 7 )
                     {
                         (spawnFaction.Implementation as DysonSuppressors).CreateDysonNode( spawnFaction, workingPlanet, highestMarkNode + 1, Context, string.Empty );
-                        World_AIW2.Instance.QueueChatMessageOrCommand( $"Another Dyson Node has been awakened on {workingPlanet.Name}.", ChatType.ShowToEveryone, Context );
+                        World_AIW2.Instance.QueueChatMessageOrCommand( $"Another Dyson Node has been awakened on {workingPlanet.Name}.", ChatType.LogToCentralChat, Context );
                     }
 
                     return DelReturn.Continue;
@@ -333,7 +333,7 @@ namespace PreceptsOfThePrecursors
             precursorFaction.HasBeenAwakenedByPlayer = true;
 
             // Give a notifiaction and science.
-            World_AIW2.Instance.QueueChatMessageOrCommand( "The Dyson Precursors have been awakened, and you have gained 20000 science from studying the process. Every commander is now requesting, urgently, that you withdrawl your ships.", ChatType.ShowToEveryone, Context );
+            World_AIW2.Instance.QueueChatMessageOrCommand( "The Dyson Precursors have been awakened, and you have gained 20000 science from studying the process. Every commander is now requesting, urgently, that you withdrawl your ships.", ChatType.LogToCentralChat, Context );
             Hacker.PlanetFaction.Faction.StoredScience += 20000;
 
             // Spawn the mothership.

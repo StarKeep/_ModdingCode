@@ -14,8 +14,8 @@ namespace PreceptsOfThePrecursors
         {
             MinesBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MinesToMarkUpBase" );
             MinesIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MinesToMarkUpIncrease" );
-            ResourcesBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
-            ResourcesIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            ResourcesBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            ResourcesIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
         }
 
         public static int Mines( int currentMarkLevel, Faction faction )
@@ -24,7 +24,7 @@ namespace PreceptsOfThePrecursors
             if ( currentMarkLevel > 1 )
                 cost += MinesIncrease * (currentMarkLevel - 1);
 
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).ExtraStrongMode )
                 return 0;
 
             return cost;
@@ -34,7 +34,7 @@ namespace PreceptsOfThePrecursors
             int cost = ResourcesBase;
             if ( currentMarkLevel > 1 )
                 cost += ResourcesIncrease * (currentMarkLevel - 1);
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).ExtraStrongMode )
                 return 0;
 
             return cost;
@@ -46,37 +46,39 @@ namespace PreceptsOfThePrecursors
 
         public static void Initialize( Faction faction )
         {
-            Base = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereBaseCost" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
-            IncreasePerExisting = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereCostIncreasePerExistingSphere" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
-            MarkUpBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
-            MarkUpIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            Base = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereBaseCost" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            IncreasePerExisting = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereCostIncreasePerExistingSphere" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            MarkUpBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            MarkUpIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
         }
 
-        public static int BuildCost( Faction faction )
+        public static int BuildCost( Faction faction, bool calledFromSimSafeThread )
         {
+            ExternalDataRetrieval rules = calledFromSimSafeThread ? ExternalDataRetrieval.CreateIfNotFound : ExternalDataRetrieval.ReturnNullIfNotFound;
             int cost = Base;
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
-                 if ( planet.GetProtoSphereData().Type != DysonProtoSphereData.ProtoSphereType.None )
+                 if ( planet.GetProtoSphereData( rules ).Type != DysonProtoSphereData.ProtoSphereType.None )
                      cost += IncreasePerExisting;
 
                  return DelReturn.Continue;
              } );
 
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives( rules )?.ExtraStrongMode == true )
                 cost /= 2;
 
             return cost;
         }
-        public static int Resources( int currentMarkLevel, Faction faction )
+        public static int Resources( int currentMarkLevel, Faction faction, bool calledFromSimSafeThread )
         {
+            ExternalDataRetrieval rules = calledFromSimSafeThread ? ExternalDataRetrieval.CreateIfNotFound : ExternalDataRetrieval.ReturnNullIfNotFound;
             int cost = MarkUpBase;
 
             if ( currentMarkLevel > 1 )
                 cost += MarkUpIncrease * (currentMarkLevel - 1);
 
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives( rules )?.ExtraStrongMode == true )
                 cost /= 2;
 
             return cost;
@@ -88,12 +90,12 @@ namespace PreceptsOfThePrecursors
 
         public static void Initialize( Faction faction )
         {
-            NodeBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
-            NodeIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalIncreasePerNodeLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
-            SphereBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
-            SphereIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereIncreasePerLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity) / 2));
+            NodeBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            NodeIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalIncreasePerNodeLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            SphereBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            SphereIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereIncreasePerLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
 
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().ExtraStrongMode )
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).ExtraStrongMode )
             {
                 NodeBase /= 2;
                 NodeIncrease /= 2;
@@ -152,7 +154,7 @@ namespace PreceptsOfThePrecursors
             if ( MothershipData.Level < 7 && MothershipData.Resources >= PrecursorCosts.Resources( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction ) && MothershipData.Mines >= PrecursorCosts.Mines( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction ) )
                 Buffer.Add( $"\nIt is ready to upgrade, and will attempt to do so over time on a friendly Noded planet." );
 
-            Buffer.Add( $"\nIt can build another Proto Sphere after stockpiling {ProtoSphereCosts.BuildCost( RelatedEntityOrNull.PlanetFaction.Faction )} resources. " );
+            Buffer.Add( $"\nIt can build another Proto Sphere after stockpiling {ProtoSphereCosts.BuildCost( RelatedEntityOrNull.PlanetFaction.Faction, false )} resources. " );
             if ( MothershipData.PlanetToBuildOn != null )
                 Buffer.Add( $"\nShe is planning to build a Proto Sphere on {MothershipData.PlanetToBuildOn.Name} next." );
             if ( MothershipData.MetalGainedOrLostLastSecond > 0 )
@@ -318,7 +320,7 @@ namespace PreceptsOfThePrecursors
 
         public override bool GetShouldAttackNormallyExcludedTarget( Faction faction, GameEntity_Squad Target )
         {
-            if ( Target.Planet.GetProtoSphereData().Level > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
+            if ( ((Target.Planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Level) ?? 0) > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
                 return true;
             if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) || Target.TypeData.GetHasTag( "VengeanceGeneratorConquestSpawn" ) )
                 return true;
@@ -382,7 +384,7 @@ namespace PreceptsOfThePrecursors
         private void Initialize( Faction faction, ArcenSimContext Context )
         {
             if ( MothershipData == null )
-                MothershipData = faction.GetMothershipData();
+                MothershipData = faction.GetMothershipData( ExternalDataRetrieval.CreateIfNotFound );
 
             if ( !HeadersAppliedToOldJournals )
             {
@@ -406,7 +408,7 @@ namespace PreceptsOfThePrecursors
 
             if ( ExoData == null )
             {
-                ExoData = faction.GetExoDataExt();
+                ExoData = faction.GetExoDataExt( ExternalDataRetrieval.CreateIfNotFound );
                 if ( ExoData.StrengthRequiredForNextExo == 0 )
                 {
                     ExoData.FactionIndexOfOriginFaction = faction.FactionIndex;
@@ -419,7 +421,7 @@ namespace PreceptsOfThePrecursors
 
             if ( WaveData == null )
             {
-                WaveData = faction.GetAntiMinorFactionWaveDataExt();
+                WaveData = faction.GetAntiMinorFactionWaveDataExt( ExternalDataRetrieval.CreateIfNotFound );
             }
 
             if ( Mothership == null )
@@ -427,7 +429,7 @@ namespace PreceptsOfThePrecursors
                 // Mothership is dead.
                 // If timer has not yet been set, set it based on intensity.
                 if ( MothershipData.SecondsUntilRespawn < 0 )
-                    MothershipData.SecondsUntilRespawn = 630 - faction.Ex_MinorFactionCommon_GetPrimitives().Intensity * 30;
+                    MothershipData.SecondsUntilRespawn = 630 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity * 30;
                 // Decrease timer.
                 MothershipData.SecondsUntilRespawn = Math.Max( 0, MothershipData.SecondsUntilRespawn - 1 );
                 // If ready, respawn Mothership.
@@ -596,24 +598,19 @@ namespace PreceptsOfThePrecursors
             ArcenSparseLookup<Planet, int> incomePerPlanet = new ArcenSparseLookup<Planet, int>();
             World_AIW2.Instance.DoForPlanets( false, mainPlanet =>
             {
-                DysonProtoSphereData sphereData = mainPlanet.GetProtoSphereData();
+                DysonProtoSphereData sphereData = mainPlanet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound );
 
                 CalculateNodeIncome( mainPlanet, incomePerPlanet );
 
                 if ( sphereData.Type != DysonProtoSphereData.ProtoSphereType.Other && sphereData.Level < 7 )
                     sphereData.Resources += incomePerPlanet[mainPlanet];
 
-                DysonProtoSphereData protoSphereData = mainPlanet.GetProtoSphereData();
+                DysonProtoSphereData protoSphereData = mainPlanet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound );
                 Faction sphereFaction = null;
                 if ( protoSphereData.Type == DysonProtoSphereData.ProtoSphereType.Protecter )
                     sphereFaction = protectorSphereFaction;
                 else if ( protoSphereData.Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
                     sphereFaction = suppressorSphereFaction;
-
-                // Reset ownership if we own it.
-                if ( mainPlanet.UnderInfluenceOfFactionIndex == faction.FactionIndex || mainPlanet.UnderInfluenceOfFactionIndex == protectorSphereFaction.FactionIndex ||
-                mainPlanet.UnderInfluenceOfFactionIndex == suppressorSphereFaction.FactionIndex )
-                    mainPlanet.UnderInfluenceOfFactionIndex = -1;
 
                 HandleFriendlyNPCPlanet( sphereData, mainPlanet );
 
@@ -627,12 +624,12 @@ namespace PreceptsOfThePrecursors
                 (sphereFaction.Implementation as BaseDysonSubfaction).HandleDysonNodeLogic( sphereFaction, mainPlanet, Context );
 
                 // Leveling Logic.
-                if ( protoSphereData.Level < 7 && protoSphereData.Resources > ProtoSphereCosts.Resources( protoSphereData.Level, faction ) )
+                if ( protoSphereData.Level < 7 && protoSphereData.Resources > ProtoSphereCosts.Resources( protoSphereData.Level, faction, true ) )
                     (sphereFaction.Implementation as BaseDysonSubfaction).UpgradeProtoSphere( sphereFaction, mainPlanet, Context );
 
                 // Ownership logic.
                 if ( protoSphereData.Level > 0 && !mainPlanet.GetControllingOrInfluencingFaction().GetIsFriendlyTowards( sphereFaction ) )
-                    mainPlanet.UnderInfluenceOfFactionIndex = sphereFaction.FactionIndex;
+                    mainPlanet.UnderInfluenceOfFactionIndex.Add( sphereFaction.FactionIndex );
 
                 return DelReturn.Continue;
             } );
@@ -643,9 +640,9 @@ namespace PreceptsOfThePrecursors
         }
         private void CalculateNodeIncome( Planet planet, ArcenSparseLookup<Planet, int> incomePerPlanet )
         {
-            if ( planet.GetProtoSphereData().Level > 0 || (Mothership != null && Mothership.Planet.Index == planet.Index) )
+            if ( planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level > 0 || (Mothership != null && Mothership.Planet.Index == planet.Index) )
             {
-                incomePerPlanet.AddPair( planet, planet.GetProtoSphereData().Level );
+                incomePerPlanet.AddPair( planet, planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level );
                 planet.DoForLinkedNeighborsAndSelf( false, workingPlanet =>
                 {
                     if ( DysonNodes.GetHasKey( workingPlanet ) )
@@ -676,14 +673,14 @@ namespace PreceptsOfThePrecursors
                 ArcenSparseLookupPair<Planet, int> pair = incomePerPlanet.GetPairByIndex( x );
                 Planet planet = pair.Key;
                 int income = pair.Value;
-                DysonProtoSphereData sphereData = planet.GetProtoSphereData();
+                DysonProtoSphereData sphereData = planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound );
                 if ( sphereData.Level > 0 && sphereData.Level < 7 )
                     sphereData.Resources += income;
 
                 if ( Mothership != null && Mothership.Planet == planet )
                 {
                     // Increment Mothership resources based on mine and node count.
-                    int mothershipIncomeFromMines = MothershipData.Mines * (1 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity / 2));
+                    int mothershipIncomeFromMines = MothershipData.Mines * (1 + (faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity / 2));
                     MothershipData.Resources += 1 + mothershipIncomeFromMines + income;
                     MothershipData.MetalGainedOrLostLastSecond = 1 + mothershipIncomeFromMines + income;
                 }
@@ -693,7 +690,7 @@ namespace PreceptsOfThePrecursors
         {
             if ( Mothership == null )
                 return;
-            if ( PrecursorCosts.Resources( Mothership.CurrentMarkLevel, faction ) > ProtoSphereCosts.BuildCost( faction ) )
+            if ( PrecursorCosts.Resources( Mothership.CurrentMarkLevel, faction ) > ProtoSphereCosts.BuildCost( faction, true ) )
                 return;
             if ( MothershipData.Level < 7 && DysonNodes.GetHasKey( Mothership.Planet ) &&
                 MothershipData.Resources >= PrecursorCosts.Resources( MothershipData.Level, faction ) &&
@@ -731,8 +728,8 @@ namespace PreceptsOfThePrecursors
                 GameEntity_Squad darkSpireGenerator = Mothership.Planet.GetFirstMatching( FactionType.SpecialFaction, "VengeanceGeneratorNormalSpawn", false, false );
                 if ( darkSpireGenerator != null )
                 {
-                    DarkSpireData darkSpireGlobalData = World.Instance.GetDarkSpireDataExt_AndCacheAfter();
-                    FInt mult = (FInt.One * Mothership.CurrentMarkLevel) / (11 - darkSpire.Ex_MinorFactionCommon_GetPrimitives().Intensity);
+                    DarkSpireData darkSpireGlobalData = World.Instance.GetDarkSpireDataExt_AndCacheAfter( ExternalDataRetrieval.CreateIfNotFound );
+                    FInt mult = (FInt.One * Mothership.CurrentMarkLevel) / (11 - darkSpire.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity);
                     if ( Mothership.GetSecondsSinceEnteringThisPlanet() == 2 )
                         World_AIW2.Instance.QueueChatMessageOrCommand( $"The Dyson Mothership on {Mothership.Planet.Name} has begune to consume a Vengence Generator, angering the Dark Spire. She will finish within a minute.", ChatType.LogToCentralChat, Context );
                     else if ( Mothership.GetSecondsSinceEnteringThisPlanet() >= 60 )
@@ -1024,7 +1021,7 @@ namespace PreceptsOfThePrecursors
                 LastGameSecondSpawnt = World_AIW2.Instance.GameSecond
             };
             faction.SetMothershipData( MothershipData );
-            MothershipData = faction.GetMothershipData();
+            MothershipData = faction.GetMothershipData( ExternalDataRetrieval.CreateIfNotFound );
 
             if ( ancientNode.Planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched )
                 World_AIW2.Instance.QueueChatMessageOrCommand( $"A Dyson Mothership has spawnt on {ancientNode.Planet.Name}.", ChatType.LogToCentralChat, Context );
@@ -1053,7 +1050,7 @@ namespace PreceptsOfThePrecursors
                                 spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
                             }
                             // Support for non-protector, non-suppresor dyson factions.
-                            if ( spawnFaction == null && Mothership.Planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Other )
+                            if ( spawnFaction == null && Mothership.Planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type == DysonProtoSphereData.ProtoSphereType.Other )
                             {
                                 spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
                             }
@@ -1094,10 +1091,10 @@ namespace PreceptsOfThePrecursors
             // Mothership Resources > Protosphere Cost
             // Trust > 2000 or < -2000
             // Its a planet we planned to build on.
-            if ( MothershipData.Resources >= ProtoSphereCosts.BuildCost( faction ) &&
+            if ( MothershipData.Resources >= ProtoSphereCosts.BuildCost( faction, true ) &&
                 MothershipData.PlanetToBuildOn != null && Mothership.Planet.Index == MothershipData.PlanetToBuildOn.Index )
             {
-                DysonProtoSphereData protoSphereData = Mothership.Planet.GetProtoSphereData();
+                DysonProtoSphereData protoSphereData = Mothership.Planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound );
                 if ( protoSphereData.Level <= 0 )
                 {
                     Faction spawnFaction = null;
@@ -1107,7 +1104,7 @@ namespace PreceptsOfThePrecursors
                         spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
                     if ( spawnFaction != null )
                     {
-                        MothershipData.Resources -= ProtoSphereCosts.BuildCost( faction );
+                        MothershipData.Resources -= ProtoSphereCosts.BuildCost( faction, true );
                         (spawnFaction.Implementation as BaseDysonSubfaction).CreateProtoSphere( spawnFaction, Mothership.Planet, Context );
                         MothershipData.PlanetToBuildOn = null;
                     }
@@ -1127,9 +1124,9 @@ namespace PreceptsOfThePrecursors
             bool hasSphere = false;
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                if ( planet.GetProtoSphereData().Level > 0 && planet.GetControllingOrInfluencingFaction().Implementation is DysonSuppressors )
+                if ( planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level > 0 && planet.GetControllingOrInfluencingFaction().Implementation is DysonSuppressors )
                     hasSphere = true;
-                sphereMod += planet.GetProtoSphereData().Level * 100;
+                sphereMod += planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level * 100;
                 if ( DysonNodes[planet] != null )
                     for ( int x = 0; x < DysonNodes[planet].Length; x++ )
                         if ( DysonNodes[planet][x] != null )
@@ -1218,7 +1215,7 @@ namespace PreceptsOfThePrecursors
                 if ( otherFaction.Type != FactionType.AI )
                     return DelReturn.Continue;
 
-                AISentinelsExternalData factionExternal = otherFaction.GetSentinelsExternal();
+                AISentinelsExternalData factionExternal = otherFaction.GetSentinelsExternal( ExternalDataRetrieval.CreateIfNotFound );
                 List<ExtragalacticBudget> budgets = factionExternal.ExtragalacticBudgets;
 
                 World_AIW2.Instance.DoForFactions( targetFaction =>
@@ -1257,18 +1254,18 @@ namespace PreceptsOfThePrecursors
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                if ( (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor)
-                   && shouldSpawnForSpheres[planet.GetProtoSphereData().Level - 1] )
+                if ( (planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type == DysonProtoSphereData.ProtoSphereType.Protecter || planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type == DysonProtoSphereData.ProtoSphereType.Suppressor)
+                   && shouldSpawnForSpheres[planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level - 1] )
                 {
                     GameEntity_Squad sphere = planet.GetFirstMatching( FactionType.SpecialFaction, "ProtoSphere", false, false );
                     if ( sphere == null )
                         return DelReturn.Continue;
 
                     int levelToSpawn = 0;
-                    if ( planet.GetProtoSphereData().Level < 7 )
-                        levelToSpawn = planet.GetProtoSphereData().Level;
+                    if ( planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level < 7 )
+                        levelToSpawn = planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level;
                     else
-                        levelToSpawn = (planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter ? 8 : 9);
+                        levelToSpawn = (planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type == DysonProtoSphereData.ProtoSphereType.Protecter ? 8 : 9);
 
                     GameEntity_Squad packet = GameEntity_Squad.CreateNew( sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "DysonPacket" + levelToSpawn ), sphere.CurrentMarkLevel, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context );
                     packet.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, sphere.PlanetFaction.Faction.FactionIndex );
@@ -1425,7 +1422,9 @@ namespace PreceptsOfThePrecursors
                 List<Planet> threatenedPlanets = new List<Planet>();
                 World_AIW2.Instance.DoForPlanets( false, planet =>
                 {
-                    if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor || planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter || DysonPrecursors.DysonNodes.GetHasKey( planet ) )
+                    if ( planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type == DysonProtoSphereData.ProtoSphereType.Suppressor
+                    || planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type == DysonProtoSphereData.ProtoSphereType.Protecter
+                    || DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                         planet.DoForLinkedNeighborsAndSelf( false, adjPlanet =>
                         {
                             if ( adjPlanet.GetPlanetFactionForFaction( faction ).DataByStance[FactionStance.Hostile].TotalStrength > 3000000 )
@@ -1473,8 +1472,8 @@ namespace PreceptsOfThePrecursors
             {
                 if ( Mothership.LongRangePlanningData.FinalDestinationPlanetIndex == -1 || Mothership.LongRangePlanningData.FinalDestinationPlanetIndex == Mothership.Planet.Index )
                     if ( MothershipData.Level >= 7 ||
-                        ProtoSphereCosts.BuildCost( faction ) < PrecursorCosts.Resources( Mothership.CurrentMarkLevel, faction ) ||
-                        MothershipData.Resources >= ProtoSphereCosts.BuildCost( faction ) )
+                        ProtoSphereCosts.BuildCost( faction, false ) < PrecursorCosts.Resources( Mothership.CurrentMarkLevel, faction ) ||
+                        MothershipData.Resources >= ProtoSphereCosts.BuildCost( faction, false ) )
                         HandleSphereBuildingMovement( faction, Context );
                     else
                         HandleCollectionAndNodeMovement( faction, Context );
@@ -1572,7 +1571,7 @@ namespace PreceptsOfThePrecursors
         }
         private bool IsValidToBuildOn( Planet planet )
         {
-            if ( planet.GetProtoSphereData().Type != DysonProtoSphereData.ProtoSphereType.None )
+            if ( planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type != DysonProtoSphereData.ProtoSphereType.None )
                 return false;
             return true;
         }
@@ -1581,7 +1580,7 @@ namespace PreceptsOfThePrecursors
         {
             Planet endPlanet = null;
             // If we have enough resources to build a sphere, move right there.
-            if ( MothershipData.Resources >= ProtoSphereCosts.BuildCost( faction ) )
+            if ( MothershipData.Resources >= ProtoSphereCosts.BuildCost( faction, false ) )
             {
                 Planet focusPlanet = MothershipData.PlanetToBuildOn;
                 if ( focusPlanet != null && !IsValidToBuildOn( focusPlanet ) )
@@ -1597,7 +1596,7 @@ namespace PreceptsOfThePrecursors
                          // Care about positive trust slightly more.
                          if ( MothershipData.Trust.GetTrust( planet ) >= 2000 )
                              absTrust += 100;
-                         switch ( planet.GetProtoSphereData().Type )
+                         switch ( planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type )
                          {
                              case DysonProtoSphereData.ProtoSphereType.None:
                                  if ( absTrust > bestValue )
@@ -1629,14 +1628,14 @@ namespace PreceptsOfThePrecursors
                     if ( focusPlanet == null )
                     {
                         Planet basePlanet = MothershipData.Trust.GetNearbyTrustedPlanet( Mothership.Planet, Context, 2000 );
-                        if ( basePlanet.GetProtoSphereData().Level <= 0 )
+                        if ( ((basePlanet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Level) ?? 1) <= 0 )
                             focusPlanet = basePlanet;
                         else
                         {
                             int bestHop = 99;
                             World_AIW2.Instance.DoForPlanets( false, planet =>
                             {
-                                if ( planet.GetProtoSphereData().Level > 0 )
+                                if ( ((planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Level) ?? 0) > 0 )
                                     return DelReturn.Continue;
 
                                 int hops = basePlanet.GetHopsTo( planet );
@@ -1747,7 +1746,7 @@ namespace PreceptsOfThePrecursors
                 GameEntity_Squad golem = golemImplementation.GlobalData.Miners[x];
                 Planet planet = golem.Planet;
 
-                if ( planet.GetProtoSphereData().Type != DysonProtoSphereData.ProtoSphereType.None || Mothership.Planet.Index == planet.Index )
+                if ( planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type != DysonProtoSphereData.ProtoSphereType.None || Mothership.Planet.Index == planet.Index )
                 {
                     golem.QueueWormholeCommand( GetNearbyPlanetMothershipDoesNotLike( planet, Context ) );
                 }
@@ -1762,7 +1761,7 @@ namespace PreceptsOfThePrecursors
                 int hops = golemPlanet.GetHopsTo( planet );
                 if ( Mothership.Planet.Index == planet.Index )
                     return DelReturn.Continue;
-                if ( Math.Abs( MothershipData.Trust.GetTrust( planet ) ) < 1000 && planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.None )
+                if ( Math.Abs( MothershipData.Trust.GetTrust( planet ) ) < 1000 && planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type == DysonProtoSphereData.ProtoSphereType.None )
                 {
                     if ( hops < minHops )
                     {
@@ -1823,10 +1822,12 @@ namespace PreceptsOfThePrecursors
             if ( RelatedEntityOrNull.CountOfEntitiesProvidingExternalInvulnerability > 0 )
                 Buffer.Add( "This Sphere Golem is currently " ).StartColor( UnityEngine.Color.red ).Add( $"invulnerable.</color> The remaining Dyson Nodes on the planet must be killed first." );
 
-            DysonProtoSphereData protoSphereData = RelatedEntityOrNull.Planet.GetProtoSphereData();
+            DysonProtoSphereData protoSphereData = RelatedEntityOrNull.Planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound );
+            if ( protoSphereData == null )
+                return;
             Buffer.Add( $"\nThis Sphere is level {protoSphereData.Level}. " );
             if ( protoSphereData.Level < 7 )
-                Buffer.Add( $"\nThis Sphere Golem has acquired {protoSphereData.Resources}/{ProtoSphereCosts.Resources( protoSphereData.Level, World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonPrecursors ) ) )} of the resources required to level up. " );
+                Buffer.Add( $"\nThis Sphere Golem has acquired {protoSphereData.Resources}/{ProtoSphereCosts.Resources( protoSphereData.Level, World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonPrecursors ) ), false )} of the resources required to level up. " );
 
             Buffer.Add( "\n" );
         }
@@ -1880,9 +1881,9 @@ namespace PreceptsOfThePrecursors
 
             if ( !sphereExists )
             {
-                planet.GetProtoSphereData().Level = 0;
-                planet.GetProtoSphereData().Type = DysonProtoSphereData.ProtoSphereType.None;
-                planet.GetProtoSphereData().Resources = 0;
+                planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level = 0;
+                planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type = DysonProtoSphereData.ProtoSphereType.None;
+                planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Resources = 0;
             }
         }
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
@@ -1983,8 +1984,8 @@ namespace PreceptsOfThePrecursors
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
-                    fromFaction += FInt.FromParts( 0, 250 ) * planet.GetProtoSphereData().Level;
+                if ( planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type == DysonProtoSphereData.ProtoSphereType.Suppressor )
+                    fromFaction += FInt.FromParts( 0, 250 ) * planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level;
 
                 if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) < 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                     for ( int x = 0; x < 7; x++ )
@@ -2002,7 +2003,7 @@ namespace PreceptsOfThePrecursors
         }
         public override bool GetShouldAttackNormallyExcludedTarget( Faction faction, GameEntity_Squad Target )
         {
-            if ( Target.Planet.GetProtoSphereData().Level > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
+            if ( Target.Planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level > 0 && (Target.TypeData.IsCommandStation || Target.TypeData.GetHasTag( "WarpGate" )) )
                 return true;
             if ( Target.TypeData.GetHasTag( "NormalPlanetNastyPick" ) || Target.TypeData.GetHasTag( "VengeanceGeneratorConquestSpawn" ) )
                 return true;
@@ -2013,8 +2014,8 @@ namespace PreceptsOfThePrecursors
         {
             GameEntityTypeData protoSphereData = GameEntityTypeDataTable.Instance.GetRowByName( SUPPRESSOR_SPHERE_NAME + "1" );
             planet.Mapgen_SeedEntity( Context, faction, protoSphereData, PlanetSeedingZone.OuterSystem );
-            planet.GetProtoSphereData().Level = 1;
-            planet.GetProtoSphereData().Type = DysonProtoSphereData.ProtoSphereType.Suppressor;
+            planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level = 1;
+            planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type = DysonProtoSphereData.ProtoSphereType.Suppressor;
             if ( planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched )
                 World_AIW2.Instance.QueueChatMessageOrCommand( $"A Dyson Mothership on {planet.Name} has constructed a Proto Suppressor Sphere Golem.", ChatType.LogToCentralChat, Context );
         }
@@ -2033,14 +2034,14 @@ namespace PreceptsOfThePrecursors
 
             if ( protoSphere != null )
             {
-                GameEntityTypeData protoSphereData = GameEntityTypeDataTable.Instance.GetRowByName( SUPPRESSOR_SPHERE_NAME + (planet.GetProtoSphereData().Level + 1) );
+                GameEntityTypeData protoSphereData = GameEntityTypeDataTable.Instance.GetRowByName( SUPPRESSOR_SPHERE_NAME + (planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level + 1) );
                 protoSphere = protoSphere.TransformInto( Context, protoSphereData, 1 );
-                planet.GetProtoSphereData().Level++;
-                planet.GetProtoSphereData().Resources = 0;
-                if ( planet.GetProtoSphereData().Level >= 7 )
+                planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level++;
+                planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Resources = 0;
+                if ( planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level >= 7 )
                     World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has reached its maximum level, and has completed constructing a Dyson Sphere.", ChatType.LogToCentralChat, Context );
                 else
-                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has leveled up to level {planet.GetProtoSphereData().Level} .", ChatType.LogToCentralChat, Context );
+                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has leveled up to level {planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level} .", ChatType.LogToCentralChat, Context );
             }
         }
         public override void HandleDysonNodeLogic( Faction faction, Planet planet, ArcenSimContext Context )
@@ -2058,7 +2059,7 @@ namespace PreceptsOfThePrecursors
 
             if ( protoSphere != null && protoSphere.GetSecondsSinceCreation() % 300 == 0 )
             {
-                for ( int x = 0; x < planet.GetProtoSphereData().Level; x++ )
+                for ( int x = 0; x < planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level; x++ )
                 {
                     if ( DysonPrecursors.DysonNodes[planet] == null || DysonPrecursors.DysonNodes[planet][x] == null )
                     {
@@ -2091,7 +2092,7 @@ namespace PreceptsOfThePrecursors
         {
             if ( entity.TypeData.GetHasTag( "ProtoSphere" ) )
             {
-                DysonProtoSphereData data = entity.Planet.GetProtoSphereData();
+                DysonProtoSphereData data = entity.Planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound );
                 data.Level = 0;
                 data.Resources = 0;
                 data.Type = DysonProtoSphereData.ProtoSphereType.None;
@@ -2173,7 +2174,7 @@ namespace PreceptsOfThePrecursors
                     continue;
                 packet.Planet.DoForLinkedNeighbors( false, planet =>
                  {
-                     if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
+                     if ( planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type == DysonProtoSphereData.ProtoSphereType.Protecter )
                          return DelReturn.Continue; // Do not path into Protector planets.
 
                      if ( planet.GetControllingFaction().Type == FactionType.Player && DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > -500 )
@@ -2244,8 +2245,8 @@ namespace PreceptsOfThePrecursors
 
             World_AIW2.Instance.DoForPlanets( false, planet =>
              {
-                 if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter )
-                     fromFaction += FInt.FromParts( 0, 150 ) * planet.GetProtoSphereData().Level;
+                 if ( planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type == DysonProtoSphereData.ProtoSphereType.Protecter )
+                     fromFaction += FInt.FromParts( 0, 150 ) * planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level;
 
                  if ( DysonPrecursors.MothershipData.Trust.GetTrust( planet ) > 0 && DysonPrecursors.DysonNodes.GetHasKey( planet ) )
                      for ( int x = 0; x < 7; x++ )
@@ -2265,8 +2266,8 @@ namespace PreceptsOfThePrecursors
         {
             GameEntityTypeData protoSphereData = GameEntityTypeDataTable.Instance.GetRowByName( PROTECTOR_SPHERE_NAME + "1" );
             planet.Mapgen_SeedEntity( Context, faction, protoSphereData, PlanetSeedingZone.OuterSystem );
-            planet.GetProtoSphereData().Level = 1;
-            planet.GetProtoSphereData().Type = DysonProtoSphereData.ProtoSphereType.Protecter;
+            planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level = 1;
+            planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type = DysonProtoSphereData.ProtoSphereType.Protecter;
             if ( planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched )
                 World_AIW2.Instance.QueueChatMessageOrCommand( $"A Dyson Mothership on {planet.Name} has constructed a Proto Protector Sphere Golem.", ChatType.LogToCentralChat, Context );
         }
@@ -2285,14 +2286,14 @@ namespace PreceptsOfThePrecursors
 
             if ( protoSphere != null )
             {
-                GameEntityTypeData protoSphereData = GameEntityTypeDataTable.Instance.GetRowByName( PROTECTOR_SPHERE_NAME + (planet.GetProtoSphereData().Level + 1) );
+                GameEntityTypeData protoSphereData = GameEntityTypeDataTable.Instance.GetRowByName( PROTECTOR_SPHERE_NAME + (planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level + 1) );
                 protoSphere = protoSphere.TransformInto( Context, protoSphereData, 1 );
-                planet.GetProtoSphereData().Level++;
-                planet.GetProtoSphereData().Resources = 0;
-                if ( planet.GetProtoSphereData().Level >= 7 )
+                planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level++;
+                planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Resources = 0;
+                if ( planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level >= 7 )
                     World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has reached its maximum level.", ChatType.LogToCentralChat, Context );
                 else
-                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has leveled up to level {planet.GetProtoSphereData().Level} .", ChatType.LogToCentralChat, Context );
+                    World_AIW2.Instance.QueueChatMessageOrCommand( $"The {protoSphere.TypeData.DisplayName} on {planet.Name} has leveled up to level {planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level} .", ChatType.LogToCentralChat, Context );
             }
         }
         public override void HandleDysonNodeLogic( Faction faction, Planet planet, ArcenSimContext Context )
@@ -2310,7 +2311,7 @@ namespace PreceptsOfThePrecursors
 
             if ( protoSphere != null && protoSphere.GetSecondsSinceCreation() % 600 == 0 )
             {
-                for ( int x = 0; x < planet.GetProtoSphereData().Level; x++ )
+                for ( int x = 0; x < planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level; x++ )
                 {
                     if ( DysonPrecursors.DysonNodes[planet] == null || DysonPrecursors.DysonNodes[planet][x] == null )
                     {
@@ -2335,15 +2336,15 @@ namespace PreceptsOfThePrecursors
         {
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                if ( planet.GetProtoSphereData().Type == DysonProtoSphereData.ProtoSphereType.Protecter && planet.GetControllingOrInfluencingFaction().Type == FactionType.Player )
+                if ( planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Type == DysonProtoSphereData.ProtoSphereType.Protecter && planet.GetControllingOrInfluencingFaction().Type == FactionType.Player )
                 {
                     GameEntity_Squad command = planet.GetCommandStationOrNull();
                     if ( command != null )
                     {
-                        for ( int x = 1; x <= planet.GetProtoSphereData().Level; x++ )
-                            command.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( DysonPrecursors.DYSON_PACKET_TAG + x ) ).ExplicitBaseSquadCap = 1 + planet.GetProtoSphereData().Level - x;
+                        for ( int x = 1; x <= planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level; x++ )
+                            command.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( DysonPrecursors.DYSON_PACKET_TAG + x ) ).ExplicitBaseSquadCap = 1 + planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level - x;
 
-                        int toGet = 1 + ((planet.GetProtoSphereData().Level - 1) / 2);
+                        int toGet = 1 + ((planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound ).Level - 1) / 2);
 
                         if ( toGet > 0 )
                         {
@@ -2490,7 +2491,7 @@ namespace PreceptsOfThePrecursors
         {
             if ( entity.TypeData.GetHasTag( "ProtoSphere" ) )
             {
-                DysonProtoSphereData data = entity.Planet.GetProtoSphereData();
+                DysonProtoSphereData data = entity.Planet.GetProtoSphereData( ExternalDataRetrieval.CreateIfNotFound );
 
                 if ( entity.Planet.GetControllingOrInfluencingFaction().Type == FactionType.Player )
                 {

@@ -59,7 +59,7 @@ namespace PreceptsOfThePrecursors
 
         public byte ChroniclersMarkLevel( Faction faction )
         {
-            int workingIntensity = Intensity > 0 ? Intensity : faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
+            int workingIntensity = Intensity > 0 ? Intensity : faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.ReturnNullIfNotFound )?.Intensity ?? 1;
             int secondsPerMarkUp = SecondsPerMarkUpBase - ((workingIntensity - 1) * SecondsPerMarkUpDecreasePerIntensity);
 
             if ( World_AIW2.Instance.GameSecond > secondsPerMarkUp * 6 )
@@ -132,12 +132,12 @@ namespace PreceptsOfThePrecursors
             }
             if ( factionData == null )
             {
-                factionData = faction.GetNeinzulWarChroniclersData();
+                factionData = faction.GetNeinzulWarChroniclersData(ExternalDataRetrieval.CreateIfNotFound);
             }
             if ( !Initialized )
             {
-                Intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
-                Allegiance = faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance;
+                Intensity = faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity;
+                Allegiance = faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance;
                 BudgetPerSecond = BudgetPerSecondBase + (Intensity * BudgetPerSecondIncreasePerIntensity);
                 PerSecondStrengthCapIncrease = FInt.FromParts( (SoftStrengthCapIncreasePerHour + (SoftStrengthCapIncreasePerHourPerIntensity * Intensity)), 000 ) / 3600;
 
@@ -171,7 +171,7 @@ namespace PreceptsOfThePrecursors
             StudyLogic( faction, Context );
         }
 
-        public void ClearCrippledUnits(Faction faction, ArcenSimContext Context )
+        public void ClearCrippledUnits( Faction faction, ArcenSimContext Context )
         {
             faction.DoForEntities( ( GameEntity_Squad entity ) =>
             {
@@ -316,7 +316,7 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
-            World_AIW2.Instance.QueueChatMessageOrCommand( "The " + faction.StartFactionColourForLog() + faction.GetDisplayName() + "</color> have arrived on " + factionData.CurrentPlanetAimedAt.Name, ChatType.ShowToEveryone, Context );
+            World_AIW2.Instance.QueueChatMessageOrCommand( "The " + faction.StartFactionColourForLog() + faction.GetDisplayName() + "</color> have arrived on " + factionData.CurrentPlanetAimedAt.Name, ChatType.LogToCentralChat, Context );
 
             factionData.CurrentPlanetAimedAt = null;
             factionData.GameSecondAimed = -1;
@@ -403,7 +403,7 @@ namespace PreceptsOfThePrecursors
                 return DelReturn.Continue;
             } );
 
-            World_AIW2.Instance.QueueChatMessageOrCommand( "The " + faction.StartFactionColourForLog() + faction.GetDisplayName() + "</color> have departed from " + factionData.CurrentPlanetWeAreDepartingFrom.Name, ChatType.ShowToEveryone, Context );
+            World_AIW2.Instance.QueueChatMessageOrCommand( "The " + faction.StartFactionColourForLog() + faction.GetDisplayName() + "</color> have departed from " + factionData.CurrentPlanetWeAreDepartingFrom.Name, ChatType.LogToCentralChat, Context );
 
             factionData.CurrentPlanetWeAreDepartingFrom = null;
             factionData.GameSecondDepartingStarted = -1;

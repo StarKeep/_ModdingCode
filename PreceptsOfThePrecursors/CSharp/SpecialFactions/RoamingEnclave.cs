@@ -152,7 +152,7 @@ namespace PreceptsOfThePrecursors
             }
 
             if ( FactionData == null )
-                FactionData = faction.GetEnclaveFactionData();
+                FactionData = faction.GetEnclaveFactionData( ExternalDataRetrieval.CreateIfNotFound );
 
             if ( faction.MustBeAwakenedByPlayer )
                 faction.HasBeenAwakenedByPlayer = EnclaveSettings.GetIsEnabled( faction );
@@ -262,9 +262,9 @@ namespace PreceptsOfThePrecursors
         private YounglingUnit GetYounglingUsedByEnclave( GameEntity_Squad enclave, Faction faction )
         {
             YounglingUnit unitType = YounglingUnit.Length;
-
-            if ( enclave.GetStoredYounglings().StoredYounglings.GetPairCount() > 0 )
-                enclave.GetStoredYounglings().StoredYounglings.DoFor( pair =>
+            StoredYounglingsData younglingData = enclave.GetStoredYounglings( ExternalDataRetrieval.ReturnNullIfNotFound );
+            if ( younglingData != null && younglingData.StoredYounglings.GetPairCount() > 0 )
+                younglingData.StoredYounglings.DoFor( pair =>
                 {
                     unitType = pair.Key;
 
@@ -363,25 +363,25 @@ namespace PreceptsOfThePrecursors
                 Fireteam.DoFor( FactionData.Teams, workingTeam =>
                  {
                      if ( workingTeam.ships.Count > 0 )
-                         takenID.Add( workingTeam.id );
+                         takenID.Add( workingTeam.FireTeamID );
 
                      return DelReturn.Continue;
                  } );
                 for ( int x = 0; x < enclavesThatNeedFireteam.Count; x++ )
                 {
                     GameEntity_Squad enclave = enclavesThatNeedFireteam[x];
-                    Fireteam team = new Fireteam();
+                    Fireteam team = Fireteam.CreateNewWithIDFromList( new ArcenLessLinkedList<Fireteam>() );
                     team.MyStrengthMultiplierForStrengthCalculation = FInt.One;
                     team.EnemyStrengthMultiplierForStrengthCalculation = FInt.One;
-                    team.id = 1;
-                    while ( takenID.Contains( team.id ) )
-                        team.id++;
-                    takenID.Add( team.id );
+                    team.SetFireTeamID( 1 );
+                    while ( takenID.Contains( team.FireTeamID ) )
+                        team.SetFireTeamID( team.FireTeamID + 1 );
+                    takenID.Add( team.FireTeamID );
                     team.StrengthToBringOnline = 0;
                     team.NoDeathballing = true;
                     team.AddUnit( enclave );
                     FactionData.Teams.AddIfNotAlreadyIn( team );
-                    team.DefenseMode = FireteamsPerDefense > 0 ? (team.id % FireteamsPerDefense == 0) : false;
+                    team.DefenseMode = FireteamsPerDefense > 0 ? (team.FireTeamID % FireteamsPerDefense == 0) : false;
                 }
             }
 
@@ -589,7 +589,7 @@ namespace PreceptsOfThePrecursors
                 {
                     team.NoDeathballing = true;
 
-                    team.DefenseMode = FireteamsPerDefense > 0 ? (team.id % FireteamsPerDefense == 0) : false;
+                    team.DefenseMode = FireteamsPerDefense > 0 ? (team.FireTeamID % FireteamsPerDefense == 0) : false;
 
                     switch ( team.status )
                     {
@@ -886,7 +886,7 @@ namespace PreceptsOfThePrecursors
                     else
                         baseCost = GameEntityTypeDataTable.Instance.GetRowByName( ((YounglingUnit)x).ToString() ).MetalCost;
                     ArcenDebugging.SingleLineQuickDebug( $"Setting up Youngling Cost for {entityType.DisplayName}" );
-                    int secondsPer = baseCost / (20 + (faction.Ex_MinorFactionCommon_GetPrimitives().Intensity * 3));
+                    int secondsPer = baseCost / (20 + (faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity * 3));
                     if ( secondsPer < 1 )
                     {
                         ArcenDebugging.ArcenDebugLogSingleLine( $"Error! Per Second value for {entityType.DisplayName} is {secondsPer}, it must be at least 1. Defaulting the value to 1.", Verbosity.ShowAsError );
@@ -912,14 +912,14 @@ namespace PreceptsOfThePrecursors
             }
 
             BaseRoamingEnclave.EnclavesGloballyEnabled = true;
-            BaseRoamingEnclave.Intensity = faction.Ex_MinorFactionCommon_GetPrimitives().Intensity;
+            BaseRoamingEnclave.Intensity = faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity;
 
             base.DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( faction, Context );
         }
 
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            EnclaveWorldData worldData = World.Instance.GetEnclaveWorldData();
+            EnclaveWorldData worldData = World.Instance.GetEnclaveWorldData( ExternalDataRetrieval.CreateIfNotFound );
             bool isInflux = false;
             if ( worldData.SecondsUntilNextInflux == 0 )
             {
@@ -936,7 +936,7 @@ namespace PreceptsOfThePrecursors
                 {
                     BaseRoamingEnclave REFaction = otherFaction.Implementation as BaseRoamingEnclave;
                     if ( REFaction.FactionData == null )
-                        REFaction.FactionData = otherFaction.GetEnclaveFactionData();
+                        REFaction.FactionData = otherFaction.GetEnclaveFactionData( ExternalDataRetrieval.CreateIfNotFound );
                     if ( REFaction.Hives.Count == 0 )
                     {
                         if ( REFaction.FactionData.SecondsUntilNextRespawn == -1 )
@@ -1196,8 +1196,8 @@ namespace PreceptsOfThePrecursors
         {
             World_AIW2.Instance.DoForPlanets( false, planet =>
             {
-                if ( planet.UnderInfluenceOfFactionIndex == faction.FactionIndex )
-                    planet.UnderInfluenceOfFactionIndex = -1;
+                if ( planet.UnderInfluenceOfFactionIndex.Contains( faction.FactionIndex ) )
+                    planet.UnderInfluenceOfFactionIndex.Remove( faction.FactionIndex );
 
                 return DelReturn.Continue;
             } );
@@ -1207,8 +1207,8 @@ namespace PreceptsOfThePrecursors
             for ( int x = 0; x < HivePlanets.Count; x++ )
             {
                 Planet planet = HivePlanets[x];
-                if ( planet.UnderInfluenceOfFactionIndex == -1 )
-                    planet.UnderInfluenceOfFactionIndex = faction.FactionIndex;
+                if ( !planet.UnderInfluenceOfFactionIndex.Contains( faction.FactionIndex ) )
+                    planet.UnderInfluenceOfFactionIndex.Add( faction.FactionIndex );
 
                 pseudoAIP += 20;
             }
@@ -1227,7 +1227,7 @@ namespace PreceptsOfThePrecursors
 
                 if ( aiFaction == null )
                     aiFaction = otherFaction;
-                else if ( otherFaction.GetSentinelsExternal().AIDifficulty.Difficulty > aiFaction.GetSentinelsExternal().AIDifficulty.Difficulty )
+                else if ( otherFaction.GetSentinelsExternal( ExternalDataRetrieval.CreateIfNotFound ).AIDifficulty.Difficulty > aiFaction.GetSentinelsExternal( ExternalDataRetrieval.CreateIfNotFound ).AIDifficulty.Difficulty )
                     aiFaction = otherFaction;
 
                 return DelReturn.Continue;
@@ -1235,11 +1235,11 @@ namespace PreceptsOfThePrecursors
 
             FInt pseudoIncreaseFromAI = pseudoAIP / 20;
             pseudoIncreaseFromAI *= ExternalConstants.Instance.Balance_AIPurchaseCostPerCap_AI_Income;
-            pseudoIncreaseFromAI *= aiFaction.GetSentinelsExternal().AIDifficulty.AIPurchaseCostIncomeMultiplier;
+            pseudoIncreaseFromAI *= aiFaction.GetSentinelsExternal( ExternalDataRetrieval.CreateIfNotFound ).AIDifficulty.AIPurchaseCostIncomeMultiplier;
             pseudoIncreaseFromAI /= ExternalConstants.Instance.Balance_PlanetsWorthOfAIPTimesSecondsRequiredToAccumulateOneCap;
-            pseudoIncreaseFromAI *= aiFaction.GetSentinelsExternal().AIType.MultiplierForBudget_Wave;
+            pseudoIncreaseFromAI *= aiFaction.GetSentinelsExternal( ExternalDataRetrieval.CreateIfNotFound ).AIType.MultiplierForBudget_Wave;
 
-            AntiMinorFactionWaveData waveData = faction.GetAntiMinorFactionWaveDataExt();
+            AntiMinorFactionWaveData waveData = faction.GetAntiMinorFactionWaveDataExt( ExternalDataRetrieval.CreateIfNotFound );
             waveData.currentWaveBudget += pseudoIncreaseFromAI;
             if ( World_AIW2.Instance.GameSecond < 10 )
                 waveData.timeForNextWave = 600;
@@ -1257,7 +1257,7 @@ namespace PreceptsOfThePrecursors
     {
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Minor Faction Team Red";
+            faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance = "Minor Faction Team Red";
             allyThisFactionToMinorFactionTeam( faction, "Minor Faction Team Red" );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
@@ -1268,7 +1268,7 @@ namespace PreceptsOfThePrecursors
     {
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Minor Faction Team Blue";
+            faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance = "Minor Faction Team Blue";
             allyThisFactionToMinorFactionTeam( faction, "Minor Faction Team Blue" );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
@@ -1279,7 +1279,7 @@ namespace PreceptsOfThePrecursors
     {
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Minor Faction Team Green";
+            faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance = "Minor Faction Team Green";
             allyThisFactionToMinorFactionTeam( faction, "Minor Faction Team Green" );
 
             base.DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( faction, Context );
@@ -1291,7 +1291,7 @@ namespace PreceptsOfThePrecursors
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             enemyThisFactionToAll( faction );
-            if ( faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance == "DarkAlliance" )
+            if ( faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance == "DarkAlliance" )
                 allyThisFactionToMinorFactionTeam( faction, "Dark Alliance" );
             else
                 World_AIW2.Instance.DoForFactions( otherFaction =>
@@ -1300,8 +1300,8 @@ namespace PreceptsOfThePrecursors
                     {
                         faction.MakeFriendlyTo( otherFaction );
                         otherFaction.MakeFriendlyTo( faction );
-                        if ( otherFaction.Ex_MinorFactionCommon_GetPrimitives().Allegiance == "DarkAlliance" )
-                            faction.Ex_MinorFactionCommon_GetPrimitives().Allegiance = "Dark Alliance";
+                        if ( otherFaction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance == "DarkAlliance" )
+                            faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Allegiance = "Dark Alliance";
                     }
 
                     return DelReturn.Continue;
