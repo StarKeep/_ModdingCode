@@ -386,6 +386,14 @@ namespace PreceptsOfThePrecursors
             if ( MothershipData == null )
                 MothershipData = faction.GetMothershipData( ExternalDataRetrieval.CreateIfNotFound );
 
+            if ( !Initialized )
+            {
+                PrecursorCosts.Initialize( faction );
+                ProtoSphereCosts.Initialize( faction );
+                PacketTimers.Initialize( faction );
+                Initialized = true;
+            }
+
             if ( !HeadersAppliedToOldJournals )
             {
                 // For each Journal entry we have stored, reapply their header.
@@ -443,14 +451,6 @@ namespace PreceptsOfThePrecursors
                         SpawnMothership( ancientNode, faction, Context );
                 }
                 return;
-            }
-
-            if ( !Initialized )
-            {
-                PrecursorCosts.Initialize( faction );
-                ProtoSphereCosts.Initialize( faction );
-                PacketTimers.Initialize( faction );
-                Initialized = true;
             }
         }
         private void GiveJournalsAsNeeded( Faction faction, ArcenSimContext Context )

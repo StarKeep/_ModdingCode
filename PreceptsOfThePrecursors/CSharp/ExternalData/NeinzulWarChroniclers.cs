@@ -39,7 +39,9 @@ namespace PreceptsOfThePrecursors
             int strength = 0;
             BudgetGenerated[typeName].DoFor( pair =>
             {
-                strength += typeData.GetForMark( pair.Key ).StrengthPerSquad_CalculatedWithNullFleetMembership * pair.Value;
+                int perUnitStrength = typeData.GetForMark( pair.Key ).StrengthPerSquad_CalculatedWithNullFleetMembership;
+                int cost = perUnitStrength * 10;
+                strength += perUnitStrength * (pair.Value / cost);
 
                 return DelReturn.Continue;
             } );
@@ -154,30 +156,26 @@ namespace PreceptsOfThePrecursors
             SentAttacks = buffer.ReadInt32( ReadStyle.NonNeg );
         }
 
-        public override string ToString()
+        public void OutputToDebugLog()
         {
-            if ( BudgetGenerated == null || BudgetGenerated.GetPairCount() == 0 )
-                return "No budget generated";
-
-            string output = string.Empty;
             BudgetGenerated.DoFor( pair =>
             {
-                output += $"Budget for {pair.Key}: ";
+                if ( pair.Value == null || pair.Value.GetPairCount() < 1 )
+                    return DelReturn.Continue;
+                ArcenDebugging.SingleLineQuickDebug( $"Budget for {pair.Key}: " );
                 int total = 0;
 
                 pair.Value.DoFor( subPair =>
                 {
-                    output += $"{subPair.Key} - {subPair.Value}; ";
+                    ArcenDebugging.SingleLineQuickDebug( $"{subPair.Key} - {subPair.Value}; " );
                     total += subPair.Value;
                     return DelReturn.Continue;
                 } );
 
-                output += $" Total: {total}\n";
+                ArcenDebugging.SingleLineQuickDebug( $" Total: {total}" );
 
                 return DelReturn.Continue;
             } );
-
-            return output;
         }
     }
     public class NeinzulWarChroniclersExternalData : ArcenExternalDataPatternImplementationBase_Faction

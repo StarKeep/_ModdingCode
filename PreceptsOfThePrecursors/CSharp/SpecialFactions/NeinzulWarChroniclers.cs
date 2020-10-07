@@ -155,8 +155,8 @@ namespace PreceptsOfThePrecursors
 
         public override void DoPerSecondLogic_Stage3Main_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
-            if ( factionData != null )
-                ArcenDebugging.ArcenDebugLog( factionData.ToString(), Verbosity.DoNotShow );
+            //if ( factionData != null )
+            //    factionData.OutputToDebugLog();
 
             ClearCrippledUnits( faction, Context );
 
