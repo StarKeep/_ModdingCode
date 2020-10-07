@@ -299,6 +299,10 @@ namespace SKCivilianIndustry
             {
                 AIRaidNotifier notifier = new AIRaidNotifier();
                 notifier.raidingWormholes = factionData.NextRaidWormholes;
+                notifier.RaidedPlanets = new List<Planet>();
+                for ( int x = 0; x < notifier.RaidingWormholes.Count; x++ )
+                    if ( !notifier.RaidedPlanets.Contains( notifier.RaidingWormholes[x].Planet ) )
+                        notifier.RaidedPlanets.Add( notifier.RaidingWormholes[x].Planet );
                 notifier.faction = World_AIW2.GetRandomAIFaction( Context );
                 notifier.SecondsLeft = factionData.NextRaidInThisSeconds;
 

@@ -10,10 +10,9 @@ namespace SKCivilianIndustry.Notifications
     {
         public List<int> raidingWormholes = new List<int>();
         public List<GameEntity_Squad> RaidingWormholes { get { List<GameEntity_Squad> wormholes = new List<GameEntity_Squad>(); for ( int x = 0; x < raidingWormholes.Count; x++ ) wormholes.Add( World_AIW2.Instance.GetEntityByID_Squad( raidingWormholes[x] ) ); return wormholes; } }
+        public List<Planet> RaidedPlanets;
         public Faction faction;
         public int SecondsLeft;
-
-        public List<Planet> RaidedPlanets { get { List<Planet> raidedPlanets = new List<Planet>(); for ( int x = 0; x < raidingWormholes.Count; x++ ) if ( !raidedPlanets.Contains( RaidingWormholes[x].Planet ) ) raidedPlanets.Add( RaidingWormholes[x].Planet ); return raidedPlanets; } }
 
         public enum Mode
         {
