@@ -614,6 +614,11 @@ namespace PreceptsOfThePrecursors
 
                 HandleFriendlyNPCPlanet( sphereData, mainPlanet );
 
+                if ( mainPlanet.UnderInfluenceOfFactionIndex.Contains( protectorSphereFaction.FactionIndex ) )
+                    mainPlanet.UnderInfluenceOfFactionIndex.Remove( protectorSphereFaction.FactionIndex );
+                if ( mainPlanet.UnderInfluenceOfFactionIndex.Contains( suppressorSphereFaction.FactionIndex ) )
+                    mainPlanet.UnderInfluenceOfFactionIndex.Remove( suppressorSphereFaction.FactionIndex );
+
                 if ( sphereFaction == null )
                     return DelReturn.Continue;
 
