@@ -27,6 +27,7 @@
     shield_points="10000000"
     should_never_be_captured_by_another_faction="true"
     speed="BelowAverage1"
+	strength_multiplier="1.5"
     armor_mm="210"
     albedo="0.8"
     mass_tx="12"
