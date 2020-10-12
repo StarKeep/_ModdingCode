@@ -22,7 +22,7 @@
 			speed="BelowAverage1" shield_size_scale="3"
 			metal_cost="1000000" energy_consumption="10000"
 			armor_mm="140" albedo="0.8" engine_gx="28" mass_tx="8"
-			health_change_per_damage_dealt="5"
+			health_change_per_damage_dealt="0.5"
 			ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
 			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
 			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
