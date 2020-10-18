@@ -382,15 +382,14 @@ namespace PreceptsOfThePrecursors
                     case SpecialEntityType.Length:
                         return DelReturn.Continue;
                     default:
+                        if ( entity.TypeData.GetHasTag( Tags.NeinzulWarChronicler.ToString() ) )
+                            factionData.PersonalBudget += 1000000; // Refund.
+                        else
+                            // We spend 50% of each unit's cost, which is 10x the unit's strength, to send.
+                            // If the unit survives, refund the 50%.
+                            factionData.AddBudget( entity, entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 5 );
                         break;
                 }
-
-                if ( entity.TypeData.GetHasTag( Tags.NeinzulWarChronicler.ToString() ) )
-                    factionData.PersonalBudget += 1000000; // Refund.
-                else
-                    // We spend 50% of each unit's cost, which is 1x the unit's strength, to send.
-                    // If the unit survives, refund the 50%.
-                    factionData.AddBudget( entity, entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 5 );
 
                 entity.Despawn( Context, true, InstancedRendererDeactivationReason.IFinishedMyJob );
                 return DelReturn.Continue;
