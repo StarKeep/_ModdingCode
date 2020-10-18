@@ -5,6 +5,8 @@ namespace PreceptsOfThePrecursors
 {
     public class AncestorsArksData : ArcenExternalSubManagedData
     {
+        public int Version;
+
         // What Journals have been sent, and what header did we assign it? Helps us figure out when a log is invalid to be sent.
         public ArcenSparseLookup<string, string> JournalEntries;
 
@@ -19,6 +21,7 @@ namespace PreceptsOfThePrecursors
 
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            buffer.AddInt32( ReadStyle.NonNeg, 1 );
             int count = JournalEntries.GetPairCount();
             buffer.AddInt32( ReadStyle.NonNeg, count );
             for ( int x = 0; x < count; x++ )
@@ -31,6 +34,7 @@ namespace PreceptsOfThePrecursors
 
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            Version = buffer.ReadInt32( ReadStyle.NonNeg );
             int count = buffer.ReadInt32( ReadStyle.NonNeg );
             if ( JournalEntries == null )
                 JournalEntries = new ArcenSparseLookup<string, string>();
@@ -89,6 +93,8 @@ namespace PreceptsOfThePrecursors
 
     public class ScrapyardData : ArcenExternalSubManagedData
     {
+        public int Version;
+
         private string[] ships;
 
         public GameEntityTypeData Alpha { get { return !string.IsNullOrEmpty( ships[0] ) ? GameEntityTypeDataTable.Instance.GetRowByName( ships[0] ) : null; } set { ships[0] = value.InternalName; } }
@@ -106,6 +112,7 @@ namespace PreceptsOfThePrecursors
 
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            buffer.AddInt32( ReadStyle.NonNeg, 1 );
             byte count = (byte)ships.Length;
             buffer.AddByte( ReadStyleByte.Normal, count );
             for ( byte x = 0; x < count; x++ )
@@ -113,6 +120,7 @@ namespace PreceptsOfThePrecursors
         }
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            Version = buffer.ReadInt32( ReadStyle.NonNeg );
             if ( ships == null || IsForPartialSyncDuringMultiplayer )
                 ships = new string[3];
             byte count = buffer.ReadByte( ReadStyleByte.Normal );

@@ -6,6 +6,8 @@ namespace PreceptsOfThePrecursors
     // Created to keep track of various things that don't work right when an entity transforms.
     public class SleeperData : ArcenExternalSubManagedData
     {
+        public int Version;
+
         private short planet;
         public Planet Planet { get { return World_AIW2.Instance.GetPlanetByIndex( planet ); } set { planet = value.Index; } }
         public int SecondEnteredPlanet;
@@ -26,15 +28,19 @@ namespace PreceptsOfThePrecursors
         }
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            buffer.AddInt32( ReadStyle.NonNeg, 1 );
+
             buffer.AddInt16( ReadStyle.PosExceptNeg1, planet );
             buffer.AddInt32( ReadStyle.NonNeg, SecondEnteredPlanet );
             buffer.AddInt32( ReadStyle.NonNeg, SecondLastTransformed );
         }
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-                planet = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
-                SecondEnteredPlanet = buffer.ReadInt32( ReadStyle.NonNeg );
-                SecondLastTransformed = buffer.ReadInt32( ReadStyle.NonNeg );
+            Version = buffer.ReadInt32( ReadStyle.NonNeg );
+
+            planet = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
+            SecondEnteredPlanet = buffer.ReadInt32( ReadStyle.NonNeg );
+            SecondLastTransformed = buffer.ReadInt32( ReadStyle.NonNeg );
         }
     }
     public class SleeperExternalData : ArcenExternalDataPatternImplementationBase_Squad

@@ -6,6 +6,8 @@ namespace PreceptsOfThePrecursors
     // Class used to keep track of the Dyson Mothership's stats. Stored on the faction, since each faction will only ever have one Mothership.
     public class DysonMothershipData : ArcenExternalSubManagedData
     {
+        public int Version;
+
         public byte Level; // Current level. Maxes out at 7.
         public int Resources; // Resources claimed so far. Generated from kills, when near mines, and passively from consumed mines.
         public short Mines; // Mines eaten so far.
@@ -70,6 +72,7 @@ namespace PreceptsOfThePrecursors
 
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            buffer.AddInt32( ReadStyle.NonNeg, 1 );
             buffer.AddByte( ReadStyleByte.Normal, Level );
             buffer.AddInt32( ReadStyle.NonNeg, Resources );
             buffer.AddInt16( ReadStyle.NonNeg, Mines );
@@ -93,6 +96,8 @@ namespace PreceptsOfThePrecursors
         }
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            Version = buffer.ReadInt32( ReadStyle.NonNeg );
+
             if ( JournalEntries == null )
                 JournalEntries = new ArcenSparseLookup<string, string>();
             else if ( IsForPartialSyncDuringMultiplayer )
@@ -174,18 +179,20 @@ namespace PreceptsOfThePrecursors
     }
 
     // World class used to keep track of all planetary proto sphere data.
-    public class DysonProtoSphereWorldData : ArcenExternalSubManagedData
+    public class DysonPrecursorsWorldData : ArcenExternalSubManagedData
     {
-        private ArcenSparseLookup<short, DysonProtoSphereData> SphereDataByPlanet;
+        public int Version;
 
-        public DysonProtoSphereData GetSphereDataForPlanet( Planet planet )
+        private ArcenSparseLookup<short, DysonPerPlanetData> SphereDataByPlanet;
+
+        public DysonPerPlanetData GetPrecursorPerPlanetData( Planet planet )
         {
             if ( !SphereDataByPlanet.GetHasKey( planet.Index ) )
-                SphereDataByPlanet.AddPair( planet.Index, new DysonProtoSphereData() );
+                SphereDataByPlanet.AddPair( planet.Index, new DysonPerPlanetData() );
             return SphereDataByPlanet[planet.Index];
         }
 
-        public void SetSphereDataForPlanet( Planet planet, DysonProtoSphereData data )
+        public void SetPrecursorPerPlanetData( Planet planet, DysonPerPlanetData data )
         {
             if ( SphereDataByPlanet.GetHasKey( planet.Index ) )
                 SphereDataByPlanet[planet.Index] = data;
@@ -193,18 +200,20 @@ namespace PreceptsOfThePrecursors
                 SphereDataByPlanet.AddPair( planet.Index, data );
         }
 
-        public DysonProtoSphereWorldData()
+        public DysonPrecursorsWorldData()
         {
-            SphereDataByPlanet = new ArcenSparseLookup<short, DysonProtoSphereData>();
+            SphereDataByPlanet = new ArcenSparseLookup<short, DysonPerPlanetData>();
         }
 
-        public DysonProtoSphereWorldData( ArcenDeserializationBuffer Buffer ) : this()
+        public DysonPrecursorsWorldData( ArcenDeserializationBuffer Buffer ) : this()
         {
             DeserializeIntoSelf( Buffer, false );
         }
 
         public override void SerializeTo( ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            Buffer.AddInt32(ReadStyle.NonNeg, 1 );
+
             int count = SphereDataByPlanet.GetPairCount();
             Buffer.AddInt32( ReadStyle.NonNeg, count );
             SphereDataByPlanet.DoFor( pair =>
@@ -218,19 +227,20 @@ namespace PreceptsOfThePrecursors
 
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            Version = Buffer.ReadInt32(ReadStyle.NonNeg );
+
             if ( SphereDataByPlanet == null )
-                SphereDataByPlanet = new ArcenSparseLookup<short, DysonProtoSphereData>();
+                SphereDataByPlanet = new ArcenSparseLookup<short, DysonPerPlanetData>();
             else if ( IsForPartialSyncDuringMultiplayer )
                 SphereDataByPlanet.Clear();
 
             int count = Buffer.ReadInt32( ReadStyle.NonNeg );
             for ( int x = 0; x < count; x++ )
-                SphereDataByPlanet.AddPair( Buffer.ReadInt16( ReadStyle.NonNeg ), new DysonProtoSphereData( Buffer ) );
+                SphereDataByPlanet.AddPair( Buffer.ReadInt16( ReadStyle.NonNeg ), new DysonPerPlanetData( Buffer ) );
         }
     }
 
-    // Class used to store information about Proto-Spheres. Stored on the Planet since each planet can only ever have a singular Proto-Sphere.
-    public class DysonProtoSphereData : ArcenExternalSubManagedData
+    public class DysonPerPlanetData : ArcenExternalSubManagedData
     {
         public enum ProtoSphereType
         {
@@ -259,7 +269,7 @@ namespace PreceptsOfThePrecursors
         // Have we been hacked?
         public bool HasBeenHacked;
 
-        public DysonProtoSphereData()
+        public DysonPerPlanetData()
         {
             Level = 0;
             Resources = 0;
@@ -267,7 +277,7 @@ namespace PreceptsOfThePrecursors
             GameSecondBigUnitDied = 0;
             HasBeenHacked = false;
         }
-        public DysonProtoSphereData( ArcenDeserializationBuffer Buffer ) : this()
+        public DysonPerPlanetData( ArcenDeserializationBuffer Buffer ) : this()
         {
             this.DeserializeIntoSelf( Buffer, false );
         }
@@ -290,31 +300,11 @@ namespace PreceptsOfThePrecursors
             GameSecondBigUnitDied = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             HasBeenHacked = buffer.ReadBool();
         }
-        public void DeserializedChangedValuesIntoSelf( ArcenDeserializationBuffer buffer )
-        {
-            byte readByte = buffer.ReadByte( ReadStyleByte.Normal );
-            Level = Level != readByte ? readByte : Level;
-
-            int readInt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            Resources = Resources != readInt ? readInt : Resources;
-
-            readByte = buffer.ReadByte( ReadStyleByte.Normal );
-            ProtoSphereType type = (ProtoSphereType)readByte;
-            Type = Type != type ? type : Type;
-
-            buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-
-            readInt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            GameSecondBigUnitDied = GameSecondBigUnitDied != readInt ? readInt : GameSecondBigUnitDied;
-
-            bool readBool = buffer.ReadBool();
-            HasBeenHacked = HasBeenHacked != readBool ? readBool : HasBeenHacked;
-        }
     }
 
-    public class DysonProtoSphereWorldExternalData : ArcenExternalDataPatternImplementationBase_World
+    public class DysonPrecursorsWorldExternalData : ArcenExternalDataPatternImplementationBase_World
     {
-        private DysonProtoSphereWorldData Data;
+        private DysonPrecursorsWorldData Data;
         public static int PatternIndex;
 
         public override void ReceivePatternIndex( int Index )
@@ -328,46 +318,46 @@ namespace PreceptsOfThePrecursors
 
         protected override void InitializeData( World Parent, object[] Target )
         {
-            this.Data = new DysonProtoSphereWorldData();
+            this.Data = new DysonPrecursorsWorldData();
             Target[0] = this.Data;
         }
         public override void SerializeExternalData( object[] Source, ArcenSerializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             //For saving to disk, translate this object into the buffer
-            DysonProtoSphereWorldData data = (DysonProtoSphereWorldData)Source[0];
+            DysonPrecursorsWorldData data = (DysonPrecursorsWorldData)Source[0];
             data.SerializeTo( Buffer, IsForPartialSyncDuringMultiplayer );
         }
         protected override void DeserializeExternalData( World Parent, object[] Target, int ItemsToExpect, ArcenDeserializationBuffer Buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            this.DeserializeExternalDataAsArcenExternalSubManagedData<DysonProtoSphereWorldData>( Target, Buffer, IsForPartialSyncDuringMultiplayer );
+            this.DeserializeExternalDataAsArcenExternalSubManagedData<DysonPrecursorsWorldData>( Target, Buffer, IsForPartialSyncDuringMultiplayer );
         }
     }
     public static class DysonProtoSphereExternalDataExtensions
     {
-        public static DysonProtoSphereWorldData GetProtoSphereWorldData( this World ParentObject, ExternalDataRetrieval RetrievalRules )
+        public static DysonPrecursorsWorldData GetProtoSphereWorldData( this World ParentObject, ExternalDataRetrieval RetrievalRules )
         {
-            ArcenExternalData extData = ParentObject.ExternalData.GetCollectionByPatternIndex( ParentObject, DysonProtoSphereWorldExternalData.PatternIndex, RetrievalRules );
+            ArcenExternalData extData = ParentObject.ExternalData.GetCollectionByPatternIndex( ParentObject, DysonPrecursorsWorldExternalData.PatternIndex, RetrievalRules );
             if ( extData == null )
                 return null;
-            return (DysonProtoSphereWorldData)extData.Data[0];
+            return (DysonPrecursorsWorldData)extData.Data[0];
         }
-        public static void SetProtoSphereWorldData( this World ParentObject, DysonProtoSphereWorldData data )
+        public static void SetProtoSphereWorldData( this World ParentObject, DysonPrecursorsWorldData data )
         {
-            ParentObject.ExternalData.GetCollectionByPatternIndex( ParentObject, (int)DysonProtoSphereWorldExternalData.PatternIndex, ExternalDataRetrieval.CreateIfNotFound ).Data[0] = data;
+            ParentObject.ExternalData.GetCollectionByPatternIndex( ParentObject, (int)DysonPrecursorsWorldExternalData.PatternIndex, ExternalDataRetrieval.CreateIfNotFound ).Data[0] = data;
         }
 
-        public static DysonProtoSphereData GetProtoSphereData( this Planet planet, ExternalDataRetrieval RetrievalRules )
+        public static DysonPerPlanetData GetPrecursorPerPlanetData( this Planet planet, ExternalDataRetrieval RetrievalRules )
         {
-            return World.Instance.GetProtoSphereWorldData( RetrievalRules )?.GetSphereDataForPlanet( planet );
+            return World.Instance.GetProtoSphereWorldData( RetrievalRules )?.GetPrecursorPerPlanetData( planet );
         }
         /// <summary>
         /// ONLY call from a sim-safe thread.
         /// </summary>
         /// <param name="planet"></param>
         /// <param name="sphereData"></param>
-        public static void SetProtoSphereData( this Planet planet, DysonProtoSphereData sphereData )
+        public static void SetPrecursorPerPlanetData( this Planet planet, DysonPerPlanetData sphereData )
         {
-            World.Instance.GetProtoSphereWorldData( ExternalDataRetrieval.CreateIfNotFound ).SetSphereDataForPlanet( planet, sphereData );
+            World.Instance.GetProtoSphereWorldData( ExternalDataRetrieval.CreateIfNotFound ).SetPrecursorPerPlanetData( planet, sphereData );
         }
     }
 }

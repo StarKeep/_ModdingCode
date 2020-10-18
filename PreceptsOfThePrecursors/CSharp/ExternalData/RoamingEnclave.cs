@@ -7,6 +7,8 @@ namespace PreceptsOfThePrecursors
 {
     public class EnclaveFactionData : ArcenExternalSubManagedData
     {
+        public int Version;
+
         public ArcenLessLinkedList<Fireteam> Teams;
         public ArcenSparseLookup<Planet, FireteamRegiment> TeamsAimedAtPlanet;
         public int SecondsUntilNextRespawn;
@@ -23,11 +25,15 @@ namespace PreceptsOfThePrecursors
         }
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            buffer.AddInt32(ReadStyle.NonNeg, 1 );
+
             FireteamUtility.SerializeFireteams( buffer, Teams );
             buffer.AddInt32( ReadStyle.PosExceptNeg1, SecondsUntilNextRespawn );
         }
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            Version = buffer.ReadInt32(ReadStyle.NonNeg );
+
             if ( Teams == null )
                 Teams = new ArcenLessLinkedList<Fireteam>();
             else if ( IsForPartialSyncDuringMultiplayer )
@@ -100,6 +106,8 @@ namespace PreceptsOfThePrecursors
 
     public class EnclaveWorldData : ArcenExternalSubManagedData
     {
+        public int Version;
+
         public int SecondsUntilNextInflux;
 
         public EnclaveWorldData()
@@ -112,10 +120,14 @@ namespace PreceptsOfThePrecursors
         }
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            buffer.AddInt32(ReadStyle.NonNeg, 1 );
+
             buffer.AddInt32( ReadStyle.NonNeg, SecondsUntilNextInflux );
         }
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            Version = buffer.ReadInt32(ReadStyle.NonNeg );
+
             SecondsUntilNextInflux = buffer.ReadInt32( ReadStyle.NonNeg );
         }
     }
@@ -276,6 +288,8 @@ namespace PreceptsOfThePrecursors
 
     public class StoredYounglingsData : ArcenExternalSubManagedData
     {
+        public int Version;
+
         public ArcenSparseLookup<YounglingUnit, YounglingCollection> StoredYounglings;
         public int TotalStrength
         {
@@ -348,6 +362,8 @@ namespace PreceptsOfThePrecursors
         }
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            buffer.AddInt32(ReadStyle.NonNeg, 1 );
+
             int count = StoredYounglings.GetPairCount();
             buffer.AddInt32( ReadStyle.NonNeg, count );
             for ( int x = 0; x < count; x++ )
@@ -360,6 +376,8 @@ namespace PreceptsOfThePrecursors
         // TODO - This one will require more work to take the sync into account. If it ends up being a chonker; we'll deal with it.
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            Version = buffer.ReadInt32(ReadStyle.NonNeg );
+
             if ( StoredYounglings == null )
                 StoredYounglings = new ArcenSparseLookup<YounglingUnit, YounglingCollection>();
             else if ( IsForPartialSyncDuringMultiplayer )

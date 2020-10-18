@@ -6,6 +6,8 @@ namespace PreceptsOfThePrecursors
 {
     public class NeinzulWarChroniclersData : ArcenExternalSubManagedData
     {
+        public int Version;
+
         // Our personal budget.
         public int PersonalBudget;
         public int ReadiedChroniclers { get { return PersonalBudget / 1000000; } }
@@ -108,6 +110,8 @@ namespace PreceptsOfThePrecursors
         }
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            buffer.AddInt32( ReadStyle.NonNeg, 1 );
+
             buffer.AddInt32( ReadStyle.NonNeg, PersonalBudget );
             int count = BudgetGenerated.GetPairCount();
             buffer.AddInt32( ReadStyle.NonNeg, count );
@@ -134,6 +138,8 @@ namespace PreceptsOfThePrecursors
         }
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
+            Version = buffer.ReadInt32(ReadStyle.NonNeg );
+
             if ( BudgetGenerated == null )
                 BudgetGenerated = new ArcenSparseLookup<string, ArcenSparseLookup<byte, int>>();
             else if ( IsForPartialSyncDuringMultiplayer )

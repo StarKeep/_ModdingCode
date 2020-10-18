@@ -1,6 +1,6 @@
-﻿using Arcen.AIW2.Core;
+﻿using System.Collections.Generic;
+using Arcen.AIW2.Core;
 using Arcen.Universal;
-using System.Collections.Generic;
 
 namespace PreceptsOfThePrecursors
 {
@@ -20,7 +20,7 @@ namespace PreceptsOfThePrecursors
     }
     public static class ExtentionMethods
     {
-        public static void AddToPerPlanetLookup(this GameEntity_Squad entity, ref ArcenSparseLookup<Planet, List<GameEntity_Squad>> lookup)
+        public static void AddToPerPlanetLookup( this GameEntity_Squad entity, ref ArcenSparseLookup<Planet, List<GameEntity_Squad>> lookup )
         {
             if ( !lookup.GetHasKey( entity.Planet ) )
                 lookup.AddPair( entity.Planet, new List<GameEntity_Squad>() );

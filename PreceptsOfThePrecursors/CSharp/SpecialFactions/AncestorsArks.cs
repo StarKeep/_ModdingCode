@@ -28,7 +28,7 @@ namespace PreceptsOfThePrecursors
             ReprocessorRegnat
         }
 
-        public static ArcenSparseLookup<Ship, EntityCollection> Ships;
+        public static ArcenSparseLookup<Ship, Arcen.AIW2.Core.EntityCollection> Ships;
 
         public static string messageToSend;
 
@@ -46,7 +46,7 @@ namespace PreceptsOfThePrecursors
             }
 
             if ( Ships == null )
-                Ships = new ArcenSparseLookup<Ship, EntityCollection>();
+                Ships = new ArcenSparseLookup<Ship, Arcen.AIW2.Core.EntityCollection>();
 
             for ( int x = 0; x < Ships.GetPairCount(); x++ )
             {

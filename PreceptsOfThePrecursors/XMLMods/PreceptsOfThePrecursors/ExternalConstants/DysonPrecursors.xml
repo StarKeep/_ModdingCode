@@ -19,5 +19,13 @@
 	custom_int_DysonPrecursors_PacketSpawnIntervalIncreasePerNodeLevel="120"
 	custom_int_DysonPrecursors_PacketSpawnIntervalSphereBase="40"
 	custom_int_DysonPrecursors_PacketSpawnIntervalSphereIncreasePerLevel="20"
+	
+	custom_int_DysonPrecursors_EnforcerSpawnIntervalBase="180"
+	custom_int_DysonPrecursors_EnforcerSpawnIntervalIncreasePerLevel="30"
+	
+	custom_int_DysonPrecursors_PatrollerSpawnIntervalBase="10"
+	custom_int_DysonPrecursors_PatrollerSpawnIntervalIncreasePerLevel="10"
+	custom_int_DysonPrecursors_PatrollerSpawnIntervalBulwarkMultiplier="2"
+	custom_int_DysonPrecursors_PatrollerSpawnIntervalBastionMultiplier="4"
 >
 </root>

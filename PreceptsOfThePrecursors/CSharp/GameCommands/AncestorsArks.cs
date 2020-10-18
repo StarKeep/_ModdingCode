@@ -9,7 +9,7 @@ namespace PreceptsOfThePrecursors.GameCommands
         public override void Execute( GameCommand command, ArcenSimContext context )
         {
             if ( AncestorsArks.Ships == null )
-                AncestorsArks.Ships = new Arcen.Universal.ArcenSparseLookup<AncestorsArks.Ship, EntityCollection>();
+                AncestorsArks.Ships = new Arcen.Universal.ArcenSparseLookup<AncestorsArks.Ship, Arcen.AIW2.Core.EntityCollection>();
 
             command.DoForRelatedEntities( ( GameEntity_Squad entity ) =>
             {
@@ -17,7 +17,7 @@ namespace PreceptsOfThePrecursors.GameCommands
                     return Arcen.Universal.DelReturn.Continue;
 
                 if ( !AncestorsArks.Ships.GetHasKey( shipType ) )
-                    AncestorsArks.Ships.AddPair( shipType, new EntityCollection() );
+                    AncestorsArks.Ships.AddPair( shipType, new Arcen.AIW2.Core.EntityCollection() );
                 if ( command.RelatedBool || !AncestorsArks.Ships[shipType].Contains( entity ) )
                     AncestorsArks.Ships[shipType].AddEntity( entity );
 

@@ -103,10 +103,10 @@ namespace PreceptsOfThePrecursors
 		public override short MaxTrust( Planet planet )
 		{
 			short baseTrust = GetTrust( planet );
-			DysonProtoSphereData.ProtoSphereType? sphereType = planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type;
+			DysonPerPlanetData.ProtoSphereType? sphereType = planet.GetPrecursorPerPlanetData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type;
 			if ( sphereType == null )
 				return maxTrust;
-			if ( (sphereType == DysonProtoSphereData.ProtoSphereType.Protecter || sphereType == DysonProtoSphereData.ProtoSphereType.Suppressor) && baseTrust < 1000 )
+			if ( (sphereType == DysonPerPlanetData.ProtoSphereType.Protecter || sphereType == DysonPerPlanetData.ProtoSphereType.Suppressor) && baseTrust < 1000 )
 				return -2000;
 			if ( DysonPrecursors.DysonNodes.GetHasKey( planet ) && baseTrust < 0 )
 				return -1000;
@@ -116,10 +116,10 @@ namespace PreceptsOfThePrecursors
 		public override short MinTrust( Planet planet )
 		{
 			short baseTrust = GetTrust( planet );
-			DysonProtoSphereData.ProtoSphereType? sphereType = planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type;
+			DysonPerPlanetData.ProtoSphereType? sphereType = planet.GetPrecursorPerPlanetData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Type;
 			if ( sphereType == null )
 				return minTrust;
-			if ( (sphereType == DysonProtoSphereData.ProtoSphereType.Protecter || sphereType == DysonProtoSphereData.ProtoSphereType.Suppressor) && baseTrust > 1000 )
+			if ( (sphereType == DysonPerPlanetData.ProtoSphereType.Protecter || sphereType == DysonPerPlanetData.ProtoSphereType.Suppressor) && baseTrust > 1000 )
 				return 2000;
 			if ( DysonPrecursors.DysonNodes.GetHasKey( planet ) && baseTrust > 0 )
 				return 1000;
@@ -155,7 +155,7 @@ namespace PreceptsOfThePrecursors
 					}
 					trustedPlanets.Add( planet );
 				}
-				if ( ((trust > -1000 && planet.GetIsControlledByFactionType( FactionType.Player )) || (planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Level ?? 0) > 0) && hops <= humanHops )
+				if ( ((trust > -1000 && planet.GetIsControlledByFactionType( FactionType.Player )) || (planet.GetPrecursorPerPlanetData( ExternalDataRetrieval.ReturnNullIfNotFound )?.Level ?? 0) > 0) && hops <= humanHops )
 				{
 					if ( hops < humanHops )
 					{

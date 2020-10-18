@@ -145,7 +145,7 @@ namespace PreceptsOfThePrecursors
             Hackable result = base.GetCanBeHacked( Target, HackerOrNull, planet, HackerFaction, Type, RelatedStringOrNull, RelatedIntOrNull, out RejectionReasonDescription );
             if ( result != Hackable.CanBeHacked )
                 return result;
-            if ( !Target.PlanetFaction.Faction.GetIsFriendlyTowards( HackerFaction ) || Target.Planet.GetProtoSphereData(ExternalDataRetrieval.ReturnNullIfNotFound)?.Type != DysonProtoSphereData.ProtoSphereType.Protecter || Target.Planet.GetProtoSphereData( ExternalDataRetrieval.ReturnNullIfNotFound )?.HasBeenHacked == true )
+            if ( !Target.PlanetFaction.Faction.GetIsFriendlyTowards( HackerFaction ) || Target.Planet.GetPrecursorPerPlanetData(ExternalDataRetrieval.ReturnNullIfNotFound)?.Type != DysonPerPlanetData.ProtoSphereType.Protecter || Target.Planet.GetPrecursorPerPlanetData( ExternalDataRetrieval.ReturnNullIfNotFound )?.HasBeenHacked == true )
                 return Hackable.NeverCanBeHacked_Hide;
             return Hackable.CanBeHacked;
         }
