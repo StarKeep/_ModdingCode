@@ -126,14 +126,6 @@ namespace PreceptsOfThePrecursors
         }
     }
 
-    // EnforcerSpawnIntervalBase="180"
-    // EnforcerSpawnIntervalIncreasePerLevel="30"
-    // 
-    // PatrollerSpawnIntervalBase="10"
-    // PatrollerSpawnIntervalIncreasePerLevel="10"
-    // PatrollerSpawnIntervalBulwarkMultiplier="2"
-    // PatrollerSpawnIntervalBastionMultiplier="4"
-
     public static class PatrolTimers
     {
         private static int EnforcerBase, EnforcerIncrease, PatrollerBase, PatrollerIncrease, PatrollerBulwarkMult, PatrollerBastionMult;
@@ -1031,32 +1023,62 @@ namespace PreceptsOfThePrecursors
         // Spawn an Ancient Node somewhere in the galaxy.
         private GameEntity_Squad SpawnAncientNode( Faction faction, ArcenSimContext Context )
         {
+            // If we have an exising node somwhere in the galaxy, convert it into an Ancient Node instead.
+            GameEntity_Squad nodeToConvert = null;
+            if ( DysonNodes != null )
+                DysonNodes.DoFor( pair =>
+                {
+                    if ( pair.Value[0] != null )
+                        if ( nodeToConvert == null || Context.RandomToUse.NextBool() )
+                            nodeToConvert = pair.Value[0];
+
+                    return DelReturn.Continue;
+                } );
+
+            if ( nodeToConvert != null )
+                return nodeToConvert.TransformInto( Context, GameEntityTypeDataTable.Instance.GetRowByName( DYSON_ANCIENT_NODE_NAME ), 1 );
+
+            string spawnOption = faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).SpawningOptions;
+
             try
             {
                 List<Planet> potentialPlanets = new List<Planet>();
-                short workingHops = 5;
-                while ( potentialPlanets.Count == 0 )
+                if ( spawnOption == "Near Player" )
                 {
                     World_AIW2.Instance.DoForPlanets( false, planet =>
-                     {
-                         bool isValid = true;
-                         planet.DoForPlanetsWithinXHops( Context, workingHops, ( workingPlanet, hops ) =>
-                         {
-                             if ( workingPlanet.GetControllingOrInfluencingFaction().Type == FactionType.Player )
-                                 isValid = false;
-                             if ( workingPlanet.GetCommandStationOrNull() != null && workingPlanet.GetCommandStationOrNull().TypeData.IsKingUnit )
-                                 isValid = false;
+                    {
+                        if ( planet.OriginalHopsToHumanHomeworld == 4 )
+                            potentialPlanets.Add( planet );
 
+                        return DelReturn.Continue;
+                    } );
+                }
+                if ( potentialPlanets.Count <= 0 )
+                {
+                    short workingHops = 5;
+                    while ( potentialPlanets.Count == 0 )
+                    {
+                        World_AIW2.Instance.DoForPlanets( false, planet =>
+                         {
+                             bool isValid = true;
+                             planet.DoForPlanetsWithinXHops( Context, workingHops, ( workingPlanet, hops ) =>
+                             {
+                                 if ( workingPlanet.GetControllingOrInfluencingFaction().Type == FactionType.Player )
+                                     isValid = false;
+                                 if ( workingPlanet.GetCommandStationOrNull() != null && workingPlanet.GetCommandStationOrNull().TypeData.IsKingUnit )
+                                     isValid = false;
+
+                                 return DelReturn.Continue;
+                             } );
+
+                             if ( isValid )
+                             {
+                                 potentialPlanets.Add( planet );
+                             }
                              return DelReturn.Continue;
                          } );
-
-                         if ( isValid )
-                         {
-                             potentialPlanets.Add( planet );
-                         }
-                         return DelReturn.Continue;
-                     } );
-                    workingHops--;
+                        workingHops--;
+                    }
                 }
 
                 Planet spawnPlanet = potentialPlanets[Context.RandomToUse.Next( potentialPlanets.Count )];
@@ -1484,7 +1506,7 @@ namespace PreceptsOfThePrecursors
                             if ( (implementation.PatrolDefenderByMarkByPlanet?[planet]?[x] ?? 0) <
                             DysonNodes[planet][x].FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipDefenderDrone" ) ).EffectiveSquadCap )
                             {
-                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName("DysonDefenderTechie" );
+                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderTechie" );
 
                                 GameEntity_Squad patroller = GameEntity_Squad.CreateNew( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
                                     DysonNodes[planet][x].WorldLocation, Context );
@@ -1499,7 +1521,7 @@ namespace PreceptsOfThePrecursors
                             if ( (implementation.PatrolBulwarkByMarkByPlanet?[planet]?[x] ?? 0) <
                                                         DysonNodes[planet][x].FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBulwarkDrone" ) ).EffectiveSquadCap )
                             {
-                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName("DysonBulwarkTechie" );
+                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkTechie" );
 
                                 GameEntity_Squad patroller = GameEntity_Squad.CreateNew( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
                                     DysonNodes[planet][x].WorldLocation, Context );
@@ -1514,7 +1536,7 @@ namespace PreceptsOfThePrecursors
                             if ( (implementation.PatrolBastionByMarkByPlanet?[planet]?[x] ?? 0) <
                             DysonNodes[planet][x].FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBastionDrone" ) ).EffectiveSquadCap )
                             {
-                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName("DysonBastionTechie" );
+                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionTechie" );
 
                                 GameEntity_Squad patroller = GameEntity_Squad.CreateNew( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
                                     DysonNodes[planet][x].WorldLocation, Context );
@@ -1528,7 +1550,7 @@ namespace PreceptsOfThePrecursors
                 #endregion
 
                 #region Sphere Patrol Ships
-                GameEntity_Squad sphere = planet.GetPlanetFactionForFaction(subFaction).Entities.GetFirstMatching( "ProtoSphere", false, false );
+                GameEntity_Squad sphere = planet.GetPlanetFactionForFaction( subFaction ).Entities.GetFirstMatching( "ProtoSphere", false, false );
                 if ( sphere != null )
                 {
                     for ( int x = 0; x < 7; x++ )
@@ -1538,7 +1560,7 @@ namespace PreceptsOfThePrecursors
                             if ( (implementation.PatrolSentinelsByMarkByPlanet?[planet]?[x] ?? 0) <
                                 sphere.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipSentinelDrone" ) ).EffectiveSquadCap )
                             {
-                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName("DysonSentinelTechie" );
+                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelTechie" );
 
                                 GameEntity_Squad patroller = GameEntity_Squad.CreateNew( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
                                     sphere.WorldLocation, Context );
@@ -1550,7 +1572,7 @@ namespace PreceptsOfThePrecursors
                             if ( (implementation.PatrolDefenderByMarkByPlanet?[planet]?[x] ?? 0) <
                                 sphere.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipDefenderDrone" ) ).EffectiveSquadCap )
                             {
-                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName("DysonDefenderTechie" );
+                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderTechie" );
 
                                 GameEntity_Squad patroller = GameEntity_Squad.CreateNew( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
                                     sphere.WorldLocation, Context );
@@ -1565,7 +1587,7 @@ namespace PreceptsOfThePrecursors
                             if ( (implementation.PatrolBulwarkByMarkByPlanet?[planet]?[x] ?? 0) <
                                  sphere.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBulwarkDrone" ) ).EffectiveSquadCap )
                             {
-                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName("DysonBulwarkTechie" );
+                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkTechie" );
 
                                 GameEntity_Squad patroller = GameEntity_Squad.CreateNew( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
                                     sphere.WorldLocation, Context );
@@ -1580,7 +1602,7 @@ namespace PreceptsOfThePrecursors
                             if ( (implementation.PatrolBastionByMarkByPlanet?[planet]?[x] ?? 0) <
                                 sphere.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBastionDrone" ) ).EffectiveSquadCap )
                             {
-                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName("DysonBastionTechie" );
+                                GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionTechie" );
 
                                 GameEntity_Squad patroller = GameEntity_Squad.CreateNew( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
                                     sphere.WorldLocation, Context );

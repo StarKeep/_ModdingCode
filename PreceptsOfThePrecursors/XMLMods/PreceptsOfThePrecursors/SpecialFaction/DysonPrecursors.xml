@@ -21,6 +21,10 @@ This Mothership will work to gather resources and rebuild Zenith control over th
     <custom_field name="ExtraStrongMode" display_name="Fully Awakened" description="Enable this setting to unleash the full power of the Mothership. With this enabled, she will become a major player early on, even at Intensity 1.
 This is dedicated to people who like unfair challenges. She will ignore many of her normal restrictions, and will quickly carve out sections of the galaxy for her own use. Be warned."
               sort_group="250" setting_type="CustomDropdownArbitraryOptions" arbitrary_options="Enabled,Disabled" default_option="Disabled" />
+	<custom_field name="SpawningOptions" display_name="Spawning Options" description="Modifies how the Ancient Node spawns.
+Default will have it spawn in somewhere in the center of the map, relative to both Human and AI homeworlds.
+Near Player will have it spawn 4 hops away from a player Homeworld. This will make the faction relatively easier to play with."
+          sort_group="300" setting_type="CustomDropdownArbitraryOptions" arbitrary_options="Default,Near Player" default_option="Default" />
   </faction>
   <!-- Protectors are a subfaction that are placed by the Precursors on planets that need protected.
   They are not as strong as the Suppressors, but allow the existence of aliens the Dyson consider friendly. -->
