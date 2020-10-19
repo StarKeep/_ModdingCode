@@ -162,15 +162,27 @@ namespace PreceptsOfThePrecursors
             GameEntityTypeData defenderData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelDecaying" );
             GameEntityTypeData bulwarkData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkDecaying" );
             GameEntityTypeData bastionData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionDecaying" );
-            int toSpawn = 1 + (Hacker.ActiveHack_DurationThusFar / 30);
+            int toSpawn = 1 + (Hacker.ActiveHack_DurationThusFar / 15);
             for ( int x = 0; x < toSpawn; x++ )
             {
-                planet.Mapgen_SeedEntity( Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
-                planet.Mapgen_SeedEntity( Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                GameEntity_Squad sentinel = planet.Mapgen_SeedEntity( Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem );
+                sentinel.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                sentinel.SetCurrentMarkLevelIfHigherThanCurrent( (byte)(Hacker.ActiveHack_DurationThusFar / 30), Context );
+                GameEntity_Squad defender = planet.Mapgen_SeedEntity( Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem );
+                defender.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                defender.SetCurrentMarkLevelIfHigherThanCurrent( (byte)(Hacker.ActiveHack_DurationThusFar / 30), Context );
                 if ( Hacker.ActiveHack_DurationThusFar % 5 == 0 )
-                    planet.Mapgen_SeedEntity( Context, spawnFaction, bulwarkData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
-                if (Hacker.ActiveHack_DurationThusFar % 30 == 0)
-                    planet.Mapgen_SeedEntity( Context, spawnFaction, bastionData, PlanetSeedingZone.OuterSystem ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                {
+                    GameEntity_Squad bulwark = planet.Mapgen_SeedEntity( Context, spawnFaction, bulwarkData, PlanetSeedingZone.OuterSystem );
+                    bulwark.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                    bulwark.SetCurrentMarkLevelIfHigherThanCurrent( (byte)(Hacker.ActiveHack_DurationThusFar / 30), Context );
+                }
+                if ( Hacker.ActiveHack_DurationThusFar % 30 == 0 )
+                {
+                    GameEntity_Squad bastion = planet.Mapgen_SeedEntity( Context, spawnFaction, bastionData, PlanetSeedingZone.OuterSystem );
+                    bastion.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                    bastion.SetCurrentMarkLevelIfHigherThanCurrent( (byte)(Hacker.ActiveHack_DurationThusFar / 30), Context );
+                }
             }
 
             if ( Hacker.ActiveHack_DurationThusFar < 60 )
@@ -179,10 +191,10 @@ namespace PreceptsOfThePrecursors
             // Give them their first batch of units.
             if ( Hacker.ActiveHack_DurationThusFar == 60 )
             {
-                Fleet.Membership defenderMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( sentinelData );
+                Fleet.Membership defenderMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelTechie" ), 1 );
                 defenderMem.ExplicitBaseSquadCap += 10;
 
-                Fleet.Membership sentinelMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( defenderData );
+                Fleet.Membership sentinelMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderTechie" ), 1 );
                 sentinelMem.ExplicitBaseSquadCap += 10;
 
                 World_AIW2.Instance.QueueChatMessageOrCommand( "You have stolen the designs for 10 Dyson Defenders and 10 Dyson Sentinels.", ChatType.LogToCentralChat, Context );
@@ -201,20 +213,20 @@ namespace PreceptsOfThePrecursors
 
                     nodeToPop.Die( Context, true );
 
-                    Fleet.Membership defenderMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( sentinelData, 1 );
+                    Fleet.Membership defenderMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelTechie" ), 1 );
                     defenderMem.ExplicitBaseSquadCap += 5;
 
-                    Fleet.Membership sentinelMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( defenderData, 1 );
+                    Fleet.Membership sentinelMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderTechie" ), 1 );
                     sentinelMem.ExplicitBaseSquadCap += 5;
 
                     // If the hack has gone on for long enough, also reward them with a Bulwark.
                     if ( nodePopped >= 5 )
                     {
-                        Fleet.Membership bulwarkMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( bulwarkData, 1 );
+                        Fleet.Membership bulwarkMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkTechie" ), 1 );
                         bulwarkMem.ExplicitBaseSquadCap = Math.Max(1, bulwarkMem.ExplicitBaseSquadCap + 1);
                         if ( nodePopped >= 7 )
                         {
-                            Fleet.Membership bastionMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( bastionData, 1 );
+                            Fleet.Membership bastionMem = Hacker.FleetMembership.Fleet.GetOrAddMembershipGroupBasedOnSquadType_WithUniqueIDForDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionTechie" ), 1 );
                             bastionMem.ExplicitBaseSquadCap = Math.Max( 1, bastionMem.ExplicitBaseSquadCap + 1 );
                             World_AIW2.Instance.QueueChatMessageOrCommand( $"You have stolen the designs from a Dyson Node on {planet.Name}, gaining another 5 Dyson Defenders and 5 Dyson Sentinels. You have also managed to get a Dyson Bulwark, AND a Dyson Bastion!", ChatType.LogToCentralChat, Context );
                         }
@@ -278,21 +290,28 @@ namespace PreceptsOfThePrecursors
             GameEntityTypeData sentinelData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderDecaying" );
             GameEntityTypeData defenderData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelDecaying" );
             GameEntityTypeData bulwarkData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkDecaying" );
-            List<GameEntity_Squad> spawntShips = new List<GameEntity_Squad>();
-            if (Hacker.ActiveHack_DurationThusFar % 5 == 0)
+            GameEntityTypeData bastionData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionDecaying" );
+            int toSpawn = 1 + (Hacker.ActiveHack_DurationThusFar / 15);
+            for ( int x = 0; x < toSpawn; x++ )
             {
-                spawntShips.Add(planet.Mapgen_SeedEntity(Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem));
-                spawntShips.Add(planet.Mapgen_SeedEntity(Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem));
-            }
-            if ( Hacker.ActiveHack_DurationThusFar % 30 == 0 )
-                spawntShips.Add( planet.Mapgen_SeedEntity( Context, spawnFaction, bulwarkData, PlanetSeedingZone.OuterSystem ) );
-
-            // Mark up our ships if needed, and set them to attack.
-            byte markLevel = (byte)Math.Min( 7, 1 + Hacker.ActiveHack_DurationThusFar / 30 );
-            for ( int x = 0; x < spawntShips.Count; x++ )
-            {
-                spawntShips[x].SetCurrentMarkLevel( markLevel, Context );
-                spawntShips[x].Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                GameEntity_Squad sentinel = planet.Mapgen_SeedEntity( Context, spawnFaction, sentinelData, PlanetSeedingZone.OuterSystem );
+                sentinel.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                sentinel.SetCurrentMarkLevelIfHigherThanCurrent( (byte)(Hacker.ActiveHack_DurationThusFar / 30), Context );
+                GameEntity_Squad defender = planet.Mapgen_SeedEntity( Context, spawnFaction, defenderData, PlanetSeedingZone.OuterSystem );
+                defender.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                defender.SetCurrentMarkLevelIfHigherThanCurrent( (byte)(Hacker.ActiveHack_DurationThusFar / 30), Context );
+                if ( Hacker.ActiveHack_DurationThusFar % 5 == 0 )
+                {
+                    GameEntity_Squad bulwark = planet.Mapgen_SeedEntity( Context, spawnFaction, bulwarkData, PlanetSeedingZone.OuterSystem );
+                    bulwark.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                    bulwark.SetCurrentMarkLevelIfHigherThanCurrent( (byte)(Hacker.ActiveHack_DurationThusFar / 30), Context );
+                }
+                if ( Hacker.ActiveHack_DurationThusFar % 30 == 0 )
+                {
+                    GameEntity_Squad bastion = planet.Mapgen_SeedEntity( Context, spawnFaction, bastionData, PlanetSeedingZone.OuterSystem );
+                    bastion.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, spawnFaction.FactionIndex );
+                    bastion.SetCurrentMarkLevelIfHigherThanCurrent( (byte)(Hacker.ActiveHack_DurationThusFar / 30), Context );
+                }
             }
 
             // Every 30 seconds, spawn in another node if there is room.

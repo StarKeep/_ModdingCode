@@ -1470,7 +1470,7 @@ namespace PreceptsOfThePrecursors
 
                 Faction subFaction = null;
                 for ( int x = 0; x < 7 && subFaction == null; x++ )
-                    subFaction = DysonNodes[planet]?[x]?.PlanetFaction.Faction;
+                    subFaction = DysonNodes[planet]?[x]?.PlanetFaction?.Faction;
                 if ( subFaction == null )
                     switch ( data.Type )
                     {
@@ -1526,7 +1526,7 @@ namespace PreceptsOfThePrecursors
                         if ( canBuildBulwark[x] )
                         {
                             if ( (implementation.PatrolBulwarkByMarkByPlanet?[planet]?[x] ?? 0) <
-                                                        DysonNodes[planet][x].FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBulwarkDrone" ) ).EffectiveSquadCap )
+                                    (DysonNodes[planet][x].FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBulwarkDrone" ) )?.EffectiveSquadCap ?? 0) )
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkTechie" );
 
@@ -1541,7 +1541,7 @@ namespace PreceptsOfThePrecursors
                         if ( canBuildBastion[x] )
                         {
                             if ( (implementation.PatrolBastionByMarkByPlanet?[planet]?[x] ?? 0) <
-                            DysonNodes[planet][x].FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBastionDrone" ) ).EffectiveSquadCap )
+                                    (DysonNodes[planet][x].FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBastionDrone" ) )?.EffectiveSquadCap ?? 0) )
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionTechie" );
 
@@ -1592,7 +1592,7 @@ namespace PreceptsOfThePrecursors
                         if ( canBuildBulwark[x] )
                         {
                             if ( (implementation.PatrolBulwarkByMarkByPlanet?[planet]?[x] ?? 0) <
-                                 sphere.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBulwarkDrone" ) ).EffectiveSquadCap )
+                                 (sphere.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBulwarkDrone" ) )?.EffectiveSquadCap ?? 0) )
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkTechie" );
 
@@ -1607,7 +1607,7 @@ namespace PreceptsOfThePrecursors
                         if ( canBuildBastion[x] )
                         {
                             if ( (implementation.PatrolBastionByMarkByPlanet?[planet]?[x] ?? 0) <
-                                sphere.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBastionDrone" ) ).EffectiveSquadCap )
+                                (sphere.FleetMembership.Fleet.GetButDoNotAddMembershipGroupBasedOnSquadType_AssumeNoDuplicates( GameEntityTypeDataTable.Instance.GetRowByName( "DysonMothershipBastionDrone" ) )?.EffectiveSquadCap ?? 0) )
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionTechie" );
 
