@@ -23,7 +23,7 @@
 	custom_int_DysonPrecursors_EnforcerSpawnIntervalBase="180"
 	custom_int_DysonPrecursors_EnforcerSpawnIntervalIncreasePerLevel="30"
 	
-	custom_int_DysonPrecursors_PatrollerSpawnIntervalBase="10"
+	custom_int_DysonPrecursors_PatrollerSpawnIntervalBase="20"
 	custom_int_DysonPrecursors_PatrollerSpawnIntervalIncreasePerLevel="10"
 	custom_int_DysonPrecursors_PatrollerSpawnIntervalBulwarkMultiplier="2"
 	custom_int_DysonPrecursors_PatrollerSpawnIntervalBastionMultiplier="4"
