@@ -1,5 +1,6 @@
 ﻿using System;
 using Arcen.AIW2.Core;
+using Arcen.AIW2.External;
 using Arcen.Universal;
 
 namespace PreceptsOfThePrecursors
@@ -54,7 +55,19 @@ namespace PreceptsOfThePrecursors
             if ( World_AIW2.Instance.GameSecond - LastSecondCached < 10 && CachedEstimatedStrengthOfAttack > 0 )
                 return CachedEstimatedStrengthOfAttack; // Regenerate strength every 10 seconds.
 
+            int strengthCap = 0;
+            strengthCap += NeinzulWarChroniclers.SoftStrengthCapBase;
+            strengthCap += NeinzulWarChroniclers.SoftStrengthCapIncreasePerAttack * SentAttacks;
+            strengthCap += NeinzulWarChroniclers.SoftStrengthCapIncreasePerAttackPerIntensity * SentAttacks * faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.ReturnNullIfNotFound ).Intensity;
+            strengthCap += (World_AIW2.Instance.GameSecond * FInt.FromParts( (NeinzulWarChroniclers.SoftStrengthCapIncreasePerHour + (NeinzulWarChroniclers.SoftStrengthCapIncreasePerHourPerIntensity * faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.ReturnNullIfNotFound ).Intensity)), 000 ) / 3600).GetNearestIntPreferringHigher();
+
             int strength = GameEntityTypeDataTable.Instance.GetRowByName( NeinzulWarChroniclers.Tags.NeinzulWarChronicler.ToString() ).GetForMark( (faction.Implementation as NeinzulWarChroniclers).ChroniclersMarkLevel( faction ) ).StrengthPerSquad_CalculatedWithNullFleetMembership;
+
+            BudgetGenerated.Sort( ( pair1, pair2 ) =>
+            {
+                return -(GameEntityTypeDataTable.Instance.GetRowByName( pair1.Key ).GetForMark( 1 ).StrengthPerSquad_CalculatedWithNullFleetMembership - GameEntityTypeDataTable.Instance.GetRowByName( pair2.Key ).GetForMark( 1 ).StrengthPerSquad_CalculatedWithNullFleetMembership);
+            } );
+
             BudgetGenerated.DoFor( pair =>
             {
                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( pair.Key );
@@ -70,8 +83,14 @@ namespace PreceptsOfThePrecursors
                     int cost = perUnitStrength * 10;
                     strength += perUnitStrength * (subPair.Value / cost);
 
+                    if ( strength > strengthCap )
+                        return DelReturn.Break;
+
                     return DelReturn.Continue;
                 } );
+
+                if ( strength > strengthCap )
+                    return DelReturn.Break;
 
                 return DelReturn.Continue;
             } );
@@ -138,7 +157,7 @@ namespace PreceptsOfThePrecursors
         }
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            Version = buffer.ReadInt32(ReadStyle.NonNeg );
+            Version = buffer.ReadInt32( ReadStyle.NonNeg );
 
             if ( BudgetGenerated == null )
                 BudgetGenerated = new ArcenSparseLookup<string, ArcenSparseLookup<byte, int>>();

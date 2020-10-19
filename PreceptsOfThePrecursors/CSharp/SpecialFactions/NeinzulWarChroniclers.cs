@@ -132,7 +132,7 @@ namespace PreceptsOfThePrecursors
             }
             if ( factionData == null )
             {
-                factionData = faction.GetNeinzulWarChroniclersData(ExternalDataRetrieval.CreateIfNotFound);
+                factionData = faction.GetNeinzulWarChroniclersData( ExternalDataRetrieval.CreateIfNotFound );
             }
             if ( !Initialized )
             {
@@ -276,10 +276,23 @@ namespace PreceptsOfThePrecursors
 
         public void SendAttack( Faction faction, ArcenSimContext Context )
         {
+            int strengthCap = 0;
+            strengthCap += SoftStrengthCapBase;
+            strengthCap += SoftStrengthCapIncreasePerAttack * factionData.SentAttacks;
+            strengthCap += SoftStrengthCapIncreasePerAttackPerIntensity * factionData.SentAttacks * Intensity;
+            strengthCap += (World_AIW2.Instance.GameSecond * FInt.FromParts( (SoftStrengthCapIncreasePerHour + (SoftStrengthCapIncreasePerHourPerIntensity * Intensity)), 000 ) / 3600).GetNearestIntPreferringHigher();
+
             GameEntity_Squad chronicler = factionData.CurrentPlanetAimedAt.Mapgen_SeedEntity( Context, faction, GameEntityTypeDataTable.Instance.GetRowByName( Tags.NeinzulWarChronicler.ToString() ), PlanetSeedingZone.OuterSystem );
             chronicler.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
             chronicler.SetCurrentMarkLevel( ChroniclersMarkLevel( faction ), Context );
             factionData.PersonalBudget -= 1000000;
+
+            int strengthSent = chronicler.GetStrengthPerSquad();
+
+            factionData.BudgetGenerated.Sort( ( pair1, pair2 ) =>
+            {
+                return -(GameEntityTypeDataTable.Instance.GetRowByName( pair1.Key ).GetForMark( 1 ).StrengthPerSquad_CalculatedWithNullFleetMembership - GameEntityTypeDataTable.Instance.GetRowByName( pair2.Key ).GetForMark( 1 ).StrengthPerSquad_CalculatedWithNullFleetMembership);
+            } );
 
             factionData.BudgetGenerated.DoFor( pair =>
             {
@@ -305,10 +318,18 @@ namespace PreceptsOfThePrecursors
                     {
                         GameEntity_Squad newSpawn = GameEntity_Squad.CreateNew( chronicler.PlanetFaction, entityData, subPair.Key, chronicler.PlanetFaction.FleetUsedAtPlanet, 0, chronicler.WorldLocation, Context );
                         newSpawn.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
+
+                        strengthSent += newSpawn.GetStrengthPerSquad();
+
+                        if ( strengthSent > strengthCap )
+                            break;
                     }
 
                     if ( toSend > 0 )
                         subPair.Value /= 2;
+
+                    if ( strengthSent > strengthCap )
+                        return DelReturn.Break;
 
                     return DelReturn.Continue;
                 } );
@@ -410,12 +431,6 @@ namespace PreceptsOfThePrecursors
 
         public void StudyLogic( Faction faction, ArcenSimContext Context )
         {
-            int strengthCap = 0;
-            strengthCap += SoftStrengthCapBase;
-            strengthCap += SoftStrengthCapIncreasePerAttack * factionData.SentAttacks;
-            strengthCap += SoftStrengthCapIncreasePerAttackPerIntensity * factionData.SentAttacks * Intensity;
-            strengthCap += (World_AIW2.Instance.GameSecond * PerSecondStrengthCapIncrease).GetNearestIntPreferringHigher();
-
             faction.DoForEntities( Tags.NeinzulWarChronicler.ToString(), chronicler =>
             {
                 World_AIW2.Instance.DoForFactions( otherFaction =>
@@ -428,7 +443,7 @@ namespace PreceptsOfThePrecursors
                         if ( entity.TypeData.IsDrone || entity.TypeData.SelfAttritionsXPercentPerSecondIfParentShipNotOnPlanet != 0 || entity.TypeData.GetHasTag( Tags.NeinzulWarChronicler.ToString() ) )
                             return DelReturn.Continue;
 
-                        if ( factionData.StrengthStoredForType( entity.TypeData.InternalName ) > strengthCap )
+                        if ( (factionData.BudgetGenerated?[entity.TypeData.InternalName]?[(byte)(entity.CurrentMarkLevel - 1)] ?? 0) > entity.GetStrengthPerSquad() * 100 )
                             return DelReturn.Continue;
 
                         switch ( entity.TypeData.SpecialType )
