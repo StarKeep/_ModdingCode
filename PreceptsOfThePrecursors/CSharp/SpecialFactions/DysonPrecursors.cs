@@ -1036,7 +1036,14 @@ namespace PreceptsOfThePrecursors
                 } );
 
             if ( nodeToConvert != null )
-                return nodeToConvert.TransformInto( Context, GameEntityTypeDataTable.Instance.GetRowByName( DYSON_ANCIENT_NODE_NAME ), 1 );
+            {
+                GameEntity_Squad ancientNode = nodeToConvert.Planet.Mapgen_SeedEntity( Context, nodeToConvert.PlanetFaction.Faction, GameEntityTypeDataTable.Instance.GetRowByName( DYSON_ANCIENT_NODE_NAME ), PlanetSeedingZone.OuterSystem );
+                nodeToConvert.Despawn( Context, true, InstancedRendererDeactivationReason.TransformedIntoAnotherEntityType );
+
+                if ( ancientNode.Planet.IntelLevel >= PlanetIntelLevel.CurrentlyWatched )
+                    World_AIW2.Instance.QueueChatMessageOrCommand( $"An Ancient Dyson Node has awoken on {ancientNode.Planet.Name}.", ChatType.LogToCentralChat, Context );
+                return ancientNode;
+            }
 
             string spawnOption = faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).SpawningOptions;
 
