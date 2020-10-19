@@ -26,13 +26,13 @@ Note: Enabling this faction will allow them to spawn alongside all Teams in the 
            display_name="Pearl Enclave"
            dll_name="PreceptsOfThePrecursors"
            type_name="PreceptsOfThePrecursors.RoamingEnclavePlayerTeam"
-           team_center_color="Gold" team_border_color="Gold"
+           team_center_color="Silver" team_border_color="Gold"
            type="SpecialFaction"
            should_not_be_shown="true"
            player_discoverable="true"
 		   can_be_targeted_by_annoyed_non_human_units="true"
            auto_add_one_of_faction_if_missing_on_save_load="true"
-           can_use_spire_debris="true"
+           
            description="A subfaction of the Enclaves, part of the Player team."
   >
   </faction>
@@ -46,7 +46,7 @@ Note: Enabling this faction will allow them to spawn alongside all Teams in the 
          player_discoverable="true"
          auto_add_one_of_faction_if_missing_on_save_load="true"
          can_be_targeted_by_annoyed_non_human_units="true"
-         can_use_spire_debris="true"
+         
          description="A subfaction of the Enclaves, that is Hostile to All."
   >
   </faction>
@@ -60,7 +60,7 @@ Note: Enabling this faction will allow them to spawn alongside all Teams in the 
            player_discoverable="true"
            auto_add_one_of_faction_if_missing_on_save_load="true"
 		   can_be_targeted_by_annoyed_non_human_units="true"
-           can_use_spire_debris="true"
+           
            description="A subfaction of the Enclaves, part of the AI team."
   >
   </faction>
@@ -74,7 +74,7 @@ Note: Enabling this faction will allow them to spawn alongside all Teams in the 
            player_discoverable="true"
            auto_add_one_of_faction_if_missing_on_save_load="true"
 		   can_be_targeted_by_annoyed_non_human_units="true"
-           can_use_spire_debris="true"
+           
            description="A subfaction of the Enclaves, part of the Red team."
   >
   </faction>
@@ -88,7 +88,7 @@ Note: Enabling this faction will allow them to spawn alongside all Teams in the 
            player_discoverable="true"
            auto_add_one_of_faction_if_missing_on_save_load="true"
 		   can_be_targeted_by_annoyed_non_human_units="true"
-           can_use_spire_debris="true"
+           
            description="A subfaction of the Enclaves, part of the Blue team."
   >
   </faction>
@@ -102,7 +102,7 @@ Note: Enabling this faction will allow them to spawn alongside all Teams in the 
            player_discoverable="true"
            auto_add_one_of_faction_if_missing_on_save_load="true"
 		   can_be_targeted_by_annoyed_non_human_units="true"
-           can_use_spire_debris="true"
+           
            description="A subfaction of the Enclaves, part of the Green team."
   >
   </faction>
@@ -116,7 +116,7 @@ Note: Enabling this faction will allow them to spawn alongside all Teams in the 
            player_discoverable="true"
            auto_add_one_of_faction_if_missing_on_save_load="true"
 		   can_be_targeted_by_annoyed_non_human_units="true"
-           can_use_spire_debris="true"
+           
            description="A subfaction of the Enclaves, part of the Dark Alliance team."
   >
   </faction>
