@@ -12,10 +12,10 @@ namespace PreceptsOfThePrecursors
 
         public static void Initialize( Faction faction )
         {
-            MinesBase = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MinesToMarkUpBase" );
-            MinesIncrease = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MinesToMarkUpIncrease" );
-            ResourcesBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
-            ResourcesIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "MothershipResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            MinesBase = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_MinesToMarkUpBase" );
+            MinesIncrease = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_MinesToMarkUpIncrease" );
+            ResourcesBase = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_MothershipResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            ResourcesIncrease = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_MothershipResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
         }
 
         public static int Mines( int currentMarkLevel, Faction faction )
@@ -46,10 +46,10 @@ namespace PreceptsOfThePrecursors
 
         public static void Initialize( Faction faction )
         {
-            Base = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereBaseCost" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
-            IncreasePerExisting = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereCostIncreasePerExistingSphere" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
-            MarkUpBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
-            MarkUpIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "ProtoSphereResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            Base = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_ProtoSphereBaseCost" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            IncreasePerExisting = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_ProtoSphereCostIncreasePerExistingSphere" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            MarkUpBase = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_ProtoSphereResourcesToMarkUpBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            MarkUpIncrease = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_ProtoSphereResourcesToMarkUpIncrease" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
         }
 
         public static int BuildCost( Faction faction, bool calledFromSimSafeThread )
@@ -90,10 +90,10 @@ namespace PreceptsOfThePrecursors
 
         public static void Initialize( Faction faction )
         {
-            NodeBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
-            NodeIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalIncreasePerNodeLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
-            SphereBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
-            SphereIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PacketSpawnIntervalSphereIncreasePerLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            NodeBase = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_PacketSpawnIntervalBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            NodeIncrease = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_PacketSpawnIntervalIncreasePerNodeLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            SphereBase = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_PacketSpawnIntervalSphereBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            SphereIncrease = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_PacketSpawnIntervalSphereIncreasePerLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
 
             if ( faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).ExtraStrongMode )
             {
@@ -132,14 +132,14 @@ namespace PreceptsOfThePrecursors
 
         public static void Initialize( Faction faction )
         {
-            EnforcerBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "EnforcerSpawnIntervalBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
-            EnforcerIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "EnforcerSpawnIntervalIncreasePerLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            EnforcerBase = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_EnforcerSpawnIntervalBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            EnforcerIncrease = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_EnforcerSpawnIntervalIncreasePerLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
 
-            PatrollerBase = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PatrollerSpawnIntervalBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
-            PatrollerIncrease = (ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PatrollerSpawnIntervalIncreasePerLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            PatrollerBase = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_PatrollerSpawnIntervalBase" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
+            PatrollerIncrease = (ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_PatrollerSpawnIntervalIncreasePerLevel" ) / 10) * (5 + ((10 - faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity) / 2));
 
-            PatrollerBulwarkMult = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PatrollerSpawnIntervalBulwarkMultiplier" );
-            PatrollerBastionMult = ExternalConstants.Instance.GetCustomData_Slow( "DysonPrecursors" ).GetInt_Slow( "PatrollerSpawnIntervalBastionMultiplier" );
+            PatrollerBulwarkMult = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_PatrollerSpawnIntervalBulwarkMultiplier" );
+            PatrollerBastionMult = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_DysonPrecursors_PatrollerSpawnIntervalBastionMultiplier" );
 
             if ( faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).ExtraStrongMode )
             {
@@ -173,102 +173,6 @@ namespace PreceptsOfThePrecursors
             }
 
             return (shouldSpawnBase, shouldSpawnBulwark, shouldSpawnBastion);
-        }
-    }
-
-    // Description appender for Mothership.
-    public class DysonMothershipDescriptionAppender : IGameEntityDescriptionAppender
-    {
-        public void AddToDescriptionBuffer( GameEntity_Squad RelatedEntityOrNull, GameEntityTypeData RelatedEntityTypeData, ArcenDoubleCharacterBuffer Buffer )
-        {
-            // Make sure we are getting an entity.
-            if ( RelatedEntityOrNull == null )
-                return;
-
-            // Testchamber.
-            if ( RelatedEntityOrNull.PlanetFaction.Faction.Type == FactionType.Player )
-                return;
-
-            // Gifts.
-            if ( !RelatedEntityOrNull.TypeData.GetHasTag( "DysonMothership" ) )
-                return;
-
-            DysonMothershipData MothershipData = DysonPrecursors.MothershipData;
-            if ( MothershipData == null )
-                return;
-
-            if ( MothershipData.Level >= 7 )
-                Buffer.Add( $"\nThis Mothership has reached its final form. It has stockpiled {MothershipData.Resources} metal and {MothershipData.Mines} mines. " );
-            else
-                Buffer.Add( $"\nThis Mothership is currently level {MothershipData.Level} and has {MothershipData.Resources}/{PrecursorCosts.Resources( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction )} of the metal and {MothershipData.Mines}/{PrecursorCosts.Mines( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction )} of the consumed mines required to level up. " );
-            if ( MothershipData.Level < 7 && MothershipData.Resources >= PrecursorCosts.Resources( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction ) && MothershipData.Mines >= PrecursorCosts.Mines( MothershipData.Level, RelatedEntityOrNull.PlanetFaction.Faction ) )
-                Buffer.Add( $"\nIt is ready to upgrade, and will attempt to do so over time on a friendly Noded planet." );
-
-            Buffer.Add( $"\nIt can build another Proto Sphere after stockpiling {ProtoSphereCosts.BuildCost( RelatedEntityOrNull.PlanetFaction.Faction, false )} resources. " );
-            if ( MothershipData.PlanetToBuildOn != null )
-                Buffer.Add( $"\nShe is planning to build a Proto Sphere on {MothershipData.PlanetToBuildOn.Name} next." );
-            if ( MothershipData.MetalGainedOrLostLastSecond > 0 )
-                Buffer.Add( $"Gaining {MothershipData.MetalGainedOrLostLastSecond} metal per second. " );
-            else if ( MothershipData.MetalGainedOrLostLastSecond < 0 )
-                Buffer.Add( $"Losing {MothershipData.MetalGainedOrLostLastSecond} metal per second." );
-            string mood;
-            int trust = MothershipData.Trust.GetTrust( RelatedEntityOrNull.Planet );
-            switch ( trust )
-            {
-                case int _ when trust < -2000:
-                    mood = "Controlling";
-                    break;
-                case int _ when trust < -1000:
-                    mood = "Demanding";
-                    break;
-                case int _ when trust < -500:
-                    mood = "Annoyed";
-                    break;
-                case int _ when trust < 0:
-                    mood = "Cautious";
-                    break;
-                case int _ when trust < 500:
-                    mood = "Neutral";
-                    break;
-                case int _ when trust < 1000:
-                    mood = "Curious";
-                    break;
-                case int _ when trust < 2000:
-                    mood = "Accepting";
-                    break;
-                default:
-                    mood = "Trusting";
-                    break;
-            }
-
-            Buffer.Add( $"\nIt is currently {mood} ({trust}) towards us on this planet. " );
-            if ( MothershipData.IsGainingTrust )
-                Buffer.Add( " Its trust towards this planet is currently increasing. " );
-            else if ( MothershipData.IsLosingTrust )
-                Buffer.Add( " Its trust towards this planet is currently decreasing. " );
-
-            bool hasAdjacentProtectorNode = false;
-            RelatedEntityOrNull.Planet.DoForLinkedNeighbors( false, adjPlanet =>
-            {
-                if ( DysonPrecursors.DysonNodes.GetHasKey( adjPlanet ) && MothershipData.Trust.GetTrust( adjPlanet ) > 500 )
-                {
-                    hasAdjacentProtectorNode = true;
-                    return DelReturn.Break;
-                }
-
-                return DelReturn.Continue;
-            } );
-            if ( RelatedEntityOrNull.Planet.GetIsControlledByFactionType( FactionType.Player ) && trust > -1000 && trust <= 1000 )
-                Buffer.Add( " It has recognized that we consider this planet our home and has ceased aggression... for now. " );
-            else if ( hasAdjacentProtectorNode )
-                Buffer.Add( " It is currently friendly to us on this planet due to an adjacent Protector Node." );
-
-            if ( World_AIW2.Instance.GameSecond - RelatedEntityOrNull.GameSecondEnteredThisPlanet < 30 )
-                Buffer.Add( "\nIt is currently converting excess energy from its recent wormhole traversal to rapidly recharge its shields. " );
-
-            if ( MothershipData.IsNearMine )
-                Buffer.Add( "\nIt is currently using resources from nearby mines to repair itself. " );
-            Buffer.Add( "\n" );
         }
     }
 
@@ -319,6 +223,8 @@ namespace PreceptsOfThePrecursors
             {
                 {
                     Faction faction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonPrecursors ) );
+                    if ( faction == null )
+                        return true;
                     if ( !faction.MustBeAwakenedByPlayer )
                         return false;
                     if ( faction.HasBeenAwakenedByPlayer )
@@ -545,7 +451,7 @@ namespace PreceptsOfThePrecursors
         {
             if ( MothershipData.JournalEntries.GetHasKey( "MothershipNear" ) )
                 return;
-            if ( BadgerFactionUtilityMethods.GetHopsToPlayerPlanet( Mothership.Planet, Context ) == 1 )
+            if ( FactionUtilityMethods.GetHopsToPlayerPlanet( Mothership.Planet, Context ) == 1 )
             {
                 // Get our journal entry.
                 JournalEntry journal = JournalEntryTable.Instance.GetRowByName( "MothershipNear" );
@@ -624,7 +530,7 @@ namespace PreceptsOfThePrecursors
             }
             else if ( hasAdjacentProtectorNode )
                 allyThisFactionToHumans( faction );
-            else if ( (Mothership.GetSecondsSinceEnteringThisPlanet() > 10 || faction.GetIsHostileTowards( BadgerFactionUtilityMethods.findHumanKing().GetControllingFaction() )) &&
+            else if ( (Mothership.GetSecondsSinceEnteringThisPlanet() > 10 || faction.GetIsHostileTowards( FactionUtilityMethods.findHumanKing().GetControllingFaction() )) &&
                 ((Mothership.Planet.GetIsControlledByFactionType( FactionType.Player ) && MothershipData.Trust.GetTrust( Mothership.Planet ) < -2000) ||
                 (!Mothership.Planet.GetIsControlledByFactionType( FactionType.Player ) && MothershipData.Trust.GetTrust( Mothership.Planet ) < 1000)) )
                 enemyThisFactionToAll( faction );
@@ -801,7 +707,7 @@ namespace PreceptsOfThePrecursors
                         else
                             spawnFaction = World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonSuppressors ) );
                         PlanetFaction pFaction = Mothership.Planet.GetPlanetFactionForFaction( spawnFaction );
-                        GameEntity_Squad.CreateNew( pFaction, GameEntityTypeDataTable.Instance.GetRowByName( "Level10PacketGenerator" ), 7, pFaction.FleetUsedAtPlanet, 0, darkSpireGenerator.WorldLocation, Context );
+                        GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, GameEntityTypeDataTable.Instance.GetRowByName( "Level10PacketGenerator" ), 7, pFaction.FleetUsedAtPlanet, 0, darkSpireGenerator.WorldLocation, Context );
                         darkSpireGenerator.Despawn( Context, true, InstancedRendererDeactivationReason.TransformedIntoAnotherEntityType );
                         for ( int x = 0; x < darkSpireGlobalData.PerPlanet.GetPairCount(); x++ )
                         {
@@ -970,7 +876,7 @@ namespace PreceptsOfThePrecursors
                     int allyMod = 0;
                     if ( Mothership.Planet.GetControllingOrInfluencingFaction().GetIsFriendlyTowards( faction ) && mineCount <= 5 )
                     {
-                        GameEntity_Squad king = BadgerFactionUtilityMethods.findKing( Mothership.Planet.GetControllingOrInfluencingFaction() );
+                        GameEntity_Squad king = FactionUtilityMethods.findKing( Mothership.Planet.GetControllingOrInfluencingFaction() );
                         if ( king != null )
                             if ( king.Planet.Index == Mothership.Planet.Index )
                                 allyMod = -20;
@@ -1107,10 +1013,13 @@ namespace PreceptsOfThePrecursors
         // Spawn a Mothership on our Ancient Node.
         public void SpawnMothership( GameEntity_Squad ancientNode, Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             // Spawn in our Mothership.
             GameEntityTypeData mothershipEntityData = GameEntityTypeDataTable.Instance.GetRowByName( MOTHERSHIP_NAME + "1" );
             PlanetFaction pFaction = ancientNode.Planet.GetPlanetFactionForFaction( faction );
-            Mothership = GameEntity_Squad.CreateNew( pFaction, mothershipEntityData, 1, pFaction.FleetUsedAtPlanet, 0, ancientNode.WorldLocation, Context );
+            Mothership = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, mothershipEntityData, 1, pFaction.FleetUsedAtPlanet, 0, ancientNode.WorldLocation, Context );
 
             // Reset our Mothership data.
             MothershipData = new DysonMothershipData
@@ -1334,6 +1243,9 @@ namespace PreceptsOfThePrecursors
 
         private void SpawnPackets( Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             if ( DysonNodes == null || DysonNodes.GetPairCount() < 1 )
                 return;
 
@@ -1345,7 +1257,7 @@ namespace PreceptsOfThePrecursors
                     {
                         GameEntity_Squad node = DysonNodes.GetPairByIndex( x ).Value[y];
 
-                        GameEntity_Squad packet = GameEntity_Squad.CreateNew( node.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "DysonPacket" + (y + 1) ), (byte)(y + 1), node.PlanetFaction.FleetUsedAtPlanet, 0, node.WorldLocation, Context );
+                        GameEntity_Squad packet = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( node.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "DysonPacket" + (y + 1) ), (byte)(y + 1), node.PlanetFaction.FleetUsedAtPlanet, 0, node.WorldLocation, Context );
                         packet.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, node.PlanetFaction.Faction.FactionIndex );
                     }
 
@@ -1364,7 +1276,7 @@ namespace PreceptsOfThePrecursors
                     else
                         levelToSpawn = (planet.GetPrecursorPerPlanetData( ExternalDataRetrieval.CreateIfNotFound ).Type == DysonPerPlanetData.ProtoSphereType.Protecter ? 8 : 9);
 
-                    GameEntity_Squad packet = GameEntity_Squad.CreateNew( sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "DysonPacket" + levelToSpawn ), sphere.CurrentMarkLevel, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context );
+                    GameEntity_Squad packet = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( sphere.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "DysonPacket" + levelToSpawn ), sphere.CurrentMarkLevel, sphere.PlanetFaction.FleetUsedAtPlanet, 0, sphere.WorldLocation, Context );
                     packet.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, sphere.PlanetFaction.Faction.FactionIndex );
                 }
 
@@ -1374,6 +1286,9 @@ namespace PreceptsOfThePrecursors
 
         private void SpawnEnforcers( Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             if ( DysonNodes == null )
                 return;
 
@@ -1448,6 +1363,9 @@ namespace PreceptsOfThePrecursors
 
         private void SpawnPatrolShips( Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             if ( DysonNodes == null )
                 return;
 
@@ -1503,7 +1421,7 @@ namespace PreceptsOfThePrecursors
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelTechie" );
 
-                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
+                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
                                     DysonNodes[planet][x].WorldLocation, Context );
                                 patroller.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, subFaction.FactionIndex );
 
@@ -1515,7 +1433,7 @@ namespace PreceptsOfThePrecursors
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderTechie" );
 
-                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
+                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
                                     DysonNodes[planet][x].WorldLocation, Context );
                                 patroller.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, subFaction.FactionIndex );
 
@@ -1530,7 +1448,7 @@ namespace PreceptsOfThePrecursors
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkTechie" );
 
-                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
+                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
                                     DysonNodes[planet][x].WorldLocation, Context );
                                 patroller.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, subFaction.FactionIndex );
 
@@ -1545,7 +1463,7 @@ namespace PreceptsOfThePrecursors
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionTechie" );
 
-                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
+                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( DysonNodes[planet][x].PlanetFaction, entityData, (byte)(x + 1), DysonNodes[planet][x].PlanetFaction.FleetUsedAtPlanet, 0,
                                     DysonNodes[planet][x].WorldLocation, Context );
                                 patroller.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, subFaction.FactionIndex );
 
@@ -1569,7 +1487,7 @@ namespace PreceptsOfThePrecursors
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonSentinelTechie" );
 
-                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
+                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
                                     sphere.WorldLocation, Context );
                                 patroller.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, subFaction.FactionIndex );
 
@@ -1581,7 +1499,7 @@ namespace PreceptsOfThePrecursors
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonDefenderTechie" );
 
-                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
+                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
                                     sphere.WorldLocation, Context );
                                 patroller.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, subFaction.FactionIndex );
 
@@ -1596,7 +1514,7 @@ namespace PreceptsOfThePrecursors
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBulwarkTechie" );
 
-                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
+                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
                                     sphere.WorldLocation, Context );
                                 patroller.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, subFaction.FactionIndex );
 
@@ -1611,7 +1529,7 @@ namespace PreceptsOfThePrecursors
                             {
                                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( "DysonBastionTechie" );
 
-                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
+                                GameEntity_Squad patroller = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( sphere.PlanetFaction, entityData, (byte)(x + 1), sphere.PlanetFaction.FleetUsedAtPlanet, 0,
                                     sphere.WorldLocation, Context );
                                 patroller.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, subFaction.FactionIndex );
 
@@ -1721,7 +1639,7 @@ namespace PreceptsOfThePrecursors
             }
 
             // Make the AI come out to play on our Mothership's planet.
-            BadgerFactionUtilityMethods.FlushUnitsFromReinforcementPointsOnAllRelevantPlanets( faction, Context );
+            FactionUtilityMethods.FlushUnitsFromReinforcementPointsOnAllRelevantPlanets( faction, Context );
 
             HandleDroneMovement( faction, Context );
 
@@ -2157,32 +2075,6 @@ namespace PreceptsOfThePrecursors
         }
     }
 
-    // Description appender for Proto Spheres.
-    public class DysonProtoSphereDescriptionAppender : IGameEntityDescriptionAppender
-    {
-        public void AddToDescriptionBuffer( GameEntity_Squad RelatedEntityOrNull, GameEntityTypeData RelatedEntityTypeData, ArcenDoubleCharacterBuffer Buffer )
-        {
-            // Make sure we are getting an entity.
-            if ( RelatedEntityOrNull == null )
-                return;
-
-            // Testchamber.
-            if ( RelatedEntityOrNull.PlanetFaction.Faction.Type == FactionType.Player )
-                return;
-
-            if ( RelatedEntityOrNull.CountOfEntitiesProvidingExternalInvulnerability > 0 )
-                Buffer.Add( "This Sphere Golem is currently " ).StartColor( UnityEngine.Color.red ).Add( $"invulnerable.</color> The remaining Dyson Nodes on the planet must be killed first." );
-
-            DysonPerPlanetData protoSphereData = RelatedEntityOrNull.Planet.GetPrecursorPerPlanetData( ExternalDataRetrieval.ReturnNullIfNotFound );
-            if ( protoSphereData == null )
-                return;
-            Buffer.Add( $"\nThis Sphere is level {protoSphereData.Level}. " );
-            if ( protoSphereData.Level < 7 )
-                Buffer.Add( $"\nThis Sphere Golem has acquired {protoSphereData.Resources}/{ProtoSphereCosts.Resources( protoSphereData.Level, World_AIW2.Instance.GetFirstFactionWithSpecialFactionImplementationType( typeof( DysonPrecursors ) ), false )} of the resources required to level up. " );
-
-            Buffer.Add( "\n" );
-        }
-    }
     public abstract class BaseDysonSubfaction : BaseSpecialFaction, IBulkPathfinding
     {
         protected override bool EverNeedsToRunLongRangePlanning => false;
@@ -2523,6 +2415,9 @@ namespace PreceptsOfThePrecursors
         }
         public void SpawnDronesOnNodeOrPacketDeath( GameEntity_Squad nodeOrPacket, Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             PlanetFaction pFaction = nodeOrPacket.Planet.GetPlanetFactionForFaction( faction );
             nodeOrPacket.FleetMembership.Fleet.DoForMemberGroups( mem =>
              {
@@ -2545,7 +2440,7 @@ namespace PreceptsOfThePrecursors
                              break;
                      }
                      for ( int x = 0; x < mem.EffectiveSquadCap * 3; x++ )
-                         GameEntity_Squad.CreateNew( pFaction, spawnData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
+                         GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, spawnData, nodeOrPacket.CurrentMarkLevel, pFaction.FleetUsedAtPlanet, 0, nodeOrPacket.WorldLocation, Context ).Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
                  }
 
                  return DelReturn.Continue;

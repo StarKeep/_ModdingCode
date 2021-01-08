@@ -141,28 +141,90 @@ Should we manage to hack this prison, we can reawaken our Civilian Industry."
     <!--    Miltia outpost.
             Built to fortify planets from hostile wormholes.
     -->
-    <entity name="MilitiaOutpost" display_name="Militia Outpost" skip_export="true" copy_from="AIFortress" tags="MilitiaShip,MilitiaOutpost,CivilianIndustryEntity"
-            hull_points="500000" shield_points="1250000"
-            damage_multiplier_to_all_weapons="0.33"
-            strength_multiplier="0.33"
-            description="The centerpiece of a Militia Fleet. This has been built in response to ai threat on adjacent planets. Requests resources to build stationary defenses. Upgraded by Citadel and Military Command technology."
-            description_appender_dll="SKCivilianIndustry"
-            description_appender_type="SKCivilianIndustry.MilitiaShipDescriptionAppender"
-            tech_upgrades_that_benefit_me="Citadels,CommandMilitary">
-
-    </entity>
+	<entity  name="MilitiaOutpost" tags="MilitiaShip,MilitiaOutpost,CivilianIndustryEntity"
+	    visuals="assets/_finalgamemeshes/buildings/fortress/fortressai.prefab" lod_distance_overrides="2000,16000"
+	    icon_name="Ships1/Fortress" gimbal_icon_size_multiplier="1.5"
+		y_offset_of_icon="35"
+		category="Ship"
+	    size_scale="9"
+		visuals_scale_multiplier="3"
+        collision_priority="800"
+	    display_name="Militia Outpost"
+	    description="The centerpiece of a Militia Fleet. This has been built in response to ai threat on adjacent planets. Requests resources to build stationary defenses. Upgraded by Citadel and Military Command technology."
+	    behavior="Stationary"
+        is_major_ai_structure="true"
+		starting_mark_level="Mark1" max_mark_level="5"
+		cost_for_ai_to_purchase="3000"
+	    hull_points="500000" shield_points="1250000" speed="Immobile"
+		metal_cost="1500000" energy_consumption="50000"
+		armor_mm="300" albedo="0.7" mass_tx="7"
+		ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+		ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostMassive_Explosion"
+		voice_group="Turret"
+		is_reinforcement_location="true" always_is_ai_turret_spawn_point="true"
+        priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
+	    description_appender_dll="SKCivilianIndustry"
+		description_appender_type="SKCivilianIndustry.MilitiaShipDescriptionAppender"
+		tech_upgrades_that_benefit_me="Citadels,CommandMilitary"
+		>
+		<metal_flow purpose="SelfConstruction" throughput="700"/>
+		<system name="FusionRockets" display_name="Fortress Fusion Rockets"
+					category="Weapon" firing_timing="OnlyInRange"
+					damage_per_shot="1000" range="High1" shot_speed="Normal" rate_of_fire="Normal"
+					shots_per_salvo="30" fires_salvos_sequentially="false"
+					shot_type_data="FusionRocket"
+				>
+			<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="50" multiplier="2" />
+		</system>
+		<system name="EnergyWave" display_name="Fortress Energy Wave"
+			  category="Weapon" firing_timing="OnlyInRange" shots_per_salvo="4"
+			  damage_per_shot="2750" range="High1" shot_speed="Normal" rate_of_fire="Low" fires_salvos_sequentially="true"
+			  shot_type_data="EnergyWave"
+				>
+			<outgoing_damage_modifier based_on="mass_tx" comparison_type="AtLeast" compared_to="5" multiplier="6" />
+		</system>
+	</entity>
     <!--    Militia Patrol Post
             Built around mines on planets that still feel threatened after outpost placement.
             Builds mobile fleets.
     -->
-    <entity name="MilitiaPatrolPost" display_name="Militia Patrol Post" skip_export="true" copy_from="StealthGuardPost" tags="MilitiaShip,MilitiaPatrolPost,CivilianIndustryEntity"
-            hull_points="250000" shield_points="750000"
-            strength_multiplier="0.33"
-            description="The centerpiece of a Militia Fleet. This has been built in response to ai threat on adjacent planets. Requests resources to build mobile forces. Upgraded by Citadel and Sentries Tech."
-            description_appender_dll="SKCivilianIndustry"
+	<entity name="MilitiaPatrolPost" tags="MilitiaShip,MilitiaPatrolPost,CivilianIndustryEntity"
+			visuals="Assets/_FinalGameMeshes/AIBuildings/GuardPosts/Stealth/GuardPostStealth.prefab" 
+			icon_name="Ships1/GuardPost" icon_overlay="Overlays2/GuardPost_Stealth" gimbal_icon_size_multiplier="1.4"
+			category="Ship"
+			size_scale="5" y_offset_of_icon="30"
+			visuals_scale_multiplier="13"
+			collision_priority="1000"
+		    display_name="Militia Patrol Post"
+			description="Storage structure for AI defenders of this planet, armed with a laser cannon dangerous to new arrivals here. Destroying this reduces the maximum reinforcement capacity here."
+			behavior="Stationary"
+			starting_mark_level="Mark1"
+			cost_for_ai_to_purchase="200"			
+			hull_points="250000" shield_points="750000" speed="Immobile"
+			metal_cost="80000" energy_consumption="10000"
+			armor_mm="50" albedo="0.7" mass_tx="5"
+			voice_group="Silent"
+			ship_or_structure_explosion_sfx="Turret_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			
+            priority_as_ai_target="NormalGuardPost" priority_as_frd_target="NormalGuardPost" priority_to_protect="NormalGuardPost"
+			description_appender_dll="SKCivilianIndustry"
             description_appender_type="SKCivilianIndustry.MilitiaShipDescriptionAppender"
-            tech_upgrades_that_benefit_me="Citadels,Sentries">
-    </entity>
+            tech_upgrades_that_benefit_me="Citadels,Sentries"
+			>
+    <system name="LaserPulse" display_name="Laser Pulse"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1200" range="AboveAverage1" shot_speed="Normal" rate_of_fire="Misery"
+				shots_per_salvo="5" fires_salvos_sequentially="true"
+				shot_type_data="LaserPulse_DeepBlue" cloaking_percent_loss_from_firing="0.1"
+				>
+        <outgoing_damage_modifier based_on="TargetTimeAtPlanet" comparison_type="LessThan" compared_to="9" multiplier="6" />				
+    </system>
+	  <system name="Cloaker" display_name="Cloaking Device"
+				category="Passive" cloaking_points="2000" cloaking_points_added_per_mark="1000"
+				>
+    </system>	
+  </entity>
 	<!--	Advanced Militia Shipyards
 			Built around trade stations after all outposts and patrol posts have been built.
 			Requests large amounts of resources to build powerful Protector ships.
@@ -198,17 +260,40 @@ Should we manage to hack this prison, we can reawaken our Civilian Industry."
             Built by player controlled Battlestations and Citadels
             Builds mobile fleets.
     -->
-    <entity name="MilitiaHeadquarters" display_name="Militia Headquarters" skip_export="true" copy_from="ShieldGuardPost" tags="MilitiaShip,MilitiaHeadquarters,CivilianIndustryEntity"
-            hull_points="500000" shield_points="1250000" metal_cost="1000000" energy_consumption="100000"
-            strength_multiplier="0.33" shield_size_scale="5"
-            description="The centerpiece of a large Militia Fleet, funded by the Military. Requests resources to build mobile forces to support the Battlestation or Citadel that built it. Upgraded by Citadels and Forcefields Tech."
-            special_entity_type="NPCFactionCenterpiece"
-            build_sidebar_categories_i_am_part_of="MilitiaBuildings"
+	<entity name="MilitiaHeadquarters" tags="MilitiaShip,MilitiaHeadquarters,CivilianIndustryEntity"
+			special_entity_type="NPCFactionCenterpiece"
+			visuals="Assets/_FinalGameMeshes/AIBuildings/GuardPosts/Forcefield/GuardPostForcefield.prefab"
+			icon_name="Ships1/GuardPost" icon_overlay="Overlays2/GuardPost_Shield" gimbal_icon_size_multiplier="1.4"
+			category="Ship"
+			size_scale="5" y_offset_of_icon="30"
+			visuals_scale_multiplier="13"
+			collision_priority="1000"
+			display_name="Militia Headquarters"
+            description="The centerpiece of a large Militia Fleet, funded by the Military. Requests resources to build mobile forces to support the Battlestation or Citadel that built it. Upgraded by Citadels and Forcefields Tech."			behavior="Stationary"
+			shield_size_scale="5" my_forcefield_has_no_penalty_for_enemies_firing_out_of_it="true"
+			starting_mark_level="Mark1"
+			cost_for_ai_to_purchase="200"
+			hull_points="500000" shield_points="1250000" metal_cost="1000000" energy_consumption="100000"
+			speed="Immobile"
+			armor_mm="85" albedo="0.4" mass_tx="5"
+			voice_group="Silent"
+			ship_or_structure_explosion_sfx="Turret_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLostOnOtherPlanet_Explosion"
+			
+            priority_as_ai_target="ShieldGenerator" priority_as_frd_target="NotDangerous" priority_to_protect="NormalGuardPost"
+			build_sidebar_categories_i_am_part_of="MilitiaBuildings"
             description_appender_dll="SKCivilianIndustry"
             description_appender_type="SKCivilianIndustry.MilitiaShipDescriptionAppender"
-            tech_upgrades_that_benefit_me="Citadels,Forcefields">
-        <metal_flow purpose="SelfConstruction" throughput="250"/>
-    </entity>
+            tech_upgrades_that_benefit_me="Citadels,Forcefields"
+			>
+		<metal_flow purpose="SelfConstruction" throughput="250"/>
+		<system name="LaserPulse" display_name="Laser Pulse"
+					category="Weapon" firing_timing="OnlyInRange"
+					damage_per_shot="2000" range="Normal6" shot_speed="Normal" rate_of_fire="High" fires_salvos_sequentially="true"
+					shot_type_data="LaserPulse_DeepBlue"
+				>
+		</system>
+	</entity>
 	<!--	Militia Protector Shipyards
 			Built by player controlled Battlestations and Citadels
 			Builds powerful Protector ships for the Battlestation
@@ -218,11 +303,11 @@ Should we manage to hack this prison, we can reawaken our Civilian Industry."
 			metal_cost="3000000" energy_consumption="150000"
 			description="The centerpiece of a powerful Militia Fleet, funded by the Military. Requests a large amount of resources to build powerful Protector ships to support the Battlestation or Citadel that built it. Upgraded by Citadels and Forcefields Tech."
 			special_entity_type="NPCFactionCenterpiece"
-      build_sidebar_categories_i_am_part_of="MilitiaBuildings"
-      description_appender_dll="SKCivilianIndustry"
-      description_appender_type="SKCivilianIndustry.MilitiaShipDescriptionAppender"
-      tech_upgrades_that_benefit_me="Citadels,Forcefields"
-      absolute_max_cap_when_in_fleets="1">
+            build_sidebar_categories_i_am_part_of="MilitiaBuildings"
+            description_appender_dll="SKCivilianIndustry"
+            description_appender_type="SKCivilianIndustry.MilitiaShipDescriptionAppender"
+            tech_upgrades_that_benefit_me="Citadels,Forcefields"
+            absolute_max_cap_when_in_fleets="1">
 			<metal_flow purpose="SelfConstruction" throughput="250"/>
 	</entity>
     <!--    Militia Barracks

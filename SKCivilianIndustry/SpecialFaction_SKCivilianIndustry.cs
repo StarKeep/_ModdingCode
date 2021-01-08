@@ -308,13 +308,16 @@ namespace SKCivilianIndustry
                 notifier.SecondsLeft = factionData.NextRaidInThisSeconds;
 
                 NotificationNonSim notification = Engine_AIW2.NonSimNotificationList_Building.GetOrAddEntry();
-                notification.Assign( notifier.ClickHandler, notifier.ContentGetter, notifier.MouseoverHandler, "", 0, "AICargoShipRaiders" );
+                notification.Assign( notifier.ClickHandler, notifier.ContentGetter, notifier.MouseoverHandler, "", 0, "AICargoShipRaiders", SortedNotificationPriorityLevel.Medium );
             }
         }
 
         // Handle the creation of the Grand Station.
         public void CreateGrandStation( Faction faction, Faction alignedFaction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             // If human or ai alligned, spawn based on king units.
             if ( alignedFaction.Type == FactionType.Player || alignedFaction.Type == FactionType.AI )
             {
@@ -329,7 +332,7 @@ namespace SKCivilianIndustry
 
                     // Get the total radius of both our grand station and the king unit.
                     // This will be used to find a safe spawning location.
-                    int radius = entityData.ForMark[Balance_MarkLevelTable.MaxOrdinal].Radius + kingEntity.TypeData.ForMark[Balance_MarkLevelTable.MaxOrdinal].Radius;
+                    int radius = entityData.ForMark[Balance_MarkLevelTable.Instance.MaxOrdinal].Radius + kingEntity.TypeData.ForMark[Balance_MarkLevelTable.Instance.MaxOrdinal].Radius;
 
                     // Get the spawning coordinates for our start station.
                     ArcenPoint spawnPoint = ArcenPoint.ZeroZeroPoint;
@@ -344,7 +347,7 @@ namespace SKCivilianIndustry
                     PlanetFaction pFaction = kingEntity.Planet.GetPlanetFactionForFaction( faction );
 
                     // Spawn in the station.
-                    GameEntity_Squad grandStation = GameEntity_Squad.CreateNew( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
+                    GameEntity_Squad grandStation = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
 
                     // Add in our grand station to our faction's data
                     factionData.GrandStation = grandStation;
@@ -410,7 +413,7 @@ namespace SKCivilianIndustry
 
                         // Get the total radius of both our grand station and the king unit.
                         // This will be used to find a safe spawning location.
-                        int radius = entityData.ForMark[Balance_MarkLevelTable.MaxOrdinal].Radius + bestEntity.TypeData.ForMark[Balance_MarkLevelTable.MaxOrdinal].Radius;
+                        int radius = entityData.ForMark[Balance_MarkLevelTable.Instance.MaxOrdinal].Radius + bestEntity.TypeData.ForMark[Balance_MarkLevelTable.Instance.MaxOrdinal].Radius;
 
                         // Get the spawning coordinates for our start station.
                         ArcenPoint spawnPoint = ArcenPoint.ZeroZeroPoint;
@@ -425,7 +428,7 @@ namespace SKCivilianIndustry
                         PlanetFaction pFaction = bestEntity.Planet.GetPlanetFactionForFaction( faction );
 
                         // Spawn in the station.
-                        GameEntity_Squad grandStation = GameEntity_Squad.CreateNew( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
+                        GameEntity_Squad grandStation = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
 
                         // Add in our grand station to our faction's data
                         factionData.GrandStation = grandStation;
@@ -440,6 +443,9 @@ namespace SKCivilianIndustry
         // Handle creation of trade stations.
         public void CreateTradeStations( Faction faction, Faction alignedFaction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             if ( factionData.NextTradeStationTarget == null )
                 return;
 
@@ -463,7 +469,7 @@ namespace SKCivilianIndustry
 
             // Get the total radius of both our trade station, and the target
             // This will be used to find a safe spawning location.
-            int radius = entityData.ForMark[Balance_MarkLevelTable.MaxOrdinal].Radius + factionData.NextTradeStationTarget.TypeData.ForMark[Balance_MarkLevelTable.MaxOrdinal].Radius;
+            int radius = entityData.ForMark[Balance_MarkLevelTable.Instance.MaxOrdinal].Radius + factionData.NextTradeStationTarget.TypeData.ForMark[Balance_MarkLevelTable.Instance.MaxOrdinal].Radius;
 
             // Get the spawning coordinates for our trade station.
             ArcenPoint spawnPoint = ArcenPoint.ZeroZeroPoint;
@@ -478,7 +484,7 @@ namespace SKCivilianIndustry
             PlanetFaction pFaction = factionData.NextTradeStationTarget.Planet.GetPlanetFactionForFaction( faction );
 
             // Spawn in the station's construction point.
-            GameEntity_Squad tradeStation = GameEntity_Squad.CreateNew( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
+            GameEntity_Squad tradeStation = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
 
             // Add in our trade station to our faction's data
             factionData.TradeStations.Add( tradeStation.PrimaryKeyID );
@@ -692,6 +698,9 @@ namespace SKCivilianIndustry
         // Handle the creation of ships.
         public void DoShipSpawns( Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             // Continue only if starting station is valid.
             if ( factionData.GrandStation == null )
                 return;
@@ -717,7 +726,7 @@ namespace SKCivilianIndustry
                 for ( int x = 0; x < factionData.FailedCounter.Export; x++ )
                 {
                     // Spawn in the ship.
-                    GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
+                    GameEntity_Squad entity = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
 
                     // Add the cargo ship to our faction data.
                     factionData.CargoShips.Add( entity.PrimaryKeyID );
@@ -742,7 +751,7 @@ namespace SKCivilianIndustry
                 ArcenPoint spawnPoint = factionData.GrandStation.WorldLocation;
 
                 // Spawn in the ship.
-                GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
+                GameEntity_Squad entity = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
 
                 // Add the militia ship to our faction data.
                 factionData.MilitiaLeaders.Add( entity.PrimaryKeyID );
@@ -1254,6 +1263,9 @@ namespace SKCivilianIndustry
 
         public void DoMilitiaDeployment( Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             Engine_Universal.NewTimingsBeingBuilt.StartRememberingFrame( FramePartTimings.TimingType.MainSimThreadNormal, "DoMilitiaDeployment" );
             // Handle once for each militia leader.
             List<int> toRemove = new List<int>();
@@ -1493,7 +1505,7 @@ namespace SKCivilianIndustry
                                 PlanetFaction pFaction = militiaShip.Planet.GetPlanetFactionForFaction( faction );
 
                                 // Spawn in the ship.
-                                GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, turretData, faction.GetGlobalMarkLevelForShipLine( turretData ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
+                                GameEntity_Squad entity = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, turretData, faction.GetGlobalMarkLevelForShipLine( turretData ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
 
                                 // Only let it stack with its own fleet.
                                 entity.MinorFactionStackingID = militiaShip.PrimaryKeyID;
@@ -1595,7 +1607,7 @@ namespace SKCivilianIndustry
                                     PlanetFaction pFaction = militiaShip.Planet.GetPlanetFactionForFaction( faction );
 
                                     // Spawn in the ship.
-                                    GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, shipData, faction.GetGlobalMarkLevelForShipLine( shipData ), pFaction.FleetUsedAtPlanet, 0, militiaShip.WorldLocation, Context );
+                                    GameEntity_Squad entity = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, shipData, faction.GetGlobalMarkLevelForShipLine( shipData ), pFaction.FleetUsedAtPlanet, 0, militiaShip.WorldLocation, Context );
 
                                     // Only let it stack with its own fleet.
                                     entity.MinorFactionStackingID = militiaShip.PrimaryKeyID;
@@ -1632,7 +1644,7 @@ namespace SKCivilianIndustry
                             PlanetFaction pFaction = militiaShip.Planet.GetPlanetFactionForFaction( faction );
 
                             // Spawn in the ship.
-                            GameEntity_Squad entity = GameEntity_Squad.CreateNew( pFaction, shipData, faction.GetGlobalMarkLevelForShipLine( shipData ), pFaction.FleetUsedAtPlanet, 0, militiaShip.WorldLocation, Context );
+                            GameEntity_Squad entity = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, shipData, faction.GetGlobalMarkLevelForShipLine( shipData ), pFaction.FleetUsedAtPlanet, 0, militiaShip.WorldLocation, Context );
 
                             // Only let it stack with its own fleet.
                             entity.MinorFactionStackingID = militiaShip.PrimaryKeyID;
@@ -1715,7 +1727,7 @@ namespace SKCivilianIndustry
                 int thisBudget = 2500;
                 raidBudget -= thisBudget;
                 // Spawn random fast ships that the ai is allowed to have.
-                string[] shipNames = BadgerFactionUtilityMethods.getEntitesInAIShipGroup( AIShipGroupTable.Instance.GetRowByName( "SneakyStrikecraft" ) ).Substring( 15 ).Split( ',' );
+                string[] shipNames = FactionUtilityMethods.getEntitesInAIShipGroup( AIShipGroupTable.Instance.GetRowByName( "SneakyStrikecraft" ) ).Substring( 15 ).Split( ',' );
                 List<GameEntityTypeData> shipTypes = new List<GameEntityTypeData>();
                 for ( int y = 0; y < shipNames.Length; y++ )
                 {
@@ -2109,7 +2121,7 @@ namespace SKCivilianIndustry
                 {
                     var threat = factionData.GetThreat( planet );
                     if ( threat.CloakedHostile > threat.Total * 0.9 )
-                        BadgerFactionUtilityMethods.TachyonBlastPlanet( planet, faction, Context, false );
+                        FactionUtilityMethods.TachyonBlastPlanet( planet, faction, Context, false );
                     LastGameSecondForLastTachyonBurstOnThisPlanet[planet] = World_AIW2.Instance.GameSecond;
                 }
             }
@@ -2326,6 +2338,7 @@ namespace SKCivilianIndustry
             if ( factionData?.GrandStation == null )
                 return;
 
+            bool playerAllied = false;
             List<Faction> preferredFactions = new List<Faction>(), secondaryFactions = new List<Faction>();
             // For each faction we're friendly to, proccess.
             for ( int x = 0; x < World_AIW2.Instance.Factions.Count; x++ )
@@ -2337,11 +2350,26 @@ namespace SKCivilianIndustry
                 if ( faction.FactionIndex == alignedFaction.FactionIndex )
                     continue; // Skip self
 
-                if ( alignedFaction.Type == FactionType.Player || alignedFaction.Type == FactionType.AI )
-                    preferredFactions.Add( alignedFaction );
-                else
-                    secondaryFactions.Add( alignedFaction );
+                switch ( alignedFaction.Type )
+                {
+                    case FactionType.Player:
+                        preferredFactions.Add( alignedFaction );
+                        playerAllied = true;
+                        break;
+                    case FactionType.AI:
+                        preferredFactions.Add( alignedFaction );
+                        break;
+                    case FactionType.SpecialFaction:
+                        if ( !alignedFaction.MustBeAwakenedByPlayer || alignedFaction.HasBeenAwakenedByPlayer )
+                            secondaryFactions.Add( alignedFaction );
+                        break;
+                    default:
+                        break;
+                }
             }
+
+            if ( playerAllied && !MilitiaExpandWithAllAllies )
+                secondaryFactions.Clear();
 
             GameEntity_Squad bestTarget = null;
             int bestHops = 999;
@@ -2468,15 +2496,15 @@ namespace SKCivilianIndustry
         public void DoCargoShipMovement( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
             // Ships going somewhere for dropoff.
-            ProcessIncoming( factionData.CargoShipsBuilding, 5000, Context );
-            ProcessIncoming( factionData.CargoShipsEnroute, 2000, Context );
-            ProcessIncoming( factionData.CargoShipsUnloading, 5000, Context );
+            ProcessIncoming( factionData.CargoShipsBuilding, 5000, faction, Context );
+            ProcessIncoming( factionData.CargoShipsEnroute, 2000, faction, Context );
+            ProcessIncoming( factionData.CargoShipsUnloading, 5000, faction, Context );
 
             // Ships going somewhere for pickup.
-            ProcessOutgoing( factionData.CargoShipsLoading, 5000, Context );
-            ProcessOutgoing( factionData.CargoShipsPathing, 2000, Context );
+            ProcessOutgoing( factionData.CargoShipsLoading, 5000, faction, Context );
+            ProcessOutgoing( factionData.CargoShipsPathing, 2000, faction, Context );
         }
-        private void ProcessIncoming( List<int> ships, int maxDistance, ArcenLongTermIntermittentPlanningContext Context )
+        private void ProcessIncoming( List<int> ships, int maxDistance, Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
             for ( int x = 0; x < ships.Count; x++ )
             {
@@ -2509,11 +2537,11 @@ namespace SKCivilianIndustry
                         continue; // Stop if already enroute.
 
                     // Not on planet yet, prepare wormhole navigation.
-                    ship.QueueWormholeCommand( destinationPlanet, Context );
+                    ship.QueueWormholeCommand( faction, destinationPlanet, Context );
                 }
             }
         }
-        private void ProcessOutgoing( List<int> ships, int maxDistance, ArcenLongTermIntermittentPlanningContext Context )
+        private void ProcessOutgoing( List<int> ships, int maxDistance, Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
             for ( int x = 0; x < ships.Count; x++ )
             {
@@ -2545,7 +2573,7 @@ namespace SKCivilianIndustry
                         continue; // Stop if already moving.
 
                     // Not on planet yet, queue a wormhole movement command.
-                    ship.QueueWormholeCommand( originPlanet, Context );
+                    ship.QueueWormholeCommand( faction, originPlanet, Context );
                 }
             }
         }
@@ -2606,7 +2634,7 @@ namespace SKCivilianIndustry
                         if ( ship.LongRangePlanningData != null && ship.LongRangePlanningData.FinalDestinationPlanetIndex != -1 )
                             continue; // Stop if we're already enroute.
 
-                        ship.QueueWormholeCommand( planet, Context );
+                        ship.QueueWormholeCommand( faction, planet, Context );
                     }
                 }
                 else if ( shipStatus.Status == CivilianMilitiaStatus.EnrouteWormhole )
@@ -2735,7 +2763,7 @@ namespace SKCivilianIndustry
                                 entity.LongRangePlanningData.FinalDestinationPlanetIndex != targetPlanet.Index )
                             {
                                 // We're on our target planet, but for some reason we're trying to leave it. Stop.
-                                entity.Orders.ClearOrders( ClearBehavior.DoNotClearBehaviors, ClearDecollisionOnParent.DoNotClearDecollision, ClearSource.YesClearAnyOrders_IncludingFromHumans );
+                                entity.Orders.ClearOrders( ClearBehavior.DoNotClearBehaviors, ClearDecollisionOnParent.DoNotClearDecollision, ClearSource.YesClearAnyOrders_IncludingFromHumans, "A Civilian Industry militia unit is attempting to leave a planet that it should be guarding." );
                             }
 
                             if ( entity.Planet.Index != targetPlanet.Index && entity.LongRangePlanningData.FinalDestinationPlanetIndex != targetPlanet.Index )
@@ -2746,12 +2774,12 @@ namespace SKCivilianIndustry
                                     if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex == centerpiece.Planet.Index )
                                         continue; // Stop if already moving towards it.
 
-                                    entity.QueueWormholeCommand( centerpiece.Planet, Context );
+                                    entity.QueueWormholeCommand( faction, centerpiece.Planet, Context );
                                 }
                                 else
                                 {
                                     // Not yet on our target planet, and we're on our centerpice planet. Path to our target planet.
-                                    entity.QueueWormholeCommand( targetPlanet, Context );
+                                    entity.QueueWormholeCommand( faction, targetPlanet, Context );
                                 }
                             }
                         }
@@ -2946,7 +2974,7 @@ namespace SKCivilianIndustry
                             {
                                 if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex != centerpiece.Planet.Index )
                                 {
-                                    entity.QueueWormholeCommand( centerpiece.Planet, Context );
+                                    entity.QueueWormholeCommand( faction, centerpiece.Planet, Context );
                                 }
                             }
                             else if ( wormhole != null && wormhole.WorldLocation.GetExtremelyRoughDistanceTo( entity.WorldLocation ) > 5000 )
@@ -2999,7 +3027,7 @@ namespace SKCivilianIndustry
                             continue;
 
                         // We're here. The AI should release all of its forces to fight us.
-                        BadgerFactionUtilityMethods.FlushUnitsFromReinforcementPoints( assessment.Target, faction, Context );
+                        FactionUtilityMethods.FlushUnitsFromReinforcementPoints( assessment.Target, faction, Context );
                         // Let the player know we're doing something, if our forces would matter.
                         if ( PlayerAligned && assessment.AttackPower > 5000 )
                         {
@@ -3032,12 +3060,12 @@ namespace SKCivilianIndustry
                                         if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex == centerpiece.Planet.Index )
                                             continue; // Stop if already moving towards it.
 
-                                        entity.QueueWormholeCommand( centerpiece.Planet, Context );
+                                        entity.QueueWormholeCommand( faction, centerpiece.Planet, Context );
                                     }
                                     else
                                     {
                                         // Not yet on our target planet, and we're on our centerpice planet. Path to our target planet.
-                                        entity.QueueWormholeCommand( assessment.Target, Context );
+                                        entity.QueueWormholeCommand( faction, assessment.Target, Context );
                                     }
                                 }
                             }
@@ -3109,7 +3137,7 @@ namespace SKCivilianIndustry
                                         continue;
 
                                     if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex != centerpiece.Planet.Index )
-                                        entity.QueueWormholeCommand( post.Planet, Context );
+                                        entity.QueueWormholeCommand( faction, post.Planet, Context );
                                 }
                                 else if ( entity.GetDistanceTo_VeryCheapButExtremelyRough( post, true ) > 2500 )
                                     entity.QueueMovementCommand( post.WorldLocation );
@@ -3149,7 +3177,7 @@ namespace SKCivilianIndustry
                                 if ( entity.Planet.Index != centerpiece.Planet.Index )
                                 {
                                     if ( entity.LongRangePlanningData.FinalDestinationPlanetIndex != centerpiece.Planet.Index )
-                                        entity.QueueWormholeCommand( centerpiece.Planet, Context );
+                                        entity.QueueWormholeCommand( faction, centerpiece.Planet, Context );
                                 }
                             }
                         }

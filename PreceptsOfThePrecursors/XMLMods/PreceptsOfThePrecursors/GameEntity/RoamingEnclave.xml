@@ -661,7 +661,7 @@
       priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
 			should_never_be_captured_by_another_faction="true"
       description_appender_dll="PreceptsOfThePrecursors"
-			description_appender_type="PreceptsOfThePrecursors.EnclaveYounglingsStorageDescriptionAppender"
+			description_appender_type="PreceptsOfThePrecursors.DescriptionAppender.EnclaveYounglingsStorageDescriptionAppender"
 			>
     <system name="FrenzyPheromones" display_name="Frenzy Pheromones"
 				category="Weapon" firing_timing="OnlyInRange"
@@ -709,7 +709,7 @@
       priority_as_ai_target="BigThreateningWeapon" priority_as_frd_target="BigThreateningWeapon" priority_to_protect="BigFavoriteToy"
 			should_never_be_captured_by_another_faction="true"
       description_appender_dll="PreceptsOfThePrecursors"
-			description_appender_type="PreceptsOfThePrecursors.EnclaveYounglingsStorageDescriptionAppender"
+			description_appender_type="PreceptsOfThePrecursors.DescriptionAppender.EnclaveYounglingsStorageDescriptionAppender"
 			>
     <system name="FrenzyPheromones" display_name="Frenzy Pheromones"
 				category="Weapon" firing_timing="OnlyInRange"

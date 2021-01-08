@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Harbinger cap should never be higher than the total cap of all Harbinger units; or the game will explode. -->
+<root
+    is_partial_record="true"
+	
+	custom_int_Sleepers_MaxTurretStructuresPerPlanet="60"
+	custom_int_Sleepers_MaxSpecialStructuresPerPlanet="6"
+	custom_int_Sleepers_MaxHarbingerStructuresPerPlanet="2"
+	
+	custom_FInt_Sleepers_MetalGenerationPercAtIntensity1="0.250"
+	custom_FInt_Sleepers_MetalGenerationPercAtIntensity10="0.500"
+	custom_FInt_Sleepers_MetalGenerationRatioPutIntoUpgrades="0.25"
+	
+	custom_int_Sleepers_HangerCapacityAtMark1="2"
+	custom_int_Sleepers_HangerCapacityAtMark2="4"
+	custom_int_Sleepers_HangerCapacityAtMark3="8"
+	custom_int_Sleepers_HangerCapacityAtMark4="16"
+	custom_int_Sleepers_HangerCapacityAtMark5="32"
+	
+	custom_int_Sleepers_IntensityForTier2Units="2"
+	custom_int_Sleepers_IntensityForTier3Units="5"
+	custom_int_Sleepers_IntensityForTier4Units="8"
+	custom_int_Sleepers_IntensityForTier5Units="10"
+	
+	custom_int_Sleepers_CPAStrengthCapAtIntensity1="100"
+	custom_int_Sleepers_CPAStrengthCapAtIntensity10="600"
+	
+	custom_int_Sleepers_CPABudgetPerSecondPerHangerAtIntensity1="5"
+	custom_int_Sleepers_CPABudgetPerSecondPerHangerAtIntensity10="50"
+>
+</root>

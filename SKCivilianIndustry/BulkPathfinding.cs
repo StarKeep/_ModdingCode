@@ -20,7 +20,7 @@ namespace SKCivilianIndustry
         /// <param name="destination"></param>
         /// <param name="ContextForSmartPathfindingOrNullForDumb"></param>
         /// <returns>The next planet the entity will move to.</returns>
-        public static Planet QueueWormholeCommand( this GameEntity_Squad entity, Planet destination, ArcenLongTermIntermittentPlanningContext ContextForSmartPathfindingOrNullForDumb = null, bool forResultOnlyDoNotActuallyQueue = false )
+        public static Planet QueueWormholeCommand( this GameEntity_Squad entity, Faction faction, Planet destination, ArcenLongTermIntermittentPlanningContext ContextForSmartPathfindingOrNullForDumb = null, bool forResultOnlyDoNotActuallyQueue = false )
         {
             if ( !(entity.PlanetFaction.Faction.Implementation is IBulkPathfinding) )
                 return null;
@@ -35,7 +35,7 @@ namespace SKCivilianIndustry
 
             Planet origin = entity.Planet;
             Planet nextPlanet = null;
-            if ( ContextForSmartPathfindingOrNullForDumb != null )
+            if ( ContextForSmartPathfindingOrNullForDumb != null && entity.PlanetFaction.Faction == faction )
             {
                 List<Planet> path = entity.PlanetFaction.Faction.FindPath( entity.Planet, destination, PathingMode.Safest, ContextForSmartPathfindingOrNullForDumb );
                 for ( int x = 0; x < path.Count; x++ )

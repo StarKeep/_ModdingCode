@@ -97,6 +97,9 @@ namespace PreceptsOfThePrecursors
 
         private void SetupScrapyards( ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             int cap = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "ScrapyardCap" ), 
                 baseHops = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "ScrapyardHopsBase" ), 
                 hopsIncrease = AIWar2GalaxySettingTable.GetIsIntValueFromSettingByName_DuringGame( "ScrapyardHopIncreasePer" );
@@ -190,6 +193,9 @@ namespace PreceptsOfThePrecursors
 
         private void HandleShardling( GameEntity_Squad entity, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             World_AIW2.Instance.DoForFactions( faction =>
             {
                 if ( entity.PlanetFaction.Faction.GetIsHostileTowards( faction ) )
@@ -202,7 +208,7 @@ namespace PreceptsOfThePrecursors
                             {
                                 for ( int x = 0; x < entity.CurrentMarkLevel * 5; x++ )
                                 {
-                                    GameEntity_Squad shardling = GameEntity_Squad.CreateNew( entity.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "NeinzulShardling" ), entity.CurrentMarkLevel,
+                                    GameEntity_Squad shardling = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( entity.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( "NeinzulShardling" ), entity.CurrentMarkLevel,
                                         entity.FleetMembership.Fleet, 1, otherEntity.WorldLocation, Context );
                                     shardling.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, entity.PlanetFaction.Faction.FactionIndex );
                                 }

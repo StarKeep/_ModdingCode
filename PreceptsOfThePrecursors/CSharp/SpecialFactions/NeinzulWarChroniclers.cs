@@ -57,6 +57,11 @@ namespace PreceptsOfThePrecursors
         public FInt PerSecondStrengthCapIncrease;
         public string Allegiance;
 
+        public enum Commands
+        {
+            UpdateStudyBudgets
+        }
+
         public byte ChroniclersMarkLevel( Faction faction )
         {
             int workingIntensity = Intensity > 0 ? Intensity : faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.ReturnNullIfNotFound )?.Intensity ?? 1;
@@ -95,39 +100,21 @@ namespace PreceptsOfThePrecursors
             }
         }
 
-        public override void CheckIfPlayerHasSeenFaction( Faction faction, ArcenSimContext Context )
-        {
-            if ( faction.HasBeenSeenByPlayer )
-                return;
-
-            faction.DoForEntities( delegate ( GameEntity_Squad entity )
-            {
-                if ( entity.TypeData.GetHasTag( "Beacon" ) )  //don't flag beacons since those appear at game start
-                    return DelReturn.Continue;
-                if ( entity.GetShouldBeVisibleBasedOnPlanetIntel() )
-                {
-                    faction.HasBeenSeenByPlayer = true;
-                    return DelReturn.Break;
-                }
-                return DelReturn.Continue;
-            } );
-        }
-
         public override void DoPerSecondLogic_Stage2Aggregating_OnMainThreadAndPartOfSim( Faction faction, ArcenSimContext Context )
         {
             if ( !LoadedConstants )
             {
-                SecondsPerMarkUpBase = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "SecondsPerMarkUpBase" );
-                SecondsPerMarkUpDecreasePerIntensity = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "SecondsPerMarkUpDecreasePerIntensity" );
-                BudgetPerSecondBase = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "BudgetPerSecondBase" );
-                BudgetPerSecondIncreasePerIntensity = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "BudgetPerSecondIncreasePerIntensity" );
-                SecondsOfConflictRequiredForArrival = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "SecondsOfConflictRequiredForArrival" );
-                SecondsOfPeaceRequiredForDeparture = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "SecondsOfPeaceRequiredForDeparture" );
-                SoftStrengthCapBase = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "SoftStrengthCapBase" );
-                SoftStrengthCapIncreasePerAttack = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "SoftStrengthCapIncreasePerAttack" );
-                SoftStrengthCapIncreasePerAttackPerIntensity = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "SoftStrengthCapIncreasePerAttackPerIntensity" );
-                SoftStrengthCapIncreasePerHour = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "SoftStrengthCapIncreasePerHour" );
-                SoftStrengthCapIncreasePerHourPerIntensity = ExternalConstants.Instance.GetCustomData_Slow( "NeinzulWarChroniclers" ).GetInt_Slow( "SoftStrengthCapIncreasePerHourPerIntensity" );
+                SecondsPerMarkUpBase = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_SecondsPerMarkUpBase" );
+                SecondsPerMarkUpDecreasePerIntensity = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_SecondsPerMarkUpDecreasePerIntensity" );
+                BudgetPerSecondBase = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_BudgetPerSecondBase" );
+                BudgetPerSecondIncreasePerIntensity = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_BudgetPerSecondIncreasePerIntensity" );
+                SecondsOfConflictRequiredForArrival = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_SecondsOfConflictRequiredForArrival" );
+                SecondsOfPeaceRequiredForDeparture = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_SecondsOfPeaceRequiredForDeparture" );
+                SoftStrengthCapBase = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_SoftStrengthCapBase" );
+                SoftStrengthCapIncreasePerAttack = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerAttack" );
+                SoftStrengthCapIncreasePerAttackPerIntensity = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerAttackPerIntensity" );
+                SoftStrengthCapIncreasePerHour = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerHour" );
+                SoftStrengthCapIncreasePerHourPerIntensity = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_NeinzulWarChroniclers_SoftStrengthCapIncreasePerHourPerIntensity" );
                 LoadedConstants = true;
             }
             if ( factionData == null )
@@ -276,6 +263,9 @@ namespace PreceptsOfThePrecursors
 
         public void SendAttack( Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             int strengthCap = 0;
             strengthCap += SoftStrengthCapBase;
             strengthCap += SoftStrengthCapIncreasePerAttack * factionData.SentAttacks;
@@ -316,7 +306,7 @@ namespace PreceptsOfThePrecursors
 
                     for ( int x = 0; x < toSend; x++ )
                     {
-                        GameEntity_Squad newSpawn = GameEntity_Squad.CreateNew( chronicler.PlanetFaction, entityData, subPair.Key, chronicler.PlanetFaction.FleetUsedAtPlanet, 0, chronicler.WorldLocation, Context );
+                        GameEntity_Squad newSpawn = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( chronicler.PlanetFaction, entityData, subPair.Key, chronicler.PlanetFaction.FleetUsedAtPlanet, 0, chronicler.WorldLocation, Context );
                         newSpawn.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
 
                         strengthSent += newSpawn.GetStrengthPerSquad();
@@ -429,8 +419,64 @@ namespace PreceptsOfThePrecursors
             factionData.GameSecondDepartingStarted = -1;
         }
 
+        public ArcenSparseLookup<GameEntity_Squad, int> currentBudgetStudyRates;
+
         public void StudyLogic( Faction faction, ArcenSimContext Context )
         {
+            if ( currentBudgetStudyRates == null )
+                return;
+
+            currentBudgetStudyRates.DoFor( pair =>
+            {
+                factionData.AddBudget( pair.Key, pair.Value );
+
+                return DelReturn.Continue;
+            } );
+        }
+
+        public override void DoPerSecondNonSimNotificationUpdates_OnBackgroundNonSimThread_NonBlocking( Faction faction, ArcenSimContext Context, bool IsFirstCallToFactionOfThisTypeThisCycle )
+        {
+            if ( factionData == null )
+                return;
+
+            bool shouldShowNotifications = faction.HasBeenSeenByPlayer || faction.RandomImpact == TypeDifficulty.Unset || GameSettings.Current.GetBoolBySetting( "ShowRandomAIType" );
+            if ( !shouldShowNotifications )
+                return;
+
+            if ( factionData.CurrentPlanetAimedAt != null && factionData.CurrentPlanetAimedAt.IntelLevel > PlanetIntelLevel.Unexplored )
+            {
+                WarChroniclerIncomingNotifier notifier = new WarChroniclerIncomingNotifier();
+                notifier.planet = factionData.CurrentPlanetAimedAt;
+                notifier.faction = faction;
+                notifier.secondsLeft = SecondsOfConflictRequiredForArrival - factionData.SecondsAimedAtPlanet;
+                notifier.estimatedStrength = (factionData.EstimatedStrengthOfAttack( faction ) / 4) * 3;
+
+                NotificationNonSim notification = Engine_AIW2.NonSimNotificationList_Building.GetOrAddEntry();
+                notification.Assign( notifier.ClickHandler, notifier.ContentGetter, notifier.MouseoverHandler, "", 0, "WarChroniclerIncoming", SortedNotificationPriorityLevel.Major );
+            }
+
+            if ( factionData.CurrentPlanetWeAreDepartingFrom != null )
+            {
+                WarChroniclerDepartingNotifier notifier = new WarChroniclerDepartingNotifier();
+                notifier.planet = factionData.CurrentPlanetWeAreDepartingFrom;
+                notifier.faction = faction;
+                notifier.secondsLeft = SecondsOfPeaceRequiredForDeparture - factionData.SecondsSinceDepartingStarted;
+
+                NotificationNonSim notification = Engine_AIW2.NonSimNotificationList_Building.GetOrAddEntry();
+                notification.Assign( notifier.ClickHandler, notifier.ContentGetter, notifier.MouseoverHandler, "", 0, "WarChroniclerDeparting", SortedNotificationPriorityLevel.Minor );
+            }
+        }
+
+        public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
+        {
+            CalculateBudget( faction, Context );
+        }
+
+        public void CalculateBudget( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
+        {
+            GameCommand studyCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.UpdateStudyBudgets.ToString() ), GameCommandSource.AnythingElse, faction );
+            studyCommand.RelatedFactionIndex = faction.FactionIndex;
+
             faction.DoForEntities( Tags.NeinzulWarChronicler.ToString(), chronicler =>
             {
                 World_AIW2.Instance.DoForFactions( otherFaction =>
@@ -464,7 +510,8 @@ namespace PreceptsOfThePrecursors
                                 break;
                         }
 
-                        factionData.AddBudget( entity, BudgetPerSecond );
+                        studyCommand.RelatedEntityIDs.Add( entity.PrimaryKeyID );
+                        studyCommand.RelatedIntegers.Add( BudgetPerSecond );
 
                         return DelReturn.Continue;
                     } );
@@ -474,44 +521,8 @@ namespace PreceptsOfThePrecursors
 
                 return DelReturn.Continue;
             } );
-        }
 
-        public override void DoPerSecondNonSimNotificationUpdates_OnBackgroundNonSimThread_NonBlocking( Faction faction, ArcenSimContext Context, bool IsFirstCallToFactionOfThisTypeThisCycle )
-        {
-            if ( factionData == null )
-                return;
-
-            bool shouldShowNotifications = faction.HasBeenSeenByPlayer || faction.RandomImpact == TypeDifficulty.Unset || GameSettings.Current.GetBoolBySetting( "ShowRandomAIType" );
-            if ( !shouldShowNotifications )
-                return;
-
-            if ( factionData.CurrentPlanetAimedAt != null && factionData.CurrentPlanetAimedAt.IntelLevel > PlanetIntelLevel.Unexplored )
-            {
-                WarChroniclerIncomingNotifier notifier = new WarChroniclerIncomingNotifier();
-                notifier.planet = factionData.CurrentPlanetAimedAt;
-                notifier.faction = faction;
-                notifier.secondsLeft = SecondsOfConflictRequiredForArrival - factionData.SecondsAimedAtPlanet;
-                notifier.estimatedStrength = (factionData.EstimatedStrengthOfAttack( faction ) / 4) * 3;
-
-                NotificationNonSim notification = Engine_AIW2.NonSimNotificationList_Building.GetOrAddEntry();
-                notification.Assign( notifier.ClickHandler, notifier.ContentGetter, notifier.MouseoverHandler, "", 0, "WarChroniclerIncoming" );
-            }
-
-            if ( factionData.CurrentPlanetWeAreDepartingFrom != null )
-            {
-                WarChroniclerDepartingNotifier notifier = new WarChroniclerDepartingNotifier();
-                notifier.planet = factionData.CurrentPlanetWeAreDepartingFrom;
-                notifier.faction = faction;
-                notifier.secondsLeft = SecondsOfPeaceRequiredForDeparture - factionData.SecondsSinceDepartingStarted;
-
-                NotificationNonSim notification = Engine_AIW2.NonSimNotificationList_Building.GetOrAddEntry();
-                notification.Assign( notifier.ClickHandler, notifier.ContentGetter, notifier.MouseoverHandler, "", 0, "WarChroniclerDeparting" );
-            }
-        }
-
-        public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
-        {
-
+            Context.QueueCommandForSendingAtEndOfContext( studyCommand );
         }
 
         public bool PlanetHasConflict( Planet planet, Faction faction, bool factorOutPlanetsWeAreAlreadyOn = true )

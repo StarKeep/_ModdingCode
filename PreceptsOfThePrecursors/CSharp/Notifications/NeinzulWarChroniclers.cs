@@ -58,7 +58,7 @@ namespace PreceptsOfThePrecursors.Notifications
 
             tooltipBuffer.Add( $"\nWe believe them to be bringing at least {(estimatedStrength/1000.0).ToString("#.000")} strength worth of forces." );
 
-            Window_AtMouseTooltipPanelWide.bPanel.Instance.SetText( tooltipBuffer.GetStringAndResetForNextUpdate() );
+            Window_AtMouseTooltipPanelWide.bPanel.Instance.SetText( null, tooltipBuffer.GetStringAndResetForNextUpdate() );
             return true;
         }
 
@@ -167,7 +167,7 @@ namespace PreceptsOfThePrecursors.Notifications
 
             tooltipBuffer.Add( $"\nThey will warp out in {minutes.ToString( "##0" )}:{seconds.ToString( "00" )}." );
 
-            Window_AtMouseTooltipPanelWide.bPanel.Instance.SetText( tooltipBuffer.GetStringAndResetForNextUpdate() );
+            Window_AtMouseTooltipPanelWide.bPanel.Instance.SetText( null, tooltipBuffer.GetStringAndResetForNextUpdate() );
             return true;
         }
 

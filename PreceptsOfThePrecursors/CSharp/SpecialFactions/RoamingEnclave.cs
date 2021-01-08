@@ -199,7 +199,10 @@ namespace PreceptsOfThePrecursors
 
         private void SpawnUnitsForHive( GameEntity_Squad hive, ArcenSimContext Context )
         {
-            GameEntity_Squad unit = GameEntity_Squad.CreateNew( hive.PlanetFaction, YounglingTypeByHive[hive.TypeData], hive.CurrentMarkLevel, hive.PlanetFaction.FleetUsedAtPlanet, 0, hive.WorldLocation, Context );
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
+            GameEntity_Squad unit = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( hive.PlanetFaction, YounglingTypeByHive[hive.TypeData], hive.CurrentMarkLevel, hive.PlanetFaction.FleetUsedAtPlanet, 0, hive.WorldLocation, Context );
             unit.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, hive.PlanetFaction.Faction.FactionIndex );
             unit.MinorFactionStackingID = -1;
         }
@@ -297,7 +300,7 @@ namespace PreceptsOfThePrecursors
                 {
                     enclavePlanetsPopulateCommand.RelatedIntegers.Add( enclave.Planet.Index );
                     if ( faction.GetIsHostileTowards( enclave.Planet.GetControllingOrInfluencingFaction() ) )
-                        BadgerFactionUtilityMethods.FlushUnitsFromReinforcementPoints( enclave.Planet, faction, Context );
+                        FactionUtilityMethods.FlushUnitsFromReinforcementPoints( enclave.Planet, faction, Context );
                 }
                 if ( enclave.CurrentMarkLevel < 7 && enclave.GetSecondsSinceCreation() > enclave.CurrentMarkLevel * 1800 )
                     markUpCommand.RelatedEntityIDs.Add( enclave.PrimaryKeyID );
@@ -870,7 +873,7 @@ namespace PreceptsOfThePrecursors
             if ( BaseRoamingEnclave.SecondsPerUnitProduction == null )
             {
                 BaseRoamingEnclave.SecondsPerUnitProduction = new ArcenSparseLookup<GameEntityTypeData, int>();
-                bool useExternal = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetBool_Slow( "MetalCostOverride" );
+                bool useExternal = ExternalConstants.Instance.GetCustomBool_Slow( "custom_bool_RoamingEnclaves_MetalCostOverride" );
 
                 for ( int x = 0; x < (int)YounglingUnit.Length; x++ )
                 {
@@ -879,9 +882,9 @@ namespace PreceptsOfThePrecursors
                     if ( useExternal || entityType.MetalCost == 0 )
                     {
                         if ( x == 0 )
-                            baseCost = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "WormCost" );
+                            baseCost = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_RoamingEnclaves_WormCost" );
                         else
-                            baseCost = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "YounglingCost" );
+                            baseCost = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_RoamingEnclaves_YounglingCost" );
                     }
                     else
                         baseCost = GameEntityTypeDataTable.Instance.GetRowByName( ((YounglingUnit)x).ToString() ).MetalCost;
@@ -905,10 +908,10 @@ namespace PreceptsOfThePrecursors
                         BaseRoamingEnclave.YounglingTypeByHive.AddPair( hiveData[x], younglingData );
                 }
 
-                BaseRoamingEnclave.SecondsPerInflux = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "SecondsBetweenInfluxPeriod" );
-                BaseRoamingEnclave.SecondsPerInfluxRandomizer = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "SecondsBetweenInfluxPeriodRandomizer" );
-                BaseRoamingEnclave.SecondsForRespawn = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "SecondsUntilSubfactionRespawn" );
-                BaseRoamingEnclave.SecondsForRespawnRandomizer = ExternalConstants.Instance.GetCustomData_Slow( "RoamingEnclaves" ).GetInt_Slow( "SecondsUntilSubfactionRespawnRandomizer" );
+                BaseRoamingEnclave.SecondsPerInflux = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_RoamingEnclaves_SecondsBetweenInfluxPeriod" );
+                BaseRoamingEnclave.SecondsPerInfluxRandomizer = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_RoamingEnclaves_SecondsBetweenInfluxPeriodRandomizer" );
+                BaseRoamingEnclave.SecondsForRespawn = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_RoamingEnclaves_SecondsUntilSubfactionRespawn" );
+                BaseRoamingEnclave.SecondsForRespawnRandomizer = ExternalConstants.Instance.GetCustomInt32_Slow( "custom_int_RoamingEnclaves_SecondsUntilSubfactionRespawnRandomizer" );
             }
 
             BaseRoamingEnclave.EnclavesGloballyEnabled = true;
@@ -1125,6 +1128,9 @@ namespace PreceptsOfThePrecursors
 
         public override Planet BulkSpawn( Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return null;
+
             Planet spawnPlanet = GetPlanetForBulkSpawn( faction, Context );
 
             if ( spawnPlanet == null )
@@ -1174,7 +1180,7 @@ namespace PreceptsOfThePrecursors
                     return DelReturn.Continue;
                 } );
 
-                if ( isValid && BadgerFactionUtilityMethods.GetHopsToPlayerPlanet( planet, Context ) > 1 )
+                if ( isValid && FactionUtilityMethods.GetHopsToPlayerPlanet( planet, Context ) > 1 )
                 {
                     if ( planet.MarkLevelForAIOnly.Ordinal < bestMark )
                     {
@@ -1214,42 +1220,6 @@ namespace PreceptsOfThePrecursors
             }
 
             return pseudoAIP;
-        }
-
-        private void HandleAIResponse( FInt pseudoAIP, Faction faction, ArcenSimContext Context )
-        {
-            Faction aiFaction = null;
-
-            World_AIW2.Instance.DoForFactions( otherFaction =>
-            {
-                if ( otherFaction.Type != FactionType.AI )
-                    return DelReturn.Continue;
-
-                if ( aiFaction == null )
-                    aiFaction = otherFaction;
-                else if ( otherFaction.GetSentinelsExternal( ExternalDataRetrieval.CreateIfNotFound ).AIDifficulty.Difficulty > aiFaction.GetSentinelsExternal( ExternalDataRetrieval.CreateIfNotFound ).AIDifficulty.Difficulty )
-                    aiFaction = otherFaction;
-
-                return DelReturn.Continue;
-            } );
-
-            FInt pseudoIncreaseFromAI = pseudoAIP / 20;
-            pseudoIncreaseFromAI *= ExternalConstants.Instance.Balance_AIPurchaseCostPerCap_AI_Income;
-            pseudoIncreaseFromAI *= aiFaction.GetSentinelsExternal( ExternalDataRetrieval.CreateIfNotFound ).AIDifficulty.AIPurchaseCostIncomeMultiplier;
-            pseudoIncreaseFromAI /= ExternalConstants.Instance.Balance_PlanetsWorthOfAIPTimesSecondsRequiredToAccumulateOneCap;
-            pseudoIncreaseFromAI *= aiFaction.GetSentinelsExternal( ExternalDataRetrieval.CreateIfNotFound ).AIType.MultiplierForBudget_Wave;
-
-            AntiMinorFactionWaveData waveData = faction.GetAntiMinorFactionWaveDataExt( ExternalDataRetrieval.CreateIfNotFound );
-            waveData.currentWaveBudget += pseudoIncreaseFromAI;
-            if ( World_AIW2.Instance.GameSecond < 10 )
-                waveData.timeForNextWave = 600;
-            if ( waveData.timeForNextWave > 0 )
-                waveData.timeForNextWave--;
-            else
-            {
-                waveData.currentWaveBudget -= AntiMinorFactionWaveData.QueueWave( faction, Context, waveData.currentWaveBudget.GetNearestIntPreferringHigher() );
-                waveData.timeForNextWave = 600;
-            }
         }
     }
 
@@ -1340,7 +1310,7 @@ namespace PreceptsOfThePrecursors
         public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
         {
             // Spawn in a single hive to start with.
-            return BadgerFactionUtilityMethods.findAIKing();
+            return FactionUtilityMethods.findAIKing();
         }
     }
 
@@ -1380,11 +1350,14 @@ namespace PreceptsOfThePrecursors
 
         public override Planet GetPlanetForBulkSpawn( Faction faction, ArcenSimContext Context )
         {
-            return BadgerFactionUtilityMethods.findHumanKing();
+            return FactionUtilityMethods.findHumanKing();
         }
 
         public override Planet BulkSpawn( Faction faction, ArcenSimContext Context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return null;
+
             Planet spawnPlanet = GetPlanetForBulkSpawn( faction, Context );
 
             if ( spawnPlanet == null )

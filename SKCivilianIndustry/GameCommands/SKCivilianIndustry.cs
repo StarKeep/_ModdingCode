@@ -12,6 +12,8 @@ namespace SKCivilianIndustry.GameCommands
             for ( int x = 0; x < command.RelatedEntityIDs.Count; x++ )
             {
                 GameEntity_Squad entity = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[x] );
+                if ( entity == null )
+                    continue;
                 entity.GetCivilianMilitiaExt( ExternalDataRetrieval.CreateIfNotFound ).ShipCapacity[command.RelatedIntegers[x]] = command.RelatedIntegers2[x];
             }
         }

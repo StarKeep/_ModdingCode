@@ -1,5 +1,6 @@
 ﻿using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
+using Arcen.Universal;
 using System;
 using System.Collections.Generic;
 
@@ -121,7 +122,7 @@ namespace PreceptsOfThePrecursors.GameCommands
                     enclave.StoreYoungling( unit, context );
                 else
                 {
-                    unit.Orders.ClearOrders( ClearBehavior.DoNotClearBehaviors, ClearDecollisionOnParent.YesClear_AndAlsoClearDecollisionMoveOrders, ClearSource.YesClearAnyOrders_IncludingFromHumans );
+                    unit.Orders.ClearOrders( ClearBehavior.DoNotClearBehaviors, ClearDecollisionOnParent.YesClear_AndAlsoClearDecollisionMoveOrders, ClearSource.YesClearAnyOrders_IncludingFromHumans, "Remove all orders to force the youngling to rapidly retreat to its enclave for storage." );
                     unit.Orders.QueueOrder( unit, EntityOrder.Create_Move_Normal( unit, enclave.WorldLocation, true, OrderSource.Other ) );
                 }
             }
@@ -159,6 +160,9 @@ namespace PreceptsOfThePrecursors.GameCommands
     {
         public override void Execute( GameCommand command, ArcenSimContext context )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
+
             Faction faction = command.GetRelatedFaction();
             if ( faction == null )
                 return;
@@ -166,7 +170,7 @@ namespace PreceptsOfThePrecursors.GameCommands
             {
                 GameEntity_Squad hive = World_AIW2.Instance.GetEntityByID_Squad( command.RelatedEntityIDs[x] );
 
-                GameEntity_Squad.CreateNew( hive.Planet.GetPlanetFactionForFaction( faction ), GameEntityTypeDataTable.Instance.GetRandomRowWithTag( context, BaseRoamingEnclave.YOUNGLING_HIVE_TAG ), 1,
+                GameEntity_Squad.CreateNew_ReturnNullIfMPClient( hive.Planet.GetPlanetFactionForFaction( faction ), GameEntityTypeDataTable.Instance.GetRandomRowWithTag( context, BaseRoamingEnclave.YOUNGLING_HIVE_TAG ), 1,
                     hive.Planet.GetPlanetFactionForFaction( faction ).FleetUsedAtPlanet, 0, hive.WorldLocation, context );
 
                 hive.Despawn( context, true, InstancedRendererDeactivationReason.IAmTransforming );

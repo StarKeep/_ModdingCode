@@ -11,6 +11,7 @@ namespace PreceptsOfThePrecursors.Notifications
         public Faction faction;
         public GameEntity_Squad entity;
         public Planet nextPlanet;
+        public Planet finalPlanet;
         public enum Mode
         {
             Moving,
@@ -59,6 +60,8 @@ namespace PreceptsOfThePrecursors.Notifications
                         tooltipBuffer.Add( $"\nIt is currently recharging its engines after entering a wormhole, and will be ready to move in {(120 - (entity.GetSleeperData(ExternalDataRetrieval.ReturnNullIfNotFound)?.SecondsSinceEnteringPlanet ?? 120)) / 60}:{((120 - (entity.GetSleeperData( ExternalDataRetrieval.ReturnNullIfNotFound )?.SecondsSinceEnteringPlanet ?? 120)) % 60).ToString( "00" )}. " );
                     if ( nextPlanet != null )
                         tooltipBuffer.Add( $"\nIt will be moving to {nextPlanet.Name} next." );
+                    if ( finalPlanet != null )
+                        tooltipBuffer.Add( $"\nIts final destination is {(finalPlanet.IntelLevel > PlanetIntelLevel.Unexplored ? finalPlanet.Name : "unknown")}." );
                     break;
                 case Mode.Awakening:
                     tooltipBuffer.Add( $"A Sleeper Prime on {planet.Name} is attempting to awaken a Derelict Sleeper! " );
@@ -73,7 +76,7 @@ namespace PreceptsOfThePrecursors.Notifications
                     break;
             }
 
-            Window_AtMouseTooltipPanelWide.bPanel.Instance.SetText( tooltipBuffer.GetStringAndResetForNextUpdate() );
+            Window_AtMouseTooltipPanelWide.bPanel.Instance.SetText( null, tooltipBuffer.GetStringAndResetForNextUpdate() );
             return true;
         }
 

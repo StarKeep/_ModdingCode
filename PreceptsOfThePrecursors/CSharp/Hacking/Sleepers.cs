@@ -90,6 +90,9 @@ namespace PreceptsOfThePrecursors
 
         public override bool DoSuccessfulCompletionLogic( GameEntity_Squad TargetOrNull, Planet planet, GameEntity_Squad Hacker, ArcenSimContext Context, HackingType type, HackingEvent Event )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return true;
+
             Faction spawnFaction = World_AIW2.Instance.GetFactionByIndex( planet.InitialOwningAIFactionIndex );
             if ( spawnFaction == null )
                 spawnFaction = World_AIW2.GetRandomAIFaction( Context );

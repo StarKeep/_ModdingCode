@@ -20,7 +20,7 @@ namespace PreceptsOfThePrecursors
         /// <param name="destination"></param>
         /// <param name="ContextForSmartPathfindingOrNullForDumb"></param>
         /// <returns>The next planet the entity will move to.</returns>
-        public static Planet QueueWormholeCommand( this GameEntity_Squad entity, Planet destination, ArcenLongTermIntermittentPlanningContext ContextForSmartPathfindingOrNullForDumb = null, bool forResultOnlyDoNotActuallyQueue = false )
+        public static Planet QueueWormholeCommand( this GameEntity_Squad entity, Planet destination, ArcenLongTermIntermittentPlanningContext ContextForSmartPathfindingOrNullForDumb = null, bool forResultOnlyDoNotActuallyQueue = false, PathingMode pathingMode = PathingMode.Default )
         {
             if ( !(entity.PlanetFaction.Faction.Implementation is IBulkPathfinding) )
                 return null;
@@ -37,7 +37,7 @@ namespace PreceptsOfThePrecursors
             Planet nextPlanet = null;
             if ( ContextForSmartPathfindingOrNullForDumb != null )
             {
-                List<Planet> path = entity.PlanetFaction.Faction.FindPath( entity.Planet, destination, PathingMode.Safest, ContextForSmartPathfindingOrNullForDumb );
+                List<Planet> path = entity.PlanetFaction.Faction.FindPath( entity.Planet, destination, pathingMode, ContextForSmartPathfindingOrNullForDumb );
                 for ( int x = 0; x < path.Count; x++ )
                     if ( path[x] != origin )
                     {

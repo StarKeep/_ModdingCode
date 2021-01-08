@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Arcen.AIW2.Core;
 using Arcen.AIW2.External;
 using Arcen.Universal;
@@ -103,14 +104,25 @@ namespace PreceptsOfThePrecursors
 
         public void AddBudget( GameEntity_Squad entity, int budgetToAdd )
         {
-            if ( !BudgetGenerated.GetHasKey( entity.TypeData.InternalName ) )
-                BudgetGenerated.AddPair( entity.TypeData.InternalName, new ArcenSparseLookup<byte, int>() );
-            if ( !BudgetGenerated[entity.TypeData.InternalName].GetHasKey( entity.CurrentMarkLevel ) )
-                BudgetGenerated[entity.TypeData.InternalName].AddPair( entity.CurrentMarkLevel, 0 );
+            AddBudget( entity.TypeData, entity.CurrentMarkLevel, budgetToAdd );
+        }
 
-            int capacity = entity.TypeData.GetForMark( entity.CurrentMarkLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership * 500;
+        public void AddBudget( GameEntityTypeData entityData, byte markToAddTo, int budgetToAdd )
+        {
+            if ( !BudgetGenerated.GetHasKey( entityData.InternalName ) )
+                BudgetGenerated.AddPair( entityData.InternalName, new ArcenSparseLookup<byte, int>() );
 
-            BudgetGenerated[entity.TypeData.InternalName][entity.CurrentMarkLevel] = Math.Min( capacity, BudgetGenerated[entity.TypeData.InternalName][entity.CurrentMarkLevel] + budgetToAdd );
+            if ( !BudgetGenerated[entityData.InternalName].GetHasKey( markToAddTo ) )
+                BudgetGenerated[entityData.InternalName].AddPair( markToAddTo, 0 );
+
+            int capacity = entityData.GetForMark( markToAddTo ).StrengthPerSquad_CalculatedWithNullFleetMembership * 500;
+
+            AddBudget( entityData.InternalName, markToAddTo, budgetToAdd, capacity );   
+        }
+
+        public void AddBudget( string entityName, byte markToAddTo, int budgetToAdd, int capacity )
+        {
+            BudgetGenerated[entityName][markToAddTo] = Math.Min( capacity, BudgetGenerated[entityName][markToAddTo] + budgetToAdd );
         }
 
         public NeinzulWarChroniclersData()

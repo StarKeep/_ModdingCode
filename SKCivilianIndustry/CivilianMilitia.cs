@@ -63,21 +63,22 @@ namespace SKCivilianIndustry
             if ( index == -1 )
                 return 0;
             int shipCount = 0;
+            List<int> toRemove = new List<int>();
             for ( int x = 0; x < Ships[index].Count; x++ )
             {
-                GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( Ships[index][x] );
+                int key = Ships[index][x];
+                GameEntity_Squad squad = World_AIW2.Instance.GetEntityByID_Squad( key );
                 if ( squad == null )
                 {
                     if ( calledFromSimSafeThread )
-                    {
-                        Ships[index].RemoveAt( x );
-                        x--;
-                    }
+                        toRemove.Add( key );
                     continue;
                 }
                 shipCount++;
                 shipCount += squad.ExtraStackedSquadsInThis;
             }
+            for ( int x = 0; x < toRemove.Count; x++ )
+                Ships[index].Remove( toRemove[x] );
             shipCount += StoredShips[index];
             return shipCount;
         }

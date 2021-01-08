@@ -75,21 +75,29 @@ namespace SKCivilianIndustry.Notifications
 
             if ( LastPlanetIndexCentered >= RaidedPlanets.Count )
                 LastPlanetIndexCentered = 0;
-            Planet.SetCurrentlySecondaryHoveredOver( RaidedPlanets[LastPlanetIndexCentered] );
 
             string planetsList = string.Empty;
-            for ( int x = 0; x < RaidedPlanets.Count; x++ )
+
+            if ( RaidedPlanets != null && RaidedPlanets.Count >= 0 )
             {
-                if ( x > 0 )
-                    planetsList += ", ";
-                if ( x == RaidedPlanets.Count - 1 )
-                    planetsList += "and ";
-                planetsList += RaidedPlanets[x].Name;
+                Planet.SetCurrentlySecondaryHoveredOver( RaidedPlanets[LastPlanetIndexCentered] );
+
+                for ( int x = 0; x < RaidedPlanets.Count; x++ )
+                {
+                    if ( x > 0 )
+                        planetsList += ", ";
+                    if ( x == RaidedPlanets.Count - 1 )
+                        planetsList += "and ";
+                    planetsList += RaidedPlanets[x].Name;
+                }
             }
 
+            if ( planetsList == string.Empty )
+                planetsList = "Unknown";
+            
             tooltipBuffer.Add( $"The AI is preparing to raid your economy on {planetsList}. Expect a large number of cloaked ships." );
 
-            Window_AtMouseTooltipPanelWide.bPanel.Instance.SetText( tooltipBuffer.GetStringAndResetForNextUpdate() );
+            Window_AtMouseTooltipPanelWide.bPanel.Instance.SetText( null, tooltipBuffer.GetStringAndResetForNextUpdate() );
             return true;
         }
 

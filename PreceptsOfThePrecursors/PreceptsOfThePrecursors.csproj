@@ -92,6 +92,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\RoamingEnclave.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\NeinzulWarChroniclers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalConstants\RoamingEnclave.xml" />
@@ -102,6 +103,7 @@
     <Content Include="XMLMods\PreceptsOfThePrecursors\ExternalDataPattern\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\FleetDesignTemplate\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\FleetDesignTemplate\DysonPrecursors.xml" />
+    <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\NeinzulWarChroniclers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\AncestorsArks.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\GameCommand\RoamingEnclave.xml" />
@@ -129,11 +131,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CSharp\BulkPathfinding.cs" />
+    <Compile Include="CSharp\DescriptionAppender\DysonPrecursors.cs" />
+    <Compile Include="CSharp\DescriptionAppender\Sleepers.cs" />
+    <Compile Include="CSharp\DescriptionAppender\RoamingEnclaves.cs" />
     <Compile Include="CSharp\ExternalData\NeinzulWarChroniclers.cs" />
     <Compile Include="CSharp\ExternalData\Sleepers.cs" />
     <Compile Include="CSharp\ExternalData\RoamingEnclave.cs" />
     <Compile Include="CSharp\ExternalData\AncestorsArks.cs" />
     <Compile Include="CSharp\ExternalData\DysonPrecursors.cs" />
+    <Compile Include="CSharp\GameCommands\NeinzulWarChroniclers.cs" />
     <Compile Include="CSharp\GameCommands\Sleepers.cs" />
     <Compile Include="CSharp\GameCommands\AncestorsArks.cs" />
     <Compile Include="CSharp\GameCommands\RoamingEnclave.cs" />
