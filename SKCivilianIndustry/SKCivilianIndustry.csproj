@@ -37,6 +37,7 @@
     <Compile Include="BulkPathfinding.cs" />
     <Compile Include="CargoShipDescriptionAppender.cs" />
     <Compile Include="CivilianCargo.cs" />
+    <Compile Include="CivilianTechDisplay.cs" />
     <Compile Include="GameCommands\SKCivilianIndustry.cs" />
     <Compile Include="Hacking\PrepareCivilianEscape.cs" />
     <Compile Include="Notifications\SKCivilianIndustry.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="XMLMods\SKCivilianIndustry\AIWar2GalaxySettingCategory\SK_CivilianIndustry.xml" />
     <Content Include="XMLMods\SKCivilianIndustry\AIWar2GalaxySetting\SK_CivilianIndustry.xml" />
     <Content Include="XMLMods\SKCivilianIndustry\Balance_ShotSpeed\CivShotSpeed.xml" />
     <Content Include="XMLMods\SKCivilianIndustry\BuildSidebarCategory\SK_CivilianIndustry.xml" />
@@ -97,6 +99,9 @@
     <Reference Include="ArcenAIW2Visualization, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\ArcenAIW2Visualization.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcenNetworkLib">
+      <HintPath>..\..\GameData\ModdableLogicDLLs\ArcenNetworkLib.dll</HintPath>
     </Reference>
     <Reference Include="ArcenUniversal, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -705,12 +705,11 @@ namespace SKCivilianIndustry
             if ( factionData.GrandStation == null )
                 return;
 
-            // Increment our build counter if needed.
-            //if ( factionData.FailedCounter.Export > 0 )
-            //    factionData.BuildCounter += factionData.FailedCounter.Export;
+            int cargoShipCapacity = factionData.TradeStations.Count + factionData.MilitiaLeaders.Count;
+            cargoShipCapacity *= Math.Max(1, faction.Ex_MinorFactionCommon_GetPrimitives( ExternalDataRetrieval.CreateIfNotFound ).Intensity / 2);
 
             // Build a cargo ship if we have enough requests for them.
-            if ( factionData.CargoShips.Count < 10 || factionData.FailedCounter.Export > 0 )
+            if ( factionData.CargoShipsIdle.Count < 5 || factionData.CargoShips.Count < cargoShipCapacity )
             {
                 // Load our cargo ship's data.
                 GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, "CargoShip" );
@@ -722,19 +721,12 @@ namespace SKCivilianIndustry
                 // We'll simply spawn it right on top of our grand station, and it'll dislocate itself.
                 ArcenPoint spawnPoint = factionData.GrandStation.WorldLocation;
 
-                // For each failed export, spawn a ship.
-                for ( int x = 0; x < factionData.FailedCounter.Export; x++ )
-                {
-                    // Spawn in the ship.
-                    GameEntity_Squad entity = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
+                // Spawn in the ship.
+                GameEntity_Squad entity = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, entityData, entityData.MarkFor( pFaction ), pFaction.FleetUsedAtPlanet, 0, spawnPoint, Context );
 
-                    // Add the cargo ship to our faction data.
-                    factionData.CargoShips.Add( entity.PrimaryKeyID );
-                    factionData.ChangeCargoShipStatus( entity, Status.Idle );
-                }
-
-                // Reset the build counter.
-                factionData.BuildCounter = 0;
+                // Add the cargo ship to our faction data.
+                factionData.CargoShips.Add( entity.PrimaryKeyID );
+                factionData.ChangeCargoShipStatus( entity, Status.Idle );
             }
 
             // Build mitia ship if we have enough requets for them.
@@ -1725,30 +1717,23 @@ namespace SKCivilianIndustry
             if ( target != null && target.Planet == wormholeToSpawnAt.Planet && !attackedTargets.Contains( target.PrimaryKeyID ) )
             {
                 int thisBudget = 2500;
-                raidBudget -= thisBudget;
+                int spentBudget = 0;
                 // Spawn random fast ships that the ai is allowed to have.
-                string[] shipNames = FactionUtilityMethods.getEntitesInAIShipGroup( AIShipGroupTable.Instance.GetRowByName( "SneakyStrikecraft" ) ).Substring( 15 ).Split( ',' );
                 List<GameEntityTypeData> shipTypes = new List<GameEntityTypeData>();
-                for ( int y = 0; y < shipNames.Length; y++ )
-                {
-                    if ( shipNames[y].Trim() != "" )
-                    {
-                        GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRowByName( shipNames[y].Trim() );
-                        if ( entityData != null )
-                            shipTypes.Add( entityData );
-                    }
-                }
+                FactionUtilityMethods.getEntitesInAIShipGroup( AIShipGroupTable.Instance.GetRowByName( "SneakyStrikecraft" ), shipTypes );
 
                 List<GameEntity_Squad> spawntRaidShips = new List<GameEntity_Squad>();
                 ArcenSparseLookup<GameEntityTypeData, int> raidingShips = new ArcenSparseLookup<GameEntityTypeData, int>();
-                while ( thisBudget > 0 )
+                int attempts = 100;
+                while ( spentBudget < thisBudget && attempts > 0 )
                 {
                     GameEntityTypeData workingType = shipTypes[Context.RandomToUse.Next( shipTypes.Count )];
                     if ( !raidingShips.GetHasKey( workingType ) )
                         raidingShips.AddPair( workingType, 1 );
                     else
                         raidingShips[workingType]++;
-                    thisBudget -= workingType.CostForAIToPurchase;
+                    spentBudget += workingType.CostForAIToPurchase;
+                    attempts--;
                 }
                 BaseAIFaction.DeployComposition( Context, aiFaction, null, faction.FactionIndex, raidingShips,
                     ref spawntRaidShips, wormholeToSpawnAt.WorldLocation, wormholeToSpawnAt.Planet );
@@ -1756,8 +1741,6 @@ namespace SKCivilianIndustry
                 for ( int shipCount = 0; shipCount < spawntRaidShips.Count; shipCount++ )
                 {
                     spawntRaidShips[shipCount].ExoGalacticAttackTarget = SquadWrapper.Create( target );
-                    if ( spawntRaidShips[shipCount].ExoGalacticAttackTarget.GetSquad() == null )
-                        throw new Exception( "This is probably too paranoid" );
 
                     spawntRaidShips[shipCount].ExoGalacticAttackPlanetIdx = target.Planet.Index; //set the planet index so that AI long term planning knows we are in an Exo
                 }
@@ -1771,6 +1754,8 @@ namespace SKCivilianIndustry
                 World_AIW2.Instance.QueueGameCommand( speedCommand, false );
 
                 attackedTargets.Add( target.PrimaryKeyID );
+
+                raidBudget -= spentBudget;
             }
         }
         public void DoAIRaid( Faction faction, ArcenSimContext Context )
@@ -2273,7 +2258,7 @@ namespace SKCivilianIndustry
                         {
                             hostileStrengthData = linkedPlanetFactionData.DataByStance[FactionStance.Hostile];
                             nonCloakedHostileStrength += hostileStrengthData.RelativeToHumanTeam_ThreatStrengthVisible;
-                            nonCloakedHostileStrength += hostileStrengthData.TotalHunterStrengthVisible;
+                            nonCloakedHostileStrength += hostileStrengthData.TotalHunterStrength_AgainstHumansVisible;
                         }
 
                         return DelReturn.Continue;
