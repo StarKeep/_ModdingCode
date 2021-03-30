@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <faction name="ReactiveAIFireteams"
+           display_name="ReactiveAIFireteams"
+           dll_name="ReactiveAIFireteams"
+           type_name="ReactiveAIFireteams.ReactiveAIFireteams"
+           team_center_color="Silver" team_border_color="Gold"
+           type="SpecialFaction"
+           should_not_be_shown="true"
+           player_discoverable="true"
+		   can_be_targeted_by_annoyed_non_human_units="true"
+           auto_add_one_of_faction_if_missing_on_save_load="true"
+           description="Updates AI Fireteam logic."
+  >
+  </faction>
+</root>

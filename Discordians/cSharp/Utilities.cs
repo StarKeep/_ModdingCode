@@ -2,7 +2,7 @@
 using Arcen.AIW2.Core;
 using Arcen.Universal;
 
-namespace PreceptsOfThePrecursors
+namespace Discordians
 {
     public static class Utilities
     {
@@ -28,15 +28,6 @@ namespace PreceptsOfThePrecursors
             FInt step = (maxValue - minValue) / 9;
 
             return minValue + (step * (intensity - 1));
-        }
-    }
-    public static class ExtentionMethods
-    {
-        public static void AddToPerPlanetLookup( this GameEntity_Squad entity, ref ArcenSparseLookup<Planet, List<GameEntity_Squad>> lookup )
-        {
-            if ( !lookup.GetHasKey( entity.Planet ) )
-                lookup.AddPair( entity.Planet, new List<GameEntity_Squad>() );
-            lookup[entity.Planet].Add( entity );
         }
     }
 }

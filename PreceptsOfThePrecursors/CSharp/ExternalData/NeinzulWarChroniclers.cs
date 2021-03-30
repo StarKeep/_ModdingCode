@@ -15,7 +15,7 @@ namespace PreceptsOfThePrecursors
         public int ReadiedChroniclers { get { return PersonalBudget / 1000000; } }
 
         // The budget we have stored up from past fights.
-        public ArcenSparseLookup<string, ArcenSparseLookup<byte, int>> BudgetGenerated;
+        public ArcenSparseLookup<string, int> BudgetGenerated;
 
         private short currentPlanetAimedAt;
         public Planet CurrentPlanetAimedAt { get { return World_AIW2.Instance.GetPlanetByIndex( currentPlanetAimedAt ); } set { currentPlanetAimedAt = (short)(value != null ? value.Index : -1); } }
@@ -40,18 +40,10 @@ namespace PreceptsOfThePrecursors
             GameEntityTypeData typeData = GameEntityTypeDataTable.Instance.GetRowByName( typeName );
             if ( typeName == null )
                 return 0;
-            int strength = 0;
-            BudgetGenerated[typeName].DoFor( pair =>
-            {
-                int perUnitStrength = typeData.GetForMark( pair.Key ).StrengthPerSquad_CalculatedWithNullFleetMembership;
-                int cost = perUnitStrength * 10;
-                strength += perUnitStrength * (pair.Value / cost);
-
-                return DelReturn.Continue;
-            } );
+            int strength = BudgetGenerated[typeName];
             return strength;
         }
-        public int EstimatedStrengthOfAttack( Faction faction, bool isForDisplayOnly = true )
+        public int EstimatedStrengthOfAttack( Faction faction, int markLevel, bool isForDisplayOnly = true )
         {
             if ( World_AIW2.Instance.GameSecond - LastSecondCached < 10 && CachedEstimatedStrengthOfAttack > 0 )
                 return CachedEstimatedStrengthOfAttack; // Regenerate strength every 10 seconds.
@@ -78,17 +70,10 @@ namespace PreceptsOfThePrecursors
                     else
                         return DelReturn.RemoveAndContinue;
 
-                pair.Value.DoFor( subPair =>
-                {
-                    int perUnitStrength = entityData.GetForMark( subPair.Key ).StrengthPerSquad_CalculatedWithNullFleetMembership;
+
+                    int perUnitStrength = entityData.GetForMark( markLevel ).StrengthPerSquad_CalculatedWithNullFleetMembership;
                     int cost = perUnitStrength * 10;
-                    strength += perUnitStrength * (subPair.Value / cost);
-
-                    if ( strength > strengthCap )
-                        return DelReturn.Break;
-
-                    return DelReturn.Continue;
-                } );
+                    strength += perUnitStrength * (pair.Value / cost);
 
                 if ( strength > strengthCap )
                     return DelReturn.Break;
@@ -107,28 +92,25 @@ namespace PreceptsOfThePrecursors
             AddBudget( entity.TypeData, entity.CurrentMarkLevel, budgetToAdd );
         }
 
-        public void AddBudget( GameEntityTypeData entityData, byte markToAddTo, int budgetToAdd )
+        public void AddBudget( GameEntityTypeData entityData, int markLevelToAdd, int budgetToAdd )
         {
             if ( !BudgetGenerated.GetHasKey( entityData.InternalName ) )
-                BudgetGenerated.AddPair( entityData.InternalName, new ArcenSparseLookup<byte, int>() );
+                BudgetGenerated.AddPair( entityData.InternalName, 0 );
 
-            if ( !BudgetGenerated[entityData.InternalName].GetHasKey( markToAddTo ) )
-                BudgetGenerated[entityData.InternalName].AddPair( markToAddTo, 0 );
+            int capacity = entityData.GetForMark( markLevelToAdd ).StrengthPerSquad_CalculatedWithNullFleetMembership * 500;
 
-            int capacity = entityData.GetForMark( markToAddTo ).StrengthPerSquad_CalculatedWithNullFleetMembership * 500;
-
-            AddBudget( entityData.InternalName, markToAddTo, budgetToAdd, capacity );   
+            AddBudget( entityData.InternalName, budgetToAdd, capacity );   
         }
 
-        public void AddBudget( string entityName, byte markToAddTo, int budgetToAdd, int capacity )
+        public void AddBudget( string entityName, int budgetToAdd, int capacity )
         {
-            BudgetGenerated[entityName][markToAddTo] = Math.Min( capacity, BudgetGenerated[entityName][markToAddTo] + budgetToAdd );
+            BudgetGenerated[entityName] = Math.Min( capacity, BudgetGenerated[entityName] + budgetToAdd );
         }
 
         public NeinzulWarChroniclersData()
         {
             PersonalBudget = 0;
-            BudgetGenerated = new ArcenSparseLookup<string, ArcenSparseLookup<byte, int>>();
+            BudgetGenerated = new ArcenSparseLookup<string, int>();
             currentPlanetAimedAt = -1;
             GameSecondAimed = -1;
             currentPlanetWeAreDepartingFrom = -1;
@@ -141,7 +123,7 @@ namespace PreceptsOfThePrecursors
         }
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            buffer.AddInt32( ReadStyle.NonNeg, 1 );
+            buffer.AddInt32( ReadStyle.NonNeg, 2 );
 
             buffer.AddInt32( ReadStyle.NonNeg, PersonalBudget );
             int count = BudgetGenerated.GetPairCount();
@@ -149,15 +131,7 @@ namespace PreceptsOfThePrecursors
             BudgetGenerated.DoFor( pair =>
             {
                 buffer.AddString_Condensed( pair.Key );
-                int subCount = pair.Value.GetPairCount();
-                buffer.AddInt32( ReadStyle.NonNeg, subCount );
-                pair.Value.DoFor( subPair =>
-                {
-                    buffer.AddByte( ReadStyleByte.Normal, subPair.Key );
-                    buffer.AddInt32( ReadStyle.NonNeg, subPair.Value );
-
-                    return DelReturn.Continue;
-                } );
+                buffer.AddInt32( ReadStyle.PosExceptNeg1, pair.Value );
 
                 return DelReturn.Continue;
             } );
@@ -172,8 +146,8 @@ namespace PreceptsOfThePrecursors
             Version = buffer.ReadInt32( ReadStyle.NonNeg );
 
             if ( BudgetGenerated == null )
-                BudgetGenerated = new ArcenSparseLookup<string, ArcenSparseLookup<byte, int>>();
-            else if ( IsForPartialSyncDuringMultiplayer )
+                BudgetGenerated = new ArcenSparseLookup<string, int>();
+            else
                 BudgetGenerated.Clear();
 
             PersonalBudget = buffer.ReadInt32( ReadStyle.NonNeg );
@@ -181,38 +155,25 @@ namespace PreceptsOfThePrecursors
             for ( int x = 0; x < count; x++ )
             {
                 string key = buffer.ReadString_Condensed();
-                BudgetGenerated.AddPair( key, new ArcenSparseLookup<byte, int>() );
-                int subCount = buffer.ReadInt32( ReadStyle.NonNeg );
-                for ( int y = 0; y < subCount; y++ )
-                    BudgetGenerated[key].AddPair( buffer.ReadByte( ReadStyleByte.Normal ), buffer.ReadInt32( ReadStyle.NonNeg ) );
+                int value = 0;
+                if ( Version >= 2 )
+                    value = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+                else
+                {
+                    int subCount = buffer.ReadInt32( ReadStyle.NonNeg );
+                    for ( int y = 0; y < subCount; y++ )
+                    {
+                        buffer.ReadByte( ReadStyleByte.Normal );
+                        buffer.ReadInt32( ReadStyle.NonNeg );
+                    }
+                }
+                BudgetGenerated.AddPair( key, value );
             }
             currentPlanetAimedAt = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
             GameSecondAimed = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             currentPlanetWeAreDepartingFrom = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
             GameSecondDepartingStarted = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             SentAttacks = buffer.ReadInt32( ReadStyle.NonNeg );
-        }
-
-        public void OutputToDebugLog()
-        {
-            BudgetGenerated.DoFor( pair =>
-            {
-                if ( pair.Value == null || pair.Value.GetPairCount() < 1 )
-                    return DelReturn.Continue;
-                ArcenDebugging.SingleLineQuickDebug( $"Budget for {pair.Key}: " );
-                int total = 0;
-
-                pair.Value.DoFor( subPair =>
-                {
-                    ArcenDebugging.SingleLineQuickDebug( $"{subPair.Key} - {subPair.Value}; " );
-                    total += subPair.Value;
-                    return DelReturn.Continue;
-                } );
-
-                ArcenDebugging.SingleLineQuickDebug( $" Total: {total}" );
-
-                return DelReturn.Continue;
-            } );
         }
     }
     public class NeinzulWarChroniclersExternalData : ArcenExternalDataPatternImplementationBase_Faction

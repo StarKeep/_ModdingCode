@@ -1,10 +1,12 @@
-A fan made expansion pack.
+A fan made expansion pack, adding in a large quantity of new quality content.
 
 Dyson Precursors:
-An initially weak Dyson Mothership will scour the galaxy, consuming mines whole in order to expand its area of influence.
+An initially weak Dyson Mothership will scour the galaxy, consuming mines whole in order to expand its area of influence, locking down entire sections of the galaxy.
+With enough shows of force, it may eventually learn to respect you as a loyal follower, offering you valuable protection.
 
 Neinzul Enclave Migration:
 Roaming Enclaves have arrived into the galaxy, and will build Hives and protect whatever faction they have called their home.
+They will attempt to team up with all teams enabled in the game, and can have their logic greatly customized in galaxy settings.
 
 Ancestors' Arks:
 A large quantity of exceptionally odd Arks can be found all around the galaxy. In addition, the brand new Scrapyard will allow you a greater choice in what Arks you desire.
@@ -18,10 +20,10 @@ Drawn to conflict, these Neinzul will warp into fights between opposing factions
 Credits:
 Programmer and Lead Developer: StarKelp
 Developer: !YCARCOMED ?YCARCOMED
+Unit Programming: RocketAssistedPuffin
 
 Thanks to:
-RocketAssistedPuffin; feedback and balance assistance
 CRZgatecrusher; inspiration for Neinzul War Chroniclers
 
 Additional thanks to the many testers that helped in many different aspects;
-Oryutzen, gigastar, ArnaudB, ANGRYABOUTELVES
+Oryutzen, gigastar, ArnaudB, ANGRYABOUTELVES, crawlers

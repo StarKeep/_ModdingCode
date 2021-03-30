@@ -3,13 +3,24 @@
 <root
     is_partial_record="true"
 	
+	custom_int_Sleepers_MinorFactionStackingIDUsedForCPAStrike="1000"
+	
 	custom_int_Sleepers_MaxTurretStructuresPerPlanet="60"
 	custom_int_Sleepers_MaxSpecialStructuresPerPlanet="6"
 	custom_int_Sleepers_MaxHarbingerStructuresPerPlanet="2"
 	
-	custom_FInt_Sleepers_MetalGenerationPercAtIntensity1="0.250"
-	custom_FInt_Sleepers_MetalGenerationPercAtIntensity10="0.500"
+	custom_int_Sleepers_SleeperMetalGenerationAtIntensity1="300"
+	custom_int_Sleepers_SleeperMetalGenerationAtIntensity10="1500"
+	
+	custom_int_Sleepers_SleeperPrimeMetalGenerationAtIntensity1="500"
+	custom_int_Sleepers_SleeperPrimeMetalGenerationAtIntensity10="2500"
+	
 	custom_FInt_Sleepers_MetalGenerationRatioPutIntoUpgrades="0.25"
+	
+	custom_int_Sleepers_MaxMetalStorage="1000000"
+	
+	custom_int_Sleepers_PerSecondHangerBudgetAtIntensity1="75"
+	custom_int_Sleepers_PerSecondHangerBudgetAtIntensity10="225"
 	
 	custom_int_Sleepers_HangerCapacityAtMark1="2"
 	custom_int_Sleepers_HangerCapacityAtMark2="4"
@@ -18,14 +29,18 @@
 	custom_int_Sleepers_HangerCapacityAtMark5="32"
 	
 	custom_int_Sleepers_IntensityForTier2Units="2"
-	custom_int_Sleepers_IntensityForTier3Units="5"
+	custom_int_Sleepers_IntensityForTier3Units="6"
 	custom_int_Sleepers_IntensityForTier4Units="8"
-	custom_int_Sleepers_IntensityForTier5Units="10"
 	
 	custom_int_Sleepers_CPAStrengthCapAtIntensity1="100"
 	custom_int_Sleepers_CPAStrengthCapAtIntensity10="600"
 	
 	custom_int_Sleepers_CPABudgetPerSecondPerHangerAtIntensity1="5"
 	custom_int_Sleepers_CPABudgetPerSecondPerHangerAtIntensity10="50"
+	
+	custom_int_Sleepers_AIPForAIAwakeningAtIntensity1="450"
+	custom_int_Sleepers_AIPForAIAwakeningAtIntensity10="100"
+	
+	custom_int_Sleepers_SecondsBeforeAIAttemptsSleeperAwakening="600"
 >
 </root>

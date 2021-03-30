@@ -35,7 +35,7 @@
   <ItemGroup>
     <Reference Include="AIWarExternalCode, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ReliableDLLStorage\ArcenDLLs\AIWarExternalCode.dll</HintPath>
+      <HintPath>..\..\GameData\ModdableLogicDLLs\AIWarExternalCode.dll</HintPath>
     </Reference>
     <Reference Include="AIWarExternalVisualizationCode, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -88,7 +88,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\AncestorsArks.xml" />
-    <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\Sleepers.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\AIWar2GalaxySetting\RoamingEnclave.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\DysonPrecursors.xml" />
     <Content Include="XMLMods\PreceptsOfThePrecursors\BuildSidebarCategory\RoamingEnclave.xml" />

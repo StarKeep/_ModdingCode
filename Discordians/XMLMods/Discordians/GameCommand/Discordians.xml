@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+ <!-- Unique commands. -->
+	<command name="ExecuteDiscordianSpawnCommand" core_function="None" audio_cue="Move" dll_name="Discordians" type_name="Discordians.ExecuteDiscordianSpawnCommand" />
+	<command name="ExecuteDiscordianTargetCommand" core_function="None" audio_cue="Move" dll_name="Discordians" type_name="Discordians.ExecuteDiscordianTargetCommand" />
+	<command name="ExecuteDiscordianUnlockCommand" core_function="None" audio_cue="Move" dll_name="Discordians" type_name="Discordians.ExecuteDiscordianUnlockCommand" />
+	<command name="UpdateDiscordianShipCapsCommand" core_function="None" audio_cue="Move" dll_name="Discordians" type_name="Discordians.UpdateDiscordianShipCapsCommand" />
+	<command name="SpawnDiscordianStrikecraftCommand" core_function="None" audio_cue="Move" dll_name="Discordians" type_name="Discordians.SpawnDiscordianStrikecraftCommand" />
+</root>

@@ -222,7 +222,10 @@ namespace PreceptsOfThePrecursors
 
         public override void DoLongRangePlanning_OnBackgroundNonSimThread_Subclass( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
-            GameCommand populateCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.PopulateAncestorsArks.ToString() ), GameCommandSource.AnythingElse, faction );
+            if ( Ships == null )
+                return;
+
+            GameCommand populateCommand = Utilities.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.PopulateAncestorsArks.ToString() ), GameCommandSource.AnythingElse, faction );
             populateCommand.RelatedBool = true;
 
             World_AIW2.Instance.DoForEntities( ( GameEntity_Squad workingEntity ) =>

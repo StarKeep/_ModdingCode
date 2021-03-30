@@ -61,7 +61,7 @@ namespace PreceptsOfThePrecursors
             if ( typeData == null )
                 return string.Empty;
             ArcenDoubleCharacterBuffer buffer = new ArcenDoubleCharacterBuffer();
-            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, typeData, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailsInfo.AIPCostOnGrant );
+            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, typeData, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailFlags.AIPCostOnGrant );
             return buffer.GetStringAndResetForNextUpdate();
         }
 
@@ -81,7 +81,7 @@ namespace PreceptsOfThePrecursors
             if ( typeData == null )
                 return string.Empty;
             ArcenDoubleCharacterBuffer buffer = new ArcenDoubleCharacterBuffer();
-            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, typeData, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailsInfo.AIPCostOnGrant );
+            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, typeData, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailFlags.AIPCostOnGrant );
             return buffer.GetStringAndResetForNextUpdate();
         }
 
@@ -101,7 +101,7 @@ namespace PreceptsOfThePrecursors
             if ( typeData == null )
                 return string.Empty;
             ArcenDoubleCharacterBuffer buffer = new ArcenDoubleCharacterBuffer();
-            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, typeData, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailsInfo.AIPCostOnGrant );
+            Window_InGameHoverEntityInfo.GetTextForEntity( buffer, null, null, typeData, 1, hackerFaction, 1, FromSidebarType.NonSidebar_SingleUnit, ShipExtraDetailFlags.AIPCostOnGrant );
             return buffer.GetStringAndResetForNextUpdate();
         }
 

@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacrophageHistiocytes", "Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacrophageHistiocytesSpireIntegration", "MacrophageHistiocytesSpireIntegration\MacrophageHistiocytesSpireIntegration.csproj", "{63E9DAD4-EA94-43AF-BF75-4293BBA78CE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discordians", "Discordians\Discordians.csproj", "{0F3C5D5A-8C53-4FA9-835F-F362DD89CA3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveAIFireteams", "ReactiveAIFireteams\ReactiveAIFireteams.csproj", "{D3256F9D-89E2-4869-8F43-BD069B14F5E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{63E9DAD4-EA94-43AF-BF75-4293BBA78CE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63E9DAD4-EA94-43AF-BF75-4293BBA78CE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63E9DAD4-EA94-43AF-BF75-4293BBA78CE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F3C5D5A-8C53-4FA9-835F-F362DD89CA3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F3C5D5A-8C53-4FA9-835F-F362DD89CA3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F3C5D5A-8C53-4FA9-835F-F362DD89CA3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F3C5D5A-8C53-4FA9-835F-F362DD89CA3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3256F9D-89E2-4869-8F43-BD069B14F5E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3256F9D-89E2-4869-8F43-BD069B14F5E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3256F9D-89E2-4869-8F43-BD069B14F5E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3256F9D-89E2-4869-8F43-BD069B14F5E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

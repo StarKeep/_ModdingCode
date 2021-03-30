@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-	<galaxy_setting category="Sleepers" name="PlayerCanAwaken" display_name="Player Can Awaken Sleepers" type="BoolToggle" default="true"
-		description="Can the player hack Sleepers awake?"
-	/>
-	<galaxy_setting category="Sleepers" name="AICanAwaken" display_name="AI Can Awaken Sleepers" type="BoolToggle" default="true"
-		description="Will the AI attempt to awaken Sleepers, upon reaching an Intensity dependent threshold?"
-	/>
-</root>

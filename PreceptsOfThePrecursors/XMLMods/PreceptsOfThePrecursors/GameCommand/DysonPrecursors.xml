@@ -2,4 +2,5 @@
 <root>
  <!-- Unique commands. -->
   <command name="SetPlanetToBuildOn" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.GameCommand_SetPlanetToBuildOn" />
+  <command name="BuildPrecursorStructures" core_function="None" audio_cue="Move" dll_name="PreceptsOfThePrecursors" type_name="PreceptsOfThePrecursors.GameCommands.GameCommand_BuildPrecursorStructures" />
 </root>

@@ -53,8 +53,8 @@
 				category="Weapon" firing_timing="OnlyInRange"
 				damage_per_shot="14000" range="High1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="false"
 				shot_type_data="LaserPulse_DeepBlue" shots_per_salvo="2" added_shots_per_salvo_per_mark="2"
-				base_engine_stun_per_shot="3" engine_stun_to_engine_gx_less_than="26"	max_engine_stun_seconds="7"
-                base_enemy_weapon_reload_slowing_seconds_per_shot="3" enemy_weapon_reload_slowing_to_armor_mm_less_than="500"
+				base_engine_stun_per_shot="3" engine_stun_to_engine_gx_less_than="20"	max_engine_stun_seconds="7"
+                base_enemy_weapon_reload_slowing_seconds_per_shot="3" enemy_weapon_reload_slowing_to_armor_mm_less_than="200"
 				max_enemy_weapon_reload_slowing_seconds="7"
 				>
     </system>
@@ -127,6 +127,7 @@
       multiplier_to_all_scales="4.0"
       mass_tx="15"
       engine_gx="22"
+	  albedo="0.9"
       fleet_design_template_i_use_for_drones="DysonMothershipDronesMed"
       description_appender_dll="PreceptsOfThePrecursors"
       description_appender_type="PreceptsOfThePrecursors.DescriptionAppender.DysonMothershipDescriptionAppender"
@@ -149,6 +150,7 @@
       multiplier_to_all_scales="5.0"
       mass_tx="16"
       engine_gx="23"
+	  albedo="0.9"
       fleet_design_template_i_use_for_drones="DysonMothershipDronesMed"
       description_appender_dll="PreceptsOfThePrecursors"
       description_appender_type="PreceptsOfThePrecursors.DescriptionAppender.DysonMothershipDescriptionAppender"
@@ -171,6 +173,7 @@
       multiplier_to_all_scales="6.0"
       mass_tx="17"
       engine_gx="24"
+	  albedo="0.9"
       fleet_design_template_i_use_for_drones="DysonMothershipDronesHig"
       description_appender_dll="PreceptsOfThePrecursors"
       description_appender_type="PreceptsOfThePrecursors.DescriptionAppender.DysonMothershipDescriptionAppender"
@@ -193,6 +196,7 @@
       multiplier_to_all_scales="7.0"
       mass_tx="18"
       engine_gx="25"
+	  albedo="1"
       fleet_design_template_i_use_for_drones="DysonMothershipDronesHig"
       description_appender_dll="PreceptsOfThePrecursors"
       description_appender_type="PreceptsOfThePrecursors.DescriptionAppender.DysonMothershipDescriptionAppender"
@@ -355,7 +359,6 @@
     priority_as_frd_target="MidNasty"
     priority_to_protect="SlightlyLessExpendable"
     uses_large_health_bar="true"
-    strength_multiplier="0.1"
     should_never_be_captured_by_another_faction="true"
     shows_on_galaxy_map_for_explored_planets="true"
     external_invulnerability_unit_tag="DysonNode"
@@ -662,7 +665,7 @@
        In addition, they will occasionally spawn Packets to exert pressure on nearby planets.
        -->
   <entity
-    name="DysonNode1"
+    name="DysonNode1" grants_minor_faction_planet_control="true"
     tags="DysonNode,InvulnerabilityGranter"
     voice_group="Zenith"
     gimbal_icon_size_multiplier="1.5"
@@ -710,7 +713,7 @@
     <metal_flow purpose="BuildingDronesInternally" throughput="200" />
   </entity>
   <entity
-    name="DysonNode2"
+    name="DysonNode2" grants_minor_faction_planet_control="true"
     copy_from="DysonNode1"
     skip_export="true"
     description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 400k Metal and 2 HaP on death."
@@ -726,7 +729,7 @@
     <metal_flow purpose="BuildingDronesInternally" throughput="400" />
   </entity>
   <entity
-    name="DysonNode3"
+    name="DysonNode3" grants_minor_faction_planet_control="true"
     copy_from="DysonNode2"
     skip_export="true"
     description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 600k Metal and 3 HaP on death."
@@ -742,7 +745,7 @@
     <metal_flow purpose="BuildingDronesInternally" throughput="600" />
   </entity>
   <entity
-    name="DysonNode4"
+    name="DysonNode4" grants_minor_faction_planet_control="true"
     copy_from="DysonNode3"
     skip_export="true"
     description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 800k Metal and 4 HaP on death."
@@ -758,7 +761,7 @@
     <metal_flow purpose="BuildingDronesInternally" throughput="800" />
   </entity>
   <entity
-    name="DysonNode5"
+    name="DysonNode5" grants_minor_faction_planet_control="true"
     copy_from="DysonNode4"
     skip_export="true"
     description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 1m Metal and 5 HaP on death."
@@ -774,7 +777,7 @@
     <metal_flow purpose="BuildingDronesInternally" throughput="1000" />
   </entity>
   <entity
-    name="DysonNode6"
+    name="DysonNode6" grants_minor_faction_planet_control="true"
     copy_from="DysonNode5"
     skip_export="true"
     tags="DysonNode,InvulnerabilityGranter"
@@ -790,7 +793,7 @@
     <metal_flow purpose="BuildingDronesInternally" throughput="1200" />
   </entity>
   <entity
-    name="DysonNode7"
+    name="DysonNode7" grants_minor_faction_planet_control="true"
     copy_from="DysonNode6"
     skip_export="true"
     description="Built by either a Mothership or Proto Sphere, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed or hacked to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 1.5m Metal and 7 HaP on death."
@@ -806,12 +809,13 @@
     <metal_flow purpose="BuildingDronesInternally" throughput="1400" />
   </entity>
   <entity
-    name="DysonNodeAncient"
+    name="DysonNodeAncient" grants_minor_faction_planet_control="true"
     copy_from="DysonNode1"
     display_name="Ancient Dyson Node"
     skip_export="true"
     description="An ancient Node that has survived since ancient times, this increases the passive metal generation of Proto Spheres on this and adjacent planets, and stops absolute trust from dropping below 1k until destroyed. Can be destroyed to take the resources within, but will unleash a swarm of Suppressor drones when this is done equal to triple its current Drone capacity. Grants 2.5m Metal, 3k Science, and 10 HaP on death."
     tags="DysonNode,DysonNodeAncient,InvulnerabilityGranter,ShowsOnNormalDisplayMode"
+	shows_on_galaxy_map_for_explored_planets="true"
     starting_mark_level="Mark1"
     fleet_design_template_i_use_for_drones="DysonSuppressorDronesHig"
     multiplier_to_all_healths="10.0"
@@ -820,7 +824,6 @@
     eligible_for_hacks="AwakenDysonPrecursors"
     metal_cost="2500000"
     science_to_grant_on_death="3000"
-    shows_on_galaxy_map_for_explored_planets="true"
     >
     <metal_flow purpose="BuildingDronesInternally" throughput="2000" />
     <system name="SpawnPacket" display_name="Spawn Level 1 Packet"
@@ -1082,8 +1085,7 @@
   </entity>
   <!-- Dyson Structures; placeable by the player with a protector sphere, and around Suppressor Spheres. Maybe. -->
   <entity
-    name="DysonAntivirus"
-    tags="DysonDefensive"
+    name="DysonAntivirus" tags="DysonAntivirus"
     voice_group="Zenith"
     visuals="assets/_finalgamemeshes/turrets/tractorturret/tractor_turret.prefab"
 	icon_name="Ships1/TractorTurret"
@@ -1093,9 +1095,9 @@
 	y_offset_of_icon="50"
 	collision_priority="810"
 	display_name="Dyson Antivirus"
-	description="A structure of immense defensive power, has a large number of extremely short range tractor beams. While under Player Control, also grants 250k Metal Storage."
+	description="A defensive structure, it has a large number of tractor beams."
     behavior="Stationary"
-    starting_mark_level="Mark1"
+    starting_mark_level="Markless"
     cost_for_ai_to_purchase="10000"
     hull_points="3500000"
     shield_points="1500000"
@@ -1118,14 +1120,13 @@
 			>
 	  <system name="DysonTractorBeam" display_name="Dyson Tractor Beam"
 				category="Passive"
-				tractor_range="Tiny2" tractor_count="120" tractor_hits_albedo_less_than="0.4" tractor_hits_engine_gx_less_than="18"
+				tractor_range="Normal1" tractor_count="120" tractor_hits_albedo_less_than="0.5" tractor_hits_engine_gx_less_than="18"
 				>
     </system>
     <metal_flow purpose="SelfConstruction" throughput="250"/>
   </entity>
   <entity
-    name="DysonFirewall"
-    tags="DysonDefensive"
+    name="DysonFirewall" tags="DysonFirewall"
     voice_group="Zenith"
     visuals="assets/_finalgamemeshes/buildings/forcefieldgenerator/forcefieldgeneratorlod0.prefab"
 	icon_name="Ships1/Shield_Generator"
@@ -1135,9 +1136,9 @@
 	y_offset_of_icon="50"
 	collision_priority="810"
 	display_name="Dyson Firewall"
-	description="A structure of immense defensive power, it outputs an immovable bubble forcefield of immense strength in an extremely small radius. While under Player Control, also grants 250k Metal Storage."
+	description="A defensive structure, it outputs an immovable bubble forcefield of immense strength in a relatively small radius."
     behavior="Stationary"
-    starting_mark_level="Mark1"
+    starting_mark_level="Markless"
     cost_for_ai_to_purchase="10000"
     hull_points="1500000"
     shield_points="5000000"
@@ -1163,8 +1164,7 @@
 	  <metal_flow purpose="SelfConstruction" throughput="250"/>  
   </entity>
     <entity
-    name="DysonRouter"
-    tags="DysonUtility"
+    name="DysonRouter" tags="DysonRouter"
     voice_group="Zenith"
     visuals="assets/_finalgamemeshes/buildings/focusedgravitygenerator/focusedgravitygenerator.prefab"
 	icon_name="Ships1/FocusedGravityGenerator"
@@ -1174,9 +1174,9 @@
 	y_offset_of_icon="50"
 	collision_priority="810"
 	display_name="Dyson Router"
-	description="A structure of immense utility, grants all allies on the planet a speed boost. While under Player Control, also grants 250k Metal Storage."
+	description="A utility structure, it grants all allies on the planet a speed boost."
     behavior="Stationary"
-    starting_mark_level="Mark1"
+    starting_mark_level="Markless"
     cost_for_ai_to_purchase="10000"
     hull_points="1500000"
     shield_points="1500000"
@@ -1201,8 +1201,7 @@
 	<metal_flow purpose="SelfConstruction" throughput="250"/>
   </entity>
     <entity
-    name="DysonUplink"
-    tags="DysonUtility"
+    name="DysonUplink" tags="DysonUplink"
     voice_group="Zenith"
     visuals="assets/_finalgamemeshes/buildings/focusedgravitygenerator/focusedgravitygenerator.prefab"
 	icon_name="Ships1/FocusedGravityGenerator"
@@ -1212,9 +1211,9 @@
 	y_offset_of_icon="50"
 	collision_priority="810"
 	display_name="Dyson Uplink"
-	description="A structure of immense utility, grants all allies on the planet an offensive boost. While under Player Control, also grants 250k Metal Storage."
+	description="A utility structure, it grants all allies on the planet an offensive boost."
     behavior="Stationary"
-    starting_mark_level="Mark1"
+    starting_mark_level="Markless"
     cost_for_ai_to_purchase="10000"
     hull_points="1500000"
     shield_points="1500000"
@@ -1238,6 +1237,54 @@
 			>
 	<metal_flow purpose="SelfConstruction" throughput="250"/>
   </entity>
+	<entity
+    name="DysonDatabank" tags="DysonNode,DysonDatabank"
+    voice_group="Zenith"
+    visuals="Assets/_FinalGameMeshes/AIBuildings/DistributionAndInstigator/DistributionNode.prefab"
+    icon_name="Ships2/SomethingSpaceDoor"
+    category="Ship"
+    size_scale="2.4"
+	visuals_scale_multiplier="2"
+	y_offset_of_icon="50"
+	collision_priority="810"
+	display_name="Dyson Databank"
+	description="An offensive structure, this structure deploys drones to defend its planet and additionally deploys 300% of its listed drone capacity on death."
+    behavior="Stationary"
+    starting_mark_level="Mark1"
+    cost_for_ai_to_purchase="10000"
+    hull_points="1500000"
+    shield_points="1500000"
+    speed="Immobile"
+    metal_cost="2500000"
+    energy_consumption="50000"
+	metal_storage="250000"
+    armor_mm="300"
+    albedo="1"
+    mass_tx="18"
+	ship_or_structure_explosion_sfx="ShipLostMassive_Explosion"
+	ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+	ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+    priority_as_ai_target="MidNasty"
+    priority_as_frd_target="MidNasty"
+    priority_to_protect="SlightlyLessExpendable"
+    should_never_be_captured_by_another_faction="true"
+	allied_attack_multiplier="1.25"
+	build_sidebar_categories_i_am_part_of="DysonProtectorStructures"
+	tech_upgrades_that_benefit_me="Sentries,Turret"
+	fleet_design_template_i_use_for_drones="DysonNodeDronesLow"
+			>
+		<system name="DysonImmurementCannon" display_name="Zenith Immurement Cannon"
+				category="Weapon" firing_timing="OnlyInRange"
+				damage_per_shot="1400" range="Normal1" shot_speed="Normal" rate_of_fire="Devourer" fires_salvos_sequentially="false"
+				shot_type_data="LaserPulse_DeepBlue" shots_per_salvo="2"
+				base_engine_stun_per_shot="3" engine_stun_to_engine_gx_less_than="26"	max_engine_stun_seconds="7"
+                base_enemy_weapon_reload_slowing_seconds_per_shot="3" enemy_weapon_reload_slowing_to_armor_mm_less_than="500"
+				max_enemy_weapon_reload_slowing_seconds="7"
+				>
+		</system>
+		<metal_flow purpose="SelfConstruction" throughput="250"/>
+		<metal_flow purpose="BuildingDronesInternally" throughput="200" />
+	</entity>
 	<!-- Level 10 Packet Generator; built by consuming Dark Spire Vengence Generators -->
 	<entity name="Level10PacketGenerator"
 			draw_in_galaxy_view="true"
@@ -1272,118 +1319,5 @@
 				system_is_hidden_for_ui="true"
 				>
     </system>
-	</entity>
-	<!-- Enforcers -->
-	<entity name="DysonEnforcerGeothermal"
-      tags="DysonEnforcer,SuppressorEnforcer,ProtectorEnforcer"
-	  special_entity_type="LargeShipYesStacks" gimbal_icon_size_multiplier="1.5"
-	  visuals="Assets/_FinalGameMeshes/Zenith/Dyson3Bulwark/DysonBulwark.prefab"
-	  icon_name="Ships1/DysonSentinel" icon_overlay="Overlays2/DysonSentinel_Bulwark"
-	  uses_large_health_bar="true"
-	  category="Ship"
-	  size_scale="9.45"
-	  visuals_scale_multiplier="6.75"
-	  y_offset_of_icon="10"
-	  collision_priority="100"
-	  display_name="Dyson Geothermal Enforcer"
-	  description="A workhorse of a Precursor subfaction, this Enforcer can melt straight through high-armored targets."
-	  voice_group="Zenith"
-	  starting_mark_level="Mark7" tech_upgrades_that_benefit_me="Unused"
-	  cost_for_ai_to_purchase="200"
-	  hull_points="600000" shield_points="900000" speed="VeryVeryLittle4"
-	  metal_cost="80000" energy_consumption="25000"
-	  armor_mm="90" albedo="0.8" engine_gx="18" mass_tx="6"
-	  ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
-	  ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
-	  ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
-      
-	  should_never_be_captured_by_another_faction="true"
-      priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="SlightlyLessExpendable"
-	  >
-		<system name="DysonGeothermalBeam" display_name="Dyson Geothermal Beam"
-				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="100000" range="AboveAverage3" shot_speed="Normal" rate_of_fire="Normal"
-				shots_per_salvo="1" fires_salvos_sequentially="true"
-				shot_type_data="HeavyBeamInvisible"
-				beam_length_multiplier="1.3"
-				hits_all_intersecting_targets="true"
-				shots_detonate_immediately="true"
-				maximum_number_of_targets_hit_per_shot="5"
-				>
-			<outgoing_damage_modifier based_on="Armor_mm" comparison_type="AtMost" compared_to="90" multiplier="0" />
-		</system>
-		<system name="TachyonArray" display_name="Tachyon Array" category="Passive" tachyon_points="25" tachyon_points_added_per_mark="75" tachyon_range="AboveAverage4" tachyon_hits_albedo_less_than="0.75"></system>
-	</entity>
-	<entity name="DysonEnforcerHydroelectric"
-      tags="DysonEnforcer,SuppressorEnforcer,ProtectorEnforcer"
-	  special_entity_type="LargeShipYesStacks" gimbal_icon_size_multiplier="1.5"
-	  visuals="Assets/_FinalGameMeshes/Zenith/Dyson3Bulwark/DysonBulwark.prefab"
-	  icon_name="Ships1/DysonSentinel" icon_overlay="Overlays2/DysonSentinel_Bulwark"
-	  uses_large_health_bar="true"
-	  category="Ship"
-      size_scale="9.45"
-      visuals_scale_multiplier="6.75"
-	  y_offset_of_icon="10"
-	  collision_priority="100"
-	  display_name="Dyson Hydroelectric Enforcer"
-	  description="A workhorse of a Precursor subfaction, this Enforcer rapidly charges high engine power targets and feeds off of their excess energy."
-	  voice_group="Zenith"
-	  starting_mark_level="Mark7" tech_upgrades_that_benefit_me="Unused"
-	  cost_for_ai_to_purchase="200"
-	  hull_points="600000" shield_points="900000" speed="AboveAverage3"
-	  metal_cost="80000" energy_consumption="25000"
-	  armor_mm="90" albedo="0.8" engine_gx="18" mass_tx="6"
-	  ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
-	  ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
-	  ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
-      health_change_per_damage_dealt="0.5"
-	  should_never_be_captured_by_another_faction="true"
-      priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="SlightlyLessExpendable"
-	  >
-		<system name="HydroelectricSyphon" display_name="Hydroelectric Syphon"
-				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="2000" range="Tiny2" shot_speed="Normal" rate_of_fire="Normal"
-				shots_per_salvo="20" fires_salvos_sequentially="false"
-				shot_type_data="DoubleShot_Blue"				
-				>
-			<outgoing_damage_modifier based_on="engine_gx" comparison_type="LessThan" compared_to="11" multiplier="0" />
-        </system>
-		<system name="TachyonArray" display_name="Tachyon Array" category="Passive" tachyon_points="25" tachyon_points_added_per_mark="75" tachyon_range="AboveAverage4" tachyon_hits_albedo_less_than="0.75"></system>
-	</entity>
-	<entity name="DysonEnforcerPhotovoltaic"
-      tags="DysonEnforcer,SuppressorEnforcer"
-	  special_entity_type="LargeShipYesStacks" gimbal_icon_size_multiplier="1.5"
-	  visuals="Assets/_FinalGameMeshes/Zenith/Dyson3Bulwark/DysonBulwark.prefab"
-	  icon_name="Ships1/DysonSentinel" icon_overlay="Overlays2/DysonSentinel_Bulwark"
-	  uses_large_health_bar="true"
-	  category="Ship"
-      size_scale="9.45"
-      visuals_scale_multiplier="6.75"
-	  y_offset_of_icon="10"
-	  collision_priority="100"
-	  display_name="Dyson Photovoltaic Enforcer"
-	  description="A workhorse of a Precursor subfaction, this Enforcer takes an exceptionally large time to study targets before going in for the kill."
-	  voice_group="Zenith"
-	  starting_mark_level="Mark7" tech_upgrades_that_benefit_me="Unused"
-	  cost_for_ai_to_purchase="200"
-	  hull_points="600000" shield_points="900000" speed="Normal3"
-	  metal_cost="80000" energy_consumption="25000"
-	  armor_mm="90" albedo="0.8" engine_gx="18" mass_tx="6"
-	  ship_or_structure_explosion_sfx="ShipGuardian_Explosion"
-	  ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
-	  ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
-      
-	  should_never_be_captured_by_another_faction="true"
-      priority_as_ai_target="MidNasty" priority_as_frd_target="MidNasty" priority_to_protect="SlightlyLessExpendable"
-	  >
-		<system name="PhotovoltaicMissileArray" display_name="Photovoltaic Missile Array"
-				category="Weapon" firing_timing="OnlyInRange"
-				damage_per_shot="100000" range="High2" shot_speed="Normal" rate_of_fire="Devourer"
-                shots_per_salvo="1" fires_salvos_sequentially="false"
-				shot_type_data="GuidedMissile"
-				>
-			<outgoing_damage_modifier based_on="TargetTimeAtPlanet" comparison_type="LessThan" compared_to="120" multiplier="0" />
-		</system>
-		<system name="TachyonArray" display_name="Tachyon Array" category="Passive" tachyon_points="25" tachyon_points_added_per_mark="75" tachyon_range="AboveAverage4" tachyon_hits_albedo_less_than="0.75"></system>
 	</entity>
 </root>

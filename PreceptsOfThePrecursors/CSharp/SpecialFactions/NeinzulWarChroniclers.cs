@@ -293,36 +293,29 @@ namespace PreceptsOfThePrecursors
                 if ( entityData == null )
                     return DelReturn.RemoveAndContinue;
 
-                pair.Value.DoFor( subPair =>
+
+                int cost = entityData.GetForMark( pair.Value ).StrengthPerSquad_CalculatedWithNullFleetMembership * 10;
+                int toSend = pair.Value / cost;
+
+                if ( toSend > 50 )
                 {
-                    int cost = entityData.GetForMark( subPair.Key ).StrengthPerSquad_CalculatedWithNullFleetMembership * 10;
-                    int toSend = subPair.Value / cost;
+                    toSend = 50;
+                    pair.Value = cost * 50;
+                }
 
-                    if ( toSend > 50 )
-                    {
-                        toSend = 50;
-                        subPair.Value = cost * 50;
-                    }
+                for ( int x = 0; x < toSend; x++ )
+                {
+                    GameEntity_Squad newSpawn = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( chronicler.PlanetFaction, entityData, ChroniclersMarkLevel(faction), chronicler.PlanetFaction.FleetUsedAtPlanet, 0, chronicler.WorldLocation, Context );
+                    newSpawn.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
 
-                    for ( int x = 0; x < toSend; x++ )
-                    {
-                        GameEntity_Squad newSpawn = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( chronicler.PlanetFaction, entityData, subPair.Key, chronicler.PlanetFaction.FleetUsedAtPlanet, 0, chronicler.WorldLocation, Context );
-                        newSpawn.Orders.SetBehaviorDirectlyInSim( EntityBehaviorType.Attacker_Full, faction.FactionIndex );
-
-                        strengthSent += newSpawn.GetStrengthPerSquad();
-
-                        if ( strengthSent > strengthCap )
-                            break;
-                    }
-
-                    if ( toSend > 0 )
-                        subPair.Value /= 2;
+                    strengthSent += newSpawn.GetStrengthPerSquad();
 
                     if ( strengthSent > strengthCap )
-                        return DelReturn.Break;
+                        break;
+                }
 
-                    return DelReturn.Continue;
-                } );
+                if ( toSend > 0 )
+                    pair.Value /= 2;
 
                 return DelReturn.Continue;
             } );
@@ -449,7 +442,7 @@ namespace PreceptsOfThePrecursors
                 notifier.planet = factionData.CurrentPlanetAimedAt;
                 notifier.faction = faction;
                 notifier.secondsLeft = SecondsOfConflictRequiredForArrival - factionData.SecondsAimedAtPlanet;
-                notifier.estimatedStrength = (factionData.EstimatedStrengthOfAttack( faction ) / 4) * 3;
+                notifier.estimatedStrength = (factionData.EstimatedStrengthOfAttack( faction, ChroniclersMarkLevel( faction ) ) / 4) * 3;
 
                 NotificationNonSim notification = Engine_AIW2.NonSimNotificationList_Building.GetOrAddEntry();
                 notification.Assign( notifier.ClickHandler, notifier.ContentGetter, notifier.MouseoverHandler, "", 0, "WarChroniclerIncoming", SortedNotificationPriorityLevel.Major );
@@ -474,7 +467,7 @@ namespace PreceptsOfThePrecursors
 
         public void CalculateBudget( Faction faction, ArcenLongTermIntermittentPlanningContext Context )
         {
-            GameCommand studyCommand = StaticMethods.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.UpdateStudyBudgets.ToString() ), GameCommandSource.AnythingElse, faction );
+            GameCommand studyCommand = Utilities.CreateGameCommand( GameCommandTypeTable.Instance.GetRowByName( Commands.UpdateStudyBudgets.ToString() ), GameCommandSource.AnythingElse, faction );
             studyCommand.RelatedFactionIndex = faction.FactionIndex;
 
             faction.DoForEntities( Tags.NeinzulWarChronicler.ToString(), chronicler =>
@@ -489,7 +482,7 @@ namespace PreceptsOfThePrecursors
                         if ( entity.TypeData.IsDrone || entity.TypeData.SelfAttritionsXPercentPerSecondIfParentShipNotOnPlanet != 0 || entity.TypeData.GetHasTag( Tags.NeinzulWarChronicler.ToString() ) )
                             return DelReturn.Continue;
 
-                        if ( (factionData.BudgetGenerated?[entity.TypeData.InternalName]?[(byte)(entity.CurrentMarkLevel - 1)] ?? 0) > entity.GetStrengthPerSquad() * 100 )
+                        if ( factionData.BudgetGenerated.GetHasKey(entity.TypeData.InternalName) && factionData.BudgetGenerated[entity.TypeData.InternalName] > entity.GetStrengthPerSquad() * 100 )
                             return DelReturn.Continue;
 
                         switch ( entity.TypeData.SpecialType )

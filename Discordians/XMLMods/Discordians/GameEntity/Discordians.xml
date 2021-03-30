@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<entity name="DiscordianCarrier" tags="DiscordianLeader,DiscordianActive"
+			special_entity_type="Frigate" gimbal_icon_size_multiplier="1.25"
+			visuals="assets/_finalgamemeshes/starships/prototypeflagship/prototypeflagship.prefab"
+			icon_name="Ships1/Starship" icon_overlay="Overlays1/Starship_Assault"
+			size_scale="10"
+			visuals_scale_multiplier="4"
+			category="Ship"
+			y_offset_of_icon="15"
+			collision_priority="500"
+			display_name="Discordian Carrier"
+			description="A durable Flagship that leads a human-friendly Discordian fleet in this galaxy."
+			starting_mark_level="Mark1" tech_upgrades_that_benefit_me="Heavy,Fusion"
+			cost_for_ai_to_purchase="982"
+			hull_points="1000000" shield_points="0" speed="Normal3"
+			metal_cost="100000" energy_consumption="9000"
+			armor_mm="170" engine_gx="23" albedo="0.8" mass_tx="6"
+			voice_group="Starship"
+			ship_or_structure_explosion_sfx="ShipStarship_Explosion"
+			ship_or_structure_explosion_if_on_other_planet_sfx="ShipLargeLostOnOtherPlanet_Explosion"
+			ship_or_structure_explosion_sfx_happens_if_not_mine_and_on_other_planet="true"
+			priority_as_ai_target="NormalStarship" priority_as_frd_target="NormalStarship" priority_to_protect="SlightlyLessExpendable"
+			description_appender_dll="Discordians"
+			description_appender_type="Discordians.DiscordianDescriptionAppender"
+			immune_to_repairs="true"
+			seconds_to_fully_regenerate_hull="360"
+			should_never_be_captured_by_another_faction="true"
+      >
+		<system name="ChainCannon1" display_name="Chain Cannon"
+				   category="Weapon" firing_timing="OnlyInRange"
+				   damage_per_shot="300" range="Normal6" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
+				   shots_per_salvo="15"
+				   shot_type_data="ArmorPiercingShell"
+				>
+		</system>
+		<system name="ChainCannon2" display_name="Chain Cannon" min_mark_level_to_function="2"
+				   category="Weapon" firing_timing="OnlyInRange"
+				   damage_per_shot="300" range="AboveAverage1" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
+				   shots_per_salvo="13"
+				   shot_type_data="ArmorPiercingShell"
+				>
+		</system>
+		<system name="ChainCannon3" display_name="Chain Cannon" min_mark_level_to_function="3"
+				   category="Weapon" firing_timing="OnlyInRange"
+				   damage_per_shot="300" range="AboveAverage2" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
+				   shots_per_salvo="11"
+				   shot_type_data="ArmorPiercingShell"
+				>
+		</system>
+		<system name="ChainCannon4" display_name="Chain Cannon" min_mark_level_to_function="4"
+				   category="Weapon" firing_timing="OnlyInRange"
+				   damage_per_shot="300" range="AboveAverage3" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
+					shots_per_salvo="9"
+				   shot_type_data="ArmorPiercingShell"
+				>
+		</system>
+		<system name="ChainCannon5" display_name="Chain Cannon" min_mark_level_to_function="5"
+				   category="Weapon" firing_timing="OnlyInRange"
+				   damage_per_shot="300" range="AboveAverage4" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
+					shots_per_salvo="7"
+				   shot_type_data="ArmorPiercingShell"
+				>
+		</system>
+		<system name="ChainCannon6" display_name="Chain Cannon" min_mark_level_to_function="6"
+				   category="Weapon" firing_timing="OnlyInRange"
+				   damage_per_shot="300" range="High1" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
+				   shots_per_salvo="5"
+				   shot_type_data="ArmorPiercingShell"
+				>
+		</system>
+		<system name="ChainCannon7" display_name="Chain Cannon" min_mark_level_to_function="7"
+				   category="Weapon" firing_timing="OnlyInRange"
+				   damage_per_shot="300" range="High2" shot_speed="Normal" rate_of_fire="Misery" fires_salvos_sequentially="false"
+				   shots_per_salvo="3"
+				   shot_type_data="ArmorPiercingShell"
+				>
+		</system>
+	</entity>
+
+	<entity name="DiscordianCarrierBrokenDown" skip_export="true" copy_from="DiscordianCarrier"
+			tags="DiscordianLeader,DiscordianBroken"
+			description="This Discordian flagship is currently disabled, and is slowly limping back to your capital for repairs."
+			immune_to_all_damage="true"
+			should_never_be_captured_by_another_faction="true"
+			description_appender_dll="Discordians"
+			description_appender_type="Discordians.DiscordianDescriptionAppender" >
+		<system name="ChainCannon1" min_mark_level_to_function="0" max_mark_level_to_function="0" />
+		<system name="ChainCannon2" min_mark_level_to_function="0" max_mark_level_to_function="0" />
+		<system name="ChainCannon3" min_mark_level_to_function="0" max_mark_level_to_function="0" />
+		<system name="ChainCannon4" min_mark_level_to_function="0" max_mark_level_to_function="0" />
+		<system name="ChainCannon5" min_mark_level_to_function="0" max_mark_level_to_function="0" />
+		<system name="ChainCannon6" min_mark_level_to_function="0" max_mark_level_to_function="0" />
+		<system name="ChainCannon7" min_mark_level_to_function="0" max_mark_level_to_function="0" />
+	</entity>
+</root>

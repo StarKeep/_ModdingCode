@@ -263,8 +263,9 @@ namespace PreceptsOfThePrecursors
         // Type of Protosphere.
         public ProtoSphereType Type;
 
-        // When did the BigUnit die? - Purged
-        public int GameSecondBigUnitDied;
+        // When did this planet last build a structure?
+        public int GameSecondLastStructureBuilt;
+        public int SecondsSinceLastStructureBuilt => World_AIW2.Instance.GameSecond - GameSecondLastStructureBuilt;
 
         // Have we been hacked?
         public bool HasBeenHacked;
@@ -274,7 +275,7 @@ namespace PreceptsOfThePrecursors
             Level = 0;
             Resources = 0;
             Type = ProtoSphereType.None;
-            GameSecondBigUnitDied = 0;
+            GameSecondLastStructureBuilt = -1;
             HasBeenHacked = false;
         }
         public DysonPerPlanetData( ArcenDeserializationBuffer Buffer ) : this()
@@ -288,7 +289,7 @@ namespace PreceptsOfThePrecursors
             buffer.AddInt32( ReadStyle.PosExceptNeg1, Resources );
             buffer.AddByte( ReadStyleByte.Normal, (byte)Type );
             buffer.AddInt32( ReadStyle.PosExceptNeg1, -1 );
-            buffer.AddInt32( ReadStyle.PosExceptNeg1, GameSecondBigUnitDied );
+            buffer.AddInt32( ReadStyle.PosExceptNeg1, GameSecondLastStructureBuilt );
             buffer.AddItem( HasBeenHacked );
         }
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
@@ -297,7 +298,7 @@ namespace PreceptsOfThePrecursors
             Resources = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             Type = (ProtoSphereType)buffer.ReadByte( ReadStyleByte.Normal );
             buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            GameSecondBigUnitDied = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            GameSecondLastStructureBuilt = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
             HasBeenHacked = buffer.ReadBool();
         }
     }

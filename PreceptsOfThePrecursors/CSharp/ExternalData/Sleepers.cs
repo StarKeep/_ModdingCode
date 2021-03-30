@@ -109,7 +109,7 @@ namespace PreceptsOfThePrecursors
             }
             if ( Version >= 3 )
                 OriginalID = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
-            if (Version >= 4 )
+            if ( Version >= 4 )
             {
                 targetPlanet = buffer.ReadInt16( ReadStyle.PosExceptNeg1 );
                 TargetPoint = ArcenPoint.Create( buffer.ReadInt32( ReadStyle.Signed ), buffer.ReadInt32( ReadStyle.Signed ) );
@@ -161,15 +161,150 @@ namespace PreceptsOfThePrecursors
         }
     }
 
+    public class SleeperPlanetaryProductionData
+    {
+        public int MetalStored;
+        private string nextEntityToBuild;
+        private GameEntityTypeData cachedNextEntityToBuild;
+        public GameEntityTypeData NextEntityToBuild
+        {
+            get
+            {
+                if ( cachedNextEntityToBuild == null )
+                    cachedNextEntityToBuild = GameEntityTypeDataTable.Instance.GetRowByNameOrNullIfNotFound( nextEntityToBuild );
+                return cachedNextEntityToBuild;
+            }
+            set
+            {
+                cachedNextEntityToBuild = null;
+                if ( value == null )
+                    nextEntityToBuild = string.Empty;
+                else
+                    nextEntityToBuild = value.InternalName;
+            }
+        }
+
+        public SleeperPlanetaryProductionData()
+        {
+            MetalStored = -1;
+            NextEntityToBuild = null;
+        }
+        public SleeperPlanetaryProductionData( ArcenDeserializationBuffer Buffer ) : this()
+        {
+            this.DeserializeIntoSelf( Buffer, false );
+        }
+        public void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
+        {
+            buffer.AddInt32( ReadStyle.PosExceptNeg1, MetalStored );
+            buffer.AddString_Condensed( nextEntityToBuild );
+        }
+        public void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
+        {
+            MetalStored = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            nextEntityToBuild = buffer.ReadString_Condensed();
+        }
+    }
     public class SleeperFactionData : ArcenExternalSubManagedData
     {
         public int Version;
 
-        public int StrengthOfNextSleeperCPA;
+        public int StrengthTowardsNextSleeperCPA;
+
+        private ArcenSparseLookup<short, SleeperPlanetaryProductionData> productionDataByPlanet;
+        public void AddMetal( Planet planet, int metalToAdd )
+        {
+            if ( productionDataByPlanet == null )
+                productionDataByPlanet = new ArcenSparseLookup<short, SleeperPlanetaryProductionData>();
+            if ( !productionDataByPlanet.GetHasKey( planet.Index ) )
+                productionDataByPlanet.AddPair( planet.Index, new SleeperPlanetaryProductionData() );
+            productionDataByPlanet[planet.Index].MetalStored += metalToAdd;
+        }
+        public int GetMetal( Planet planet )
+        {
+            if ( productionDataByPlanet == null )
+                return 0;
+            if ( !productionDataByPlanet.GetHasKey( planet.Index ) )
+                return 0;
+            return productionDataByPlanet[planet.Index].MetalStored;
+        }
+        public void ResetMetal( Planet planet )
+        {
+            if ( productionDataByPlanet == null )
+                return;
+            if ( !productionDataByPlanet.GetHasKey( planet.Index ) )
+                return;
+            productionDataByPlanet[planet.Index].MetalStored = -1;
+        }
+        public bool HasEntityQueued( Planet planet )
+        {
+            if ( productionDataByPlanet == null )
+                return false;
+            if ( !productionDataByPlanet.GetHasKey( planet.Index ) )
+                return false;
+            return (productionDataByPlanet[planet.Index].NextEntityToBuild != null);
+        }
+        public GameEntityTypeData GetEntityToBuild( Planet planet )
+        {
+            if ( productionDataByPlanet == null )
+                return null;
+            if ( !productionDataByPlanet.GetHasKey( planet.Index ) )
+                return null;
+            return productionDataByPlanet[planet.Index].NextEntityToBuild;
+        }
+        public void SetEntityToBuild( Planet planet, GameEntityTypeData typeData )
+        {
+            if ( productionDataByPlanet == null )
+                productionDataByPlanet = new ArcenSparseLookup<short, SleeperPlanetaryProductionData>();
+            if ( !productionDataByPlanet.GetHasKey( planet.Index ) )
+                productionDataByPlanet.AddPair( planet.Index, new SleeperPlanetaryProductionData() );
+            productionDataByPlanet[planet.Index].NextEntityToBuild = typeData;
+        }
+        public bool GetCanBuildEntity( Planet planet )
+        {
+            if ( productionDataByPlanet == null )
+                return false;
+            if ( !productionDataByPlanet.GetHasKey( planet.Index ) )
+                return false;
+            return productionDataByPlanet[planet.Index].MetalStored >= productionDataByPlanet[planet.Index].NextEntityToBuild.MetalCost;
+        }
+        public void DoAfterConstructionLogic( Planet planet )
+        {
+            if ( productionDataByPlanet == null )
+                return;
+            if ( !productionDataByPlanet.GetHasKey( planet.Index ) )
+                return;
+            productionDataByPlanet[planet.Index].MetalStored -= productionDataByPlanet[planet.Index].NextEntityToBuild.MetalCost;
+            productionDataByPlanet[planet.Index].NextEntityToBuild = null;
+        }
+
+        public int GameSecondThatAwakeningStarted;
+        public int SecondsSinceAwakeningStarted { get { return World_AIW2.Instance.GameSecond - GameSecondThatAwakeningStarted; } }
+
+        private int primeToAwaken;
+        public GameEntity_Squad PrimeToAwaken
+        {
+            get
+            {
+                GameEntity_Squad entity = World_AIW2.Instance.GetEntityByID_Squad( primeToAwaken );
+                if ( entity == null )
+                    primeToAwaken = -1;
+                return entity;
+            }
+            set
+            {
+                if ( value == null )
+                    primeToAwaken = -1;
+                else
+                    primeToAwaken = value.PrimaryKeyID;
+            }
+        }
 
         public SleeperFactionData()
         {
-            StrengthOfNextSleeperCPA = 0;
+            StrengthTowardsNextSleeperCPA = -1;
+            productionDataByPlanet = new ArcenSparseLookup<short, SleeperPlanetaryProductionData>();
+            GameSecondThatAwakeningStarted = -1;
+            primeToAwaken = -1;
         }
         public SleeperFactionData( ArcenDeserializationBuffer Buffer ) : this()
         {
@@ -177,11 +312,45 @@ namespace PreceptsOfThePrecursors
         }
         public override void SerializeTo( ArcenSerializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
-            buffer.AddInt32( ReadStyle.NonNeg, 1 );
+            buffer.AddInt32( ReadStyle.NonNeg, 5 );
+
+            buffer.AddInt32( ReadStyle.PosExceptNeg1, StrengthTowardsNextSleeperCPA );
+
+            int count = productionDataByPlanet.GetPairCount();
+            buffer.AddInt32( ReadStyle.NonNeg, count );
+            productionDataByPlanet.DoFor( pair =>
+            {
+                buffer.AddInt16( ReadStyle.PosExceptNeg1, pair.Key );
+                pair.Value.SerializeTo( buffer, IsForPartialSyncDuringMultiplayer );
+
+                return DelReturn.Continue;
+            } );
+
+            buffer.AddInt32( ReadStyle.PosExceptNeg1, GameSecondThatAwakeningStarted );
+
+            buffer.AddInt32( ReadStyle.PosExceptNeg1, primeToAwaken );
         }
         public override void DeserializeIntoSelf( ArcenDeserializationBuffer buffer, bool IsForPartialSyncDuringMultiplayer )
         {
             Version = buffer.ReadInt32( ReadStyle.NonNeg );
+
+            if ( Version >= 3 )
+                if ( Version == 3 )
+                    StrengthTowardsNextSleeperCPA = (buffer.ReadFInt() * 1000).GetNearestIntPreferringHigher();
+                else
+                    StrengthTowardsNextSleeperCPA = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+
+            productionDataByPlanet = new ArcenSparseLookup<short, SleeperPlanetaryProductionData>();
+            int count = buffer.ReadInt32( ReadStyle.NonNeg );
+            if ( Version >= 2 )
+                for ( int x = 0; x < count; x++ )
+                    productionDataByPlanet.AddPair( buffer.ReadInt16( ReadStyle.PosExceptNeg1 ), new SleeperPlanetaryProductionData( buffer ) );
+
+            if ( Version >= 5 )
+            {
+                GameSecondThatAwakeningStarted = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+                primeToAwaken = buffer.ReadInt32( ReadStyle.PosExceptNeg1 );
+            }
         }
     }
     public class SleeperFactionExternalData : ArcenExternalDataPatternImplementationBase_Faction

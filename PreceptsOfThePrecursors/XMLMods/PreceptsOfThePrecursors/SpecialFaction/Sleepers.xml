@@ -8,9 +8,10 @@
            type="SpecialFaction"
 		   impact="Moderate"
            CanBeHostileToAll="true"
-           description="IN PROGRESS, do not enable.
-		   
-Large ancient structures that appear to serve a defensive purpose, but are inactive for now. The ai has considered integrating them into its defenses, but will only do so when the humans have actually made themselves known as a threat to it."
+		   must_be_at_most_one="true"
+           description="Large ancient structures that appear to serve a defensive purpose, but are inactive for now. Both you and the AI could potentially awaken them for your own use.
+
+&lt;color=#f25e1c&gt;MEDIUM IMPACT:&lt;/color&gt; This faction can greatly bolster the effects of whomever awakens them, but the process is a long and potentially difficult one."
   >
 	   <custom_field name="Intensity" display_name="Impact" description="How much should this faction impact the game?"
             sort_group="200" setting_type="IntSlider" default="5" min="1" max="10" />
@@ -26,6 +27,19 @@ Large ancient structures that appear to serve a defensive purpose, but are inact
          auto_add_one_of_faction_if_missing_on_save_load="true"
          can_be_targeted_by_annoyed_non_human_units="true"
          description="Sleepers aligned to Humans."
+  >
+	</faction>
+	<faction name="Nightmares"
+         display_name="Nightmares"
+         dll_name="PreceptsOfThePrecursors"
+         type_name="PreceptsOfThePrecursors.Nightmares"
+         team_center_color="Blue" team_border_color="Gold"
+         type="SpecialFaction"
+         should_not_be_shown="true"
+         player_discoverable="true"
+         auto_add_one_of_faction_if_missing_on_save_load="true"
+         can_be_targeted_by_annoyed_non_human_units="true"
+         description="Sleepers aligned to AI."
   >
 	</faction>
 </root>
