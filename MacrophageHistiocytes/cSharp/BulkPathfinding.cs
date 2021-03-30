@@ -37,7 +37,7 @@ namespace MacrophageHistiocytes
             Planet nextPlanet = null;
             if ( ContextForSmartPathfindingOrNullForDumb != null )
             {
-                List<Planet> path = entity.PlanetFaction.Faction.FindPath( entity.Planet, destination, PathingMode.Safest, ContextForSmartPathfindingOrNullForDumb );
+                List<Planet> path = entity.PlanetFaction.Faction.FindPathFreshOrFromCache( entity.Planet, destination, PathingMode.Safest, ContextForSmartPathfindingOrNullForDumb ).PathToReadOnly;
                 for ( int x = 0; x < path.Count; x++ )
                     if ( path[x] != origin )
                     {
@@ -92,7 +92,7 @@ namespace MacrophageHistiocytes
                     List<GameEntity_Squad> entities = destinationPair.Value;
                     if ( entities == null )
                         continue;
-                    List<Planet> path = faction.FindPath( origin, destination, PathingMode.Safest, Context );
+                    List<Planet> path = faction.FindPathFreshOrFromCache( origin, destination, PathingMode.Safest, Context ).PathToReadOnly;
                     GameCommand command = GameCommand.Create( BaseGameCommand.CommandsByCode[BaseGameCommand.Code.SetWormholePath_NPCDirectedMob], GameCommandSource.AnythingElse );
                     for ( int p = 0; p < path.Count; p++ )
                         command.RelatedIntegers.Add( path[p].Index );

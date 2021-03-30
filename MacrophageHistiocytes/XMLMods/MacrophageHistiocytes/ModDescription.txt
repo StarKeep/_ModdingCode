@@ -10,8 +10,3 @@ Harvesters can now corrupt Metal Generators, turning them into yet another sourc
 Dark Spire Rivalry:
 Disabled by Default. Enabled via Galaxy setting.
 When enabled, Telium wither when near Dark Spire planets, and Histiocytes can consume Dark Spire VGs.
-
-Hives:
-New spawning style, this gives the Macrophage full control over a configurable section of the galaxy.
-These Planets will have a larger than normal number of Telia, an exceptionally large number of mines, and the faction's overall Telium capacity is greatly increased.
-In addition, they have consumed nearly all AI presence on these planets, so assuming you can scrub them clean, you can take them and all of their goodies within at no AIP cost.

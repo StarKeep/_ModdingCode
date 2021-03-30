@@ -249,6 +249,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="XMLMods\MacrophageHistiocytes\AIWar2GalaxySettingCategory\MacrophageHistiocytes.xml" />
     <Content Include="XMLMods\MacrophageHistiocytes\AIWar2GalaxySetting\MacrophageHistiocytes.xml" />
     <Content Include="XMLMods\MacrophageHistiocytes\FleetDesignTemplate\MacrophageHistiocytes.xml" />
     <Content Include="XMLMods\MacrophageHistiocytes\GameEntity\MacrophageHistiocytes.xml" />

@@ -117,7 +117,8 @@ namespace MacrophageHistiocytes
                         return DelReturn.Continue; // Player owned are okay so long as the Tamed has presence on the map.
                 }
 
-                GameEntity_Squad.CreateNew( generator.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGenerator.ToString() ), generator.CurrentMarkLevel, generator.PlanetFaction.FleetUsedAtPlanet, 0,
+                if ( ArcenNetworkAuthority.DesiredStatus != DesiredMultiplayerStatus.Client )
+                    GameEntity_Squad.CreateNew_ReturnNullIfMPClient( generator.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGenerator.ToString() ), generator.CurrentMarkLevel, generator.PlanetFaction.FleetUsedAtPlanet, 0,
                     generator.WorldLocation, Context );
 
                 generator.Despawn( Context, true, InstancedRendererDeactivationReason.IAmTransforming );
@@ -142,7 +143,8 @@ namespace MacrophageHistiocytes
                     if ( harvester.GetDistanceTo_VeryCheapButExtremelyRough( metalGenerator, true ) > 1000 )
                         return DelReturn.Continue;
 
-                    GameEntity_Squad.CreateNew( harvester.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGeneratorInfested.ToString() ), 1, harvester.PlanetFaction.FleetUsedAtPlanet, 0,
+                    if ( ArcenNetworkAuthority.DesiredStatus != DesiredMultiplayerStatus.Client )
+                        GameEntity_Squad.CreateNew_ReturnNullIfMPClient( harvester.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGeneratorInfested.ToString() ), 1, harvester.PlanetFaction.FleetUsedAtPlanet, 0,
                         metalGenerator.WorldLocation, Context );
 
                     metalGenerator.Despawn( Context, true, InstancedRendererDeactivationReason.IAmTransforming );
@@ -176,7 +178,8 @@ namespace MacrophageHistiocytes
                     case FactionType.AI:
                         if ( infestedGenerator.PlanetFaction.Faction != infestedGenerator.Planet.GetControllingFaction() )
                         {
-                            GameEntity_Squad.CreateNew( infestedGenerator.Planet.GetPlanetFactionForFaction( tamedFaction ), GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGeneratorInfested.ToString() ),
+                            if ( ArcenNetworkAuthority.DesiredStatus != DesiredMultiplayerStatus.Client )
+                                GameEntity_Squad.CreateNew_ReturnNullIfMPClient( infestedGenerator.Planet.GetPlanetFactionForFaction( tamedFaction ), GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGeneratorInfested.ToString() ),
                                 infestedGenerator.Planet.GetControllingFaction().GetGlobalMarkLevelForShipLine( infestedGenerator.TypeData ),
                                 infestedGenerator.Planet.GetPlanetFactionForFaction( tamedFaction ).FleetUsedAtPlanet, 0, infestedGenerator.WorldLocation, Context );
 
@@ -188,7 +191,8 @@ namespace MacrophageHistiocytes
                     default:
                         if ( infestedGenerator.Planet.GetIsControlledByFactionType( FactionType.Player ) && infestedGenerator.PlanetFaction.Faction != infestedGenerator.Planet.GetControllingFaction() )
                         {
-                            GameEntity_Squad.CreateNew( infestedGenerator.Planet.GetPlanetFactionForFaction( infestedGenerator.Planet.GetControllingFaction() ), GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGeneratorInfested.ToString() ),
+                            if ( ArcenNetworkAuthority.DesiredStatus != DesiredMultiplayerStatus.Client )
+                                GameEntity_Squad.CreateNew_ReturnNullIfMPClient( infestedGenerator.Planet.GetPlanetFactionForFaction( infestedGenerator.Planet.GetControllingFaction() ), GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGeneratorInfested.ToString() ),
                                 1, infestedGenerator.Planet.GetPlanetFactionForFaction( infestedGenerator.Planet.GetControllingFaction() ).FleetUsedAtPlanet, 0, infestedGenerator.WorldLocation, Context );
 
                             infestedGenerator.Despawn( Context, true, InstancedRendererDeactivationReason.IAmTransforming );
@@ -337,11 +341,13 @@ namespace MacrophageHistiocytes
 
         private void SpawnSpore( ArcenPoint spawnLocation, ArcenSimContext Context, GameEntity_Squad telium )
         {
+            if ( ArcenNetworkAuthority.DesiredStatus == DesiredMultiplayerStatus.Client )
+                return;
             GameEntityTypeData entityData = GameEntityTypeDataTable.Instance.GetRandomRowWithTag( Context, Macrophage.SporeTag );
             PlanetFaction pFaction = telium.PlanetFaction;
             if ( entityData == null )
                 ArcenDebugging.ArcenDebugLogSingleLine( "BUG: no MacrophageSpore tag found", Verbosity.DoNotShow );
-            GameEntity_Squad spore = GameEntity_Squad.CreateNew( pFaction, entityData, entityData.MarkFor( pFaction ),
+            GameEntity_Squad spore = GameEntity_Squad.CreateNew_ReturnNullIfMPClient( pFaction, entityData, entityData.MarkFor( pFaction ),
                 pFaction.FleetUsedAtPlanet, 0, spawnLocation, Context );
             MacrophagePerSporeData sData = spore.GetMacrophagePerSporeDataExt( ExternalDataRetrieval.CreateIfNotFound );
             sData.TeliumID = telium.GetMacrophagePerTeliumDataExt( ExternalDataRetrieval.CreateIfNotFound ).UniqueID;
@@ -366,7 +372,8 @@ namespace MacrophageHistiocytes
                     if ( spore.GetDistanceTo_VeryCheapButExtremelyRough( metalGenerator, true ) > 1000 )
                         return DelReturn.Continue;
 
-                    GameEntity_Squad.CreateNew( spore.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGeneratorInfested.ToString() ), 1, spore.PlanetFaction.FleetUsedAtPlanet, 0,
+                    if ( ArcenNetworkAuthority.DesiredStatus != DesiredMultiplayerStatus.Client )
+                        GameEntity_Squad.CreateNew_ReturnNullIfMPClient( spore.PlanetFaction, GameEntityTypeDataTable.Instance.GetRowByName( Tags.MetalGeneratorInfested.ToString() ), 1, spore.PlanetFaction.FleetUsedAtPlanet, 0,
                         metalGenerator.WorldLocation, Context );
 
                     metalGenerator.Despawn( Context, true, InstancedRendererDeactivationReason.IAmTransforming );
